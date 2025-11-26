@@ -55,7 +55,7 @@ main{
 } */
 
 #wrapper_overlay{
-    background-image: url(Assets/image.png);
+    background-image: url(../assets/image.png);
     background-size: contain;
     background-repeat: repeat;
 
