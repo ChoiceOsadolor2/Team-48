@@ -4,12 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ShopAll.css">
 </head>
 <body>
     <header>
         
-        <svg id="menu" onclick="show('menu')" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 20 20"><path fill="#ffffff" fill-rule="evenodd" d="M2 8a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0-4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 4a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Z" clip-rule="evenodd"/></svg>
+        <svg id="menu_nav" onclick="show('menu')" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 20 20"><path fill="#ffffff" fill-rule="evenodd" d="M2 8a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0-4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 4a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Z" clip-rule="evenodd"/></svg>
 
         <img id="header_logo" src="Assets/logo.png" alt="VeltrixLogo">
         
@@ -29,6 +29,7 @@
 <section id="wrapper_overlay">
 <div id="wrapper_background"></div>
 </section>
+<h1 style="top: 15%; position: absolute; font-size: 5em;">Shop All</h1>
 
 <main>
     <template>
@@ -46,7 +47,43 @@
             <h3 class="product_name">The outstanding Object</h3>
             <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
             <button>view</button>
-        </a>        
+        </a>  
+
+        <a href="ProductPage.html" class="product_card">
+            <img class="product_image" src="Assets/gameHeadset.png" >
+            <h3 class="product_name">The outstanding Object</h3>
+            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
+            <button>view</button>
+        </a>    
+
+        <a href="ProductPage.html" class="product_card">
+            <img class="product_image" src="Assets/gameHeadset.png" >
+            <h3 class="product_name">The outstanding Object</h3>
+            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
+            <button>view</button>
+        </a>  
+           
+        <a href="ProductPage.html" class="product_card">
+            <img class="product_image" src="Assets/gameHeadset.png" >
+            <h3 class="product_name">The outstanding Object</h3>
+            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
+            <button>view</button>
+        </a>      
+
+        <a href="ProductPage.html" class="product_card">
+            <img class="product_image" src="Assets/gameHeadset.png" >
+            <h3 class="product_name">The outstanding Object</h3>
+            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
+            <button>view</button>
+        </a>    
+        
+
+        <a href="ProductPage.html" class="product_card">
+            <img class="product_image" src="Assets/gameHeadset.png" >
+            <h3 class="product_name">The outstanding Object</h3>
+            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
+            <button>view</button>
+        </a>   
         
 </main>
 
@@ -60,7 +97,7 @@
 
 <section id="Search_Results"></section>
 
-<section id="menu">
+<section id="menu" onclick="closeSection('menu')">
     <div id="menu_main">
             <a href="index.html">Home</a>
             <a>About Us</a>
@@ -70,8 +107,17 @@
 </section>
 
 <section id="filter">
-     <div id="filter_content"></div>
-    <h1 onclick="show('filter')">Filter</h1>
+     <div id="filter_content">
+        <button>All</button>
+        <button>CATEGORY</button>
+        <button>All</button>
+        <button>PRICE ASCENDING</button>
+        <button>PRICE DESCENDING</button>
+        
+     </div>
+    <h1 >Filter <svg onclick="show('filter')" id="toggle_up" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="#000000" d="m2 5l2-2l2 2l1-1l-3-3l-3 3"/></svg>
+                <svg onclick="closeSection('filter')" id="toggle_down" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="#000000" d="m2 3l2 2l2-2l1 1l-3 3l-3-3"/></svg>
+    </h1>
 </section>
 
 <script src="animations.js"></script>
