@@ -1,9 +1,12 @@
+@import url(https://fonts.googleapis.com/css?family=Pixelify+Sans:regular,500,600,700);
+
 body{
     background-color: #050036;
     color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-family: 'pixelify sans';
 }
 
 header{
@@ -108,7 +111,7 @@ a{
 }
 
 
-
+                                            /* Hidden Content,Dynamic? */
 /* Basket */
 
 
@@ -121,6 +124,7 @@ a{
     display: none;
     position: fixed;
     z-index: 100;
+    
 
 }
 
@@ -132,56 +136,82 @@ a{
     background-color: white;
     z-index: 102;
 
+
 }
 
 #menu_main{
-    width: 30em;
+    width: 0em;
     height: 100%;
     position: fixed;
     left: 0%;
     background-color: white;
+        z-index: 102;
 
 }
 
+
+#menu_nav{
+    display: none;
+}
+
+/* Filter */
 #filter{
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-
-    width: 30vw;
+    justify-content:flex-end;
+    
+    width: 30em;
     height: 30vh;
     position:fixed;
     bottom: 0%;
+    transition: 0.2s;
 }
 
 #filter >h1{
-    position: sticky;
+    position: absolute;
     bottom: 0%;
     width: 100%;
     color: black;
     background-color: white;
-    border-radius: 20px;
+    border-radius: 10px;
     text-align: center;
 }
-#filter_content{
-    border-radius:20px;
-    background-color: white;
-    opacity: 0.4;
-    height: 0em;
-    width: 100%;
-    transition: 1s ease-in;
-    backdrop-filter: blur(10px);
+
+#toggle_up,
+#toggle_down{
+    position: absolute;
+    top: 15%;
+    right: 35%;
 }
 
-/* Media Query */
+#toggle_down{
+    display: none;
+}
+
+#filter_content{
+    border-radius:20px;
+    position: absolute;
+    bottom: 70px;
+        background-color: rgba(255, 255, 255,0.5);
+    height: 0em;
+    width: 100%;
+    transition: 0.2s ease-in;
+
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+
+}
 
 
-@media (max-width:300px) {
+                                                  /* Media Query */
+
+
+@media (max-width:800px) {
 
   #Basket_Display,
 #Menu_Display{
-    display: block;
-    width: 100vw;
+    display:none;
+    width: 80vw;
     height: 100vh;
     position: fixed;
        
@@ -191,7 +221,7 @@ a{
 }
 
 #basket_main{
-    width: 30em;
+    width: 0em;
     height: 100%;
     position: inherit;
     right: 0%;
@@ -199,12 +229,22 @@ a{
 }
 
 #menu_main{
-     width: 30em;
+     width: 0em;
     height: 100%;
     position: inherit;
     left: 0%;
     background-color: white;
+    overflow: hidden;
 
 }
+
+
+nav{
+    display: none;
+}
+#menu_nav{
+    display: block;
+}
+
 
 }
