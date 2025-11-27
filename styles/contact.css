@@ -1,0 +1,160 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: #000;
+  color: #fff;
+  font-family: system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Navigation Bar */
+.nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 1.4rem 4vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 20;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(6px);
+}
+
+.logo {
+  height: 100px;
+}
+
+.nav-links {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  gap: 4rem;
+  font-size: 1.15rem;
+}
+
+.nav-links a {
+  text-decoration: none;
+  color: #fff;
+  opacity: 0.9;
+}
+
+.nav-icons span {
+  font-size: 1.8rem;
+  cursor: pointer;
+  margin-left: 1rem;
+}
+
+/* search bar */
+.search-container {
+  position: fixed;
+  top: 90px;
+  right: 40px;
+  width: 340px;
+  display: none;
+  background: #111;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #444;
+  z-index: 50;
+}
+
+.search-bar {
+  width: 100%;
+  padding: 12px 14px;
+  background: #222;
+  border: 1px solid #555;
+  color: white;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.search-close {
+  margin-top: 12px;
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+/* background */
+.page-bg .bg-img {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(10px) brightness(1.4);
+  opacity: 0.35;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Contact Us section */
+.contact-section {
+  padding-top: 12rem;
+  max-width: 700px;
+  margin: auto;
+  text-align: center;
+}
+
+.contact-section h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  font-family: 'Press Start 2P';
+  color: #ffa825;
+}
+
+.contact-desc {
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+  color: #ccc;
+}
+
+/* Contact us form */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.form-group {
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 14px;
+  background: #1a1a1a;
+  color: white;
+  border: 1px solid #444;
+  border-radius: 10px;
+  font-size: 1.05rem;
+}
+
+.submit-btn {
+  padding: 1rem 2.4rem;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #ff00a8, #6c5cff, #2ecbff);
+  border: none;
+  color: white;
+  font-size: 1.15rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
