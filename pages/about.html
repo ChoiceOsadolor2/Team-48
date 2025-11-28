@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veltrix | About Us</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<header class="navbar">
+<div class="logo">
+<img src="logo.png" alt="Veltrix Logo">
+<span>VELTRIX</span>
+</div>
+
+<nav class="nav-links" id="navLinks">
+<a href="#">Contact</a>
+<a href="#">Download</a>
+<a href="#">Store</a>
+<a href="#"><i class="fa fa-shopping-cart"></i></a>
+<a href="#"><i class="fa fa-user"></i></a>
+</nav>
+
+<div class="menu-icon" onclick="toggleMenu()">☰</div>
+</header>
+
+<section class="about-section">
+<div class="about-text">
+<h1>About Us</h1>
+<p>Veltrix is dedicated to delivering reliable, premium gaming accessories that blend durability with modern design.</p>
+<p>Our team focuses on user-focused engineering, quality testing, and continuous innovation to give gamers the tools they truly deserve.</p>
+<p>YOUR GAME, OUR MISSION.</p>
+</div>
+
+<div class="about-image">
+<img src="logo.png" alt="Pixel Sword">
+</div>
+</section>
+
+
+<section class="services-section">
+<h2 class="section-title">Our Services</h2>
+
+<div class="services-container">
+
+<div class="service-box">
+<i class="fa-solid fa-gamepad"></i>
+<h3>Premium Gaming Gear</h3>
+<p>Top-quality keyboards, mice, controllers, and accessories engineered for performance and durability.</p>
+</div>
+
+<div class="service-box">
+<i class="fa-solid fa-screwdriver-wrench"></i>
+<h3>Custom Builds</h3>
+<p>We help gamers create personalized setups tailored to their playstyle and comfort.</p>
+</div>
+
+<div class="service-box">
+<i class="fa-solid fa-headset"></i>
+<h3>24/7 Support</h3>
+<p>Our team is always available to help with upgrades, troubleshooting, and product support.</p>
+</div>
+
+</div>
+</section>
+
+
+<section class="values-section">
+<h2 class="section-title">Our Values</h2>
+
+<div class="values-container">
+
+<div class="value-box">
+<h3>Innovation</h3>
+<p>We push boundaries to bring the latest technology to gamers worldwide.</p>
+</div>
+
+<div class="value-box">
+<h3>Quality</h3>
+<p>Every product goes through strict testing to ensure top-notch performance.</p>
+</div>
+
+<div class="value-box">
+<h3>Community</h3>
+<p>Gamers come first — your feedback and experience shape our future designs.</p>
+</div>
+
+</div>
+</section>
+
+
+<section class="testimonials-section">
+<h2 class="section-title">What Gamers Say</h2>
+
+<div class="testimonials-container">
+
+<div class="testimonial-box">
+<p>"Veltrix accessories feel like a game-changer. The quality is unmatched!"</p>
+<span>- Alex, Pro FPS Player</span>
+</div>
+
+<div class="testimonial-box">
+<p>"The customer support is insane — they helped me build my dream setup."</p>
+<span>- Jordan, Streamer</span>
+</div>
+
+<div class="testimonial-box">
+<p>"Smooth, durable, and stylish. Veltrix never disappoints!"</p>
+<span>- Mia, Competitive Gamer</span>
+</div>
+
+</div>
+</section>
+
+<script src="script.js"></script>
+</body>
+</html>
