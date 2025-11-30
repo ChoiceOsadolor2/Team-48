@@ -4,6 +4,8 @@
     <meta charset="UTF-8" />
     <title>Veltrix - Contact Us</title>
     <link rel="stylesheet" href="../styles/contact.css" />
+    <link rel="stylesheet" href="../styles/style.css">
+
 
     <!-- Pixel Font -->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -19,7 +21,9 @@
 
 <body>
 
-    <!-- Navigation bar -->
+    <header></header>
+
+    <!-- Navigation bar
     <header class="nav">
         <a href="homepage.html">
             <img src="Veltrix.png" class="logo" alt="Veltrix Logo">
@@ -37,8 +41,9 @@
             <span class="search-icon">🔍</span>
             <span class="profile-btn" onclick="window.location.href='profile.html'">👤</span>
         </div>
-    </header>
+    </header> -->
 
+    <main>
     <!-- Search bar (pop up when clicked) -->
     <div class="search-container">
         <input type="text" placeholder="Search..." class="search-bar">
@@ -74,8 +79,11 @@
         <p id="statusMsg"></p>
 
     </section>
+</main>
+<script src="../scripts/header.js"></script>
+<script src="../scripts/animations.js"></script>
 
-    <!-- Search bar open/close (same as homepage) -->
+    <!-- Search bar open/close (same as homepage)
     <script>
         /* Search bar open and close function */
         const searchIcon = document.querySelector(".search-icon");
@@ -89,7 +97,7 @@
         searchClose.addEventListener("click", () => {
         searchContainer.style.display = "none";
         });
-    </script>
+    </script> -->
 
     <!-- EMAILJS email send script -->
     <script>
@@ -97,7 +105,7 @@
             document.getElementById("contactForm").addEventListener("submit", function(event) {
                 event.preventDefault();
 
-                emailjs.sendForm("service_jfwhv19", "template_hdk8g2g", this)
+                emailjs.sendForm("service_k4c7ayn", "template_hdk8g2g", this)
                 .then(() => {
                     document.getElementById("statusMsg").innerHTML =
                         "✅ Your message has been sent!";
