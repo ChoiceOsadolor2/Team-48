@@ -27,7 +27,7 @@ header{
 
 }
 
-main{
+main, #products_container{
     display: flex;
     flex-direction: row;
     justify-content: space-evenly;
@@ -38,8 +38,12 @@ main{
     min-height: 100vh;
 
     position: absolute;
-    top: 50%;
+    top: 30%;
 
+}
+
+#title{
+height: 20%;
 }
 
 /* top wrapper */
@@ -212,6 +216,25 @@ nav>a{
     backdrop-filter: blur(10px);
     overflow: hidden;
 
+}
+
+.add_to_basket{
+    height: auto;
+    width: 100%;
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #FFA500;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add_to_basket:hover{
+    background-color: #FF8C00;
 }
 
 

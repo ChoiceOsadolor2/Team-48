@@ -11,22 +11,24 @@ const category = parameters.get('category');
 const ProductCard_template=document.querySelector('template');
 const container=document.getElementById('products_container');
 
-if(category){
-document.getElementById('title').textContent=category;
-}else{ document.getElementById('title').textContent='Shop All'}
+let count =0;//ammount of products in the basket
+
+
 
 fetch('products.json')
 .then(res => res.json()).then(products =>{
-
   let currentCategory;
 
   if(category){
 currentCategory = products.filter(product=>product.category ==category);
 document.getElementById('title').textContent=category;
+
   }else{
   currentCategory=products;
  document.getElementById('title').textContent='Shop All';
-  }
+  }//Open depending on the category in the url, products and title are dependant on catgegory, else do all.
+
+      container.innerHTML = ' ';
 
 currentCategory.forEach(product => {
 /** @type {DocumentFragment} */
@@ -37,10 +39,39 @@ clone.querySelector('.product_description').textContent=product.description;
 clone.querySelector('.product_name').textContent=product.name;
 clone.querySelector('.product_image').src=product.thumbnail;
 clone.querySelector('.product_card').id=product.id;
+
+const button=clone.querySelector('.add_to_basket');
+button.addEventListener('click',()=> AddToBasket(product.id));
+
 clone.querySelector('a').href = `ProductPage.html?id=${product.id}`;
 
 
     container.appendChild(clone);
 });
 
-})
+window.AddToBasket =function(id){
+      count ++;
+    document.getElementById('basket_count').textContent = `(${count})`;
+
+const BasketContainer = document.querySelector('#basket_display');
+const basket_product_template = document.querySelector('.basket_template');
+const clone=basket_product_template.content.cloneNode(true);
+
+let chosenProduct=products.find(product=>product.id==id);
+
+clone.querySelector('img').src=chosenProduct.thumbnail;
+clone.querySelector('p').textContent=chosenProduct.name;
+clone.querySelector('sub').textContent=chosenProduct.price;
+
+BasketContainer.append(clone);
+
+}
+
+function RemoveFromBasket(product_id){
+  clone=null;
+    count--;
+    document.getElementById('basket_count').textContent = `(${count})`;
+}
+
+});
+
