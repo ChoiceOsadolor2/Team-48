@@ -4,6 +4,15 @@
     box-sizing: border-box;
 }
 
+main{
+    background-image: url(../assets/Veltrix-homepage-background.png);
+    background-repeat: repeat-y;
+    background-size:cover;
+    width: 100vw;
+
+}
+
+
 body {
     background: #000;
     color: #fff;

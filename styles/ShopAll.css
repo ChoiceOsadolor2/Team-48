@@ -38,7 +38,7 @@ main{
     min-height: 100vh;
 
     position: absolute;
-    top: 40%;
+    top: 50%;
 
 }
 
@@ -55,7 +55,7 @@ main{
 } */
 
 #wrapper_overlay{
-    background-image: url(../assets/image.png);
+    background-image: url(../assets/ShopAll_BG.png);
     background-size: contain;
     background-repeat: repeat;
 
@@ -78,7 +78,15 @@ nav,
 display: flex;
 flex-direction: row;
 justify-content: space-evenly;
-width: 30%;
+width: 40%;
+}
+
+#icons{
+    width: 25%;
+    
+}
+#header_logo{
+    width: 30%;
 }
 
 svg:hover{
@@ -87,6 +95,10 @@ svg:hover{
 
 a{
     color: white;
+}
+
+nav>a{
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
 }
 
 
@@ -115,7 +127,7 @@ a{
 /* Basket */
 
 
-#basket,
+/* #basket,
 #menu{
   backdrop-filter: blur(3px);
   cursor: pointer;
@@ -152,7 +164,7 @@ a{
 
 #menu_nav{
     display: none;
-}
+} */
 
 /* Filter */
 #filter{
@@ -203,7 +215,7 @@ a{
 }
 
 
-                                                  /* Media Query */
+                                                  /* Media Query
 
 
 @media (max-width:800px) {
@@ -247,4 +259,4 @@ nav{
 }
 
 
-}
+} */

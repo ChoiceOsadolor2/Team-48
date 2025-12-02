@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\UserController;
@@ -16,13 +17,23 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-
 Route::middleware('auth')->group(function () {
 
     // Profile Routes
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // ---------------------------
+    // Product Catalogue Routes
+    // ---------------------------
+    Route::get('/products', [ProductController::class, 'index'])->name('products.index');
+    Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+    Route::get('/search', [ProductController::class, 'search'])->name('products.search');
+
+    Route::get('/product', function () {
+        return redirect('/products');
+    });
 
     // ---------------------------
     // Cart Routes (MVP)
@@ -46,15 +57,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
 
     // ---------------------------
-    // TEMPORARY DEV ROUTE
-    // Add a product to the cart for testing
+    // TEMPORARY DEV ROUTE (Testing convenience)
     // ---------------------------
     Route::get('/test-add/{id}', function ($id) {
         \Illuminate\Support\Facades\Session::put('cart', [$id => 1]);
         return redirect('/cart')->with('status', 'Test product added!');
     });
 });
-
 
 // ---------------------------
 // Admin Routes
