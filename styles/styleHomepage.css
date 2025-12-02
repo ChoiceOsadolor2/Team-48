@@ -11,6 +11,15 @@ body {
   overflow-x: hidden;
 }
 
+main{
+    background-image: url(../assets/Veltrix-homepage-background.png);
+    background-repeat: repeat-y;
+    background-size:contain;
+    width: 100vw;
+    height: auto;
+
+}
+
 /* Navigation Bar */
 .nav {
   position: fixed;
@@ -87,13 +96,14 @@ body {
 
 /* Main */
 .main {
-  position: relative;
-  padding: 12rem 4vw 8rem;
   text-align: center;
-  overflow: hidden;
+  width: 100vw;
+  height: 100%;
+    backdrop-filter: blur(10px);
+
 }
 
-.main-bg {
+/* .main-bg {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -103,18 +113,17 @@ body {
   opacity: 0.85;
   z-index: 0;
   pointer-events: none;
-}
+} */
 
 .main-center {
   position: relative;
   z-index: 2;
-  max-width: 850px;
   margin: 0 auto;
 }
 
 .main-logo {
-  width: 450px;
-  max-width: 95%;
+  width: 40%;
+  min-width: 15em;
   image-rendering: pixelated;
 }
 

@@ -1,26 +1,10 @@
-// moving background animation --> backgrund is of a section to to repeat, this section x position is dcremented by 1 each time. 
-// Moving background
-let x= 0;
-const section=document.getElementById('wrapper_overlay');
 
-function moveX(){
-x--
-wrapper_overlay.style.backgroundPosition= `${x}px`;
 
-}
+const headerFile='../pages/header.html';
 
-let y=0;
-const section2=document.querySelector('main');
-
-function moveY(){
-y++
-section2.style.backgroundPosition= `0 ${y}px`;
-
-}
-setInterval(moveY,20)
-
-setInterval(moveX,30)
-
+fetch (headerFile)
+.then(Response => Response.text())
+.then(y => document.querySelector('header').innerHTML = y);
 
 
 
@@ -45,6 +29,10 @@ if(filter){
 
     filter_options.style.height='70%';
 }
+// if(search){
+//       section.style.display = "flex";
+
+// }
 }
 
 function closeSection(id){
@@ -61,20 +49,12 @@ if(filter_options){
 
     filter_options.style.height='0%';
     section.style.display='flex'
-}}
+}
+
+// if(search){
+//       section.style.display = "none";
+// }
+
+}
 
 
-// Show filter, Hide Filter on scroll
-
-const filter = document.getElementById("filter");
-let lastScrollY = window.scrollY;
-
-window.addEventListener("scroll", () => {
-    if (window.scrollY > lastScrollY) {
-        filter.style.opacity = "0";
-    } else {
-        filter.style.opacity = "1";
-    }
-
-    lastScrollY = window.scrollY;
-});
