@@ -19,9 +19,12 @@ body {
     
 }
 
+
 /*Login Box at the center */
 .login-box {
     width: 450px;
+    height: 80%;
+    margin-top: 8%;
     background: transparent;
     border: 2px solid rgba(154, 154, 154, 0.1);
     backdrop-filter: blur(15px);

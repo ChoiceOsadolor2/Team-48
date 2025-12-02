@@ -1,0 +1,231 @@
+#product_display{
+    gap: 0em;
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+
+/* Section 1 */
+
+#product_display .scrollable_container img{
+    height: auto;
+    width:100%;
+    min-height: 400px;
+
+}
+
+#product_display .scrollable_container {
+      height: fit-content;
+
+    display: block;
+    margin-top: 5%;
+    margin-bottom: 5%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    white-space: nowrap; /* Ensures children stay on one line */
+    scroll-behavior: smooth; /* Optional: smooth scrolling */
+}
+
+#side_images > a {
+    display: block;
+    width: 80px; /* fixed or responsive */
+    height: 80px;
+}
+
+#side_images > a > img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+#side_images {
+    display: flex;
+    flex-direction: row; /* or row depending on layout */
+    gap: 10px;
+    max-height: 500px; /* optional but helps size things */
+}
+
+.main_product_image{
+    width: 100%;
+    height: fit-content;
+
+    margin-bottom: 5%;
+}
+
+
+/* Section 2, Product info */
+
+.Rating{
+width: 60%;
+margin-left: 40%;
+flex-direction: row;
+display: flex;
+opacity: 0.5;
+
+}
+.Rating:hover{
+  opacity:1;
+}
+
+.product_name{
+  font-size: 20px;
+  text-wrap: nowrap;
+}
+
+li{
+  list-style-type:none;
+  height: 3em;
+}
+
+h2{
+    width: 100%;
+    text-align: center;
+}
+
+p{
+    width: 100%;
+
+}
+
+.product_info  .price{
+  border-bottom: 1px black solid;
+}
+
+/* details */
+
+details{
+    border-bottom: grey solid;
+    width: 100%;
+    text-wrap: wrap;
+    marker-end: none;
+    padding: 0%;
+
+}
+
+details:hover{
+    border-bottom: black  solid;
+
+}
+summary {
+  list-style: none;
+  cursor: pointer;
+  position: relative;
+  text-align: start;
+  margin: 0%;
+  color: grey;
+  padding-bottom: 3%;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+}
+
+summary:hover{
+  opacity: 1;
+  color: black;
+  cursor:pointer;
+}
+
+summary::-webkit-details-marker {
+  display: none; /* Chrome/Safari */
+}
+
+.product_info{
+    display: FLEX;
+    flex-direction: column;
+    height: inherit;
+    margin: 3%;
+    justify-content: space-between;
+    gap: 0.5em;
+
+    width:60%;
+    margin-top: 50px;
+    text-transform: uppercase;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    scroll-behavior: smooth; /* Optional: smooth scrolling */
+    scrollbar-width:thin;
+}
+
+summary>svg{
+  margin: 0%;
+  align-self: flex-end;
+}
+
+/* interactions */
+
+.interactions{
+    width: 100%;
+    margin-bottom: 5%;
+}
+
+.interactions button{
+    width: 100%;
+
+    font-family:"Playfair display";
+    background-color: white;
+
+     padding: 5%;
+     border:1px black solid;
+
+}
+
+.interactions button:hover{
+  background-color:lightgray;
+  transition: 0.5s;
+}
+
+.minus_button,.add_button{
+  width:30%;
+  height: inherit;
+
+  margin: 0%;
+}
+
+.product_qty{
+  height: 100%;
+  width: 40%;
+  padding: 10%;
+  text-align: center;
+  margin: 0px;
+  box-sizing: border-box;
+}
+
+.product_quantity_button{
+width: 50%;
+height: 50px;
+display: flex;
+flex-direction: row;
+flex-wrap: nowrap;
+
+padding: 0%;
+margin: 5%;
+}
+
+
+
+/* products */
+.scroll {
+    height: 5em;
+
+    margin-top: 5%;
+    margin-bottom: 5%;
+
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    white-space: nowrap; /* Ensures children stay on one line */
+    scroll-behavior: smooth; 
+    scrollbar-width:thin;
+}
+
+.scroll .product_card{
+  margin-left: 2em;
+}

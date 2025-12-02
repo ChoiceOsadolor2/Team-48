@@ -15,70 +15,31 @@
 <div id="wrapper_background"></div>
 </section>
 
-<main>
-    <h1 style=" width: 100%; text-align: center; font-size: 5em;">Shop All</h1>
+<main id="products_container">
+    <h1 style=" width: 100%; text-align: center; font-size: 5em;" id="title">Shop All</h1>
 
     <template>
-        <div class="product_card">
+        <div class="product_card" id="">
             <img class="product_image" src="Assets/gameHeadset.png" >
             <h3 class="product_name"></h3>
             <sub class="product_description"></sub>
-            <button>view</button>
+            <span class="product_price"></span>
+            <a href="../pages/ProductPage.html?id"><button>view</button></a>
         </div>  
 
     </template>
-
-        <a href="ProductPage.html" class="product_card">
-            <img class="product_image" src="../assets/gameHeadset.png" >
-            <h3 class="product_name">The outstanding Object</h3>
-            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
-            <button>view</button>
-        </a>  
-
-        <a href="ProductPage.html" class="product_card">
-            <img class="product_image" src="../assets/gameHeadset.png" >
-            <h3 class="product_name">The outstanding Object</h3>
-            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
-            <button>view</button>
-        </a>  
-           
-         <a href="ProductPage.html" class="product_card">
-            <img class="product_image" src="../assets/gameHeadset.png" >
-            <h3 class="product_name">The outstanding Object</h3>
-            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
-            <button>view</button>
-        </a>  
-
-        <a href="ProductPage.html" class="product_card">
-            <img class="product_image" src="../assets/gameHeadset.png" >
-            <h3 class="product_name">The outstanding Object</h3>
-            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
-            <button>view</button>
-        </a>  
-
-         <a href="ProductPage.html" class="product_card">
-            <img class="product_image" src="../assets/gameHeadset.png" >
-            <h3 class="product_name">The outstanding Object</h3>
-            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
-            <button>view</button>
-        </a>  
-        
-        <a href="ProductPage.html" class="product_card">
-            <img class="product_image" src="../assets/gameHeadset.png" >
-            <h3 class="product_name">The outstanding Object</h3>
-            <sub class="product_description">Call out a feature, benefit, or value of your site or product that can stand on its own.</sub>
-            <button>view</button>
-        </a>  
         
 </main>
 
 <section id="filter">
      <div id="filter_content">
-        <button>All</button>
-        <button>CATEGORY</button>
-        <button>All</button>
-        <button>PRICE ASCENDING</button>
-        <button>PRICE DESCENDING</button>
+            <a href='../pages/ShopAll.html'> <button>All</button></a>
+    <a href='../pages/ShopAll.html?category=Video+Games'> <button>Video Games</button></a>
+    <a href="../pages/ShopAll.html?category=Consoles and PCs"><button>Consoles and PCs</button></a>
+    <a href='../pages/ShopAll.html?category=Accesories'><button>Accesories</button></a>
+    <a href='../pages/ShopAll.html?category=Monitors+and+Displays'><button>Monitors and Displays</button></a>
+    <a href='../pages/ShopAll.html?category=Gaming+Chairs+And+Desks'><button>Gaming Chairs and Desks</button></a>
+
         
      </div>
     <h1 >Filter <svg onclick="show('filter')" id="toggle_up" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="#000000" d="m2 5l2-2l2 2l1-1l-3-3l-3 3"/></svg>
@@ -88,5 +49,6 @@
 
 <script src="../scripts/header.js"></script>
 <script src="../scripts/animations.js"></script>
+<script src="../scripts/products.js"></script>
 </body>
 </html>

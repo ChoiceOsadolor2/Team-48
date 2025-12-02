@@ -26,42 +26,42 @@ setInterval(moveX,30)
 
 // Open Hidden :Basket, Menu, Search
 
-function show(id){
-const section =document.getElementById(id);
-const section_main = document.getElementById(`${id}_main`);
-const filter_options= document.getElementById(`${id}_content`);
+// function show(id){
+// const section =document.getElementById(id);
+// const section_main = document.getElementById(`${id}_main`);
+// const filter_options= document.getElementById(`${id}_content`);
 
 
-if(section){
-    section.style.display='block';
-}
-if(section_main){
-    section_main.style.width='30em';
-}
+// if(section){
+//     section.style.display='block';
+// }
+// if(section_main){
+//     section_main.style.width='30em';
+// }
 
-if(filter){
-    document.getElementById('toggle_down').style.display='flex';
-        document.getElementById('toggle_up').style.display='none';
+// if(filter){
+//     document.getElementById('toggle_down').style.display='flex';
+//         document.getElementById('toggle_up').style.display='none';
 
-    filter_options.style.height='70%';
-}
-}
+//     filter_options.style.height='70%';
+// }
+// }
 
-function closeSection(id){
-    const section = document.getElementById(id);
-    const section_main = document.getElementById(`${id}_main`);
-    const filter_options= document.getElementById(`${id}_content`);
+// function closeSection(id){
+//     const section = document.getElementById(id);
+//     const section_main = document.getElementById(`${id}_main`);
+//     const filter_options= document.getElementById(`${id}_content`);
 
-    if(section_main) section_main.style.width='0';
-    if(section) section.style.display='none';
+//     if(section_main) section_main.style.width='0';
+//     if(section) section.style.display='none';
 
-if(filter_options){
-    document.getElementById('toggle_down').style.display='none';
-        document.getElementById('toggle_up').style.display='flex';
+// if(filter_options){
+//     document.getElementById('toggle_down').style.display='none';
+//         document.getElementById('toggle_up').style.display='flex';
 
-    filter_options.style.height='0%';
-    section.style.display='flex'
-}}
+//     filter_options.style.height='0%';
+//     section.style.display='flex'
+// }}
 
 
 // Show filter, Hide Filter on scroll

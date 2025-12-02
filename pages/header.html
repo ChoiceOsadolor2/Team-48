@@ -28,10 +28,58 @@
 
     <!-- Hidden Properties: Basket, Search, menu-->
 <section id="basket" onclick="closeSection('basket')">
-    <div ></div>
     <div id="basket_main" onclick="event.stopPropagation()">
-        <button onclick="closeSection('basket')">   <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 304 384"><path fill="#000000" d="M299 73L179 192l120 119l-30 30l-120-119L30 341L0 311l119-119L0 73l30-30l119 119L269 43z"/></svg></button>
+
+    <div id="basket_header">
+        <svg  onclick="closeSection('basket')"  xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 304 384"><path fill="#000000" d="M299 73L179 192l120 119l-30 30l-120-119L30 341L0 311l119-119L0 73l30-30l119 119L269 43z"/></svg>
+        <h1>CART</h1>
+        <span id="basket_count">(0)</span>
     </div>
+
+   <div id="basket_display">
+
+    <span class="basket_product">
+        <img src="../assets/gameHeadset.png" alt="">
+        <div class="basket_product_info">
+        <p>Phone,Black,12+256GB</p>
+        <sub>£619</sub>
+        <input type="number" max="5" min="0" style="width: 100%; height: 30%;">
+        </div>
+    </span>
+
+    <span class="basket_product">
+        <img src="../assets/gameHeadset.png" alt="">
+        <div class="basket_product_info">
+        <p>Phone,Black,12+256GB</p>
+        <sub>£619</sub>
+        <input type="number" max="5" min="0" style="width: 100%; height: 30%;">
+        </div>
+    </span>
+
+    <span class="basket_product">
+        <img src="../assets/gameHeadset.png" alt="">
+        <div class="basket_product_info">
+        <p>Phone,Black,12+256GB</p>
+        <sub>£619</sub>
+        <input type="number" max="5" min="0" style="width: 100%; height: 30%;">
+        </div>
+    </span>
+
+    <span class="basket_product">
+        <img src="../assets/gameHeadset.png" alt="">
+        <div class="basket_product_info">
+        <p>Phone,Black,12+256GB</p>
+        <sub>£619</sub>
+        <input type="number" max="5" min="0" style="width: 100%; height: 30%;">
+        </div>
+    </span>
+</div>
+<h1>Total:                              £528</h1>
+<p style="color: black;">Est Delivery Date:For Express delivery: 03 December 2025 to 05 December 2025.For Standard delivery: 04 December 2025 to 08 December 2025. <br>Tax included. Shipping calculated at checkout.
+ </p>
+
+<button>CHECKOUT</button>
+</div>
 </section>
 
 <section id="Search_Results"></section>
