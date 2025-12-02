@@ -1,3 +1,9 @@
+body{
+    background-color: #050036;
+    color: white;
+
+}
+
 #product_display{
     gap: 0em;
     display: flex;
@@ -152,6 +158,8 @@ summary::-webkit-details-marker {
 
     scroll-behavior: smooth; /* Optional: smooth scrolling */
     scrollbar-width:thin;
+
+    backdrop-filter: blur(10px);
 }
 
 summary>svg{

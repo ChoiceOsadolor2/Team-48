@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=], initial-scale=1.0">
-    <link rel="stylesheet" href="ProductPage.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../styles/ProductPage.css">
+    <link rel="stylesheet" href="../styles/style.css">
     <title>Document</title>
 </head>
 <body>
+
+<header></header>
 
     <main id="product_display">
     <!-- the main will be the main imaes for the product sizing descriptions and name, and prcies -->
@@ -15,11 +17,22 @@
 <section class="main_product_image">  
 
      <div class="scrollable_container">
-        <img src="Assets/gameHeadset.png" id="image1">
+        <img src="../assets/gameHeadset.png" id="image1">
         <img src="" alt="" id="image2">
         <img src="" alt="" id="image3">
         <img src="" alt="" id="image4">
     </div>
+
+    <div>
+       <h1 class="product_name">PRODUCT NAME</h1>
+
+        <p class="price">£00.00</p>
+        <p> Width: 45 inches</p>
+        <p>height: 6 yards/5.46 metres</p>
+        <p> weight: 1kg</p>
+    </div>
+    
+</section>
 
     <div id="side_images">
         <a href="#image1"></a>
@@ -27,8 +40,7 @@
         <a href="#image3"></a>
         <a href="#image4"></a>
     </div>
-</section>
-
+    
 <section class="product_info">
 
     <div class="Rating">
@@ -40,14 +52,7 @@
 
        <small>255 Reviews</small>
    </div>
-   
-    <h1 class="product_name">PRODUCT NAME</h1>
-
-        <p class="price">£00.00</p>
-        <p> Width: 45 inches</p>
-        <p>height: 6 yards/5.46 metres</p>
-        <p> weight: 1kg</p>
-    </ul>
+  
 
     <div class="interactions"> 
       <div class="product_quantity_button">
@@ -92,7 +97,7 @@
   <div class="side right">
     <div>150</div>
   </div>
-  <div class="side">
+  <div class="side"> 
     <div>4 star</div>
   </div>
   <div class="middle">
@@ -145,6 +150,7 @@
 
 </main>
 
+<script src="../scripts/header.js"></script>
     
 </body>
 </html>
