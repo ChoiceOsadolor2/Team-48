@@ -23,6 +23,11 @@ body{
     font-family: pixelify sans;
 }
 
+.light-mode {
+    background-color: #FAF0F0;
+    color: #111;
+}
+
 main{
     position: absolute;
     top: 15%;
@@ -171,7 +176,7 @@ margin-top: 5%;
     flex-direction: column;
 }
 
-#basket_count{
+.basket_count{
     color: black;
     font-size: 3vw;
 }
@@ -198,7 +203,16 @@ margin-top: 5%;
     display: none;
 }
 
-                                                  /* Media Query */
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}                                         /* Media Query */
 
 
 @media (max-width:800px) {

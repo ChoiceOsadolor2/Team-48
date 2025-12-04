@@ -8,11 +8,12 @@
     <title>Document</title>
 </head>
 <body>
+  <video autoplay loop muted src="/assets/20251204-1029-39.3001076.mp4"></video>
 
 <header></header>
 
-    <main id="product_display">
-    <!-- the main will be the main imaes for the product sizing descriptions and name, and prcies -->
+    <main>
+    <!-- the main will be the main imaes for the product sizing descriptions and name, and prcies
 
 <section class="main_product_image">  
 
@@ -145,12 +146,36 @@
 
     </details>
 
+</section> -->
+<svg style="position: absolute; top:0%; left:5%" id="previous_page"  onclick="history.back()"  xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 1024 1024"><path fill="#ffffff" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="#ffffff" d="m237.248 512l265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/></svg>
+
+<section id="product_display">
+  <div id="product_carousal">
+    <img class="product_image" id="main_image" src="" alt="Main Product Image">
+    
+  </div>
+
+  <div id="product_info">
+    <h1 class="product_name"></h1>
+    <sub id="product_brand"></sub>
+    <p class="product_description"> </p>
+    <span class="product_price"></span>
+    <button class="add_to_basket" value="Add to Basket"></button>
+  </div>
+
+  <div id="side_images">
+    <img src="/assets/gameHeadset.png" alt="">
+    <img src="/assets/gameHeadset.png" alt="">
+    <img src="/assets/gameHeadset.png" alt="">
+    <img src="/assets/gameHeadset.png" alt="">
+  </div>
 </section>
 
+<section id="reviews"></section>
 
 </main>
 
 <script src="../scripts/header.js"></script>
-    
+<script src="../scripts/products.js"></script>
 </body>
 </html>

@@ -78,3 +78,18 @@ window.addEventListener("scroll", () => {
 
     lastScrollY = window.scrollY;
 });
+
+
+
+// Dark Mode Toggle 
+function myFunction() {
+   var element = document.body;
+   const wrapper_overlay = document.getElementById("wrapper_overlay");
+   const header = document.querySelector("header");
+
+
+   element.classList.toggle("light-mode");
+   wrapper_overlay.style.backgroundImage = element.classList.contains("light-mode") ? "url('../assets/image.png')" : "url('../assets/ShopAll_BG.png')";
+   header.style.backgroundColor = element.classList.contains("light-mode") ? "orange" : '#333';
+   header.style.color = element.classList.contains("light-mode") ? "black" : 'white';
+}
