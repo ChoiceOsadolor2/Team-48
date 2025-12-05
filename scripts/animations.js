@@ -85,11 +85,13 @@ window.addEventListener("scroll", () => {
 function myFunction() {
    var element = document.body;
    const wrapper_overlay = document.getElementById("wrapper_overlay");
-   const header = document.querySelector("header");
+   const header = document.querySelectorAll("header");
 
 
    element.classList.toggle("light-mode");
    wrapper_overlay.style.backgroundImage = element.classList.contains("light-mode") ? "url('../assets/image.png')" : "url('../assets/ShopAll_BG.png')";
-   header.style.backgroundColor = element.classList.contains("light-mode") ? "orange" : '#333';
-   header.style.color = element.classList.contains("light-mode") ? "black" : 'white';
+   header.style.color='black';
+    header.style.backgroundColor = element.classList.contains("light-mode") ? 'rgba(5,0,54, 0.4)' : 'rgba(5, 0, 54, 0.4)';
+    header.style.backdropFilter = element.classList.contains("light-mode") ? 'blur(20px)' : 'none'; 
+    header.style.backgroundColor='rbga(5, 0, 54, 0.4)';
 }

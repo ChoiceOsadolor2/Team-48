@@ -42,7 +42,8 @@
       "store_link": "https://deadbydaylight.com/",
       "thumbnail": "https://image.api.playstation.com/vulcan/ap/rnd/202203/1520/peZ5EkC9MxG97T8NF1HQDA9U.jpg",
       "video": "",
-      "category":"Video Games"
+      "category":"Video Games",
+      "stock": 1
     } ,   {
       "id": 103,
       "name": "Alienware 34 Gaming Monitor",

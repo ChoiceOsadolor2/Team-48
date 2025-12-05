@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VeltrixHeader</title>
-    
     <link rel="stylesheet" href="../styles/style.css">
 </head>
 <body>
@@ -46,14 +45,17 @@
         <div class="basket_product_info">
         <p>Phone,Black,12+256GB</p>
         <sub>£619</sub>
-        <input type="number" max="5" min="0" style="width: 100%; height: 30%;">
-        </div>
+    <div class="qty-input">
+	<button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
+	<input  class="quantity" class="product-qty" type="number" name="product-qty" min="0" max="10" value="1">
+	<button class="qty-count qty-count--add" data-action="add" type="button">+</button>
+</div>        </div>
     </span>
     </template>
 
 
 </div>
-<h1>Total:                              £528</h1>
+<h1>Total:                           <p id="total"></p> </h1>
 <p style="color: black;">Est Delivery Date:For Express delivery: 03 December 2025 to 05 December 2025.For Standard delivery: 04 December 2025 to 08 December 2025. <br>Tax included. Shipping calculated at checkout.
  </p>
 
@@ -80,5 +82,63 @@
 
 
   <script src="../scripts/animations.js"></script>
+  <script>
+    (function () {
+	const qtyInputs = document.querySelectorAll(".qty-input");
+
+	if (!qtyInputs.length) {
+		return;
+	}
+
+	qtyInputs.forEach(function(qtyContainer) {
+		const input = qtyContainer.querySelector(".product-qty");
+		const minusBtn = qtyContainer.querySelector(".qty-count--minus");
+		const addBtn = qtyContainer.querySelector(".qty-count--add");
+		
+		const qtyMin = parseInt(input.getAttribute("min")) || 0;
+		const qtyMax = parseInt(input.getAttribute("max")) || 10;
+
+		// Update button states based on current value
+		function updateButtons() {
+			const qty = parseInt(input.value);
+
+			if (qty <= qtyMin) {
+				minusBtn.setAttribute("disabled", "true");
+			} else {
+				minusBtn.removeAttribute("disabled");
+			}
+
+			if (qty >= qtyMax) {
+				addBtn.setAttribute("disabled", "true");
+			} else {
+				addBtn.removeAttribute("disabled");
+			}
+		}
+
+		// Handle input change
+		input.addEventListener("change", updateButtons);
+		input.addEventListener("input", updateButtons);
+
+		// Handle button clicks
+		minusBtn.addEventListener("click", function() {
+			let qty = parseInt(input.value);
+			qty = qty > qtyMin ? qty - 1 : qtyMin;
+			input.value = qty;
+			updateButtons();
+		});
+
+		addBtn.addEventListener("click", function() {
+			let qty = parseInt(input.value);
+			qty = qty < qtyMax ? qty + 1 : qtyMax;
+			input.value = qty;
+			updateButtons();
+		});
+
+		// Initialize button states
+		updateButtons();
+	});
+})();
+
+  </script>
 </body>
 </html>
