@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Veltrix - Contact Us</title>
+    <link rel="stylesheet" href="contact.css" />
+
+    <!-- Pixel Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+    <!-- EmailJS-->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+    <script>
+        (function() {
+            emailjs.init("ryKETD7KSFRJ_tZWy");
+        })();
+    </script>
+</head>
+
+<body>
+
+    <!-- Navigation bar -->
+    <header class="nav">
+        <a href="homepage.html">
+            <img src="Veltrix.png" class="logo" alt="Veltrix Logo">
+        </a>
+
+        <nav class="nav-links">
+            <a href="contact.html">Contact Us</a>
+            <a href="link1.html">Link1</a>
+            <a href="link2.html">Link2</a>
+            <a href="link3.html">Link3</a>
+        </nav>
+
+        <div class="nav-icons">
+            <span class="cart-btn" onclick="window.location.href='cart.html'">🛒</span>
+            <span class="search-icon">🔍</span>
+            <span class="profile-btn" onclick="window.location.href='profile.html'">👤</span>
+        </div>
+    </header>
+
+    <!-- Search bar (pop up when clicked) -->
+    <div class="search-container">
+        <input type="text" placeholder="Search..." class="search-bar">
+        <button class="search-close">✖</button>
+    </div>
+
+    <img src="Veltrix-homepage-background.png" class="contact-bg" alt="background">
+
+    <!-- contact us form -->
+    <section class="contact-container">
+
+        <h1>Contact Us</h1>
+        <p>If you have any questions, feel free to reach out using the form below.</p>
+
+        <form id="contactForm">
+
+            <label>Name</label>
+            <input type="text" name="user_name" required>
+
+            <label>Email</label>
+            <input type="email" name="user_email" required>
+
+            <label>Query Title</label>
+            <input type="text" name="query_title" required>
+
+            <label>Your Message</label>
+            <textarea name="message" rows="5" required></textarea>
+
+            <button type="submit" class="submit-btn">Submit</button>
+
+        </form>
+
+        <p id="statusMsg"></p>
+
+    </section>
+
+    <!-- Search bar open/close (same as homepage) -->
+    <script>
+        /* Search bar open and close function */
+        const searchIcon = document.querySelector(".search-icon");
+        const searchContainer = document.querySelector(".search-container");
+        const searchClose = document.querySelector(".search-close");
+
+        searchIcon.addEventListener("click", () => {
+        searchContainer.style.display = "block";
+        });
+
+        searchClose.addEventListener("click", () => {
+        searchContainer.style.display = "none";
+        });
+    </script>
+
+    <!-- EMAILJS email send script -->
+    <script>
+        window.onload = function() {
+            document.getElementById("contactForm").addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                emailjs.sendForm("service_jfwhv19", "template_hdk8g2g", this)
+                .then(() => {
+                    document.getElementById("statusMsg").innerHTML =
+                        "✅ Your message has been sent!";
+                }, (error) => {
+                    document.getElementById("statusMsg").innerHTML =
+                        "❌ Failed to send message. Check console.";
+                    console.log("FAILED...", error);
+                });
+            });
+        };
+    </script>
+
+</body>
+</html>
