@@ -4,58 +4,89 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+
     <link rel="stylesheet" href="../styles/Login,SIgn-up.css">
     <link rel="stylesheet" href="../styles/style.css">
 
-    <!--Google font link, havent used yet-->
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!--Boxicon link import:-->
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> 
 </head>
+
 <body>
 
-        <a style="position: fixed; top: 0%; left: 0%;" href="index.html"><img id="header_logo" src="../assets/logo.png" alt="VeltrixLogo"></a>
+<header></header>
 
+<div class="login-box">
+    <form id="form">
+        <h1>Register</h1>
 
-    <div class="login-box">
-        <form id="form" action="/">
-            <h1>Register</h1>
+        <div class="input-box">
+            <input type="text" id="email" placeholder="Email" required>
+            <i class='bx bx-envelope'></i>
+        </div>
+        
+        <div class="input-box">
+            <input type="text" id="username" placeholder="Username" required>
+            <i class='bx bxs-user'></i>
+        </div>
 
-            <div class="input-box">
-                <input type="text" id="email" placeholder="Email" required>
-                <i class='bx bx-envelope'></i> <!--Boxicon email icon-->
-            </div>
-            
-            <div class="input-box">
-                <input type="text" id="username" placeholder="Username" required>
-                <i class='bx bxs-user'></i> <!--Boxicon user icon-->
-            </div>
+        <div class="input-box">
+            <input type="password" id="password" placeholder="Password" required>
+            <i class='bx bxs-lock-alt'></i>
+        </div>
 
-            <div class="input-box">
-                <input type="password" id="password" placeholder="Password" required>
-                 <i class='bx bxs-lock-alt'></i> <!--Boxicon lock icon-->
-            </div>
+        <div class="input-box">
+            <input type="password" id="password2" placeholder="Retype Password" required>
+            <i class='bx bxs-lock-alt'></i>
+        </div>
 
-            <div class="input-box">
-                <input type="password" id="password2" placeholder="Retype Password" required>
-                 <i class='bx bxs-lock-alt'></i> <!--Boxicon lock icon-->
-            </div>
+        <div class="remember-forgot">
+            <label>
+                <input type="checkbox"> Remember me
+            </label>
+        </div>
 
-            <div class="remember-forgot">
-                <label ><input type ="checkbox"> Remember me
-                </label>
-                
-            </div>
+        <button type="submit" class="login-button">Create an account</button>
 
-             <button type="submit" class="login-button">Create an account</button>
+        <div class="register-link">
+            <p>Already have an account? <a href="login.html">Login</a></p>
+        </div>
+    </form>
+</div>
 
-             <div class="register-link">
-                <p>Already have an account? <a href="login.html">Login</a></p>
+<script src="../scripts/header.js"></script>
 
-             </div>
-             
-        </form>
-    </div>
+<script>
+// REGISTER FUNCTION
+document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const email = document.getElementById("email").value.trim();
+    const username = document.getElementById("username").value.trim();
+    const password = document.getElementById("password").value.trim();
+    const password2 = document.getElementById("password2").value.trim();
+
+    if (password !== password2) {
+        alert("Passwords do not match!");
+        return;
+    }
+
+    // Save user in localStorage
+    const user = {
+        email: email,
+        username: username,
+        password: password
+    };
+
+    localStorage.setItem("veltrixUser", JSON.stringify(user));
+
+    // Also log them in immediately
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
+    window.location.href = "profile.html";
+});
+</script>
+
 </body>
-
 </html>
+
