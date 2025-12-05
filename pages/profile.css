@@ -1,0 +1,85 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: url('../assets/bg2.png') no-repeat;
+    background-size: cover;
+    background-position: center;
+    image-rendering: pixelated;
+}
+
+/* Main profile container */
+.profile-box {
+    width: 730px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    padding: 75px 50px;
+    color: white;
+    text-align: center;
+}
+
+/* Title */
+.profile-box h1 {
+    font-size: 28px;
+    margin-bottom: 15px;
+}
+
+/* Glowing profile circle */
+.profile-pic {
+    width: 130px;
+    height: 130px;
+    margin: 0 auto 15px auto;
+    border-radius: 50%;
+    border: 3px solid #8a2be2;
+    box-shadow: 0 0 20px #8a2be2;
+    background: url('../assets/defaultPFP.png');
+    background-size: cover;
+    background-position: center;
+}
+
+/* Username + email showing under purple ring */
+.profile-name {
+    font-size: 40px;
+    margin-top: 5px;
+}
+
+.profile-email {
+    font-size: 35px;
+    color: #ccc;
+    margin-bottom: 20px;
+}
+
+/* Button settings */
+.btn {
+    width: 100%;
+    height: 55px;
+    border-radius: 30px;
+    border: none;
+    margin: 8px 0;
+    cursor: pointer;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+/* Purple buttons */
+.purple-btn {
+    background: #452b7c;
+    color: #fff;
+    transition: 0.2s;
+}
+.purple-btn:hover {
+    background: #5b36a6;
+}
+
+/* Logout button */
+.logout-btn {
+    background: #9e1c1c;
+    color: #fff;
+    margin-top: 12px;
+}
+.logout-btn:hover {
+    background: #c42121;
+}
