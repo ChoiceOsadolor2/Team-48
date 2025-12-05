@@ -4,46 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+
     <link rel="stylesheet" href="../styles/Login,SIgn-up.css">
     <link rel="stylesheet" href="../styles/style.css">
 
-    <!--Google font link, havent used yet-->
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <!--Boxicon link import:-->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> 
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 </head>
+
 <body>
-    
 
-    <div class="login-box">
-        <form action="">
-            <h1>Login</h1>
-            <div class="input-box">
-                <input type="text" id="myUser" placeholder="Username" required>
-                <i class='bx bxs-user'></i> <!--Boxicon user icon-->
-            </div>
+<header></header>
 
-            <div class="input-box">
-                <input type="password" id="myPass" placeholder="Password" required>
-                 <i class='bx bxs-lock-alt'></i> <!--Boxicon lock icon-->
-            </div>
+<div class="login-box">
+    <form id="loginForm">
+        <h1>Login</h1>
 
-            <div class="remember-forgot">
-                <label ><input type ="checkbox"> Remember me
-                </label>
-                <a href="forgotPass.html">Forgot password?</a>
-            </div>
+        <div class="input-box">
+            <input type="text" id="loginEmail" placeholder="Email" required>
+            <i class='bx bx-envelope'></i>
+        </div>
 
-             <button type="submit" id="mySubmit" class="login-button">Login</button>
+        <div class="input-box">
+            <input type="password" id="loginPassword" placeholder="Password" required>
+            <i class='bx bxs-lock-alt'></i>
+        </div>
 
-             <div class="register-link">
-                <p>Don't have an account? <a href="register.html">Resigter</a></p>
+        <button type="submit" class="login-button">Login</button>
 
-             </div>
-             
-        </form>
-    </div>
-    
+        <div class="register-link">
+            <p>Don't have an account? <a href="register.html">Register</a></p>
+        </div>
+
+    </form>
+</div>
+
+<script src="../scripts/header.js"></script>
+
+<script>
+// LOGIN FUNCTION
+document.getElementById("loginForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    const savedUser = JSON.parse(localStorage.getItem("veltrixUser"));
+
+    const email = document.getElementById("loginEmail").value.trim();
+    const password = document.getElementById("loginPassword").value.trim();
+
+    if (!savedUser) {
+        alert("No user found. Register first.");
+        return;
+    }
+
+    if (email === savedUser.email && password === savedUser.password) {
+        
+        // Set current user session
+        localStorage.setItem("currentUser", JSON.stringify(savedUser));
+
+        window.location.href = "profile.html";
+    } else {
+        alert("Incorrect email or password.");
+    }
+});
+</script>
+
+
 </body>
-
 </html>
