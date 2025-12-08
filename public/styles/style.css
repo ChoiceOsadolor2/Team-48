@@ -1,0 +1,353 @@
+@import url(https://fonts.googleapis.com/css?family=Pixelify+Sans:regular,500,600,700);
+
+
+header{
+    width: 100%;
+    height: 15vh;
+    z-index: 20;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    justify-items: center;
+    align-items: center;
+
+    position: fixed;
+    top:0%;
+    /* background-color: rgba(inherit, 0.4); */
+    backdrop-filter: blur(20px);
+
+}
+
+
+body{
+    font-family: pixelify sans;
+}
+
+.light-mode {
+    background-color: #FAF0F0;
+    color: #111;
+
+}
+
+main{
+    position: absolute;
+    top: 15%;
+    width: 100%;
+}
+
+
+/* header */
+nav,
+#icons,
+#header_logo{
+display: flex;
+flex-direction: row;
+justify-content: space-evenly;
+width: 40%;
+}
+
+#icons{
+    width: 25%;
+    
+}
+#header_logo{
+    width: 20%;
+    margin: 5% ;
+}
+
+svg:hover{
+    cursor:pointer;
+}
+
+a{
+    color: white;
+}
+
+nav>a{
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
+}
+
+/* Search bar */
+#search{
+  position: fixed;
+  top: 90px;
+  right: 40px;
+  width: 500px;              /* width of search bar */
+  display: none;
+  background: #111;
+  padding: 16px;
+  border-radius: 10px;
+  border: 1px solid #444;
+  z-index: 50;
+}
+
+#search-bar {
+  width: 100%;
+  padding: 20px 20px;       /* Search size within the rectangle */
+  background: #222;
+  border: 1px solid #555;
+  color: white;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+#search-close {
+  margin-top: 8px;
+  width: 100%;
+  padding: 10px;
+  background: #333;
+  border: none;
+  color: white;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+
+                                            /* Hidden Content,Dynamic? */
+/* Basket */
+
+
+#basket,
+#menu{
+  cursor: pointer;
+    height: 100vh;
+    width: 100vw;
+    visibility: hidden;
+    /* display: block; */
+    position: absolute;
+    z-index: 100;
+    inset:0;
+  transition: 0.3s ease-in-out;
+
+
+}
+
+#basket_main{
+    width: 0em;
+    height: 100%;
+    position: absolute;
+    right: 0%;
+    background-color: white;
+    color: #111;
+            transition: 0.3s;
+                /* top: 15vh; */
+
+    padding:1%;
+    border-radius: 10px;
+
+}
+
+#basket_header{
+    width: 100%;
+    height: 5%;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    padding: 0% 0%;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#basket_display{
+    height: 60%;
+    overflow: scroll;
+    
+}
+
+.basket_product{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    width:100%;
+    height: 40%;
+    overflow: hidden;
+    background-color: rgb(240,240,240,0.3);
+margin-top: 5%;
+
+}
+
+.basket_product>img{
+    width: auto;
+    height: 100%;
+}
+
+.basket_product_info{
+    display: flex;
+    flex-direction: column;
+}
+
+.basket_count{
+    color: black;
+    font-size: 3vw;
+}
+
+#basket button{
+    width: 100%;
+    height: 5%;
+    border-radius: 15px;
+    color: white;
+}
+
+
+#menu_main{
+    width: 0em;
+    height: 50%;
+    left: 0%;
+    position: absolute;
+    background-color: white;
+        z-index: 102;
+
+}
+
+
+#menu_nav{
+    display: none;
+}
+
+@keyframes fadeSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}                                         /* Media Query */
+
+
+@media (max-width:800px) {
+
+  #Basket_Display,
+#Menu_Display{
+    display:none;
+    width: 80vw;
+    height: 100vh;
+    position: fixed;
+       
+    backdrop-filter: blur(3px);
+    z-index: 10;
+
+}
+
+#basket_main{
+    width: 0em;
+    height: 100%;
+    position: inherit;
+    right: 0%;
+    background-color: white;
+}
+
+#menu_main{
+     width: 0em;
+    height: 50%;
+    position: inherit;
+    left: 0%;
+    background-color: white;
+    overflow: hidden;
+
+}
+
+
+nav{
+    display: none;
+}
+#menu_nav{
+    display: block;
+}
+
+
+}
+
+
+/* quantity button- code pen sampple */
+
+			/* Quantity control styles*/
+			.qty-input {
+			  display: flex;
+			  align-items: center;
+			  overflow: hidden;
+			  border-radius: 4px;
+			  transform: scale(1);
+              width: 50%;
+              border: white 1px solid;
+              
+			}
+
+			.qty-input .product-qty,
+			.qty-input .qty-count {
+			  background: transparent;
+			  color: inherit;
+			  font-weight: bold;
+			  font-size: inherit;
+			  border: none;
+			  display: inline-block;
+			  min-width: 0;
+			  height: 2.5rem;
+			  line-height: 1;
+			}
+
+			.qty-input .product-qty:focus {
+			  outline: none;
+			}
+
+			.qty-input .product-qty {
+			  width: 50px;
+			  min-width: 0;
+			  text-align: center;
+			}
+
+			.qty-input .product-qty::-webkit-outer-spin-button,
+			.qty-input .product-qty::-webkit-inner-spin-button {
+			  -webkit-appearance: none;
+			  margin: 0;
+			}
+
+			.qty-input .qty-count {
+			  padding: 0;
+			  cursor: pointer;
+			  width: 2.5rem;
+			  font-size: 1.25em;
+			  overflow: visible;
+			  position: relative;
+			  background: rgba(255,255,255,0.04);
+			  color: inherit;
+			}
+
+			/* Horizontal bar (minus) */
+			.qty-input .qty-count::before {
+			  content: "";
+			  position: absolute;
+			  height: 2px;
+			  width: 12px;
+			  background: currentColor;
+			  top: 50%;
+			  left: 50%;
+			  transform: translate(-50%, -50%);
+			}
+
+			/* Vertical bar for the plus button */
+			.qty-input .qty-count::after {
+			  content: "";
+			  position: absolute;
+			  height: 12px;
+			  width: 2px;
+			  background: currentColor;
+			  top: 50%;
+			  left: 50%;
+			  transform: translate(-50%, -50%);
+			  opacity: 0; /* hidden for minus button */
+			}
+
+			/* Show vertical bar on add button to make a plus */
+			.qty-input .qty-count--add::after {
+			  opacity: 1;
+			}
+
+			.qty-input .qty-count:disabled {
+			  color: #888;
+			  background: transparent;
+			  cursor: not-allowed;
+			}

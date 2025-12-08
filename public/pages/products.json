@@ -1,0 +1,92 @@
+[
+
+    {
+      "id": 103,
+      "name": "Alienware 34 Gaming Monitor",
+      "description": "Curved 34” WQHD gaming monitor.",
+      "full_description": "Witness gaming worlds come to life on a curved 34” WQHD gaming monitor featuring an expansive ultrawide panel, vivid colours and smooth visuals.",
+      "thumbnail": "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/peripherals/monitors/alienware/aw3425dwm/media-gallery/monitor-aw3425dwm-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=804&wid=823&qlt=100,1&resMode=sharp2&size=823,804&chrss=full",
+      "category": "Monitors and Displays",
+      "brand":"Alienware",
+      "price": 237.30,
+      "stock": 5
+    },
+    {
+      "id": 101,
+      "name": "PlayStation V",
+      "description": "High-fidelity video game console with a custom SSD, ray tracing, and 3D audio",
+      "full_description": "Experience lightning fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback, adaptive triggers, and 3D Audio**, and an all-new generation of incredible PlayStation® games.",
+      "thumbnail": "https://media.direct.playstation.com/is/image/psdglobal/2025-PS5-Disc-Hero-6-laying-with-dualsense?$Background_Large$",
+      "category": "Consoles and PCs",
+      "brand":"PlayStation",
+      "price": 389.99,
+      "stock": 10
+    },
+    {
+      "id": 102,
+      "name": "SecretLab Titan Evo",
+      "description": "Our most technologically advanced ergonomic chair.",
+      "full_description": "Our most technologically advanced ergonomic chair. Discover multi-award-winning design — now the choice of the world's best esports players, professionals, and over 3 million users worldwide.",
+      "thumbnail": "https://images.secretlab.co/subimage/tr:n-display_gallery/R22PU-Stealth_01.jpg",
+      "category": "Gaming Chairs And Desks",
+      "brand":"SecretLab",
+      "price": 419,
+      "stock": 25
+    },
+        {
+      "id": 105,
+      "name": "Dead by daylight",
+      "brand": "",
+      "description": "Dead by Daylight is an asymmetrical multiplayer survival horror game.",
+      "full_description": "Dead by Daylight is an asymmetrical multiplayer survival horror game where one player is a relentless Killer and the other four are Survivors trying to escape. Survivors must work together to repair generators to power the exit gates, while the Killer hunts and sacrifices them to a malevolent entity. The gameplay is a deadly game of cat and mouse, and the game features numerous crossovers with famous horror franchises. ",
+      "store_link": "https://deadbydaylight.com/",
+      "thumbnail": "https://image.api.playstation.com/vulcan/ap/rnd/202203/1520/peZ5EkC9MxG97T8NF1HQDA9U.jpg",
+      "video": "",
+      "category":"Video Games",
+      "stock": 1
+    } ,   {
+      "id": 103,
+      "name": "Alienware 34 Gaming Monitor",
+      "description": "Curved 34” WQHD gaming monitor.",
+      "full_description": "Witness gaming worlds come to life on a curved 34” WQHD gaming monitor featuring an expansive ultrawide panel, vivid colours and smooth visuals.",
+      "thumbnail": "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/peripherals/monitors/alienware/aw3425dwm/media-gallery/monitor-aw3425dwm-gallery-1.psd?fmt=png-alpha&pscan=auto&scl=1&hei=804&wid=823&qlt=100,1&resMode=sharp2&size=823,804&chrss=full",
+      "category": "Monitors and Displays",
+      "brand":"Alienware",
+      "price": 237.30,
+      "stock": 5
+    },
+    {
+      "id": 101,
+      "name": "PlayStation V",
+      "description": "High-fidelity video game console with a custom SSD, ray tracing, and 3D audio",
+      "full_description": "Experience lightning fast loading with an ultra-high speed SSD, deeper immersion with support for haptic feedback, adaptive triggers, and 3D Audio**, and an all-new generation of incredible PlayStation® games.",
+      "thumbnail": "https://media.direct.playstation.com/is/image/psdglobal/2025-PS5-Disc-Hero-6-laying-with-dualsense?$Background_Large$",
+      "category": "Consoles and PCs",
+      "brand":"PlayStation",
+      "price": 389.99,
+      "stock": 10
+    },
+    {
+      "id": 102,
+      "name": "SecretLab Titan Evo",
+      "description": "Our most technologically advanced ergonomic chair.",
+      "full_description": "Our most technologically advanced ergonomic chair. Discover multi-award-winning design — now the choice of the world's best esports players, professionals, and over 3 million users worldwide.",
+      "thumbnail": "https://images.secretlab.co/subimage/tr:n-display_gallery/R22PU-Stealth_01.jpg",
+      "category": "Gaming Chairs And Desks",
+      "brand":"SecretLab",
+      "price": 419,
+      "stock": 25
+    },
+        {
+      "id": 105,
+      "name": "Dead by daylight",
+      "brand": "",
+      "description": "Dead by Daylight is an asymmetrical multiplayer survival horror game.",
+      "full_description": "Dead by Daylight is an asymmetrical multiplayer survival horror game where one player is a relentless Killer and the other four are Survivors trying to escape. Survivors must work together to repair generators to power the exit gates, while the Killer hunts and sacrifices them to a malevolent entity. The gameplay is a deadly game of cat and mouse, and the game features numerous crossovers with famous horror franchises. ",
+      "store_link": "https://deadbydaylight.com/",
+      "thumbnail": "https://image.api.playstation.com/vulcan/ap/rnd/202203/1520/peZ5EkC9MxG97T8NF1HQDA9U.jpg",
+      "video": "",
+      "category":"Video Games"
+    }
+  ]
+

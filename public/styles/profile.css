@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+/* background */
+body {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: url('../assets/bg2.png') no-repeat center/cover;
+    image-rendering: pixelated;
+}
+
+/* user box */
+.profile-box {
+    width: 480px;
+    padding: 40px;
+    background: rgba(0, 0, 0, 0.35);
+    border: 2px solid rgba(154, 154, 154, 0.15);
+    backdrop-filter: blur(15px);
+    color: white;
+    border-radius: 20px;
+    text-align: center;
+}
+
+/* Profile title */
+.profile-box h1 {
+    font-size: 28px;
+    margin-bottom: 25px;
+}
+
+/* profile image still under work */
+.profile-pic {
+    width: 120px;
+    height: 120px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    border: 3px solid #a542ff;
+    box-shadow: 0 0 18px #a542ff;
+    background: url('../assets/profileDefault.png') center/cover no-repeat;
+}
+
+/* username */
+.username {
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+/* email */
+.email {
+    font-size: 15px;
+    opacity: 0.8;
+    margin-bottom: 25px;
+}
+
+/* buttons */
+.profile-btn {
+    width: 100%;
+    padding: 14px;
+    margin: 8px 0;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    background: rgb(92, 54, 255);
+    color: white;
+    font-weight: 600;
+    transition: 0.25s;
+}
+
+.profile-btn:hover {
+    background: rgb(130, 80, 255);
+}
+
+.logout-btn {
+    background: rgb(190, 40, 40);
+}
+
+.logout-btn:hover {
+    background: rgb(230, 50, 50);
+}
+
+

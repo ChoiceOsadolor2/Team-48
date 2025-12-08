@@ -1,0 +1,287 @@
+@import url(https://fonts.googleapis.com/css?family=Pixelify+Sans:regular,500,600,700);
+
+body{
+    background-color: #050036;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'pixelify sans';
+}
+
+header{
+    width: 100%;
+    height: 15vh;
+    z-index: 10;
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    justify-items: center;
+    align-items: center;
+
+    position: fixed;
+    top:0%;
+    background-color: rgba(5, 0, 54, 0.4);
+    backdrop-filter: blur(20px);
+
+}
+
+
+main, #products_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+    column-gap: 2em;
+    row-gap:5em;
+    width: 100%;
+    min-height: 100vh;
+
+    position: absolute;
+    top: 30%;
+
+}
+
+#title{
+height: 20%;
+}
+
+/* top wrapper */
+/* #wrapper_background{
+    background-color:#FFA500;
+    height: 100%;
+    width: 90%;
+    border-radius:100px;
+
+    position: absolute;
+    z-index: -1;
+
+} */
+
+#wrapper_overlay{
+    background-image: url(../assets/ShopAll_BG.png);
+    background-size: contain;
+    background-repeat: repeat;
+
+    height: 60vh;
+    width: 100vw;
+    position: absolute;
+    top:15%;
+    opacity: 0.2;
+
+    display: flex;
+    justify-content: center;
+    z-index: -3;
+}
+
+
+
+/* header */
+nav,
+#icons,
+#header_logo{
+display: flex;
+flex-direction: row;
+justify-content: space-evenly;
+width: 40%;
+}
+
+#icons{
+    width: 25%;
+    
+}
+#header_logo{
+    width: 30%;
+}
+
+svg:hover{
+    cursor:pointer;
+}
+
+a{
+    color: white;
+}
+
+nav>a{
+  font-size: clamp(1rem, 1.5vw, 1.4rem);
+}
+
+
+
+/* product displays */
+
+.product_card{
+    width: 300px;
+    height: 450px;
+    padding: 2%;
+    border-radius: 50px;
+        background-color: rgba(255, 255, 255,0.1);
+        backdrop-filter: blur(20px);
+
+/*  border to see what we are working on */
+}
+
+.product_image{
+    height: auto;
+    width: 100%;
+
+}
+
+
+                                            /* Hidden Content,Dynamic? */
+/* Basket */
+
+
+/* #basket,
+#menu{
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+    height: 100vh;
+    width: 100vw;
+    display: none;
+    position: fixed;
+    z-index: 100;
+    
+
+}
+
+#basket_main{
+    width: 0em;
+    height: 100%;
+    position: fixed;
+    right: 0%;
+    background-color: white;
+    z-index: 102;
+
+
+}
+
+#menu_main{
+    width: 0em;
+    height: 100%;
+    position: fixed;
+    left: 0%;
+    background-color: white;
+        z-index: 102;
+
+}
+
+
+#menu_nav{
+    display: none;
+} */
+
+/* Filter */
+#filter{
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-end;
+    
+    width: 30em;
+    height: 30vh;
+    position:fixed;
+    bottom: 0%;
+    transition: 0.2s;
+}
+
+#filter >h1{
+    position: absolute;
+    bottom: 0%;
+    width: 100%;
+    color: black;
+    background-color: white;
+    border-radius: 10px;
+    text-align: center;
+}
+
+#toggle_up,
+#toggle_down{
+    position: absolute;
+    top: 15%;
+    right: 35%;
+}
+
+#toggle_down{
+    display: none;
+}
+
+#filter_content{
+    border-radius:20px;
+    position: absolute;
+    bottom: 70px;
+        background-color: rgba(255, 255, 255,0.5);
+    height: 0em;
+    width: 100%;
+    transition: 0.2s ease-in;
+
+    backdrop-filter: blur(10px);
+    overflow: hidden;
+
+}
+
+.add_to_basket{
+    height: auto;
+    width: 100%;
+    padding: 10px 15px;
+    margin-top: 10px;
+    background-color: #FFA500;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.add_to_basket:hover{
+    background-color: #FF8C00;
+}
+
+
+                                                  /* Media Query
+
+
+@media (max-width:800px) {
+
+  #Basket_Display,
+#Menu_Display{
+    display:none;
+    width: 80vw;
+    height: 100vh;
+    position: fixed;
+       
+    backdrop-filter: blur(3px);
+    z-index: 10;
+
+}
+
+#basket_main{
+    width: 0em;
+    height: 100%;
+    position: inherit;
+    right: 0%;
+    background-color: white;
+}
+
+#menu_main{
+     width: 0em;
+    height: 100%;
+    position: inherit;
+    left: 0%;
+    background-color: white;
+    overflow: hidden;
+
+}
+
+
+nav{
+    display: none;
+}
+#menu_nav{
+    display: block;
+}
+
+
+} */
