@@ -100,3 +100,17 @@ function closeSection(id) {
     section.style.display = 'none';
   }
 }
+
+
+
+//Ill possibly chnage teh code logic in header.js so that they use toggles for dropdowns, shows, close sections, slides etc
+function toggleDropdown(){
+    const auth_section=document.getElementById('auth_dropdown');
+    if(auth_section.style.height==='0%' || auth_section.style.height===''){
+        auth_section.style.height='auto';
+        auth_section.padding='1%';
+    }else{
+        auth_section.style.height='0%';
+        auth_section.padding='0%';
+    }
+}
