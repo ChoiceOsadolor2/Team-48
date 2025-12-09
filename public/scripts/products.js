@@ -338,18 +338,44 @@ fetch('/products', { credentials: 'include' })
 // -------------------------------
 // Reviews (unchanged)
 // -------------------------------
-const reviews_button = document.getElementById('reviews_button');
-const reviewsContainer = document.getElementById('reviews');
-const template_review = document.getElementById('template_review');
 
-function addReview(review) {
-  if (!template_review || !reviewsContainer) return;
+let reviews=JSON.parse(localStorage.getItem('reviews')) || [];
+  const reviewsContainer = document.getElementById('reviews_container');
 
-  const clone = template_review.content.cloneNode(true);
-  clone.querySelector('.reviewer_name').textContent = review.name;
-  clone.querySelector('.review_date').textContent = review.date;
-  clone.querySelector('.review_rating').textContent =
-    'Rating: ' + review.rating + '/5';
-  clone.querySelector('.review_comment').textContent = review.comment;
-  reviewsContainer.appendChild(clone);
+// || = also known as /or
+window.onload=function(){
+reviews.forEach(review=>display(review))
 }
+
+function display(review){
+  const template_review = document.getElementById('review_template');
+  const clone=template_review.content.cloneNode(true);
+
+  clone.querySelector('h3').textContent = review.username;
+  clone.querySelector('p').textContent = review.text;
+  clone.querySelector('span').textContent =
+    'Rating: ' + review.rating + '/5';
+
+    reviewsContainer.appendChild(clone);
+};
+
+function addReview(event) {
+  event.preventDefault();
+
+  const form=document.getElementById('review_form')
+  
+  const username=document.getElementById('review_name')
+  const text=document.getElementById('review_input')
+  const rating =document.getElementById('review_rating');
+
+  const review={username,text,rating};
+
+  reviews.push(review);
+  localStorage.setItem('reviews',JSON.stringify(reviews))
+
+
+  display(review);
+
+  form.reset();
+}
+

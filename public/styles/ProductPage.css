@@ -97,7 +97,7 @@ body{
   overflow-x: hidden;
 }
 
-
+/* reviews */
 #reviews{
   height:80%;
   width: 25%;
@@ -105,6 +105,44 @@ body{
   backdrop-filter: blur(15px);
   border-radius: 40px;
   align-self: center;
+  color: black;
+}
+
+#reviews_container{
+  height: 60%;
+  overflow: scroll;
+  padding: 2%;
+}
+
+#review_form{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  justify-content: space-evenly;
+  gap: 1vh;
+  margin-top: 2vh;
+
+}
+.userinput, 
+.usernameinput, 
+.ratinginput{
+  padding: 2%;
+  border-radius: 10px;
+  border: 1px solid gray;
+}
+.userinput{
+  height: 6vh;
+  width: 90%;
+}
+
+.ratinginput{
+  width: 20%;
+}
+
+.usernameinput{
+  width: 60%;
 }
 
 main{
