@@ -101,21 +101,44 @@ body{
 #reviews{
   height:80%;
   width: 25%;
-  background-color:rgb(255, 255, 255);
+  background-color:rgba(0,0,0);
+  padding: 2%;
+
   backdrop-filter: blur(15px);
   border-radius: 40px;
   align-self: center;
-  color: black;
+  overflow: scroll;
+  overflow-x: hidden;
+  scrollbar-width: none;
+
+  filter: drop-shadow(30px 10x 4px #ecf0f3);
+
 }
 
 #reviews_container{
   height: 60%;
   overflow: scroll;
   padding: 2%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  justify-items: center;
+  scrollbar-width:none;
+}
+
+#average_rating_value{
+  font-size: 5vw;
+}
+
+#average_rating{
+    font-family:'Times New Roman', Times, serif;
+    width: 40%;
+
+
 }
 
 #review_form{
-  display: flex;
+  display: none;
   flex-direction: row;
   flex-wrap: wrap;
   align-items: center;
@@ -123,6 +146,7 @@ body{
   justify-content: space-evenly;
   gap: 1vh;
   margin-top: 2vh;
+  display: none;
 
 }
 .userinput, 
@@ -144,6 +168,21 @@ body{
 .usernameinput{
   width: 60%;
 }
+
+.review{
+  background-color:#050036;
+  border-radius: 30px;
+  padding: 2%;
+  margin-top: 6%;
+filter: drop-shadow(6px 5px 4px orange);}
+
+.review_name{
+  color: orange;
+}
+
+
+
+
 
 main{
   width: 100vw;

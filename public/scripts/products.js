@@ -339,6 +339,8 @@ fetch('/products', { credentials: 'include' })
 // Reviews (unchanged)
 // -------------------------------
 
+
+
 let reviews=JSON.parse(localStorage.getItem('reviews')) || [];
   const reviewsContainer = document.getElementById('reviews_container');
 
@@ -364,9 +366,9 @@ function addReview(event) {
 
   const form=document.getElementById('review_form')
   
-  const username=document.getElementById('review_name')
-  const text=document.getElementById('review_input')
-  const rating =document.getElementById('review_rating');
+  const username=document.getElementById('review_name').value
+  const text=document.getElementById('review_input').value
+  const rating =document.getElementById('review_rating').value;
 
   const review={username,text,rating};
 
@@ -379,3 +381,11 @@ function addReview(event) {
   form.reset();
 }
 
+function toggleReview(){
+    const form = document.getElementById('review_form');
+    if(form.style.display=='none'){
+        form.style.display='flex';
+    }else{
+        form.style.display='none';
+    }
+}
