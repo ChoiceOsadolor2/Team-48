@@ -343,12 +343,25 @@ fetch('/products', { credentials: 'include' })
 
 let reviews=JSON.parse(localStorage.getItem('reviews')) || [];
   const reviewsContainer = document.getElementById('reviews_container');
+  let total_reviews= 0;
+let total_rating=0;
+let avg_rating=0;
 
 // || = also known as /or
 window.onload=function(){
 reviews.forEach(review=>display(review))
-}
 
+let sum = 0;
+
+for(let i=0; i<reviews.length; i++){
+  sum+=Number(reviews[i].rating);
+}
+avg_rating = (sum / total_reviews).toFixed(2);
+
+document.getElementById('total_reviews_value').innerHTML =`total reviews:${total_reviews}`;
+document.getElementById('average_rating_value').innerHTML =avg_rating;
+
+}
 function display(review){
   const template_review = document.getElementById('review_template');
   const clone=template_review.content.cloneNode(true);
@@ -373,6 +386,18 @@ function addReview(event) {
   const review={username,text,rating};
 
   reviews.push(review);
+  total_reviews=reviews.length;
+
+let sum = 0;
+
+for(let i=0; i<reviews.length; i++){
+  sum+=Number(reviews[i].rating);
+}
+avg_rating = (sum / total_reviews).toFixed(2);
+
+document.getElementById('total_reviews_value').innerHTML =`total reviews:${total_reviews}`;
+document.getElementById('average_rating_value').innerHTML =avg_rating;
+
   localStorage.setItem('reviews',JSON.stringify(reviews))
 
 
@@ -389,3 +414,4 @@ function toggleReview(){
         form.style.display='none';
     }
 }
+
