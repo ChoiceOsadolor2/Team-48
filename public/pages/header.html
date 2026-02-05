@@ -21,7 +21,7 @@
             <a href="contact.html">Contact us</a>
 
             <!-- Admin link (hidden by default) -->
-            <a href="/admin/products" id="admin-link" style="display:none;">Admin</a>
+           <a href="/admin" id="admin-link" style="display:none;">Admin</a>
         </nav>
 
         <div id="icons">
@@ -37,18 +37,23 @@
             </span>
 
             <!-- LOGIN / PROFILE ICON (href will be overridden by header.js) -->
-             <a  onclick="toggleDropdown()"  ><svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24"><path fill="#ffffff" d="M12 4.75a2.25 2.25 0 1 0 0 4.5a2.25 2.25 0 0 0 0-4.5M8.25 7a3.75 3.75 0 1 1 7.5 0a3.75 3.75 0 0 1-7.5 0m1.064 5.819c.132.098.302.213.505.327c.513.29 1.265.59 2.18.59s1.668-.3 2.181-.59c.203-.114.373-.229.505-.327q.282.075.559.166l.96.315c.72.237 1.264.812 1.458 1.523l.397 2.864c.075.544-.21.939-.606 1.033c-1.047.25-2.812.53-5.453.53s-4.407-.28-5.454-.53c-.395-.094-.68-.489-.606-1.033l.397-2.864A2.23 2.23 0 0 1 7.796 13.3l.96-.315q.276-.09.558-.166m.71-1.355l-.291-.287l-.402.092q-.526.12-1.044.291l-.96.315a3.72 3.72 0 0 0-2.454 2.616l-.01.04l-.408 2.95c-.161 1.164.462 2.393 1.744 2.698c1.17.279 3.052.571 5.8.571c2.749 0 4.631-.292 5.801-.57c1.282-.306 1.906-1.535 1.745-2.698l-.409-2.95l-.01-.04a3.72 3.72 0 0 0-2.455-2.617l-.959-.315q-.517-.17-1.044-.29l-.402-.093l-.29.286l-.001.001a2 2 0 0 1-.12.101a3 3 0 0 1-.41.274a2.96 2.96 0 0 1-1.445.397a2.96 2.96 0 0 1-1.445-.397a3.2 3.2 0 0 1-.53-.375"/></svg></a>
-        
-            <div id="auth_dropdown">
-                
-                <a id="profileLink" href="login.html">Login</a>
-                <a href="register.html">Register</a>
-                <a id="logoutLink" href="/logout" style="display:none;">Logout</a>                
+            <div class="user-menu" id="userMenu">
+                <button id="userMenuBtn" class="user-menu-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                    <span id="userMenuIcon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
+                            <path fill="#ffffff" d="M12 4.75a2.25 2.25 0 1 0 0 4.5a2.25 2.25 0 0 0 0-4.5M8.25 7a3.75 3.75 0 1 1 7.5 0a3.75 3.75 0 0 1-7.5 0m1.064 5.819c.132.098.302.213.505.327c.513.29 1.265.59 2.18.59s1.668-.3 2.181-.59c.203-.114.373-.229.505-.327q.282.075.559.166l.96.315c.72.237 1.264.812 1.458 1.523l.397 2.864c.075.544-.21.939-.606 1.033c-1.047.25-2.812.53-5.453.53s-4.407-.28-5.454-.53c-.395-.094-.68-.489-.606-1.033l.397-2.864A2.23 2.23 0 0 1 7.796 13.3l.96-.315q.276-.09.558-.166m.71-1.355l-.291-.287l-.402.092q-.526.12-1.044.291l-.96.315a3.72 3.72 0 0 0-2.454 2.616l-.01.04l-.408 2.95c-.161 1.164.462 2.393 1.744 2.698c1.17.279 3.052.571 5.8.571c2.749 0 4.631-.292 5.801-.57c1.282-.306 1.906-1.535 1.745-2.698l-.409-2.95l-.01-.04a3.72 3.72 0 0 0-2.455-2.617l-.959-.315q-.517-.17-1.044-.29l-.402-.093l-.29.286z"/>
+                        </svg>
+                    </span>
+                    <span class="user-menu-caret">▾</span>
+                </button>
+
+                <div id="userMenuDropdown" class="user-menu-dropdown">
+                </div>
             </div>
+
         </div>
     </header>
 
-    <!-- Basket Section -->
     <section id="basket" onclick="closeSection('basket')">
         <div id="basket_main" onclick="event.stopPropagation()">
 
@@ -60,22 +65,43 @@
                 <span class="basket_count">(0)</span>
             </div>
 
-            <div id="basket_display">
-                <template class="basket_template">
-                    <span class="basket_product">
-                        <img onclick="window.location.href='ProductPage.html?id'" src="../assets/gameHeadset.png" alt="">
-                        <div class="basket_product_info">
-                            <p>Phone,Black,12+256GB</p>
-                            <sub>£619</sub>
-                            <div class="qty-input">
-                                <button class="qty-count qty-count--minus" data-action="minus" type="button">-</button>
-                                <input class="quantity product-qty" type="number" min="0" max="10" value="1">
-                                <button class="qty-count qty-count--add" data-action="add" type="button">+</button>
-                            </div>
+            <div id="basket_stock_error" style="display:none; color:#ff4d4d; font-weight:600; margin:10px 0;"></div>
+
+
+        <!-- This is where JS will inject cart items -->
+            <div id="basket_display"></div>
+
+        <!-- Keep the template OUTSIDE basket_display so it doesn't get cleared -->
+            <template class="basket_template">
+                <span class="basket_product">
+                    <img src="../assets/gameHeadset.png" alt="">
+
+                    <div class="basket_product_info">
+                        <p></p>
+                        <sub></sub>
+
+                        <div class="qty-input">
+                            <button class="qty-count qty-count--minus" type="button">-</button>
+                            <input class="quantity product-qty" type="number" min="0" max="10" value="1">
+                            <button class="qty-count qty-count--add" type="button">+</button>
                         </div>
-                    </span>
-                </template>
-            </div>
+
+            <!-- ✅ REMOVE BUTTON -->
+                        <button class="remove_from_cart" type="button" style="
+                            margin-top: 8px;
+                            background: transparent;
+                            border: none;
+                            color: #ff4d4d;
+                            font-size: 14px;
+                            cursor: pointer;
+                            text-align: left;
+                        ">
+                            Remove All
+                        </button>
+                    </div>
+                </span>
+            </template>
+
 
             <h1>Total: <p id="total"></p></h1>
             <p style="color: black;">
@@ -84,7 +110,7 @@
                 Tax included. Shipping calculated at checkout.
             </p>
 
-            <button onclick="window.location.href='/checkout'">CHECKOUT</button>
+            <button id="basket_checkout_btn" onclick="window.location.href='/checkout'">CHECKOUT</button>
         </div>
     </section>
 

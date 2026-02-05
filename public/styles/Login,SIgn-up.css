@@ -118,6 +118,18 @@ body {
     text-decoration: underline;
 }
 
+.remember-forgot label {
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.remember-forgot input[type="checkbox"] {
+    accent-color: #ffffff;
+    cursor: pointer;
+}
+
 
 
 

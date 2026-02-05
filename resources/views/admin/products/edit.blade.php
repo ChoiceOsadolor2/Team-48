@@ -10,17 +10,22 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <form method="POST" action="{{ route('admin.products.update', $product) }}" class="space-y-4">
-                        @csrf
-                        @method('PUT')
+                    <form method="POST"
+                        action="{{ route('admin.products.update', $product) }}"
+                        enctype="multipart/form-data"
+                        class="space-y-4">
 
-                        @include('admin.products.form', ['product' => $product])
+                    @csrf
+                    @method('PUT')
 
-                        <button type="submit"
-                                class="px-4 py-2 bg-blue-600 text-white rounded">
-                            Update
-                        </button>
-                    </form>
+                    @include('admin.products.form', ['product' => $product])
+
+                    <button type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded">
+                    Update
+                </button>
+            </form>
+
 
                 </div>
             </div>

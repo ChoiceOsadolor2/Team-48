@@ -140,6 +140,11 @@ form textarea {
     color: #fff;
 }
 
+form textarea {
+    height: 150px; 
+    resize: none; 
+}
+
 .submit-btn {
     background: linear-gradient(90deg, #ff00a8, #6c5cff, #2ecbff);
     padding: 1rem;

@@ -12,6 +12,7 @@ use App\Models\OrderItem;
 
 class CheckoutController extends Controller
 {
+    // ✅ SHOW checkout page only
     public function index()
     {
         $cart = Session::get('cart', []);
@@ -28,9 +29,7 @@ class CheckoutController extends Controller
         $total = 0;
 
         foreach ($cart as $productId => $qty) {
-            if (!isset($products[$productId])) {
-                continue;
-            }
+            if (!isset($products[$productId])) continue;
 
             $product = $products[$productId];
             $subtotal = $product->price * $qty;
@@ -47,6 +46,7 @@ class CheckoutController extends Controller
         return view('checkout.index', compact('items', 'total'));
     }
 
+    // ✅ PLACE order only (create order, create items, decrement stock)
     public function place(Request $request)
     {
         $user = Auth::user();
@@ -63,6 +63,26 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
+            // Lock products so stock can't be oversold in race conditions
+            $productIds = array_keys($cart);
+            $products = Product::whereIn('id', $productIds)
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            // ✅ Validate stock before creating order
+            foreach ($cart as $productId => $qty) {
+                if (!isset($products[$productId])) continue;
+
+                $product = $products[$productId];
+                if ($product->stock < $qty) {
+                    DB::rollBack();
+                    return redirect()->route('cart.index')
+                        ->with('stock_error', "Only {$product->stock} units of '{$product->name}' are available.");
+                }
+            }
+
+            // Create order
             $order = Order::create([
                 'user_id' => $user->id,
                 'total'   => 0,
@@ -71,13 +91,8 @@ class CheckoutController extends Controller
 
             $total = 0;
 
-            $productIds = array_keys($cart);
-            $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
-
             foreach ($cart as $productId => $qty) {
-                if (!isset($products[$productId])) {
-                    continue;
-                }
+                if (!isset($products[$productId])) continue;
 
                 $product = $products[$productId];
                 $subtotal = $product->price * $qty;
@@ -88,6 +103,9 @@ class CheckoutController extends Controller
                     'quantity'   => $qty,
                     'price'      => $product->price,
                 ]);
+
+                // ✅ decrement stock
+                $product->decrement('stock', $qty);
 
                 $total += $subtotal;
             }
@@ -100,11 +118,9 @@ class CheckoutController extends Controller
 
             return redirect()->route('orders.show', $order->id)
                 ->with('status', 'Order placed successfully!');
-
         } catch (\Throwable $e) {
             DB::rollBack();
-
-            \Log::error('ORDER ERROR: '.$e->getMessage());
+            \Log::error('ORDER ERROR: ' . $e->getMessage());
 
             return redirect()->route('cart.index')
                 ->with('status', 'Order failed. Please try again.');

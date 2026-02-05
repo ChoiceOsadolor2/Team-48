@@ -1,65 +1,96 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop All</title>
-    <link rel="stylesheet" href="../styles/ShopAll.css">
-    <link rel="stylesheet" href="../styles/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shop All</title>
+  <link rel="stylesheet" href="../styles/ShopAll.css" />
+  <link rel="stylesheet" href="../styles/style.css" />
 </head>
 <body>
 
-<header>
-    <!-- Your existing header content will still be injected by header.js -->
-
-    <!-- Simple auth/admin links on the right -->
+  <header>
     <nav class="auth-nav">
-        <a href="/login" class="auth-link">Login</a>
-        <a href="/admin/products" class="auth-link">Admin</a>
+      <a href="/login" class="auth-link">Login</a>
+      <a href="/admin/products" class="auth-link">Admin</a>
     </nav>
-</header>
+  </header>
 
-<section id="wrapper_overlay">
+  <section id="wrapper_overlay">
     <div id="wrapper_background"></div>
-</section>
+  </section>
 
-<main>
+  <main>
     <h1 style="width: 100%; text-align: center; font-size: 5em;" id="title">Shop All</h1>
+
 
     <section id="products_container">
 
-        <template>
-            <div class="product_card" id="">
-                <img class="product_image" src="Assets/gameHeadset.png">
-                <h3 class="product_name"></h3>
-                <sub class="product_description"></sub>
-                <span class="product_price"></span>
-                <button class="add_to_basket">Add to Basket</button>
-            </div>
-        </template>
+      <template>
+        <div class="product_card" id="">
+          <img class="product_image" src="Assets/gameHeadset.png" />
+          <h3 class="product_name"></h3>
+          <span class="product_price"></span>
+          <button class="view_product">View Product</button>
+          <button class="add_to_basket">Add to Basket</button>
+        </div>
+      </template>
 
     </section>
-</main>
+  </main>
 
-<section id="filter">
+  <section id="filter">
     <div id="filter_content">
-        <a href="../pages/ShopAll.html"><button>All</button></a>
-        <a href="../pages/ShopAll.html?category=Games"><button>Games</button></a>
-        <a href="../pages/ShopAll.html?category=Consoles"><button>Consoles</button></a>
-        <a href="../pages/ShopAll.html?category=Accessories"><button>Accessories</button></a>
-        <a href="../pages/ShopAll.html?category=Hardware"><button>Hardware</button></a>
+      <a href="../pages/ShopAll.html">
+        <button>All</button>
+      </a>
+
+      <a href="../pages/ShopAll.html?category=Games">
+        <button>Games</button>
+      </a>
+
+      <a href="../pages/ShopAll.html?category=Consoles%20and%20PCs">
+        <button>Consoles and PCs</button>
+      </a>
+
+      <a href="../pages/ShopAll.html?category=Accessories">
+        <button>Accessories</button>
+      </a>
+
+      <a href="../pages/ShopAll.html?category=Hardware">
+        <button>Hardware</button>
+      </a>
     </div>
-    <h1>Filter
-        <svg onclick="show('filter')" id="toggle_up" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="#000000" d="m2 5l2-2l2 2l1-1l-3-3l-3 3"/></svg>
-        <svg onclick="closeSection('filter')" id="toggle_down" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8"><path fill="#000000" d="m2 3l2 2l2-2l1 1l-3 3l-3-3"/></svg>
+
+    <h1>
+      Filter
+      <svg onclick="show('filter')" id="toggle_up" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
+        <path fill="#000000" d="m2 5l2-2l2 2l1-1l-3-3l-3 3"/>
+      </svg>
+
+      <svg onclick="closeSection('filter')" id="toggle_down" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
+        <path fill="#000000" d="m2 3l2 2l2-2l1 1l-3 3l-3-3"/>
+      </svg>
     </h1>
-</section>
+  </section>
 
-<!-- Light/Dark Mode -->
-<button onclick="myFunction()" style="position: fixed; bottom: 75%; left: 5%;">Toggle dark mode</button>
+  <button onclick="myFunction()" style="position: fixed; bottom: 75%; left: 5%;">Toggle dark mode</button>
 
-<script src="../scripts/header.js"></script>
-<script src="../scripts/animations.js"></script>
-<script src="../scripts/products.js?v=4"></script>
+  <script src="../scripts/header.js"></script>
+  <script src="../scripts/animations.js"></script>
+  <script src="../scripts/products.js?v=4"></script>
+
+  <script>
+    (function () {
+      const params = new URLSearchParams(window.location.search);
+      const cat = params.get('category');
+      const titleEl = document.getElementById('title');
+
+      if (titleEl) {
+        titleEl.textContent = cat ? cat : 'Shop All';
+      }
+    })();
+  </script>
+
 </body>
 </html>
