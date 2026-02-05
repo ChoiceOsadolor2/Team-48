@@ -104,6 +104,35 @@ nav>a{
   font-size: 1rem;
 }
 
+#auth_dropdown{
+    position: absolute; 
+    text-align: center;
+    top: 15vh;
+    right: 0%;
+    background-color: white;
+    border: black 1px solid;
+    z-index: 30;
+    height: 0px;
+    overflow: hidden;
+    width: 12%;
+    font-size: 2rem;
+    border-radius: 10px;
+  }
+
+
+#auth_dropdown>a{
+    display: block;
+    color: black;
+    margin-top: 5%;
+    text-decoration: none;
+    
+}
+
+#auth_dropdown>a:hover{
+    text-decoration: underline;
+    color: #770f0f;
+}
+
 
                                             /* Hidden Content,Dynamic? */
 /* Basket */

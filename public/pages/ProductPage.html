@@ -54,24 +54,40 @@
 </section>
 
 <section id="reviews">
-  <h2>Customer Reviews</h2>
-  <div class="review">
+      <sub id="total_reviews_value" style="position: absolute; top: 0%; right: 10%;">Total Reviews :24</sub>
+
+  <div id="reviews_header">
+      <div id="average_rating">
+      <span id="average_rating_value">4.5</span>
+      <span>/ 5</span>
+
+    </div>
+
+</div>
+<button onclick="toggleReview()" style="width: 100%; background-color: #050036;"> Add Review</button>
+
+  <form id="review_form" onsubmit="addReview(event)">
+    <input id="review_input" class="userinput" type="text" placeholder="Write a review">
+    <input id="review_name" type="text" class="usernameinput" placeholder="Your name">
+    <input id="review_rating" type="number" class="ratinginput" placeholder="Rating (1-5)" min="1" max="5">
+    <button type="submit">Submit</button>
+  </form>
+  <div id="reviews_container">
+ 
+  <!-- <div class="review">
     <h3>John Doe</h3>
     <p>Great product! Highly recommend.</p>
-  </div>
-  <div class="review">
-    <h3>Jane Smith</h3>
-    <p>Good value for the price.</p>
+  </div> -->
 
-  <input class="userinput" type="text" placeholder="Write a review">
-  <button onclick="addReview()">Submit</button>
-
-  <template id="review_template" hidden>
+  <template id="review_template">
     <div class="review">
-      <h3></h3>
-      <p></p>
+    <h3 class="review_name"></h3>
+    <p class="review_output"></p>
+    <span class="review_rating"></span>
+    <a>x</a>
     </div>
   </template>
+  </div>
 </section>
 
 </main>
