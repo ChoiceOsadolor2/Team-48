@@ -1,48 +1,139 @@
-// -------------------------------
-// Query string & DOM references
-// -------------------------------
+// ===============================
+// URL Params
+// ===============================
 const query = window.location.search;
 const parameters = new URLSearchParams(query);
 
 const productid = parameters.get('id');
 const category = parameters.get('category');
 
+// ===============================
+// DOM
+// ===============================
 const ProductCard_template = document.querySelector('template');
 const container = document.getElementById('products_container');
 const container2 = document.getElementById('product_display');
 
-// -------------------------------
-// Helper: normalize image URLs
-// -------------------------------
+
+// ===============================
+// SEARCH PATCH (binds to header search even if injected later)
+// ===============================
+(function () {
+  function findHeaderSearchInput() {
+    return (
+      document.querySelector('#search_input') ||
+      document.querySelector('#search_inpu') || // common typo
+      document.querySelector('#shop_search') || // if you added one
+      document.querySelector('header input[type="search"]') ||
+      document.querySelector('header input[type="text"]') || // fallback
+      document.querySelector('input[type="search"]')
+    );
+  }
+
+  function applySearchFilter() {
+    if (!container) return;
+
+    const input = findHeaderSearchInput();
+    if (!input) return;
+
+    // base list = current category products (set after products load)
+    const base = window.currentCategoryProducts || window.allProducts || [];
+    const term = (input.value || '').trim().toLowerCase();
+
+    const filtered = !term
+      ? base
+      : base.filter((p) => (p.name || '').toLowerCase().includes(term));
+
+    // render filtered list
+    if (typeof renderProducts === 'function') {
+      renderProducts(filtered);
+    }
+  }
+
+  function bind(input) {
+    if (!input || input.dataset.boundSearch === '1') return;
+    input.dataset.boundSearch = '1';
+
+    // live search while typing
+    input.addEventListener('input', applySearchFilter);
+
+    // Enter should search (not reload / not submit anything)
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        applySearchFilter();
+      }
+    });
+
+    // if it's inside a form, block form submit
+    const form = input.closest('form');
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        applySearchFilter();
+      });
+    }
+
+    console.log('✅ Search bound to:', input);
+  }
+
+  // Try bind immediately
+  bind(findHeaderSearchInput());
+
+  // Observe DOM because header.js injects elements later
+  const obs = new MutationObserver(() => {
+    const input = findHeaderSearchInput();
+    if (input) bind(input);
+  });
+
+  obs.observe(document.documentElement, { childList: true, subtree: true });
+
+  // manual test
+  window.__applySearchFilter = applySearchFilter;
+})();
+
+
+
+// ===============================
+// Product lists (for filters/search)
+// ===============================
+window.allProducts = [];
+window.currentCategoryProducts = [];
+window.visibleBaseProducts = [];
+
+// ===============================
+// Image URL helper
+// ===============================
 function getImageUrl(product) {
-  if (product.image_url) {
-    if (product.image_url.includes('example.com')) {
-      return '/assets/placeholder.png';
-    }
+  const imageUrl = product?.image_url || product?.thumbnail || '';
 
-    if (product.image_url.startsWith('http')) {
-      return product.image_url;
-    }
+  if (!imageUrl) return '/assets/placeholder.png';
+  if (imageUrl.includes('example.com')) return '/assets/placeholder.png';
 
-    return '/' + product.image_url.replace(/^\/+/, '');
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
   }
 
-  if (product.thumbnail) {
-    if (product.thumbnail.startsWith('http')) {
-      return product.thumbnail;
-    }
-    return '/' + product.thumbnail.replace(/^\/+/, '');
+  const clean = imageUrl.replace(/^\/+/, '');
+
+  if (clean.startsWith('storage/')) {
+    return '/' + clean;
   }
 
-  return '/assets/placeholder.png';
+  return '/storage/' + clean;
 }
+
+// ===============================
+// Cart UI state
+// ===============================
+document.body.classList.remove('cart-ready');
 
 async function loadCartFromBackend() {
   try {
     console.log('Loading cart from backend...');
 
     const res = await fetch('/cart/json', {
-      headers: { 'Accept': 'application/json' },
+      headers: { Accept: 'application/json' },
       credentials: 'include',
     });
 
@@ -66,6 +157,7 @@ async function loadCartFromBackend() {
     }
 
     let rawItems = data.items || [];
+
     const items = rawItems.map((it) => {
       if (it.product) {
         return {
@@ -79,12 +171,12 @@ async function loadCartFromBackend() {
       return it;
     });
 
-    const total = data.total || items.reduce(
-      (sum, it) => sum + (parseFloat(it.price) || 0) * (it.quantity || 0),
-      0
-    );
-
-    console.log('Parsed cart items:', items, 'total:', total);
+    const total =
+      data.total ||
+      items.reduce(
+        (sum, it) => sum + (parseFloat(it.price) || 0) * (it.quantity || 0),
+        0
+      );
 
     const BasketContainer = document.querySelector('#basket_display');
     if (!BasketContainer) {
@@ -101,20 +193,70 @@ async function loadCartFromBackend() {
     }
 
     items.forEach((item) => {
-      const clone = basketTemplate.content.cloneNode(true);
+  const clone = basketTemplate.content.cloneNode(true);
 
-      const imgEl = clone.querySelector('img');
-      const nameEl = clone.querySelector('p');
-      const subEl = clone.querySelector('sub');
-      const qtyInput = clone.querySelector('.quantity');
+  const imgEl = clone.querySelector('img');
+  const nameEl = clone.querySelector('p');
+  const subEl = clone.querySelector('sub');
+  const qtyInput = clone.querySelector('.quantity');
 
-      if (imgEl) imgEl.src = getImageUrl(item);
-      if (nameEl) nameEl.textContent = item.name;
-      if (subEl) subEl.textContent = `£${item.price} x ${item.quantity}`;
-      if (qtyInput) qtyInput.value = item.quantity;
+  if (imgEl) imgEl.src = getImageUrl(item);
+  if (nameEl) nameEl.textContent = item.name;
 
-      BasketContainer.appendChild(clone);
-    });
+  if (subEl) subEl.textContent = `£${item.price} x ${item.quantity}`;
+
+  if (qtyInput) {
+    qtyInput.value = item.quantity;
+    qtyInput.readOnly = true;
+    qtyInput.setAttribute('inputmode', 'none');
+  }
+
+  const minusBtn = clone.querySelector('.qty-count--minus');
+  const addBtn = clone.querySelector('.qty-count--add');
+
+  const qtyMin = 0;
+  const stock = Number(item.stock ?? 0);
+  const qtyMax = Math.min(10, stock || 10);
+  const currentQty = parseInt(item.quantity) || 0;
+
+  if (minusBtn) {
+    minusBtn.disabled = currentQty <= qtyMin;
+    minusBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.UpdateCartQty(item.id, Math.max(qtyMin, currentQty - 1));
+    };
+  }
+
+  if (addBtn) {
+    addBtn.disabled = currentQty >= qtyMax;
+    addBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.UpdateCartQty(item.id, Math.min(qtyMax, currentQty + 1));
+    };
+  }
+
+  if (stock > 0 && currentQty > stock) {
+    const warning = document.createElement('div');
+    warning.style.color = 'red';
+    warning.style.fontSize = '12px';
+    warning.textContent = `Only ${stock} available`;
+    subEl?.after(warning);
+  }
+
+  const removeBtn = clone.querySelector('.remove_from_cart');
+  if (removeBtn) {
+    removeBtn.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      window.RemoveFromCart(item.id);
+    };
+  }
+
+  BasketContainer.appendChild(clone);
+});
+
 
     const count = items.reduce((acc, it) => acc + (it.quantity || 0), 0);
     const basketCountEls = document.getElementsByClassName('basket_count');
@@ -124,28 +266,30 @@ async function loadCartFromBackend() {
 
     const totalEl = document.getElementById('total');
     if (totalEl) {
-      totalEl.textContent = `£${total.toFixed(2)}`;
+      totalEl.textContent = `£${Number(total || 0).toFixed(2)}`;
     }
+
+    document.body.classList.add('cart-ready');
   } catch (err) {
     console.error('Error loading cart:', err);
   }
 }
 
 
-// -------------------------------
+// ===============================
 // Add to basket
-// -------------------------------
-window.AddToBasket = async function (id) {
+// ===============================
+window.AddToBasket = async function (id, qty = 1) {
   try {
-    console.log('AddToBasket called with id:', id);
+    qty = parseInt(qty, 10);
+    if (!Number.isFinite(qty) || qty < 1) qty = 1;
 
-    // This route is defined in web.php as cart.add.json
-    const url = `/cart/add-json/${id}?quantity=1`;
+    console.log('AddToBasket called with id:', id, 'qty:', qty);
+
+    const url = `/cart/add-json/${id}?quantity=${qty}`;
     const res = await fetch(url, {
       method: 'GET',
-      headers: {
-        Accept: 'application/json',
-      },
+      headers: { Accept: 'application/json' },
       credentials: 'include',
     });
 
@@ -158,14 +302,6 @@ window.AddToBasket = async function (id) {
       return;
     }
 
-    // Try to consume JSON, but don’t crash if it isn’t
-    try {
-      const data = await res.json();
-      console.log('AddToBasket JSON response:', data);
-    } catch (e) {
-      console.warn('AddToBasket response not JSON (maybe HTML).');
-    }
-
     await loadCartFromBackend();
   } catch (err) {
     console.error('Error adding to cart:', err);
@@ -173,245 +309,398 @@ window.AddToBasket = async function (id) {
   }
 };
 
-// -------------------------------
-// Load products from backend
-// -------------------------------
-fetch('/products', { credentials: 'include' })
-  .then((res) => {
-    if (!res.ok) {
-      throw new Error('Failed to load products from backend');
-    }
-    return res.json();
-  })
-  .then((data) => {
-    const products = Array.isArray(data) ? data : data.products || [];
 
-    window.allProducts = products;
-    localStorage.setItem('products', JSON.stringify(products));
+async function updateCartQty(productId, newQty) {
+  const res = await fetch(`/cart/update/${productId}`, {
+    method: 'PUT',
+    credentials: 'include',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+      // CSRF is required for PUT/DELETE in Laravel web routes
+      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
+    },
+    body: new URLSearchParams({ quantity: String(newQty) }),
+  });
 
-    let currentCategory;
+  if (!res.ok) {
+    const text = await res.text();
+    console.error('Update qty failed:', res.status, text);
+    throw new Error('Update qty failed');
+  }
 
-    // ---------------------------
-    // Product page (single item)
-    // ---------------------------
-    if (productid && container2) {
-      const product = products.find((p) => String(p.id) === String(productid));
-      console.log('Selected product:', product);
+  // backend returns updated cart json
+  return res.json();
+}
 
-      if (product) {
-        const img = container2.querySelector('.product_image');
-        const nameEl = container2.querySelector('.product_name');
-        const brandEl = container2.querySelector('#product_brand');
-        const descEl = container2.querySelector('.product_description');
-        const priceEl = container2.querySelector('.product_price');
 
-        if (img) img.src = getImageUrl(product);
-        if (nameEl) nameEl.textContent = product.name;
-        if (brandEl) brandEl.textContent = product.brand || '';
-        if (descEl) descEl.textContent = product.description;
-        if (priceEl) priceEl.textContent = `£${product.price}`;
 
-        const button = container2.querySelector('.add_to_basket');
-        if (button) {
-          button.addEventListener('click', () => window.AddToBasket(product.id));
-        }
 
-        document.title = product.name;
-      }
-    }
 
-    // ---------------------------
-    // Category filtering
-    // ---------------------------
-    if (category) {
-      currentCategory = products.filter(
-        (p) => p.category && p.category.name === category
-      );
-      const titleEl = document.getElementById('title');
-      if (titleEl) titleEl.textContent = category;
-    } else {
-      currentCategory = products;
-      const titleEl = document.getElementById('title');
-      if (titleEl) titleEl.textContent = 'Shop All';
-    }
 
-    // ---------------------------
-    // Shop All listing
-    // ---------------------------
-    if (container && ProductCard_template) {
-      container.innerHTML = '';
+// ===============================
+// Render Products (Shop All)
+// - NO description on cards
+// - View Product button does navigation
+// - Image click DOES NOTHING
+// ===============================
+function renderProducts(list) {
+  if (!container || !ProductCard_template) return;
 
-      currentCategory.forEach((product) => {
-        const clone = ProductCard_template.content.cloneNode(true);
+  container.innerHTML = '';
 
-        const priceEl = clone.querySelector('.product_price');
-        const descEl = clone.querySelector('.product_description');
-        const nameEl = clone.querySelector('.product_name');
-        const img = clone.querySelector('.product_image');
-        const card = clone.querySelector('.product_card');
+  list.forEach((product) => {
+    const clone = ProductCard_template.content.cloneNode(true);
 
-        if (priceEl) priceEl.textContent = product.price;
-        if (descEl) descEl.textContent = product.description;
-        if (nameEl) nameEl.textContent = product.name;
-        if (img) img.src = getImageUrl(product);
-        if (card) card.id = product.id;
+    const priceEl = clone.querySelector('.product_price');
+    const nameEl = clone.querySelector('.product_name');
+    const img = clone.querySelector('.product_image');
+    const descEl = clone.querySelector('.product_description'); // in case template still has it
 
-        if (img) {
-          img.addEventListener('click', () => {
-            window.location.href = `ProductPage.html?id=${product.id}`;
-          });
-        }
+    if (priceEl) priceEl.textContent = product.price;
+    if (nameEl) nameEl.textContent = product.name;
+    if (img) img.src = getImageUrl(product);
 
-        const button = clone.querySelector('.add_to_basket');
-        if (button) {
-          button.addEventListener('click', () => window.AddToBasket(product.id));
-        }
+    // Ensure card description is hidden even if template has it
+    if (descEl) descEl.textContent = '';
 
-        container.appendChild(clone);
+    // Disable image click navigation completely
+    if (img) {
+      img.style.cursor = 'default';
+      img.onclick = null;
+      img.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
       });
     }
 
-    // Initial cart render
-    loadCartFromBackend();
-  })
-  .catch((err) => {
-    console.error('Error loading products:', err);
+    // View Product button
+    const viewBtn = clone.querySelector('.view_product');
+    if (viewBtn) {
+      viewBtn.addEventListener('click', () => {
+        window.location.href = `ProductPage.html?id=${product.id}`;
+      });
+    }
+
+    // Add to basket / Out of stock handling
+    const addBtn = clone.querySelector('.add_to_basket');
+    if (addBtn) {
+      const stock = Number(product.stock ?? 0);
+
+      if (stock <= 0) {
+        addBtn.textContent = 'Out of Stock';
+        addBtn.disabled = true;
+        addBtn.classList.add('out-of-stock');
+        addBtn.onclick = null;
+        addBtn.style.pointerEvents = 'none';
+        addBtn.style.opacity = '0.6';
+        addBtn.style.cursor = 'not-allowed';
+      } else {
+        addBtn.textContent = 'Add to Basket';
+        addBtn.disabled = false;
+        addBtn.classList.remove('out-of-stock');
+        addBtn.style.pointerEvents = '';
+        addBtn.style.opacity = '';
+        addBtn.style.cursor = '';
+
+        addBtn.addEventListener('click', () => window.AddToBasket(product.id));
+      }
+    }
+
+    container.appendChild(clone);
   });
+}
 
-// -------------------------------
-// Quantity controls (for basket rows)
-// -------------------------------
-(function () {
-  const qtyInputs = document.querySelectorAll('.qty-input');
 
-  if (!qtyInputs.length) {
+// ===============================
+// NEW Search (brand new input)
+// HTML must contain: <input id="shop_search" ...>
+// ===============================
+function initShopSearch() {
+  const input = document.getElementById('shop_search');
+  if (!input) {
+    console.warn('⚠️ #shop_search not found (search will not work).');
     return;
   }
 
-  qtyInputs.forEach(function (qtyContainer) {
-    const input = qtyContainer.querySelector('.product-qty');
-    const minusBtn = qtyContainer.querySelector('.qty-count--minus');
-    const addBtn = qtyContainer.querySelector('.qty-count--add');
+  function runSearch() {
+    const term = (input.value || '').trim().toLowerCase();
 
-    if (!input || !minusBtn || !addBtn) return;
+    const base =
+      window.visibleBaseProducts?.length
+        ? window.visibleBaseProducts
+        : window.currentCategoryProducts?.length
+        ? window.currentCategoryProducts
+        : window.allProducts;
 
-    const qtyMin = parseInt(input.getAttribute('min')) || 0;
-    const qtyMax = parseInt(input.getAttribute('max')) || 10;
+    const filtered = !term
+      ? base
+      : base.filter((p) => (p.name || '').toLowerCase().includes(term));
 
-    function updateButtons() {
-      const qty = parseInt(input.value) || 0;
+    renderProducts(filtered);
+  }
 
-      if (qty <= qtyMin) {
-        minusBtn.setAttribute('disabled', 'true');
-      } else {
-        minusBtn.removeAttribute('disabled');
+  input.addEventListener('input', runSearch);
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      runSearch();
+    }
+  });
+
+  console.log('✅ Shop search initialised');
+}
+
+function initProductPageQty(product) {
+  const scope = document.querySelector('#product_display');
+  if (!scope) return () => 1;
+
+  const box = scope.querySelector('.qty-input');
+  if (!box) return () => 1;
+
+  const input = box.querySelector('.product-qty');
+  const minusBtn = box.querySelector('.qty-count--minus');
+  const addBtn = box.querySelector('.qty-count--add');
+
+  if (!input || !minusBtn || !addBtn) return () => 1;
+
+  // ✅ block typing (even if readonly is removed later)
+  input.setAttribute('readonly', 'readonly');
+  input.addEventListener('keydown', (e) => e.preventDefault());
+  input.addEventListener('paste', (e) => e.preventDefault());
+
+  const stock = Number(product?.stock ?? 0);
+  const min = 1;
+  const max = stock > 0 ? Math.min(stock, 10) : 1;
+
+  function setQty(next) {
+    let qty = parseInt(next, 10);
+    if (!Number.isFinite(qty)) qty = min;
+
+    qty = Math.max(min, Math.min(max, qty));
+    input.value = String(qty);
+
+    minusBtn.disabled = qty <= min;
+    addBtn.disabled = qty >= max;
+  }
+
+  minusBtn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setQty(parseInt(input.value, 10) - 1);
+  };
+
+  addBtn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setQty(parseInt(input.value, 10) + 1);
+  };
+
+  setQty(1);
+
+  // return a getter for the current qty
+  return () => parseInt(input.value, 10) || 1;
+}
+
+// ===============================
+// Load Products
+// ===============================
+if (container || container2) {
+  fetch('/products', { credentials: 'include' })
+    .then((res) => {
+      if (!res.ok) throw new Error('Failed to load products from backend');
+      return res.json();
+    })
+    .then((data) => {
+      const products = Array.isArray(data) ? data : data.products || [];
+      window.allProducts = products;
+      localStorage.setItem('products', JSON.stringify(products));
+
+      // ---------------------------
+      // Product page (single item)
+      // - description SHOULD show here
+      // ---------------------------
+      if (productid && container2) {
+        const product = products.find((p) => String(p.id) === String(productid));
+        console.log('Selected product:', product);
+
+        if (product) {
+          const img = container2.querySelector('.product_image');
+          const nameEl = container2.querySelector('.product_name');
+          const brandEl = container2.querySelector('#product_brand');
+          const descEl = container2.querySelector('.product_description');
+          const priceEl = container2.querySelector('.product_price');
+
+          if (img) img.src = getImageUrl(product);
+          if (nameEl) nameEl.textContent = product.name;
+          if (brandEl) brandEl.textContent = product.brand || '';
+          if (descEl) descEl.textContent = product.description || '';
+          if (priceEl) priceEl.textContent = `£${product.price}`;
+
+
+
+          const button = container2.querySelector('.add_to_basket');
+          const getQty = initProductPageQty(product); 
+
+          if (button) {
+            const stock = Number(product.stock ?? 0);
+
+            if (stock <= 0) {
+              button.textContent = 'Out of Stock';
+              button.disabled = true;
+              button.style.cursor = 'not-allowed';
+              button.style.opacity = '0.6';
+            } else {
+              button.textContent = 'Add to Basket';
+              button.disabled = false;
+              button.style.cursor = 'pointer';
+              button.style.opacity = '1';
+
+              button.onclick = () => {
+                const qty = getQty();              
+                window.AddToBasket(product.id, qty); 
+              };
+            }
+          }
+
+          
+          document.title = product.name;
+        }
+
+        loadCartFromBackend();
+        return;
       }
 
-      if (qty >= qtyMax) {
-        addBtn.setAttribute('disabled', 'true');
+      // ---------------------------
+      // Category filtering (Shop All)
+      // ---------------------------
+      let currentCategory = [];
+
+      if (category) {
+        currentCategory = products.filter(
+          (p) => p.category && p.category.name === category
+        );
+
+        const titleEl = document.getElementById('title');
+        if (titleEl) titleEl.textContent = category;
       } else {
-        addBtn.removeAttribute('disabled');
+        currentCategory = products;
+
+        const titleEl = document.getElementById('title');
+        if (titleEl) titleEl.textContent = 'Shop All';
       }
+
+      window.currentCategoryProducts = currentCategory;
+      window.visibleBaseProducts = currentCategory;
+
+      // Render initial list
+      if (container && ProductCard_template) {
+        renderProducts(currentCategory);
+      }
+
+      // Init search AFTER we have products + base list
+      initShopSearch();
+
+      // Cart
+      loadCartFromBackend();
+    })
+    .catch((err) => console.error('Error loading products:', err));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ===============================
+// Reviews (unchanged)
+// ===============================
+const reviews_button = document.getElementById('reviews_button');
+const reviewsContainer = document.getElementById('reviews');
+const template_review = document.getElementById('template_review');
+
+function addReview(review) {
+  if (!template_review || !reviewsContainer) return;
+
+  const clone = template_review.content.cloneNode(true);
+  clone.querySelector('.reviewer_name').textContent = review.name;
+  clone.querySelector('.review_date').textContent = review.date;
+  clone.querySelector('.review_rating').textContent = 'Rating: ' + review.rating + '/5';
+  clone.querySelector('.review_comment').textContent = review.comment;
+  reviewsContainer.appendChild(clone);
+}
+
+// ===============================
+// Initial cart render for ALL pages
+// ===============================
+function initCartUI(retry = 0) {
+  const maxRetries = 20;
+
+  const basketEl = document.querySelector('#basket_display');
+  const templateEl = document.querySelector('.basket_template');
+
+  if (basketEl && templateEl) {
+    loadCartFromBackend();
+  } else if (retry < maxRetries) {
+    setTimeout(() => initCartUI(retry + 1), 200);
+  } else {
+    console.warn('Basket UI not found after waiting, giving up.');
+  }
+}
+
+initCartUI();
+
+
+window.UpdateCartQty = async function (productId, qty) {
+  try {
+    const res = await fetch(`/cart/update-json/${productId}?quantity=${qty}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    });
+
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('UpdateCartQty failed:', res.status, text);
+      alert('Could not update cart.');
+      return;
     }
 
-    input.addEventListener('change', updateButtons);
-    input.addEventListener('input', updateButtons);
-
-    minusBtn.addEventListener('click', function () {
-      let qty = parseInt(input.value) || 0;
-      qty = qty > qtyMin ? qty - 1 : qtyMin;
-      input.value = qty;
-      updateButtons();
-    });
-
-    addBtn.addEventListener('click', function () {
-      let qty = parseInt(input.value) || 0;
-      qty = qty < qtyMax ? qty + 1 : qtyMax;
-      input.value = qty;
-      updateButtons();
-    });
-
-    updateButtons();
-  });
-})();
-
-// -------------------------------
-// Reviews (unchanged)
-// -------------------------------
-
-
-
-let reviews=JSON.parse(localStorage.getItem('reviews')) || [];
-  const reviewsContainer = document.getElementById('reviews_container');
-  let total_reviews= 0;
-let total_rating=0;
-let avg_rating=0;
-
-// || = also known as /or
-window.onload=function(){
-reviews.forEach(review=>display(review))
-
-let sum = 0;
-
-for(let i=0; i<reviews.length; i++){
-  sum+=Number(reviews[i].rating);
-}
-avg_rating = (sum / total_reviews).toFixed(2);
-
-document.getElementById('total_reviews_value').innerHTML =`total reviews:${total_reviews}`;
-document.getElementById('average_rating_value').innerHTML =avg_rating;
-
-}
-function display(review){
-  const template_review = document.getElementById('review_template');
-  const clone=template_review.content.cloneNode(true);
-
-  clone.querySelector('h3').textContent = review.username;
-  clone.querySelector('p').textContent = review.text;
-  clone.querySelector('span').textContent =
-    'Rating: ' + review.rating + '/5';
-
-    reviewsContainer.appendChild(clone);
+    await loadCartFromBackend();
+  } catch (e) {
+    console.error(e);
+    alert('Could not update cart.');
+  }
 };
 
-function addReview(event) {
-  event.preventDefault();
+window.RemoveFromCart = async function (productId) {
+  try {
+    const res = await fetch(`/cart/remove-json/${productId}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    });
 
-  const form=document.getElementById('review_form')
-  
-  const username=document.getElementById('review_name').value
-  const text=document.getElementById('review_input').value
-  const rating =document.getElementById('review_rating').value;
-
-  const review={username,text,rating};
-
-  reviews.push(review);
-  total_reviews=reviews.length;
-
-let sum = 0;
-
-for(let i=0; i<reviews.length; i++){
-  sum+=Number(reviews[i].rating);
-}
-avg_rating = (sum / total_reviews).toFixed(2);
-
-document.getElementById('total_reviews_value').innerHTML =`total reviews:${total_reviews}`;
-document.getElementById('average_rating_value').innerHTML =avg_rating;
-
-  localStorage.setItem('reviews',JSON.stringify(reviews))
-
-
-  display(review);
-
-  form.reset();
-}
-
-function toggleReview(){
-    const form = document.getElementById('review_form');
-    if(form.style.display=='none'){
-        form.style.display='flex';
-    }else{
-        form.style.display='none';
+    if (!res.ok) {
+      const text = await res.text();
+      console.error('RemoveFromCart failed:', res.status, text);
+      alert('Could not remove item from cart.');
+      return;
     }
-}
+
+    await loadCartFromBackend();
+  } catch (e) {
+    console.error(e);
+    alert('Could not remove item from cart.');
+  }
+};
+
 

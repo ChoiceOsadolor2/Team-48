@@ -47,9 +47,16 @@
 </div>
 
 <div>
-    <label class="block mb-1">Image URL</label>
-    <input type="text" name="image_url" class="w-full border p-2"
-           value="{{ old('image_url', optional($product)->image_url) }}">
-    <p class="text-gray-500 text-sm">Use a full https:// URL. No need to store images locally.</p>
-    @error('image_url') <p class="text-red-600 text-sm">{{ $message }}</p> @enderror
+    <label class="block mb-1">Product Image</label>
+    <input type="file" name="image" accept="image/*" class="w-full border p-2">
+
+    @if(!empty($product?->image))
+        <img src="{{ asset('storage/' . $product->image) }}"
+             class="mt-2 h-24 object-cover rounded">
+    @endif
+
+    @error('image')
+        <p class="text-red-600 text-sm">{{ $message }}</p>
+    @enderror
 </div>
+

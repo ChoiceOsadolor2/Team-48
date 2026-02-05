@@ -7,18 +7,50 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProductController extends Controller
 {
-    // List all products
-    public function index()
-    {
-        $products = Product::with('category')->orderBy('created_at', 'desc')->get();
+    public function index(Request $request)
+{
+    $categoryKey = $request->query('category');
 
-        return view('admin.products.index', compact('products'));
+    $categoryNames = [
+        'Games' => [
+            'Video Games',
+        ],
+        'Consoles and PCs' => [
+            'Consoles and PCs',
+        ],
+        'Accessories' => [
+            'Accessories',
+        ],
+        'Hardware' => [
+            'Gaming Chairs and Desks',
+            'Monitors and Displays',
+        ],
+    ];
+
+    $query = Product::with('category')->orderBy('created_at', 'desc');
+
+    if ($categoryKey && isset($categoryNames[$categoryKey])) {
+        $names = $categoryNames[$categoryKey];
+
+        $query->whereHas('category', function ($q) use ($names) {
+            $q->whereIn('name', $names);
+        });
     }
 
-    // Show form to create a product
+    $products = $query->get();
+
+    return view('admin.products.index', [
+        'products'    => $products,
+        'categoryKey' => $categoryKey,
+    ]);
+}
+
+
     public function create()
     {
         $categories = Category::orderBy('name')->get();
@@ -26,28 +58,33 @@ class ProductController extends Controller
         return view('admin.products.create', compact('categories'));
     }
 
-    // Store new product in DB
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'category_id' => ['required', 'exists:categories,id'],
-            'name'        => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'price'       => ['required', 'numeric', 'min:0'],
-            'stock'       => ['required', 'integer', 'min:0'],
-            'platform'    => ['nullable', 'string', 'max:255'],
-            'image_url'   => ['nullable', 'string', 'max:2048'], // remote URL allowed
-        ]);
+    $data = $request->validate([
+        'category_id' => ['required', 'exists:categories,id'],
+        'name'        => ['required', 'string', 'max:255'],
+        'description' => ['required', 'string'],
+        'price'       => ['required', 'numeric', 'min:0'],
+        'stock'       => ['required', 'integer', 'min:0'],
+        'platform'    => ['nullable', 'string', 'max:255'],
+        'image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+    ]);
 
-        $data['slug'] = Str::slug($data['name']);
+    $data['slug'] = Str::slug($data['name']);
 
-        Product::create($data);
-
-        return redirect()->route('admin.products.index')
-            ->with('status', 'Product created successfully.');
+    if ($request->hasFile('image')) {
+        $data['image_url'] = $request->file('image')->store('products', 'public');
+    } else {
+        $data['image_url'] = null;
     }
 
-    // Show form to edit a product
+    Product::create($data);
+
+    return redirect()->route('admin.products.index')
+        ->with('status', 'Product created successfully.');
+}
+
+
     public function edit(Product $product)
     {
         $categories = Category::orderBy('name')->get();
@@ -55,28 +92,37 @@ class ProductController extends Controller
         return view('admin.products.edit', compact('product', 'categories'));
     }
 
-    // Update existing product
     public function update(Request $request, Product $product)
-    {
-        $data = $request->validate([
-            'category_id' => ['required', 'exists:categories,id'],
-            'name'        => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'price'       => ['required', 'numeric', 'min:0'],
-            'stock'       => ['required', 'integer', 'min:0'],
-            'platform'    => ['nullable', 'string', 'max:255'],
-            'image_url'   => ['nullable', 'string', 'max:2048'],
-        ]);
+{
+    $data = $request->validate([
+        'category_id' => ['required', 'exists:categories,id'],
+        'name'        => ['required', 'string', 'max:255'],
+        'description' => ['required', 'string'],
+        'price'       => ['required', 'numeric', 'min:0'],
+        'stock'       => ['required', 'integer', 'min:0'],
+        'platform'    => ['nullable', 'string', 'max:255'],
+        'image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+    ]);
 
-        $data['slug'] = Str::slug($data['name']);
+    $data['slug'] = Str::slug($data['name']);
 
-        $product->update($data);
+    if ($request->hasFile('image')) {
+        if ($product->image_url && !str_starts_with($product->image_url, 'http')) {
+            Storage::disk('public')->delete($product->image_url);
+        }
 
-        return redirect()->route('admin.products.index')
-            ->with('status', 'Product updated successfully.');
+        $data['image_url'] = $request->file('image')->store('products', 'public');
+    } else {
+        unset($data['image_url']);
     }
 
-    // Delete a product
+    $product->update($data);
+
+    return redirect()->route('admin.products.index')
+        ->with('status', 'Product updated successfully.');
+}
+
+
     public function destroy(Product $product)
     {
         $product->delete();

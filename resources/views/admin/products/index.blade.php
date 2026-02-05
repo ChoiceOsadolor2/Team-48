@@ -23,6 +23,49 @@
                         </a>
                     </div>
 
+                    @php
+                        // Comes from controller: 'Games', 'Consoles and PCs', etc.
+                        $currentCategory = $categoryKey ?? request('category');
+                    @endphp
+
+                    {{-- Category tabs --}}
+                    <div class="mb-6 flex flex-wrap gap-1 text-xs">
+                        {{-- All --}}
+                        <a href="{{ route('admin.products.index') }}"
+                           class="px-3 py-1 border rounded-t
+                                  {{ !$currentCategory ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
+                            All
+                        </a>
+
+                        {{-- Games -> key "Games" --}}
+                        <a href="{{ route('admin.products.index', ['category' => 'Games']) }}"
+                           class="px-3 py-1 border rounded-t
+                                  {{ $currentCategory === 'Games' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
+                            Games
+                        </a>
+
+                        {{-- Consoles and PCs -> key "Consoles and PCs" --}}
+                        <a href="{{ route('admin.products.index', ['category' => 'Consoles and PCs']) }}"
+                           class="px-3 py-1 border rounded-t
+                                  {{ $currentCategory === 'Consoles and PCs' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
+                            Consoles and PCs
+                        </a>
+
+                        {{-- Accessories -> key "Accessories" --}}
+                        <a href="{{ route('admin.products.index', ['category' => 'Accessories']) }}"
+                           class="px-3 py-1 border rounded-t
+                                  {{ $currentCategory === 'Accessories' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
+                            Accessories
+                        </a>
+
+                        {{-- Hardware -> key "Hardware" (chairs + monitors) --}}
+                        <a href="{{ route('admin.products.index', ['category' => 'Hardware']) }}"
+                           class="px-3 py-1 border rounded-t
+                                  {{ $currentCategory === 'Hardware' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
+                            Hardware
+                        </a>
+                    </div>
+
                     @if ($products->isEmpty())
                         <p>No products yet.</p>
                     @else

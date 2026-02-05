@@ -87,6 +87,10 @@ class CartController extends Controller
 
         Session::put('cart', $cart);
 
+        if ($request->wantsJson()) {
+            return $this->json($request);
+        }
+
         return back()->with('status', 'Cart updated.');
     }
 
@@ -100,6 +104,32 @@ class CartController extends Controller
 
         return back()->with('status', 'Item removed.');
     }
+
+    public function updateJson(Request $request, Product $product)
+    {
+        $qty = (int) $request->query('quantity', 1);
+
+        $cart = Session::get('cart', []);
+
+        if ($qty <= 0) {
+            unset($cart[$product->id]);
+        } else {
+            $cart[$product->id] = $qty;
+        }
+
+        Session::put('cart', $cart);
+
+        return $this->json($request);
+    }
+
+
+    public function removeJson(Product $product, Request $request)
+    {    
+        $this->remove($product);
+
+        return $this->json($request);
+    }
+
 
     public function clear()
     {
@@ -138,9 +168,11 @@ class CartController extends Controller
                 'name'     => $product->name,
                 'price'    => $product->price,
                 'quantity' => $qty,
+                'stock'    => (int) $product->stock, 
                 'image_url'=> $product->image_url,
                 'subtotal' => $subtotal,
-            ];
+];
+
 
             $total += $subtotal;
         }

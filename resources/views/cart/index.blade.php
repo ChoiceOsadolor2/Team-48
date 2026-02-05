@@ -2,6 +2,12 @@
 
     <h1 class="text-2xl font-bold mb-6">Your Cart</h1>
 
+    @if (session('stock_error'))
+        <div class="cart-error">
+            {{ session('stock_error') }}
+        </div>
+    @endif
+
     {{-- Flash message --}}
     @if (session('status'))
         <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">

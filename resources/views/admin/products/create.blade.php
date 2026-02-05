@@ -10,16 +10,21 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    <form method="POST" action="{{ route('admin.products.store') }}" class="space-y-4">
+                    <form method="POST"
+                        action="{{ route('admin.products.store') }}"
+                        enctype="multipart/form-data"
+                        class="space-y-4">
+
                         @csrf
 
                         @include('admin.products.form', ['product' => null])
 
                         <button type="submit"
-                                class="px-4 py-2 bg-green-600 text-white rounded">
-                            Save
-                        </button>
-                    </form>
+                            class="px-4 py-2 bg-green-600 text-white rounded">
+                        Save
+                    </button>
+                </form>
+
 
                 </div>
             </div>

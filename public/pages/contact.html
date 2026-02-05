@@ -108,15 +108,20 @@
                 emailjs.sendForm("service_k4c7ayn", "template_hdk8g2g", this)
                 .then(() => {
                     document.getElementById("statusMsg").innerHTML =
-                        "✅ Your message has been sent!";
+                        "Your message has been sent";
                 }, (error) => {
                     document.getElementById("statusMsg").innerHTML =
-                        "❌ Failed to send message. Check console.";
+                        "Failed to send message, check console.";
                     console.log("FAILED...", error);
                 });
             });
         };
     </script>
+
+
+<script src="../scripts/header.js"></script>
+<script src="../scripts/products.js?v=4"></script>
+
 
 </body>
 </html>
