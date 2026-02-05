@@ -351,3 +351,55 @@ nav{
 			  background: transparent;
 			  cursor: not-allowed;
 			}
+
+
+.user-menu { position: relative; display: inline-block; }
+
+.user-menu-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+
+.user-menu-caret {
+  color: white;
+  font-size: 14px;
+  opacity: 0.85;
+  margin-left: 2px;
+}
+
+.user-menu-dropdown {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 10px);
+  min-width: 190px;
+  background: rgba(15, 15, 15, 0.95);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px;
+  overflow: hidden;
+  display: none;
+  z-index: 9999;
+}
+
+.user-menu-dropdown.open { display: block; }
+
+.user-menu-item {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  color: #fff;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.user-menu-item:hover { background: rgba(255,255,255,0.08); }
+.user-menu-item.danger { color: #ff4d4d; }
+

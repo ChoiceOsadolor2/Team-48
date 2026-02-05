@@ -11,6 +11,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+
+
+
+Route::get('/logout-json', function (Request $request) {
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
+
+    return response()->json(['success' => true]);
+})->name('logout.json');
 
 Route::get('/auth/status', function () {
     $user = Auth::user();
@@ -64,10 +75,18 @@ Route::middleware('auth')->group(function () {
     Route::put('/cart/update/{product}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/remove/{product}', [CartController::class, 'remove'])->name('cart.remove');
     Route::post('/cart/clear', [CartController::class, 'clear'])->name('cart.clear');
-    Route::get('/cart/json', [CartController::class, 'json'])->name('cart.json');
+    
+    Route::get('/cart/json', [CartController::class, 'json'])
+        ->name('cart.json');
 
     Route::get('/cart/add-json/{product}', [CartController::class, 'add'])
         ->name('cart.add.json');
+
+    Route::get('/cart/remove-json/{product}', [CartController::class, 'removeJson'])
+        ->name('cart.remove.json');
+
+    Route::get('/cart/update-json/{product}', [CartController::class, 'update'])
+        ->name('cart.update.json');
 
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
     Route::post('/checkout/place', [CheckoutController::class, 'place'])->name('checkout.place');
@@ -81,7 +100,9 @@ Route::middleware('auth')->group(function () {
     });
 });
 
+
 Route::middleware(['auth', 'admin'])->group(function () {
+
     Route::get('/admin', function () {
         return view('admin.dashboard');
     })->name('admin.dashboard');
@@ -89,13 +110,35 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])
         ->name('admin.users.index');
 
-    Route::get('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])->name('admin.products.index');
-    Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])->name('admin.products.create');
-    Route::post('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'store'])->name('admin.products.store');
-    Route::get('/admin/products/{product}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])->name('admin.products.edit');
-    Route::put('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])->name('admin.products.update');
-    Route::delete('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])->name('admin.products.destroy');
+    Route::get('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])
+        ->name('admin.products.index');
+
+    Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])
+        ->name('admin.products.create');
+
+    Route::post('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'store'])
+        ->name('admin.products.store');
+
+    Route::get('/admin/products/{product}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])
+        ->name('admin.products.edit');
+
+    Route::put('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])
+        ->name('admin.products.update');
+
+    Route::delete('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])
+        ->name('admin.products.destroy');
+
+   
+    Route::get('/admin/orders', [AdminOrderController::class, 'index'])
+        ->name('admin.orders.index');
+
+    Route::get('/admin/orders/{order}', [AdminOrderController::class, 'show'])
+        ->name('admin.orders.show');
+
+    Route::post('/admin/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])
+        ->name('admin.orders.cancel');
 });
+
 
 
 Route::get('/login-json', function (Request $request) {
@@ -104,7 +147,9 @@ Route::get('/login-json', function (Request $request) {
         'password' => ['required'],
     ]);
 
-    if (Auth::attempt($credentials)) {
+    $remember = $request->boolean('remember');
+
+    if (Auth::attempt($credentials, $remember)) {
         $request->session()->regenerate();
 
         return response()->json([
@@ -117,6 +162,8 @@ Route::get('/login-json', function (Request $request) {
         'message' => 'Invalid email or password.',
     ], 401);
 });
+
+
 
 Route::get('/register-json', function (Request $request) {
     $data = $request->validate([
@@ -136,6 +183,11 @@ Route::get('/register-json', function (Request $request) {
 
     return response()->json(['success' => true]);
 });
+
+Route::get('/login', function (Request $request) {
+    $intended = $request->query('redirect') ?? url()->previous() ?? url('/');
+    return redirect('/pages/login.html?redirect=' . urlencode($intended));
+})->name('login');
 
 require __DIR__.'/auth.php';
 

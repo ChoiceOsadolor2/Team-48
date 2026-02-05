@@ -23,7 +23,6 @@ class OrderItem extends Model
 
     public function product()
     {
-        // If products table is added later → works automatically
         return $this->belongsTo(Product::class)->withDefault([
             'name' => 'Product Deleted',
         ]);

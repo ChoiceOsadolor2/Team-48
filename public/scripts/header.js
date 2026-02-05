@@ -6,19 +6,75 @@ fetch(headerFile)
     const headerEl = document.querySelector('header');
     headerEl.innerHTML = html;
 
-    // After header HTML is inserted, wire up login/profile + admin link
-    const profileLink = headerEl.querySelector('#profileLink');
+    
+
+    const userMenuBtn = headerEl.querySelector('#userMenuBtn');
+    const userMenuDropdown = headerEl.querySelector('#userMenuDropdown');
     const adminLink = headerEl.querySelector('#admin-link');
 
-    // Default: assume logged out → go to custom login
-    if (profileLink) {
-      profileLink.href = '/pages/login.html';
-    }
-    if (adminLink) {
-      adminLink.style.display = 'none';
-    }
+if (adminLink) adminLink.style.display = 'none';
 
-    // Ask backend who is logged in
+if (userMenuBtn && userMenuDropdown) {
+  const closeMenu = () => {
+    userMenuDropdown.classList.remove('open');
+    userMenuBtn.setAttribute('aria-expanded', 'false');
+  };
+
+  userMenuBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const open = userMenuDropdown.classList.toggle('open');
+    userMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  });
+
+  document.addEventListener('click', closeMenu);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeMenu();
+  });
+
+  fetch('/user-status', {
+    headers: { Accept: 'application/json' },
+    credentials: 'include'
+  })
+    .then(res => res.json())
+    .then(data => {
+      if (data.logged_in) {
+        userMenuDropdown.innerHTML = `
+          <a href="/orders" class="user-menu-item">Previous Orders</a>
+          <a href="/profile" class="user-menu-item">Profile Info</a>
+          <button type="button" class="user-menu-item danger" id="logoutBtn">
+            Logout
+          </button>
+        `;
+
+        if (adminLink && data.user?.role === 'admin') {
+          adminLink.style.display = 'inline-block';
+        }
+
+        const logoutBtn = userMenuDropdown.querySelector('#logoutBtn');
+        if (logoutBtn) {
+          logoutBtn.onclick = async () => {
+            await fetch('/logout-json', { credentials: 'include' });
+            window.location.href = '/pages/login.html';
+          };
+        }
+      } else {
+        userMenuDropdown.innerHTML = `
+          <a href="/pages/login.html" class="user-menu-item">Login</a>
+          <a href="/pages/register.html" class="user-menu-item">Register</a>
+        `;
+      }
+    })
+    .catch(() => {
+      userMenuDropdown.innerHTML = `
+        <a href="/pages/login.html" class="user-menu-item">Login</a>
+        <a href="/pages/register.html" class="user-menu-item">Register</a>
+      `;
+    });
+}
+
+    
+
     fetch('/user-status', {
       headers: { 'Accept': 'application/json' }
     })
@@ -30,22 +86,6 @@ fetch(headerFile)
         } catch (e) {
           console.error('Non-JSON /user-status response:', text);
           return;
-        }
-
-        if (!data || !profileLink) return;
-
-        if (data.logged_in) {
-          // Logged in → send to Laravel profile page
-          profileLink.href = '/profile';
-
-          // Show admin link if user is admin
-          if (adminLink && data.user && data.user.role === 'admin') {
-            adminLink.style.display = 'inline-block';
-          }
-        } else {
-          // Not logged in → stay on Login page
-          profileLink.href = '/pages/login.html';
-          if (adminLink) adminLink.style.display = 'none';
         }
       })
       .catch(err => {
@@ -100,3 +140,33 @@ function closeSection(id) {
     section.style.display = 'none';
   }
 }
+
+(async function () {
+    try {
+        const res = await fetch('/user-status', {
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!res.ok) return;
+
+        const data = await res.json();
+
+        const remember = localStorage.getItem('rememberLogin') === '1';
+        const temp = sessionStorage.getItem('tempLoggedIn') === '1';
+
+        if (data.logged_in && !remember && !temp) {
+            await fetch('/logout-json', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            window.location.reload();
+        }
+    } catch (err) {
+        console.error('Auto-logout check failed:', err);
+    }
+})();

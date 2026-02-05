@@ -9,6 +9,20 @@
     <link rel="stylesheet" href="../styles/style.css">
 
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+
+    <style>
+      /* Custom inline error message under password */
+      .field-error {
+        display: none;
+        margin-top: 8px;
+        font-size: 14px;
+        color: #ff4d4d;
+      }
+      .input-error {
+        border-color: rgba(255, 77, 77, 0.9) !important;
+        box-shadow: 0 0 0 2px rgba(255, 77, 77, 0.15);
+      }
+    </style>
 </head>
 
 <body>
@@ -16,7 +30,7 @@
 <header></header>
 
 <div class="login-box">
-    <form id="loginForm">
+    <form id="loginForm" novalidate>
         <h1>Login</h1>
 
         <div class="input-box">
@@ -27,6 +41,18 @@
         <div class="input-box">
             <input type="password" id="loginPassword" placeholder="Password" required>
             <i class='bx bxs-lock-alt'></i>
+
+            <!-- ✅ Custom error message shown here -->
+            <p id="loginError" class="field-error"></p>
+        </div>
+
+        <div class="remember-forgot">
+            <label>
+                <input type="checkbox" id="rememberMe">
+                Remember me
+            </label>
+
+            <a href="/forgot-password">Forgot password?</a>
         </div>
 
         <button type="submit" class="login-button">Login</button>
@@ -38,28 +64,49 @@
     </form>
 </div>
 
+
 <script src="../scripts/header.js"></script>
 
 <script>
+function showLoginError(message) {
+  const err = document.getElementById("loginError");
+  const pass = document.getElementById("loginPassword");
+
+  if (!err || !pass) return;
+
+  err.textContent = message || "";
+  err.style.display = message ? "block" : "none";
+
+  if (message) pass.classList.add("input-error");
+  else pass.classList.remove("input-error");
+}
+
+document.getElementById("loginPassword").addEventListener("input", () => {
+  // clear error as user types
+  showLoginError("");
+});
+
 document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const email = document.getElementById("loginEmail").value.trim();
     const password = document.getElementById("loginPassword").value.trim();
+    const remember = document.getElementById("rememberMe").checked ? '1' : '0';
+
+    // Clear old error every submit
+    showLoginError("");
 
     if (!email || !password) {
-        alert("Please enter both email and password.");
+        showLoginError("Please enter both email and password.");
         return;
     }
 
     try {
-        const params = new URLSearchParams({ email, password });
+        const params = new URLSearchParams({ email, password, remember });
 
         const res = await fetch(`/login-json?${params.toString()}`, {
             method: "GET",
-            headers: {
-                "Accept": "application/json"
-            }
+            headers: { "Accept": "application/json" }
         });
 
         const dataText = await res.text();
@@ -71,20 +118,31 @@ document.getElementById("loginForm").addEventListener("submit", async function (
         }
 
         if (res.ok && data.success) {
-            window.location.href = "/";
+            if (document.getElementById("rememberMe").checked) {
+                localStorage.setItem("rememberLogin", "1");
+                sessionStorage.removeItem("tempLoggedIn");
+            } else {
+                localStorage.removeItem("rememberLogin");
+                sessionStorage.setItem("tempLoggedIn", "1");
+            }
+
+            const params = new URLSearchParams(window.location.search);
+            const redirectTo = params.get("redirect") || "/";
+            window.location.href = redirectTo;
+
         } else if (res.status === 401) {
-            alert((data && data.message) || "Invalid email or password.");
+            // ✅ show custom inline message instead of alert
+            showLoginError((data && data.message) || "Incorrect email or password.");
         } else {
             console.error("Login error:", res.status, dataText);
-            alert("Something went wrong. Please try again.");
+            showLoginError("Something went wrong. Please try again.");
         }
     } catch (err) {
         console.error("Login error:", err);
-        alert("Unable to contact server. Please try again.");
+        showLoginError("Unable to contact server. Please try again.");
     }
 });
 </script>
-
 
 </body>
 </html>
