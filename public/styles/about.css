@@ -1,3 +1,7 @@
+:root {
+    --background-dark: #090922;
+}
+
 /* THIS IS A TEST CHANGE */
 * {
     margin: 0;
@@ -6,7 +10,7 @@
 }
 
 body {
-    background: #090922;
+    background: var(--background-dark);
     font-family: Arial, sans-serif;
     color: white;
 }
