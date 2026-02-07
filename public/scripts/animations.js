@@ -83,7 +83,7 @@ window.addEventListener("scroll", () => {
 
 
                                             // Dark Mode Toggle 
-document.querySelector("html").setAttribute("data-theme", 'light');
+document.querySelector("html").setAttribute("data-theme", 'dark');
 
 
 // Create a button element for theme toggling

@@ -14,8 +14,6 @@ main{
 
 
 body {
-    background: #000;
-    color: #fff;
     font-family: system-ui, sans-serif;
     overflow-x: hidden;
 }
@@ -48,7 +46,6 @@ body {
 
 .nav-links a {
     text-decoration: none;
-    color: #fff;
     opacity: 0.9;
 }
 
@@ -110,7 +107,7 @@ body {
 /* Conatct form */
 .contact-container {
     max-width: 600px;
-    margin: 180px auto 80px;
+    margin: 50px auto 80px;
     text-align: center;
 }
 
@@ -120,7 +117,6 @@ body {
 }
 
 .contact-container p {
-    color: #ccc;
     margin-bottom: 2rem;
 }
 

@@ -5,8 +5,7 @@
 }
 
 body {
-  background: #000;
-  color: #fff;
+  background-color: #000;
   font-family: system-ui, sans-serif;
   overflow-x: hidden;
 }
@@ -50,7 +49,6 @@ main{
 
 .nav-links a {
   text-decoration: none;
-  color: #fff;
   opacity: 0.9;
 }
 
@@ -142,7 +140,6 @@ main{
   margin: 2rem auto;
   font-size: 1.1rem;
   line-height: 1.6;
-  color: #ddd;
 }
 
 .cta {
@@ -176,12 +173,46 @@ main{
   border: 1px solid #444;
   transition: 0.2s;
   cursor: pointer;
+
 }
 
 .cat-box:hover {
   background: #2a2a2a;
   transform: scale(1.04);
+
+
 }
+
+.cat-box svg{
+  width: 60px;
+  height: 60px;
+  margin-bottom: 10px;
+}
+
+.cat-box:hover svg{
+  background: #2a2a2a;
+  transition: ease-in-out 0.2s;
+  transform: scale(1.2);
+  transform-origin: center;
+  transform: translateY(-5px);
+
+}
+
+/* Animations */
+
+
+@keyframes elastic {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 
 /* Digital Playground section (keyboard with hover feature) */
 .digital-section {
@@ -217,7 +248,6 @@ main{
   margin: 0 auto 2.5rem;
   font-size: 1.1rem;
   line-height: 1.6;
-  color: #ddd;
 }
 
 .keyboard-wrapper {
