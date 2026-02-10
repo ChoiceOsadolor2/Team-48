@@ -6,16 +6,17 @@ fetch(headerFile)
     const headerEl = document.querySelector('header');
     headerEl.innerHTML = html;
 
+
 const footerFile = '../pages/footer.html';
-fetch(footerFile)
-  .then(response => response.text())
-  .then(html => {
-    const footerEl = document.querySelector('footer');
-    footerEl.innerHTML = html;
-  });
+    fetch(footerFile)
+      .then(response => response.text())
+      .then(html => {
+        const footerEl = document.createElement('footer');
+        footerEl.innerHTML = html;
+      //append to the bottom of page
+        document.querySelector('main').appendChild(footerEl);
 
-    
-
+      });
 
     
 
