@@ -259,6 +259,16 @@ nav>a{
     color: #770f0f;
 }
 
+/* Search Results */
+#Search_Results {
+  position: fixed;
+  top:15vh;
+  height: 40vh;
+  width: 100vw;
+  background-color: var(--background-light);
+  border: black 2px solid;
+}
+
 
                                             /* Hidden Content,Dynamic? */
 /* Basket */

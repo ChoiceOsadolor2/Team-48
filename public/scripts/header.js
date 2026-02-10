@@ -6,6 +6,8 @@ fetch(headerFile)
     const headerEl = document.querySelector('header');
     headerEl.innerHTML = html;
 
+
+
     
 
     const userMenuBtn = headerEl.querySelector('#userMenuBtn');
