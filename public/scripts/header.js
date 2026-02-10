@@ -1,4 +1,3 @@
-// header.js
 const headerFile = '../pages/header.html';
 
 fetch(headerFile)
@@ -6,38 +5,6 @@ fetch(headerFile)
   .then(html => {
     const headerEl = document.querySelector('header');
     headerEl.innerHTML = html;
-
-    (function bindVeltrixSearch() {
-  const form = headerEl.querySelector('#vx-search-form');
-  const input = headerEl.querySelector('#vx-search-input');
-
-  if (!form || !input) return;
-  if (form.dataset.bound === '1') return;
-  form.dataset.bound = '1';
-
-  function goToShopAll() {
-    const q = (input.value || '').trim();
-    if (!q) return;
-    try { closeSection('search'); } catch (_) {}
-    window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
-  }
-
-  // Button / form submit
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    goToShopAll();
-  });
-
-  // ✅ Force Enter to work even if other scripts block it
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      e.stopPropagation();
-      if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-      goToShopAll();
-    }
-  }, true); // capture = true (runs before other listeners)
-})();
 
     const footerFile = '../pages/footer.html';
     fetch(footerFile)
@@ -48,93 +15,53 @@ fetch(headerFile)
       });
 
     // ===============================
-    // ✅ GLOBAL SEARCH (works on ALL pages)
-    // - Press Enter or click Search
-    // - Always navigates to ShopAll.html?q=...
-    // - Fixes invisible button via inline styles (minimal)
+    // ✅ GLOBAL SEARCH (ALL pages)
+    // - Enter or button always redirects to ShopAll.html?q=...
+    // - Runs after header.html is injected
+    // - Uses capture to beat other key handlers
     // ===============================
-    function bindGlobalSearch() {
-      // 1) Search inside injected header.html (the popup search)
-      const searchRoot = headerEl.querySelector('#search');
+    (function bindVeltrixSearch() {
       const form =
+        headerEl.querySelector('#vx-search-form') ||
         headerEl.querySelector('#global-search-form') ||
         headerEl.querySelector('#search-form') ||
-        searchRoot?.querySelector('form');
+        headerEl.querySelector('#search')?.querySelector('form');
 
       const input =
+        headerEl.querySelector('#vx-search-input') ||
         headerEl.querySelector('#global-search-input') ||
         headerEl.querySelector('#global_search') ||
-        headerEl.querySelector('#shop_search') ||
         headerEl.querySelector('#search-bar') ||
         form?.querySelector('input[type="search"]') ||
         form?.querySelector('input[type="text"]') ||
-        searchRoot?.querySelector('input');
+        headerEl.querySelector('#search input');
 
-      const submitBtn =
-        headerEl.querySelector('#global-search-btn') ||
-        form?.querySelector('button[type="submit"]');
+      if (!form || !input) return;
+      if (form.dataset.boundSearch === '1') return;
+      form.dataset.boundSearch = '1';
 
-      // Guard: only bind once
-      if (form && form.dataset.searchBound === '1') return;
+      function goToShopAll() {
+        const q = (input.value || '').trim();
+        if (!q) return;
+        try { closeSection('search'); } catch (_) {}
+        window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
+      }
 
-      if (form && input) {
-        form.dataset.searchBound = '1';
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        goToShopAll();
+      });
 
-        // Make the button visible even if CSS makes it white-on-white
-        if (submitBtn) {
-          submitBtn.style.background = '#111';
-          submitBtn.style.color = '#fff';
-          submitBtn.style.border = '1px solid #111';
-          submitBtn.style.padding = '10px 14px';
-          submitBtn.style.borderRadius = '8px';
-          submitBtn.style.cursor = 'pointer';
-        }
-
-        form.addEventListener('submit', (e) => {
+      // Force Enter to work even if other scripts intercept it
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
           e.preventDefault();
-
-          const q = (input.value || '').trim();
-          if (!q) return;
-
-          // Close overlay if your UI uses it (safe if function exists)
-          try { closeSection('search'); } catch (_) {}
-
-          // Always go to ShopAll with query string
-          window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
-        });
-      }
-
-      // 2) Homepage fallback: your index.html has its own .search-container
-      const homeInput = document.querySelector('.search-container .search-bar');
-      if (homeInput && homeInput.dataset.searchBound !== '1') {
-        homeInput.dataset.searchBound = '1';
-
-        homeInput.addEventListener('keydown', (e) => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            const q = (homeInput.value || '').trim();
-            if (!q) return;
-            window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
-          }
-        });
-
-        // Also fix homepage close button visibility if needed
-        const homeClose = document.querySelector('.search-container .search-close');
-        if (homeClose) {
-          homeClose.style.background = '#111';
-          homeClose.style.color = '#fff';
-          homeClose.style.border = '1px solid #111';
-          homeClose.style.cursor = 'pointer';
+          e.stopPropagation();
+          if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+          goToShopAll();
         }
-      }
-    }
-
-    // Bind immediately after header injection
-    bindGlobalSearch();
-
-    // If anything in header changes later, bind again safely
-    new MutationObserver(() => bindGlobalSearch())
-      .observe(headerEl, { childList: true, subtree: true });
+      }, true);
+    })();
 
     // ===============================
     // Existing user menu logic (unchanged)
@@ -209,12 +136,10 @@ fetch(headerFile)
     })
       .then(res => res.text())
       .then(text => {
-        let data = null;
         try {
-          data = JSON.parse(text);
+          JSON.parse(text);
         } catch (e) {
           console.error('Non-JSON /user-status response:', text);
-          return;
         }
       })
       .catch(err => {
@@ -222,7 +147,7 @@ fetch(headerFile)
       });
   });
 
-// The rest of your show/close functions stay here if you had them:
+// Show/close functions (unchanged)
 function show(id) {
   const section = document.getElementById(id);
   const section_main = document.getElementById(`${id}_main`);
