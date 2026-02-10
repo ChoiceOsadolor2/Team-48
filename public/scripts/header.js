@@ -6,6 +6,15 @@ fetch(headerFile)
     const headerEl = document.querySelector('header');
     headerEl.innerHTML = html;
 
+const footerFile = '../pages/footer.html';
+fetch(footerFile)
+  .then(response => response.text())
+  .then(html => {
+    const footerEl = document.querySelector('footer');
+    footerEl.innerHTML = html;
+  });
+
+    
 
 
     

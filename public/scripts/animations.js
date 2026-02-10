@@ -180,12 +180,3 @@ button.addEventListener("click", (event) => {
 
 const footerFile = '../pages/footer.html';
 
-fetch(footerFile)
-  .then(response => response.text())
-  .then(html => {
-    const footerEl = document.querySelector('footer');
-    footerEl.innerHTML = html;
-  });
-    headerEl.innerHTML = html;
-
-    

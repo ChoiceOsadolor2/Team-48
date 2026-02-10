@@ -261,6 +261,7 @@ nav>a{
 
 /* Search Results */
 #Search_Results {
+  display: none;
   position: fixed;
   top:15vh;
   height: 40vh;
