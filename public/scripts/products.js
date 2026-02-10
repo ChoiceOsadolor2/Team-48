@@ -6,6 +6,8 @@ const parameters = new URLSearchParams(query);
 
 const productid = parameters.get('id');
 const category = parameters.get('category');
+const searchQ = parameters.get('q'); 
+
 
 // ===============================
 // DOM
@@ -338,12 +340,12 @@ async function updateCartQty(productId, newQty) {
 
 
 
-// ===============================
+
 // Render Products (Shop All)
 // - NO description on cards
 // - View Product button does navigation
 // - Image click DOES NOTHING
-// ===============================
+
 function renderProducts(list) {
   if (!container || !ProductCard_template) return;
 
@@ -412,10 +414,7 @@ function renderProducts(list) {
 }
 
 
-// ===============================
-// NEW Search (brand new input)
-// HTML must contain: <input id="shop_search" ...>
-// ===============================
+
 function initShopSearch() {
   const input = document.getElementById('shop_search');
   if (!input) {
@@ -449,7 +448,7 @@ function initShopSearch() {
     }
   });
 
-  console.log('✅ Shop search initialised');
+  console.log(' Shop search initialised');
 }
 
 function initProductPageQty(product) {
@@ -465,7 +464,7 @@ function initProductPageQty(product) {
 
   if (!input || !minusBtn || !addBtn) return () => 1;
 
-  // ✅ block typing (even if readonly is removed later)
+  
   input.setAttribute('readonly', 'readonly');
   input.addEventListener('keydown', (e) => e.preventDefault());
   input.addEventListener('paste', (e) => e.preventDefault());
@@ -503,9 +502,9 @@ function initProductPageQty(product) {
   return () => parseInt(input.value, 10) || 1;
 }
 
-// ===============================
+
 // Load Products
-// ===============================
+
 if (container || container2) {
   fetch('/products', { credentials: 'include' })
     .then((res) => {
@@ -517,10 +516,10 @@ if (container || container2) {
       window.allProducts = products;
       localStorage.setItem('products', JSON.stringify(products));
 
-      // ---------------------------
+
       // Product page (single item)
       // - description SHOULD show here
-      // ---------------------------
+    
       if (productid && container2) {
         const product = products.find((p) => String(p.id) === String(productid));
         console.log('Selected product:', product);
@@ -594,11 +593,23 @@ if (container || container2) {
       window.currentCategoryProducts = currentCategory;
       window.visibleBaseProducts = currentCategory;
 
-      // Render initial list
-      if (container && ProductCard_template) {
-        renderProducts(currentCategory);
-      }
+    if (searchQ) {
+  const term = searchQ.trim().toLowerCase();
 
+  const filtered = currentCategory.filter(p =>
+    (p.name || '').toLowerCase().includes(term)
+  );
+
+  // update heading
+  const titleEl = document.getElementById('title');
+  if (titleEl) titleEl.textContent = `Results for "${searchQ}"`;
+
+  renderProducts(filtered);
+
+  // still load cart etc.
+} else {
+  renderProducts(currentCategory);
+}
       // Init search AFTER we have products + base list
       initShopSearch();
 

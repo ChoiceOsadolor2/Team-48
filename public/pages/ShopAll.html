@@ -27,7 +27,7 @@
     <section id="products_container">
 
       <template>
-        <div class="product_card" id="">
+        <div class="product_card" data-name="Game Headset" data-price="59.99">
           <img class="product_image" src="Assets/gameHeadset.png" />
           <h3 class="product_name"></h3>
           <span class="product_price"></span>
@@ -82,18 +82,46 @@
   <script src="../scripts/header.js"></script>
   <script src="../scripts/animations.js" defer></script>
   <script src="../scripts/products.js?v=4"></script>
+<script>
+(function () {
+  const query = (localStorage.getItem("veltrix_search_query") || "").trim().toLowerCase();
+  if (!query) return;
 
-  <script>
-    (function () {
-      const params = new URLSearchParams(window.location.search);
-      const cat = params.get('category');
-      const titleEl = document.getElementById('title');
+  function applyFilter() {
+    const cards = document.querySelectorAll(".product_card");
+    if (!cards.length) return false;
 
-      if (titleEl) {
-        titleEl.textContent = cat ? cat : 'Shop All';
-      }
-    })();
-  </script>
+    let shown = 0;
+    cards.forEach(card => {
+      const name = (card.dataset.name || "").toLowerCase();
+      const match = name.includes(query);
+      card.style.display = match ? "" : "none";
+      if (match) shown++;
+    });
+
+    const title = document.getElementById("title");
+    if (title) title.textContent = `Results for "${query}" (${shown})`;
+
+    return true;
+  }
+
+  // Try now
+  if (applyFilter()) return;
+
+  // If products.js injects cards later, watch for it
+  const container = document.getElementById("products_container");
+  if (!container) return;
+
+  const observer = new MutationObserver(() => {
+    if (applyFilter()) observer.disconnect();
+  });
+
+  observer.observe(container, { childList: true, subtree: true });
+})();
+</script>
+
+
+
 
 </body>
 </html>

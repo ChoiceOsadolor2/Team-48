@@ -133,11 +133,44 @@
         </div>
     </section>
 
-    <div id="search">
-        <input type="text" placeholder="Search..." id="search-bar">
-        <button onclick="closeSection('search')">✖</button>
-    </div>
-<!-- <script src="../scripts/animations.js"></script> -->
+<div id="search" class="vx-search">
+  <form id="vx-search-form" class="vx-search-form" autocomplete="off">
+    <input
+      id="vx-search-input"
+      class="vx-search-input"
+      type="search"
+      placeholder="Search products..."
+      aria-label="Search products"
+      autocomplete="off"
+    >
+    <button id="vx-search-submit" class="vx-search-submit" type="submit">Search</button>
+  </form>
+
+  <button class="vx-search-close" type="button" onclick="closeSection('search')" aria-label="Close search">✖</button>
+</div>
+
+
+<script>
+  (function () {
+    const form = document.getElementById("search-form");
+    const input = document.getElementById("global_search");
+    if (!form || !input) return;
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const q = (input.value || "").trim();
+      if (!q) return;
+
+      // always go to ShopAll with the query
+      window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
+    });
+  })();
+</script>
+
+
+
+
+
 </body>
 </html>
 
