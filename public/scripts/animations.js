@@ -5,7 +5,7 @@ const section=document.getElementById('wrapper_overlay');
 
 function moveX(){
 x--
-wrapper_overlay.style.backgroundPosition= `${x}px`;
+section.style.backgroundPosition= `${x}px`;
 
 }
 
@@ -178,5 +178,4 @@ button.addEventListener("click", (event) => {
 }); 
 
 
-const footerFile = '../pages/footer.html';
 

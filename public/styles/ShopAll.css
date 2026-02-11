@@ -108,7 +108,9 @@ nav>a{
     width: 100%;
 
 }
-
+.product_price{
+    font-family: sans-serif;
+}
 
                                             /* Hidden Content,Dynamic? */
 /* Basket */

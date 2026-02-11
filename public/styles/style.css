@@ -12,18 +12,22 @@
   --text-dark: #111;
   --sub-text-light: #ddd;
   --sub-text-dark: #aaa;
+  --backgroundAlt-light: #eee;
+  --backgroundAlt-dark: #000;
 }
 
-[data-theme="light"] {
+html[data-theme="light"] {
   background-color: var(--background-light);
   color: var(--text-dark);
   --sub-text: var(--sub-text-light);
+  --background-color-alt: var(--backgroundAlt-light);
 }
 
-[data-theme="dark"] {
+html[data-theme="dark"] {
   background-color: var(--background-dark);
   color: var(--text-light);
   --sub-text: var(--sub-text-dark);
+  --background-color-alt: var(--backgroundAlt-dark);
 }
 
 /* Dark and Light Mode toggle */
@@ -129,7 +133,7 @@ path{
 }
 
 .cat-box{
-  background-color: black;
+  background-color: var(--backgroundAlt-dark);
   color: var(--text-light);
   display: flex;
   justify-content: center;
@@ -155,9 +159,11 @@ main{
   color: var(--sub-text-light);
 }
 
-#home_body {
-  background-color: #000;
+html.home{
+  background-color: var(--background-color-alt);
 }
+
+
 
 
 /* header */
@@ -170,6 +176,9 @@ justify-content: space-evenly;
 width: 40%;
 color: inherit;
 }
+
+
+
 
 #icons{
     width: 25%;
@@ -291,10 +300,12 @@ nav>a{
 }
 
 #basket_main{
-    width: 0em;
+    width: 40em;
     height: 100%;
+  
     position: absolute;
     right: 0%;
+    top:0%;
     background-color: white;
     color: #111;
             transition: 0.3s;
@@ -302,6 +313,9 @@ nav>a{
 
     padding:1%;
     border-radius: 10px;
+
+  
+
 
 }
 
@@ -357,10 +371,7 @@ margin-top: 5%;
 
 
 #menu_main{
-    width: 0em;
-    left: 0%;
-    position: absolute;
-        z-index: 102;
+    width: 100em;
       
   background-color: var(--background-dark);
   color: var(--text-light);
@@ -371,18 +382,21 @@ margin-top: 5%;
     align-items: center;
     padding: 20px;
     transition: ease-in-out 0.3s;
-    justify-content: space-evenly;
+    justify-content: space-around;
 
 }
-#menu_main a{
-  color: inherit;
-
-}
-
-
 #menu_nav{
-    display: none;
+  display: none;
 }
+
+nav{
+  overflow: hidden;
+  transition: ease-in-out 0.3s;
+}
+
+
+
+
 
 
 
@@ -404,6 +418,69 @@ margin-top: 5%;
     to { opacity: 1; }
 }
 
+#filter_content{
+    animation: fadeIn 0.5s ease;
+}
+
+#filter.open #filter_content{
+  height: 70%;
+  backdrop-filter: none;
+}
+#filter.open #toggle_down{
+  display:flex;
+} 
+#filter.open #toggle_up{
+  display:none;
+}
+
+#filter_content.close{
+  height: 0%;
+  background-color: transparent;
+  backdrop-filter: none;
+}
+
+nav{
+  overflow: hidden;
+}
+
+nav.open{
+  height: 50em;
+  background-color: var(--background-light);
+  transition: ease-in-out 0.3s;
+}
+nav.close{
+  height: 0em;
+}
+
+#search.open{
+  display: block;
+}
+
+#search.close{
+  display: none;
+}
+
+#basket.open{
+  visibility: visible;
+  backdrop-filter: blur(30px);
+  background-color: rgba(0,0,0,0.6);
+    transition: width 0.5s ease-in-out; 
+    
+
+}
+
+#basket.close{
+  visibility: hidden;
+  backdrop-filter: none;
+  background-color: transparent;
+}
+
+#basket.open #basket_main{
+  width: 40em;
+  background: white;
+  color: #111;
+  transition: width 0.5s ease-in-out;
+}
 
 
                                                      /* Media Query */
@@ -411,8 +488,13 @@ margin-top: 5%;
 
 @media (max-width:800px) {
 
-  #Basket_Display,
-#Menu_Display{
+header{
+    flex-wrap: wrap;
+    height: auto;
+    padding: 10px 0px;
+}
+
+  #Basket_Display{
     display:none;
     width: 80vw;
     height: 100vh;
@@ -424,30 +506,42 @@ margin-top: 5%;
 }
 
 #basket_main{
-    width: 0em;
+    width: 40em;
     height: 100%;
-    position: inherit;
+    position: fixed;
     right: 0%;
+
+  
+}
+
+#basket_main.open{
+    width: 80vw;
     background-color: white;
+    color: #111;
+    transition: 0.3s;
+}
+#Basket_Display.open{
+    display:block;
 }
 
-#menu_main{
-     width: 0em;
-    height: 50%;
-    position: inherit;
-    left: 0%;
-    overflow: hidden;
-
-}
-
-
-nav{
-    display: none;
-}
 #menu_nav{
     display: block;
+
 }
 
+nav{
+    height: 0em;
+    width: 90%;
+    order: 5;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  color: black;
+
+a{
+    font-size: 1.8rem;
+}
+}
 
 }
 

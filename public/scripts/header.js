@@ -106,52 +106,6 @@ if (userMenuBtn && userMenuDropdown) {
       });
   });
 
-// The rest of your show/close functions stay here if you had them:
-function show(id) {
-  const section = document.getElementById(id);
-  const section_main = document.getElementById(`${id}_main`);
-  const filter_options = document.getElementById(`${id}_content`);
-
-  if (section) {
-    section.style.visibility = 'visible';
-    section.style.backdropFilter = 'blur(30px)';
-    section.style.backgroundColor = 'rgba(0,0,0,0.6)';
-  }
-  if (section_main) {
-    section_main.style.width = '35%';
-  }
-  if (filter_options) {
-    document.getElementById('toggle_down').style.display = 'flex';
-    document.getElementById('toggle_up').style.display = 'none';
-
-    filter_options.style.height = '70%';
-    section.style.backdropFilter = 'none';
-    section.style.backgroundColor = 'transparent';
-  }
-  if (id === 'search') {
-    section.style.display = 'flex';
-  }
-}
-
-function closeSection(id) {
-  const section = document.getElementById(id);
-  const section_main = document.getElementById(`${id}_main`);
-  const filter_options = document.getElementById(`${id}_content`);
-
-  if (section_main) section_main.style.width = '0';
-  if (section) section.style.visibility = 'hidden';
-
-  if (filter_options) {
-    document.getElementById('toggle_down').style.display = 'none';
-    document.getElementById('toggle_up').style.display = 'flex';
-    section.style.visibility = 'visible';
-    filter_options.style.height = '0%';
-  }
-
-  if (id === 'search') {
-    section.style.display = 'none';
-  }
-}
 
 (async function () {
     try {
@@ -182,3 +136,79 @@ function closeSection(id) {
         console.error('Auto-logout check failed:', err);
     }
 })();
+
+
+// // The rest of your show/close functions stay here if you had them:
+// function show(id) {
+//   const section = document.getElementById(id);
+//   const section_main = document.getElementById(`${id}_main`);
+//   const filter_options = document.getElementById(`${id}_content`);
+
+//   if (section) {
+//     section.style.visibility = 'visible';
+//     section.style.backdropFilter = 'blur(30px)';
+//     section.style.backgroundColor = 'rgba(0,0,0,0.6)';
+//   }
+//   if (section_main) {
+//     section_main.style.width = '35%';
+//   }
+//   if (filter_options) {
+//     document.getElementById('toggle_down').style.display = 'flex';
+//     document.getElementById('toggle_up').style.display = 'none';
+
+//     filter_options.style.height = '70%';
+//     section.style.backdropFilter = 'none';
+//     section.style.backgroundColor = 'transparent';
+//   }
+//   if (id === 'search') {
+//     section.style.display = 'flex';
+//   }
+// }
+
+// function closeSection(id) {
+//   const section = document.getElementById(id);
+//   const section_main = document.getElementById(`${id}_main`);
+//   const filter_options = document.getElementById(`${id}_content`);
+
+//   if (section_main) section_main.style.width = '0';
+//   if (section) section.style.visibility = 'hidden';
+
+//   if (filter_options) {
+//     document.getElementById('toggle_down').style.display = 'none';
+//     document.getElementById('toggle_up').style.display = 'flex';
+//     section.style.visibility = 'visible';
+//     filter_options.style.height = '0%';
+//   }
+
+//   if (id === 'search') {
+//     section.style.display = 'none';
+//   }
+// }
+
+
+
+
+
+// Instead of Show, we will use toggleDown, toggleUp, toggleSide,toggleSideClose functions to show and hide the sections. This will allow us to add animations to the sections when they are shown or hidden. We will also add a backdrop filter to the sections when they are shown to give them a more modern look.
+
+
+
+function openPanel(id) {
+  const obj = document.getElementById(id);
+  //toggle between open and close, with less code
+  if (obj.classList.contains('open')) {
+    obj.classList.remove('open');
+    obj.classList.add('close');
+  } else {
+    obj.classList.add('open');
+    obj.classList.remove('close');
+  }
+}
+
+function closePanel(id) {
+  const obj = document.getElementById(id);
+  obj.classList.remove('open');
+  obj.classList.add('close');
+}
+
+

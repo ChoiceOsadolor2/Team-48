@@ -8,13 +8,14 @@
 </head>
 <body>
     <header>
-        <svg id="menu_nav" onclick="show('menu')" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 20 20">
+        <svg id="menu_nav" onclick="openPanel('nav')"  xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 20 20">
             <path fill="#ffffff" fill-rule="evenodd" d="M2 8a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0-4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 4a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Z"/>
         </svg>
 
-        <img id="header_logo" src="../assets/logo.png" alt="VeltrixLogo">
-        
-        <nav>
+    <img id="header_logo" src="../assets/logo.png" alt="VeltrixLogo">
+
+
+        <nav id="nav">
             <a href="index.html">Home</a>
             <a href="ShopAll.html">Shop All</a>
             <a href="about.html">About Us</a>
@@ -25,12 +26,12 @@
         </nav>
 
         <div id="icons">
-            <svg onclick="show('search')" xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 20 20">
+            <svg onclick="openPanel('search')" xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 20 20">
                 <path  d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33l-1.42 1.42l-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/>
             </svg>
 
             <span>
-                <svg onclick="show('basket')" xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
+                <svg onclick="openPanel('basket')" xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
                     <path  d="M0 1h4.764l.545 2h18.078l-3.666 11H7.78l-.5 2H22v2H4.72l1.246-4.989L3.236 3H0V1Zm7.764 11h10.515l2.334-7H5.855l1.909 7ZM4 21a2 2 0 1 1 4 0a2 2 0 0 1-4 0Zm14 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z"/>
                 </svg>
                 <span style=" font-size: 1.7vw;" class="basket_count">(0)</span>
@@ -52,13 +53,15 @@
             </div>
 
         </div>
+
+
     </header>
 
-    <section id="basket" onclick="closeSection('basket')">
+    <section id="basket" onclick="closePanel('basket')">
         <div id="basket_main" onclick="event.stopPropagation()">
 
             <div id="basket_header">
-                <svg onclick="closeSection('basket')" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 304 384">
+                <svg onclick="closePanel('basket')" xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 304 384">
                     <path fill="#000000" d="M299 73L179 192l120 119l-30 30l-120-119L30 341L0 311l119-119L0 73l30-30l119 119L269 43z"/>
                 </svg>
                 <h1>CART</h1>
@@ -124,20 +127,13 @@
         </div>
     </section>
 
-    <section id="menu" onclick="closeSection('menu')">
-        <div id="menu_main">
-            <a href="index.html">Home</a>
-            <a href="about.html">About Us</a>
-            <a href="contact.html">Contact us</a>
-            <a href="tags.html">tag</a>
-        </div>
-    </section>
 
     <div id="search">
         <input type="text" placeholder="Search..." id="search-bar">
-        <button onclick="closeSection('search')">✖</button>
+        <button onclick="closePanel('search')">✖</button>
     </div>
 <!-- <script src="../scripts/animations.js"></script> -->
+<script src="../scripts/header.js"></script>
 </body>
 </html>
 
