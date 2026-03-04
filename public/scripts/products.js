@@ -600,31 +600,28 @@ if (container || container2) {
     (p.name || '').toLowerCase().includes(term)
   );
 
-  // update heading
   const titleEl = document.getElementById('title');
   if (titleEl) titleEl.textContent = `Results for "${searchQ}"`;
 
   renderProducts(filtered);
 
-  // still load cart etc.
 } else {
   renderProducts(currentCategory);
 }
-      // Init search AFTER we have products + base list
-      initShopSearch();
 
-      // Cart
-      loadCartFromBackend();
-    })
-    .catch((err) => console.error('Error loading products:', err));
+// Hide loading message after products are rendered
+const loadingEl = document.getElementById("loading_products");
+if (loadingEl) loadingEl.style.display = "none";
+
+// Init search AFTER we have products + base list
+initShopSearch();
+
+// Cart
+loadCartFromBackend();
+
+})
+.catch((err) => console.error('Error loading products:', err));
 }
-
-
-
-
-
-
-
 
 
 
@@ -714,4 +711,32 @@ window.RemoveFromCart = async function (productId) {
   }
 };
 
+//product sorting
+(function initSorting() {
+
+  const sortSelect = document.getElementById("sort_products");
+  if (!sortSelect) return;
+
+  sortSelect.addEventListener("change", function () {
+
+    const base =
+      window.visibleBaseProducts?.length
+        ? [...window.visibleBaseProducts]
+        : window.currentCategoryProducts?.length
+        ? [...window.currentCategoryProducts]
+        : [...window.allProducts];
+
+    if (this.value === "price_low") {
+      base.sort((a, b) => Number(a.price) - Number(b.price));
+    }
+
+    if (this.value === "price_high") {
+      base.sort((a, b) => Number(b.price) - Number(a.price));
+    }
+
+    renderProducts(base);
+
+  });
+
+})();
 

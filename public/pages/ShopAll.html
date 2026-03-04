@@ -21,11 +21,24 @@
   </section>
 
   <main>
-    <h1 style="width: 100%; text-align: center; font-size: 5em;" id="title">Shop All</h1>
+  <h1 style="width: 100%; text-align: center; font-size: 5em;" id="title">Shop All</h1>
 
+  <!-- Sorting Dropdown -->
+  <div style="width:100%; text-align:center; margin-bottom:20px;">
+    <label for="sort_products"><strong>Sort by:</strong></label>
+    <select id="sort_products">
+      <option value="default">Default</option>
+      <option value="price_low">Price: Low → High</option>
+      <option value="price_high">Price: High → Low</option>
+    </select>
+  </div>
 
-    <section id="products_container">
+  <!-- Loading message -->
+  <div id="loading_products" style="text-align:center; font-size:1.2em; margin-bottom:20px;">
+    Loading products...
+  </div>
 
+  <section id="products_container">
       <template>
         <div class="product_card" data-name="Game Headset" data-price="59.99">
           <img class="product_image" src="Assets/gameHeadset.png" />
