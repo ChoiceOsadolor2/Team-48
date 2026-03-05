@@ -43,7 +43,7 @@ fetch(headerFile)
       function goToShopAll() {
         const q = (input.value || '').trim();
         if (!q) return;
-        try { closeSection('search'); } catch (_) {}
+        try { closeSection('search'); } catch (_) { }
         window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
       }
 
@@ -200,5 +200,15 @@ function closePanel(id) {
   obj.classList.remove('open');
   obj.classList.add('close');
 }
+
+// Inline Header Search Toggle
+window.toggleInlineSearch = function () {
+  const headerEl = document.querySelector('header');
+  const searchInput = document.getElementById('vx-search-input');
+
+  if (headerEl) {
+    headerEl.classList.toggle('search-active');
+  }
+};
 
 

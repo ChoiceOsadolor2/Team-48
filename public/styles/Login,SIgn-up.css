@@ -39,26 +39,28 @@ body {
 }
 
 .login-box .input-box {
-    position: relative; 
+    position: relative;
     width: 100%;
     height: 50px;
     margin: 30px 0;
 }
 
 .input-box input {
-   width: 100%;
-   height: 100%;
-   background: transparent;
-   border: none;
-   outline: none;
-   border: 2px solid rgb(69, 96, 106);
-   border-radius: 40px;
-   font-size: 16px;
-   color: white;
-   padding: 20px 45px 20px 20px; /*position username & pass*/
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgb(69, 96, 106);
+    border-radius: 40px;
+    font-size: 16px;
+    color: white;
+    padding: 20px 45px 20px 20px;
+    /*position username & pass*/
 }
 
-.input-box input::placeholder { /*colour change for placeholders (user&pass) */
+.input-box input::placeholder {
+    /*colour change for placeholders (user&pass) */
     color: rgb(255, 255, 255);
 }
 
@@ -102,6 +104,20 @@ body {
     font-weight: 600;
 }
 
+/* Ensure hover does not change appearance */
+.login-box .login-button:hover {
+    background: white;
+    color: rgb(59, 59, 59);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+}
+
+
+
+
+
+
+
+
 .login-box .register-link {
     font-size: 15px;
     text-align: center;
@@ -129,7 +145,3 @@ body {
     accent-color: #ffffff;
     cursor: pointer;
 }
-
-
-
-
