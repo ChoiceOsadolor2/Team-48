@@ -23,7 +23,7 @@
             <a href="/pages/index.html#about-us-section">About Us</a>
             <a href="/pages/index.html#contact-us">Contact us</a>
 
-            <!-- Admin link (hidden by default) -->
+            <a href="/orders" id="orders-link" style="display:none;">Orders</a>
             <a href="/admin" id="admin-link" style="display:none;">Admin</a>
         </nav>
 
@@ -55,7 +55,6 @@
                 <span style=" font-size: 1.7vw;" class="basket_count">(0)</span>
             </span>
 
-            <!-- LOGIN / PROFILE ICON (href will be overridden by header.js) -->
             <div class="user-menu" id="userMenu">
                 <button id="userMenuBtn" class="user-menu-btn" type="button" aria-haspopup="true" aria-expanded="false">
                     <span id="userMenuIcon">
@@ -91,11 +90,8 @@
 
             <div id="basket_stock_error" style="display:none; color:#ff4d4d; font-weight:600; margin:10px 0;"></div>
 
-
-            <!-- This is where JS will inject cart items -->
             <div id="basket_display"></div>
 
-            <!-- Keep the template OUTSIDE basket_display so it doesn't get cleared -->
             <template class="basket_template">
                 <span class="basket_product">
                     <img src="../assets/gameHeadset.png" alt="">
@@ -110,7 +106,6 @@
                             <button class="qty-count qty-count--add" type="button">+</button>
                         </div>
 
-                        <!-- ✅ REMOVE BUTTON -->
                         <button class="remove_from_cart" type="button" style="
                             margin-top: 8px;
                             background: transparent;

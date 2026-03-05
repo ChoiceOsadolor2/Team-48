@@ -1,0 +1,292 @@
+/* orders.css */
+body {
+    margin: 0;
+    background-color: var(--backgroundAlt-light, #f8f9fa);
+    color: var(--text-dark, #333);
+    font-family: inherit;
+}
+
+.orders-main {
+    min-height: calc(100vh - 15vh);
+    padding: 40px 20px;
+}
+
+.orders-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.orders-header {
+    margin-bottom: 30px;
+}
+
+.orders-title {
+    font-size: 2.5rem;
+    margin: 0 0 10px 0;
+}
+
+.orders-subtitle {
+    color: var(--sub-text-dark, #666);
+    font-size: 1.1rem;
+}
+
+.orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Order Card */
+.order-card {
+    background: var(--background-light, #fff);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+}
+
+/* Header of the Card */
+.order-header {
+    background-color: rgba(0, 0, 0, 0.02);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.order-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.order-info-block .label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #666;
+}
+
+.order-info-block .value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.order-number-block {
+    margin-left: auto;
+    text-align: right;
+}
+
+.order-actions {
+    width: 100%;
+    margin-top: 10px;
+}
+
+@media (min-width: 600px) {
+    .order-actions {
+        width: auto;
+        margin-top: 0;
+        margin-left: 20px;
+    }
+}
+
+.btn-secondary {
+    display: inline-block;
+    padding: 8px 16px;
+    border: 1px solid #ccc;
+    background: #fff;
+    color: #333;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 600;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.btn-secondary:hover {
+    background: #f0f0f0;
+}
+
+/* Body of the Card */
+.order-body {
+    padding: 20px;
+}
+
+.order-status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.order-status.processing .status-indicator {
+    background-color: #F59E0B;
+    /* Amber */
+}
+
+.order-status.delivered .status-indicator {
+    background-color: #10B981;
+    /* Emerald */
+}
+
+.status-desc {
+    margin: 0 0 20px 0;
+    font-size: 0.95rem;
+    color: #666;
+}
+
+/* Item within the body */
+.order-items {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.order-item {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    padding-top: 20px;
+}
+
+@media (min-width: 600px) {
+    .order-item {
+        flex-direction: row;
+        align-items: center;
+    }
+}
+
+.order-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+    background: #f8f8f8;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-details h4 {
+    margin: 0 0 5px 0;
+    font-size: 1.1rem;
+}
+
+.item-meta {
+    margin: 0 0 5px 0;
+    font-size: 0.9rem;
+    color: #666;
+}
+
+.item-price {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.item-qty {
+    font-weight: normal;
+    color: #666;
+    margin-left: 10px;
+}
+
+.item-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 150px;
+}
+
+.btn-ghost {
+    padding: 8px 16px;
+    background: transparent;
+    border: 1px solid #000;
+    color: #000;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.btn-ghost:hover {
+    background: #000;
+    color: #fff;
+}
+
+/* Dark Mode Support */
+html.dark-mode body {
+    background-color: #111;
+    color: #fff;
+}
+
+html.dark-mode .order-card {
+    background: #1a1a1a;
+    border-color: #333;
+}
+
+html.dark-mode .order-header {
+    background-color: rgba(255, 255, 255, 0.03);
+    border-color: #333;
+}
+
+html.dark-mode .order-info-block .label {
+    color: #aaa;
+}
+
+html.dark-mode .order-info-block .value {
+    color: #fff;
+}
+
+html.dark-mode .orders-title {
+    color: #fff;
+}
+
+html.dark-mode .orders-subtitle,
+html.dark-mode .status-desc {
+    color: #aaa;
+}
+
+html.dark-mode .btn-secondary {
+    border-color: #555;
+    background: #222;
+    color: #ddd;
+}
+
+html.dark-mode .btn-secondary:hover {
+    background: #333;
+}
+
+html.dark-mode .order-item {
+    border-color: #333;
+}
+
+html.dark-mode .item-meta,
+html.dark-mode .item-qty {
+    color: #aaa;
+}
+
+html.dark-mode .btn-ghost {
+    border-color: #fff;
+    color: #fff;
+}
+
+html.dark-mode .btn-ghost:hover {
+    background-color: #fff;
+    color: #000;
+}

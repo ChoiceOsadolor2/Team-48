@@ -14,12 +14,6 @@ fetch(headerFile)
         if (footerEl) footerEl.innerHTML = html;
       });
 
-    // ===============================
-    // ✅ GLOBAL SEARCH (ALL pages)
-    // - Enter or button always redirects to ShopAll.html?q=...
-    // - Runs after header.html is injected
-    // - Uses capture to beat other key handlers
-    // ===============================
     (function bindVeltrixSearch() {
       const form =
         headerEl.querySelector('#vx-search-form') ||
@@ -63,14 +57,13 @@ fetch(headerFile)
       }, true);
     })();
 
-    // ===============================
-    // Existing user menu logic (unchanged)
-    // ===============================
     const userMenuBtn = headerEl.querySelector('#userMenuBtn');
     const userMenuDropdown = headerEl.querySelector('#userMenuDropdown');
     const adminLink = headerEl.querySelector('#admin-link');
+    const ordersLink = headerEl.querySelector('#orders-link');
 
     if (adminLink) adminLink.style.display = 'none';
+    if (ordersLink) ordersLink.style.display = 'none';
 
     if (userMenuBtn && userMenuDropdown) {
       const closeMenu = () => {
@@ -98,12 +91,16 @@ fetch(headerFile)
         .then(data => {
           if (data.logged_in) {
             userMenuDropdown.innerHTML = `
-              <a href="/orders" class="user-menu-item">Previous Orders</a>
+              <a href="/pages/orders.html" class="user-menu-item">Previous Orders</a>
               <a href="/profile" class="user-menu-item">Profile Info</a>
               <button type="button" class="user-menu-item danger" id="logoutBtn">
                 Logout
               </button>
             `;
+
+            if (ordersLink) {
+              ordersLink.style.display = 'inline-block';
+            }
 
             if (adminLink && data.user?.role === 'admin') {
               adminLink.style.display = 'inline-block';

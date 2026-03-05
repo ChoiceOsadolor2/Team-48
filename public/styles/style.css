@@ -210,8 +210,7 @@ svg:hover {
 }
 
 nav>a {
-  font-size: 30px;
-  /* HEADER FONT SIZE */
+  font-size: 22px;
   text-decoration: none;
 }
 
@@ -410,11 +409,11 @@ header.search-active #search {
   /* top: 15vh; */
 
   padding: 1%;
+  box-sizing: border-box;
   border-radius: 10px;
-
-
-
-
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #basket_header {
@@ -429,9 +428,8 @@ header.search-active #search {
 }
 
 #basket_display {
-  height: 60%;
-  overflow: scroll;
-
+  flex: 1;
+  overflow-y: auto;
 }
 
 .basket_product {
@@ -462,9 +460,20 @@ header.search-active #search {
 
 #basket button {
   width: 100%;
-  height: 5%;
+  height: auto;
+  min-height: 50px;
   border-radius: 15px;
   color: white;
+  background-color: #000;
+  font-family: inherit;
+  font-size: 1.2rem;
+  border: none;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#basket button:hover {
+  background-color: #333;
 }
 
 
