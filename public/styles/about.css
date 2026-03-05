@@ -90,8 +90,15 @@ body {
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 900px) {
@@ -101,7 +108,8 @@ body {
         padding: 40px;
     }
 
-    .about-text, .about-image {
+    .about-text,
+    .about-image {
         width: 100%;
     }
 
@@ -253,6 +261,7 @@ body {
         opacity: 0;
         transform: translateY(30px);
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -305,5 +314,3 @@ body {
     opacity: 1;
     transform: translateY(0);
 }
-
-
