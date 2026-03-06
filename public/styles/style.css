@@ -210,8 +210,7 @@ svg:hover {
 }
 
 nav>a {
-  font-size: 30px;
-  /* HEADER FONT SIZE */
+  font-size: 22px;
   text-decoration: none;
 }
 
@@ -412,11 +411,11 @@ header.search-active #search {
   /* top: 15vh; */
 
   padding: 1%;
+  box-sizing: border-box;
   border-radius: 10px;
-
-
-
-
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
 }
 
 #basket_header {
@@ -437,28 +436,11 @@ header.search-active #search {
 }
 
 #basket_display {
-  height: 60%;
+  flex: 1;
   overflow-y: auto;
   overflow-x: hidden;
   padding-right: 10px;
   margin-bottom: 20px;
-}
-
-#basket_display::-webkit-scrollbar {
-  width: 6px;
-}
-
-#basket_display::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-#basket_display::-webkit-scrollbar-thumb {
-  background: #333;
-  border-radius: 4px;
-}
-
-#basket_display::-webkit-scrollbar-thumb:hover {
-  background: #555;
 }
 
 .basket_product {
@@ -509,6 +491,7 @@ header.search-active #search {
   letter-spacing: 1px;
   transition: 0.3s;
   cursor: pointer;
+  margin-top: 10px;
 }
 
 #basket button:hover {
