@@ -210,7 +210,8 @@ svg:hover {
 }
 
 nav>a {
-  font-size: 22px;
+  font-size: 30px;
+  /* HEADER FONT SIZE */
   text-decoration: none;
 }
 
@@ -403,8 +404,10 @@ header.search-active #search {
   position: absolute;
   right: 0%;
   top: 0%;
-  background-color: white;
-  color: #111;
+  background-color: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(25px);
+  color: #ffffff;
+  border-left: 1px solid #333;
   transition: 0.3s;
   /* top: 15vh; */
 
@@ -418,18 +421,27 @@ header.search-active #search {
 
 #basket_header {
   width: 100%;
-  height: 5%;
+  height: 8%;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: row;
   padding: 0% 0%;
   justify-content: space-between;
   align-items: center;
+  font-family: 'MiniPixel', sans-serif;
+}
+
+#basket_header h1 {
+  font-family: 'MiniPixel', sans-serif;
+  letter-spacing: 2px;
 }
 
 #basket_display {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 10px;
+  margin-bottom: 20px;
 }
 
 .basket_product {
@@ -437,16 +449,24 @@ header.search-active #search {
   flex-direction: row;
   flex-wrap: nowrap;
   width: 100%;
-  height: 40%;
+  height: auto;
+  min-height: 120px;
   overflow: hidden;
-  background-color: rgb(240, 240, 240, 0.3);
+  background-color: rgba(255, 255, 255, 0.05);
   margin-top: 5%;
-
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #333;
+  align-items: center;
+  gap: 20px;
 }
 
 .basket_product>img {
-  width: auto;
-  height: 100%;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+  background: #000;
 }
 
 .basket_product_info {
@@ -456,26 +476,47 @@ header.search-active #search {
 
 .basket_count {
   font-size: 3vw;
+  font-family: 'MiniPixel', sans-serif;
 }
 
 #basket button {
   width: 100%;
-  height: auto;
+  height: 50px;
   min-height: 50px;
-  border-radius: 15px;
+  border-radius: 10px;
   color: white;
   background-color: #000;
-  font-family: inherit;
+  border: 1px solid #666;
+  font-family: 'MiniPixel', sans-serif;
   font-size: 1.2rem;
-  border: none;
+  letter-spacing: 1px;
+  transition: 0.3s;
   cursor: pointer;
   margin-top: 10px;
 }
 
 #basket button:hover {
-  background-color: #333;
+  background-color: #222;
+  border-color: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
+
+#basket h1 {
+  font-family: 'MiniPixel', sans-serif;
+  letter-spacing: 2px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+#basket #total {
+  color: #00eaff;
+  margin: 0;
+  text-shadow: 0 0 8px rgba(0, 234, 255, 0.4);
+}
 
 #menu_main {
   width: 100em;
@@ -615,8 +656,8 @@ nav.close {
 
 #basket.open #basket_main {
   width: 40em;
-  background: white;
-  color: #111;
+  background-color: rgba(10, 10, 10, 0.95);
+  color: #ffffff;
   transition: width 0.5s ease-in-out;
 }
 
@@ -654,8 +695,8 @@ nav.close {
 
   #basket_main.open {
     width: 80vw;
-    background-color: white;
-    color: #111;
+    background-color: rgba(10, 10, 10, 0.95);
+    color: #ffffff;
     transition: 0.3s;
   }
 
@@ -816,9 +857,12 @@ nav.close {
 }
 
 .user-menu-item {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
   width: 100%;
-  padding: 12px 18px;
+  padding: 0 18px;
   margin: 0;
   color: #fff;
   text-decoration: none;
@@ -846,11 +890,13 @@ nav.close {
 }
 
 .user-menu-item.danger {
-  color: #ff4d4d;
+  color: white !important;
+  font-family: 'MiniPixel', sans-serif !important;
+  font-size: 20px !important;
 }
 
 .user-menu-item.danger:hover {
-  color: #ff2222;
+  color: white !important;
 }
 
 /* =========================

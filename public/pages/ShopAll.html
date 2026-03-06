@@ -1,44 +1,170 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="home">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shop All</title>
-  <link rel="stylesheet" href="../styles/ShopAll.css" />
+  <title>All Products</title>
   <link rel="stylesheet" href="../styles/style.css" />
+  <link rel="stylesheet" href="../styles/ShopAll.css" />
 </head>
+
 <body>
 
-  <header>
-    <nav class="auth-nav">
-      <a href="/login" class="auth-link">Login</a>
-      <a href="/admin/products" class="auth-link">Admin</a>
-    </nav>
-  </header>
-
-  <section id="wrapper_overlay">
-    <div id="wrapper_background"></div>
-  </section>
+  <header></header>
 
   <main>
-  <h1 style="width: 100%; text-align: center; font-size: 5em;" id="title">Shop All</h1>
+    <h1 style="width: 100%; text-align: center; font-size: 5em;" id="title">All Products</h1>
 
-  <!-- Sorting Dropdown -->
-  <div style="width:100%; text-align:center; margin-bottom:20px;">
-    <label for="sort_products"><strong>Sort by:</strong></label>
-    <select id="sort_products">
-      <option value="default">Default</option>
-      <option value="price_low">Price: Low → High</option>
-      <option value="price_high">Price: High → Low</option>
-    </select>
-  </div>
+    <div id="sort_container" style="width:100%; text-align:center;">
+      <div class="custom-select" style="display:inline-block; position:relative; text-align:left;">
+        <select id="sort_products" style="display:none;">
+          <option value="default">Default</option>
+          <option value="price_low">Price Low → High</option>
+          <option value="price_high">Price High → Low</option>
+        </select>
 
-  <!-- Loading message -->
-  <div id="loading_products" style="text-align:center; font-size:1.2em; margin-bottom:20px;">
-    Loading products...
-  </div>
+        <div class="select-selected">
+          <span class="val">Default</span>
+        </div>
 
-  <section id="products_container">
+        <div class="select-items select-hide">
+          <div data-value="price_low">Price Low → High</div>
+          <div data-value="price_high">Price High → Low</div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const customSelect = document.querySelector(".custom-select");
+        const selectedDiv = customSelect.querySelector(".select-selected");
+        const valSpan = selectedDiv.querySelector(".val");
+        const itemsDiv = customSelect.querySelector(".select-items");
+        const nativeSelect = document.getElementById("sort_products");
+        const itemDivs = itemsDiv.querySelectorAll("div");
+
+        // Toggle list open/close
+        selectedDiv.addEventListener("click", function (e) {
+          e.stopPropagation();
+          itemsDiv.classList.toggle("select-hide");
+          selectedDiv.classList.toggle("select-arrow-active");
+
+          if (!itemsDiv.classList.contains("select-hide")) {
+            const currentChildren = Array.from(itemsDiv.children);
+            const visibleChildren = currentChildren.filter(d => d.style.display !== "none");
+
+            // Reset all borders
+            currentChildren.forEach(d => {
+              d.style.borderTopLeftRadius = "0";
+              d.style.borderTopRightRadius = "0";
+              d.style.borderBottomLeftRadius = "0";
+              d.style.borderBottomRightRadius = "0";
+            });
+
+            // Apply rounding to first and last visible item
+            if (visibleChildren.length > 0) {
+              visibleChildren[0].style.borderTopLeftRadius = "9px";
+              visibleChildren[0].style.borderTopRightRadius = "9px";
+              visibleChildren[visibleChildren.length - 1].style.borderBottomLeftRadius = "9px";
+              visibleChildren[visibleChildren.length - 1].style.borderBottomRightRadius = "9px";
+            }
+          }
+        });
+
+        // Handle option clicks
+        itemDivs.forEach(item => {
+          item.addEventListener("click", function (e) {
+            e.stopPropagation();
+            const value = this.getAttribute("data-value");
+            const text = this.innerHTML;
+
+            // Update custom selected text
+            valSpan.innerHTML = text;
+
+            // Update natively hidden select and trigger change event for products.js
+            Array.from(nativeSelect.options).forEach(opt => {
+              if (opt.value === value) {
+                opt.selected = true;
+              }
+            });
+            nativeSelect.dispatchEvent(new Event('change'));
+
+            // Update custom list options to hide the active one
+            // First, reset all original divs
+            itemDivs.forEach(div => div.style.display = "block");
+
+            // Check if Default option was injected dynamically earlier
+            let injectedDefault = itemsDiv.querySelector('div[data-value="default"]');
+            if (injectedDefault) {
+              injectedDefault.style.display = "block";
+            }
+
+            this.style.display = "none"; // Hide currently selected
+
+            // Ensure 'Default' option is available to switch back to if we aren't on it
+            if (value !== 'default') {
+              let defaultOpt = itemsDiv.querySelector('div[data-value="default"]');
+              if (!defaultOpt) {
+                defaultOpt = document.createElement('div');
+                defaultOpt.setAttribute('data-value', 'default');
+                defaultOpt.innerHTML = 'Default';
+                defaultOpt.addEventListener('click', itemClickReset);
+                itemsDiv.prepend(defaultOpt);
+              }
+            } else {
+              let defaultOpt = itemsDiv.querySelector('div[data-value="default"]');
+              if (defaultOpt) defaultOpt.style.display = 'none';
+            }
+
+            // Close the dropdown
+            closeAllSelect();
+          });
+        });
+
+        function itemClickReset(e) {
+          e.stopPropagation();
+          const value = this.getAttribute("data-value");
+          const text = this.innerHTML;
+          valSpan.innerHTML = text;
+          nativeSelect.value = value;
+          nativeSelect.dispatchEvent(new Event('change'));
+
+          // Reset all static items
+          itemDivs.forEach(div => div.style.display = "block");
+
+          // Re-hide the default option since we are selecting it
+          let injectedDefault = itemsDiv.querySelector('div[data-value="default"]');
+          if (injectedDefault) {
+            injectedDefault.style.display = "none";
+          }
+
+          closeAllSelect();
+        }
+
+        // Close dropdown if clicking outside
+        function closeAllSelect() {
+          itemsDiv.classList.add("select-hide");
+          selectedDiv.classList.remove("select-arrow-active");
+        }
+        document.addEventListener("click", closeAllSelect);
+
+        // Initial setup for default option
+        let defaultOpt = document.createElement('div');
+        defaultOpt.setAttribute('data-value', 'default');
+        defaultOpt.innerHTML = 'Default';
+        defaultOpt.style.display = 'none'; // Hidden initially
+        defaultOpt.addEventListener('click', itemClickReset);
+        itemsDiv.prepend(defaultOpt);
+      });
+    </script>
+
+    <!-- Loading message -->
+    <div id="loading_products" style="text-align:center; font-size:1.2em; margin-bottom:20px;">
+      Loading products...
+    </div>
+
+    <section id="products_container">
       <template>
         <div class="product_card" data-name="Game Headset" data-price="59.99">
           <img class="product_image" src="Assets/gameHeadset.png" />
@@ -52,85 +178,53 @@
     </section>
   </main>
 
-  <section id="filter">
-    <div id="filter_content">
-      <a href="../pages/ShopAll.html">
-        <button>All</button>
-      </a>
 
-      <a href="../pages/ShopAll.html?category=Games">
-        <button>Games</button>
-      </a>
-
-      <a href="../pages/ShopAll.html?category=Consoles%20and%20PCs">
-        <button>Consoles and PCs</button>
-      </a>
-
-      <a href="../pages/ShopAll.html?category=Accessories">
-        <button>Accessories</button>
-      </a>
-
-      <a href="../pages/ShopAll.html?category=Hardware">
-        <button>Hardware</button>
-      </a>
-    </div>
-
-    <h1>
-      Filter
-      <svg onclick="openPanel('filter')" id="toggle_up" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
-        <path fill="#000000" d="m2 5l2-2l2 2l1-1l-3-3l-3 3"/>
-      </svg>
-
-      <svg onclick="openPanel('filter')" id="toggle_down" width="30" height="30" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 8 8">
-        <path fill="#000000" d="m2 3l2 2l2-2l1 1l-3 3l-3-3"/>
-      </svg>
-    </h1>
-  </section>
 
 
   <script src="../scripts/header.js"></script>
   <script src="../scripts/animations.js" defer></script>
   <script src="../scripts/products.js?v=4"></script>
-<script>
-(function () {
-  const query = (localStorage.getItem("veltrix_search_query") || "").trim().toLowerCase();
-  if (!query) return;
+  <script>
+    (function () {
+      const query = (localStorage.getItem("veltrix_search_query") || "").trim().toLowerCase();
+      if (!query) return;
 
-  function applyFilter() {
-    const cards = document.querySelectorAll(".product_card");
-    if (!cards.length) return false;
+      function applyFilter() {
+        const cards = document.querySelectorAll(".product_card");
+        if (!cards.length) return false;
 
-    let shown = 0;
-    cards.forEach(card => {
-      const name = (card.dataset.name || "").toLowerCase();
-      const match = name.includes(query);
-      card.style.display = match ? "" : "none";
-      if (match) shown++;
-    });
+        let shown = 0;
+        cards.forEach(card => {
+          const name = (card.dataset.name || "").toLowerCase();
+          const match = name.includes(query);
+          card.style.display = match ? "" : "none";
+          if (match) shown++;
+        });
 
-    const title = document.getElementById("title");
-    if (title) title.textContent = `Results for "${query}" (${shown})`;
+        const title = document.getElementById("title");
+        if (title) title.textContent = `Results for "${query}" (${shown})`;
 
-    return true;
-  }
+        return true;
+      }
 
-  // Try now
-  if (applyFilter()) return;
+      // Try now
+      if (applyFilter()) return;
 
-  // If products.js injects cards later, watch for it
-  const container = document.getElementById("products_container");
-  if (!container) return;
+      // If products.js injects cards later, watch for it
+      const container = document.getElementById("products_container");
+      if (!container) return;
 
-  const observer = new MutationObserver(() => {
-    if (applyFilter()) observer.disconnect();
-  });
+      const observer = new MutationObserver(() => {
+        if (applyFilter()) observer.disconnect();
+      });
 
-  observer.observe(container, { childList: true, subtree: true });
-})();
-</script>
+      observer.observe(container, { childList: true, subtree: true });
+    })();
+  </script>
 
 
 
 
 </body>
+
 </html>
