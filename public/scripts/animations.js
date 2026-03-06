@@ -14,8 +14,10 @@ const section2 = document.querySelector('main');
 
 function moveY() {
   y++
-  section2.style.backgroundPosition = `0 ${y}px`;
-
+  if (section2) {
+    section2.style.backgroundPosition = `center ${y}px`;
+  }
+  document.body.style.setProperty('--bg-y-pos', `center ${y}px`);
 }
 setInterval(moveY, 20)
 
