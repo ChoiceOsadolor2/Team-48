@@ -210,7 +210,8 @@ svg:hover {
 }
 
 nav>a {
-  font-size: 22px;
+  font-size: 30px;
+  /* HEADER FONT SIZE */
   text-decoration: none;
 }
 
