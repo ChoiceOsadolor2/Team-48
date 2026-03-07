@@ -109,8 +109,8 @@ window.visibleBaseProducts = [];
 function getImageUrl(product) {
   const imageUrl = product?.image_url || product?.thumbnail || '';
 
-  if (!imageUrl) return '/assets/placeholder.png';
-  if (imageUrl.includes('example.com')) return '/assets/placeholder.png';
+  if (!imageUrl) return '';
+  if (imageUrl.includes('example.com')) return '';
 
   if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
     return imageUrl;
@@ -123,6 +123,25 @@ function getImageUrl(product) {
   }
 
   return '/storage/' + clean;
+}
+
+function setProductImage(imgEl, product) {
+  if (!imgEl) return;
+  const resolvedUrl = getImageUrl(product);
+
+  // No image configured: show empty image area instead of a forced fallback asset.
+  if (!resolvedUrl) {
+    imgEl.onerror = null;
+    imgEl.removeAttribute('src');
+    return;
+  }
+
+  imgEl.onerror = null;
+  imgEl.src = resolvedUrl;
+  imgEl.onerror = () => {
+    imgEl.onerror = null;
+    imgEl.removeAttribute('src');
+  };
 }
 
 // ===============================
@@ -198,20 +217,23 @@ async function loadCartFromBackend() {
       const clone = basketTemplate.content.cloneNode(true);
 
       const imgEl = clone.querySelector('img');
-      const nameEl = clone.querySelector('p');
-      const subEl = clone.querySelector('sub');
-      const qtyInput = clone.querySelector('.quantity');
+      const nameEl = clone.querySelector('.basket_name');
+      const priceEl = clone.querySelector('.basket_price');
+      const quantityTextEl = clone.querySelector('.basket_quantity_text');
 
-      if (imgEl) imgEl.src = getImageUrl(item);
-      if (nameEl) nameEl.textContent = item.name;
-
-      if (subEl) subEl.textContent = `£${item.price} x ${item.quantity}`;
-
-      if (qtyInput) {
-        qtyInput.value = item.quantity;
-        qtyInput.readOnly = true;
-        qtyInput.setAttribute('inputmode', 'none');
+      setProductImage(imgEl, item);
+      if (imgEl && item?.id) {
+        imgEl.style.cursor = 'pointer';
+        imgEl.title = 'View product';
+        imgEl.onclick = (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          window.location.href = `/pages/ProductPage.html?id=${encodeURIComponent(item.id)}`;
+        };
       }
+      if (nameEl) nameEl.textContent = item.name;
+      if (priceEl) priceEl.textContent = `${item.price} GBP`;
+      if (quantityTextEl) quantityTextEl.textContent = `${item.quantity}`;
 
       const minusBtn = clone.querySelector('.qty-count--minus');
       const addBtn = clone.querySelector('.qty-count--add');
@@ -244,7 +266,7 @@ async function loadCartFromBackend() {
         warning.style.color = 'red';
         warning.style.fontSize = '12px';
         warning.textContent = `Only ${stock} available`;
-        subEl?.after(warning);
+        (quantityTextEl || priceEl || nameEl)?.after(warning);
       }
 
       const removeBtn = clone.querySelector('.remove_from_cart');
@@ -268,7 +290,7 @@ async function loadCartFromBackend() {
 
     const totalEl = document.getElementById('total');
     if (totalEl) {
-      totalEl.textContent = `£${Number(total || 0).toFixed(2)}`;
+      totalEl.textContent = `${Number(total || 0).toFixed(2)} GBP`;
     }
 
     document.body.classList.add('cart-ready');
@@ -361,7 +383,7 @@ function renderProducts(list) {
 
     if (priceEl) priceEl.textContent = `${product.price} GBP`;
     if (nameEl) nameEl.textContent = product.name;
-    if (img) img.src = getImageUrl(product);
+    setProductImage(img, product);
 
     // Ensure card description is hidden even if template has it
     if (descEl) descEl.textContent = '';
@@ -531,11 +553,11 @@ if (container || container2) {
           const descEl = container2.querySelector('.product_description');
           const priceEl = container2.querySelector('.product_price');
 
-          if (img) img.src = getImageUrl(product);
+          setProductImage(img, product);
           if (nameEl) nameEl.textContent = product.name;
           if (brandEl) brandEl.textContent = product.brand || '';
           if (descEl) descEl.textContent = product.description || '';
-          if (priceEl) priceEl.textContent = `£${product.price}`;
+          if (priceEl) priceEl.textContent = `${product.price} GBP`;
 
 
 
@@ -739,4 +761,3 @@ window.RemoveFromCart = async function (productId) {
   });
 
 })();
-

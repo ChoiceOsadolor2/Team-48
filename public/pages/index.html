@@ -279,7 +279,10 @@
             <span class="error-message" id="messageError"></span>
           </div>
 
-          <button type="submit" class="btn-submit">Submit</button>
+          <div class="submit-wrap">
+            <button type="submit" class="btn-submit">Submit</button>
+            <span class="success-message" id="contactSuccessMsg"></span>
+          </div>
         </form>
       </div>
     </section>
@@ -288,13 +291,19 @@
 
   <script src="../scripts/header.js"></script>
   <script src="../scripts/animations.js" defer></script>
+  <script src="../scripts/products.js?v=8"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       const contactForm = document.getElementById('contactForm');
+      const successMsg = document.getElementById('contactSuccessMsg');
       if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
           e.preventDefault();
           let isValid = true;
+          if (successMsg) {
+            successMsg.style.display = "none";
+            successMsg.textContent = "";
+          }
 
           const fields = [
             { id: 'name', errorId: 'nameError' },
@@ -318,13 +327,18 @@
             // Hide error when user starts typing
             input.addEventListener('input', () => {
               errorSpan.style.display = "none";
+              if (successMsg) {
+                successMsg.style.display = "none";
+                successMsg.textContent = "";
+              }
             }, { once: true });
           });
 
           if (isValid) {
-            // Optional: Handle actual form submission here or show a success message
-            // contactForm.submit();
-            alert('Form submitted successfully!');
+            if (successMsg) {
+              successMsg.textContent = "Message Successfully Sent";
+              successMsg.style.display = "block";
+            }
             contactForm.reset();
           }
         });

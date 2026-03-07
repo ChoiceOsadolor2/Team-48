@@ -18,7 +18,7 @@
 
         <img id="header_logo" src="../assets/logo.png" alt="VeltrixLogo">
         <nav id="nav">
-            <a href="/pages/index.html#categories">Shop All</a>
+            <a href="/pages/index.html#categories">Products</a>
             <a href="/pages/index.html#reviews-section">Reviews</a>
             <a href="/pages/index.html#about-us-section">About Us</a>
             <a href="/pages/index.html#contact-us">Contact us</a>
@@ -79,12 +79,11 @@
         <div id="basket_main" onclick="event.stopPropagation()">
 
             <div id="basket_header">
-                <svg onclick="closePanel('basket')" xmlns="http://www.w3.org/2000/svg" width="40" height="40"
-                    viewBox="0 0 304 384">
-                    <path fill="#FFFFFF"
-                        d="M299 73L179 192l120 119l-30 30l-120-119L30 341L0 311l119-119L0 73l30-30l119 119L269 43z" />
+                <svg onclick="closePanel('basket')" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                    viewBox="0 0 24 24" style="cursor:pointer;">
+                    <path fill="#888888" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z" />
                 </svg>
-                <h1>CART</h1>
+                <h1>Cart</h1>
                 <span class="basket_count">(0)</span>
             </div>
 
@@ -97,24 +96,15 @@
                     <img src="../assets/gameHeadset.png" alt="">
 
                     <div class="basket_product_info">
-                        <p></p>
-                        <sub></sub>
-
-                        <div class="qty-input">
-                            <button class="qty-count qty-count--minus" type="button">-</button>
-                            <input class="quantity product-qty" type="number" min="0" max="10" value="1">
-                            <button class="qty-count qty-count--add" type="button">+</button>
+                        <p class="basket_name"></p>
+                        <p class="basket_price"></p>
+                        <div class="basket_quantity_row">
+                            <p class="basket_quantity_text"></p>
+                            <button class="basket_qty_btn qty-count--minus" type="button" aria-label="Decrease quantity">-</button>
+                            <button class="basket_qty_btn qty-count--add" type="button" aria-label="Increase quantity">+</button>
                         </div>
 
-                        <button class="remove_from_cart" type="button" style="
-                            margin-top: 8px;
-                            background: transparent;
-                            border: none;
-                            color: #ff4d4d;
-                            font-size: 14px;
-                            cursor: pointer;
-                            text-align: left;
-                        ">
+                        <button class="remove_from_cart" type="button">
                             Remove All
                         </button>
                     </div>
@@ -122,15 +112,10 @@
             </template>
 
 
-            <h1>Total: <p id="total"></p>
+            <h1 style="margin-bottom: 5px;">Total: <p id="total"></p>
             </h1>
-            <p style="color: #bbbbbb; font-size: 0.9em;">
-                Est Delivery Date: For Express delivery: 03 December 2025 to 05 December 2025.
-                For Standard delivery: 04 December 2025 to 08 December 2025. <br>
-                Tax included. Shipping calculated at checkout.
-            </p>
 
-            <button id="basket_checkout_btn" onclick="window.location.href='/checkout'">CHECKOUT</button>
+            <button id="basket_checkout_btn" onclick="window.location.href='/checkout'">Checkout</button>
         </div>
     </section>
 

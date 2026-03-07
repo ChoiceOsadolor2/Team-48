@@ -22,6 +22,11 @@ body {
   font-family: 'MiniPixel', sans-serif !important;
 }
 
+html.home,
+html.home body {
+  overflow-x: hidden;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -32,7 +37,8 @@ main {
   background-image: url(../assets/Veltrix-homepage-background.png);
   background-repeat: repeat-y;
   background-size: contain;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   height: auto;
   animation: none;
 
@@ -115,7 +121,8 @@ main {
 
 .main {
   text-align: center;
-  width: 100vw;
+  width: 100%;
+  max-width: 100%;
   height: 100%;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
@@ -680,7 +687,7 @@ html.home main {
 
 .error-message {
   display: none;
-  color: #ff4d4d;
+  color: #ffa825;
   font-family: 'MiniPixel', sans-serif;
   font-size: 16px;
   text-align: center;
@@ -726,4 +733,19 @@ html.home main {
 
 .btn-submit:active {
   transform: translateY(0);
+}
+
+.submit-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.success-message {
+  display: none;
+  margin-top: 8px;
+  text-align: center;
+  color: #ffa825;
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 16px;
 }
