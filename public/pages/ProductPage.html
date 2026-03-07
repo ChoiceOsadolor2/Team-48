@@ -1,32 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="home">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=], initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../styles/ProductPage.css">
     <link rel="stylesheet" href="../styles/style.css">
     <title>Document</title>
 </head>
 <body>
-  <video autoplay loop muted src="/assets/20251204-1029-39.3001076.mp4"></video>
-
 <header></header>
 
     <main>
 
-<svg style="position: absolute; top:0%; left:5%" id="previous_page"  onclick="history.back()"  xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 1024 1024"><path fill="#ffffff" d="M224 480h640a32 32 0 1 1 0 64H224a32 32 0 0 1 0-64z"/><path fill="#ffffff" d="m237.248 512l265.408 265.344a32 32 0 0 1-45.312 45.312l-288-288a32 32 0 0 1 0-45.312l288-288a32 32 0 1 1 45.312 45.312L237.248 512z"/></svg>
+<button id="previous_page" type="button" aria-label="Go back" onclick="goBackToTop()">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+    <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"/>
+  </svg>
+</button>
 
 <section id="product_display">
   <div id="product_carousal">
-    <img class="product_image" id="main_image" src="" alt="Main Product Image">
+    <img class="product_image" id="main_image" alt="Main Product Image">
     
   </div>
 
   <div id="product_info">
-    <h1 class="product_name"></h1>
-    <sub id="product_brand"></sub>
-    <p class="product_description"> </p>
-    <span class="product_price"></span>
+    <div class="product_meta_bubble">
+      <h1 class="product_name"></h1>
+      <sub id="product_brand"></sub>
+      <p class="product_description"> </p>
+      <span class="product_price"></span>
+    </div>
 
 
     <div class="qty-input">
@@ -53,46 +57,26 @@
   
 </section>
 
-<section id="reviews">
-      <sub id="total_reviews_value" style="position: absolute; top: 0%; right: 10%;">Total Reviews :24</sub>
-
-  <div id="reviews_header">
-      <div id="average_rating">
-      <span id="average_rating_value">4.5</span>
-      <span>/ 5</span>
-
-    </div>
-
-</div>
-<button onclick="toggleReview()" style="width: 100%; background-color: #050036;"> Add Review</button>
-
-  <form id="review_form" onsubmit="addReview(event)">
-    <input id="review_input" class="userinput" type="text" placeholder="Write a review">
-    <input id="review_name" type="text" class="usernameinput" placeholder="Your name">
-    <input id="review_rating" type="number" class="ratinginput" placeholder="Rating (1-5)" min="1" max="5">
-    <button type="submit">Submit</button>
-  </form>
-  <div id="reviews_container">
- 
-  <!-- <div class="review">
-    <h3>John Doe</h3>
-    <p>Great product! Highly recommend.</p>
-  </div> -->
-
-  <template id="review_template">
-    <div class="review">
-    <h3 class="review_name"></h3>
-    <p class="review_output"></p>
-    <span class="review_rating"></span>
-    <a>x</a>
-    </div>
-  </template>
-  </div>
-</section>
-
 </main>
 
+<script>
+  function goBackToTop() {
+    try {
+      if (document.referrer) {
+        const prev = new URL(document.referrer, window.location.href);
+        if (prev.origin === window.location.origin) {
+          prev.hash = '';
+          window.location.href = prev.pathname + prev.search;
+          return;
+        }
+      }
+    } catch (e) {}
+
+    window.location.href = '/pages/index.html';
+  }
+</script>
 <script src="../scripts/header.js"></script>
+<script src="../scripts/animations.js" defer></script>
 <script src="../scripts/products.js?v=8"></script>
 </body>
 </html>

@@ -4,8 +4,10 @@ let x = 0;
 const section = document.getElementById('wrapper_overlay');
 
 function moveX() {
-  x--
-  section.style.backgroundPosition = `${x}px`;
+  if (section) {
+    x--;
+    section.style.backgroundPosition = `${x}px`;
+  }
 
 }
 
@@ -71,15 +73,17 @@ setInterval(moveX, 30)
 const filter = document.getElementById("filter");
 let lastScrollY = window.scrollY;
 
-window.addEventListener("scroll", () => {
-  if (window.scrollY > lastScrollY) {
-    filter.style.opacity = "0";
-  } else {
-    filter.style.opacity = "1";
-  }
+if (filter) {
+  window.addEventListener("scroll", () => {
+    if (window.scrollY > lastScrollY) {
+      filter.style.opacity = "0";
+    } else {
+      filter.style.opacity = "1";
+    }
 
-  lastScrollY = window.scrollY;
-});
+    lastScrollY = window.scrollY;
+  });
+}
 
 
 
@@ -275,7 +279,6 @@ if (reviewsSlider) {
     reviewsSlider.scrollLeft = scrollStart - walk;
   });
 }
-
 
 
 

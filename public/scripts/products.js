@@ -125,22 +125,34 @@ function getImageUrl(product) {
   return '/storage/' + clean;
 }
 
+const NO_IMAGE_SVG = encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">' +
+    '<rect width="400" height="300" fill="transparent"/>' +
+    '<text x="200" y="155" text-anchor="middle" fill="#8a8a8a" ' +
+      'font-family="Arial, sans-serif" font-size="28">No image</text>' +
+  '</svg>'
+);
+const NO_IMAGE_DATA_URI = `data:image/svg+xml;charset=UTF-8,${NO_IMAGE_SVG}`;
+
 function setProductImage(imgEl, product) {
   if (!imgEl) return;
   const resolvedUrl = getImageUrl(product);
 
-  // No image configured: show empty image area instead of a forced fallback asset.
+  // No image configured: show a simple "No image" placeholder.
   if (!resolvedUrl) {
     imgEl.onerror = null;
-    imgEl.removeAttribute('src');
+    imgEl.src = NO_IMAGE_DATA_URI;
+    imgEl.alt = 'No image';
     return;
   }
 
   imgEl.onerror = null;
+  imgEl.alt = product?.name ? `${product.name} image` : 'Product image';
   imgEl.src = resolvedUrl;
   imgEl.onerror = () => {
     imgEl.onerror = null;
-    imgEl.removeAttribute('src');
+    imgEl.src = NO_IMAGE_DATA_URI;
+    imgEl.alt = 'No image';
   };
 }
 
@@ -492,8 +504,9 @@ function initProductPageQty(product) {
   input.addEventListener('paste', (e) => e.preventDefault());
 
   const stock = Number(product?.stock ?? 0);
-  const min = 1;
-  const max = stock > 0 ? Math.min(stock, 10) : 1;
+  const outOfStock = stock <= 0;
+  const min = outOfStock ? 0 : 1;
+  const max = outOfStock ? 0 : Math.min(stock, 10);
 
   function setQty(next) {
     let qty = parseInt(next, 10);
@@ -501,6 +514,12 @@ function initProductPageQty(product) {
 
     qty = Math.max(min, Math.min(max, qty));
     input.value = String(qty);
+
+    if (outOfStock) {
+      minusBtn.disabled = true;
+      addBtn.disabled = true;
+      return;
+    }
 
     minusBtn.disabled = qty <= min;
     addBtn.disabled = qty >= max;
@@ -518,10 +537,14 @@ function initProductPageQty(product) {
     setQty(parseInt(input.value, 10) + 1);
   };
 
-  setQty(1);
+  setQty(outOfStock ? 0 : 1);
 
   // return a getter for the current qty
-  return () => parseInt(input.value, 10) || 1;
+  return () => {
+    const qty = parseInt(input.value, 10);
+    if (!Number.isFinite(qty)) return min;
+    return Math.max(min, Math.min(max, qty));
+  };
 }
 
 
