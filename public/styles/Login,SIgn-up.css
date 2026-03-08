@@ -1,4 +1,11 @@
 /*import the google font */
+@font-face {
+    font-family: 'MiniPixel';
+    src: url('../fonts/mini-pixel-7.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
     margin: 0;
@@ -28,6 +35,32 @@ body.login-page {
     background-position: var(--bg-y-pos, center 0);
     image-rendering: auto;
     overflow-x: hidden;
+}
+
+/* Match product page navbar exactly */
+body.login-page header,
+body.login-page header * {
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+body.login-page nav > a {
+    font-size: 30px;
+    white-space: nowrap;
+}
+
+body.login-page #theme-toggle-button + label {
+    font-family: 'MiniPixel', sans-serif !important;
+    box-sizing: border-box;
+}
+
+body.login-page .user-menu-item {
+    box-sizing: border-box !important;
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+body.login-page .user-menu-dropdown {
+    right: 24px !important;
+    left: auto !important;
 }
 
 
