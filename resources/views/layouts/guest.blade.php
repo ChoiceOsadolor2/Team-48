@@ -21,8 +21,16 @@
         @endif
     </head>
 
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+    <body class="font-sans text-gray-900 antialiased" style="--bg-y-pos: center 0;">
+        <div
+            class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-black"
+            style="
+                background-image: url('{{ asset('assets/Veltrix-homepage-background.png') }}');
+                background-repeat: repeat-y;
+                background-size: 100vw auto;
+                background-position: var(--bg-y-pos);
+            "
+        >
             <div>
                 <a href="/">
                     <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
@@ -33,5 +41,15 @@
                 {{ $slot }}
             </div>
         </div>
+
+        <script>
+            (function () {
+                let y = 0;
+                setInterval(function () {
+                    y += 1;
+                    document.body.style.setProperty('--bg-y-pos', `center ${y}px`);
+                }, 20);
+            })();
+        </script>
     </body>
 </html>
