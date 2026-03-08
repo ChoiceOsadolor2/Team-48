@@ -19,6 +19,17 @@ body {
     color: white;
 }
 
+/* Login page uses the same animated background setup as home/product pages */
+body.login-page {
+    background-color: #000;
+    background-image: url('../assets/Veltrix-homepage-background.png');
+    background-repeat: repeat-y;
+    background-size: 100vw auto;
+    background-position: var(--bg-y-pos, center 0);
+    image-rendering: auto;
+    overflow-x: hidden;
+}
+
 
 /*Login Box at the center */
 .login-box {
