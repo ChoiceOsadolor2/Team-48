@@ -176,7 +176,7 @@ fetch(headerFile)
         .then(data => {
           if (data.logged_in) {
             userMenuDropdown.innerHTML = `
-              <a href="/pages/orders.html" class="user-menu-item">Previous Orders</a>
+              <a href="/orders" class="user-menu-item">Previous Orders</a>
               <a href="/profile" class="user-menu-item">Profile Info</a>
               <button type="button" class="user-menu-item danger" id="logoutBtn">
                 Logout
