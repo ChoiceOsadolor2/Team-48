@@ -62,6 +62,8 @@ Route::get('/products/{slug}', [ProductController::class, 'show'])->name('produc
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/products/search-json', [ProductController::class, 'search'])->name('products.search.json');
 
+Route::post('/chatbot/ask', [App\Http\Controllers\ChatbotController::class, 'ask']);
+
 Route::get('/product', function () {
     return redirect('/products');
 });

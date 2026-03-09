@@ -6,6 +6,12 @@ fetch(headerFile)
     const headerEl = document.querySelector('header');
     headerEl.innerHTML = html;
 
+    // Extract chatbot from header to prevent CSS flex/filter containing-block traps
+    const chatbotUI = document.getElementById('vx-chatbot-container');
+    if (chatbotUI) {
+      document.body.appendChild(chatbotUI);
+    }
+
     const footerFile = '../pages/footer.html';
     fetch(footerFile)
       .then(response => response.text())
@@ -223,10 +229,11 @@ fetch(headerFile)
       .catch(err => {
         console.error('User status error:', err);
       });
+
+    initChatbot();
   });
 
-
-(async function () {
+; (async function () {
   try {
     const res = await fetch('/user-status', {
       headers: { 'Accept': 'application/json' }
@@ -248,9 +255,96 @@ fetch(headerFile)
       window.location.reload();
     }
   } catch (err) {
-    console.error('Auto-logout check failed:', err);
+    console.error('Logout check error:', err);
   }
 })();
+
+/* =========================================
+   AI CHATBOT LOGIC
+   ========================================= */
+function initChatbot() {
+  const toggleBtn = document.getElementById('vx-chatbot-toggle');
+  const closeBtn = document.getElementById('vx-chatbot-close');
+  const chatWindow = document.getElementById('vx-chatbot-window');
+  const chatForm = document.getElementById('vx-chat-form');
+  const chatInput = document.getElementById('vx-chat-input');
+  const chatMessages = document.getElementById('vx-chat-messages');
+
+  if (!toggleBtn || !chatWindow) return;
+
+  // Toggle Window
+  const openChat = () => {
+    chatWindow.classList.remove('hidden');
+    chatInput.focus();
+  };
+
+  const closeChat = () => {
+    chatWindow.classList.add('hidden');
+  };
+
+  toggleBtn.addEventListener('click', () => {
+    if (chatWindow.classList.contains('hidden')) {
+      openChat();
+    } else {
+      closeChat();
+    }
+  });
+
+  closeBtn.addEventListener('click', closeChat);
+
+  // Handle Form Submission
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userMessage = chatInput.value.trim();
+    if (!userMessage) return;
+
+    // Append User Message
+    appendMessage('user', userMessage);
+    chatInput.value = '';
+
+    // Append 'Typing...' Indicator
+    const typingIndicator = appendMessage('ai', '...');
+
+    try {
+      // Send to Backend
+      const response = await fetch('/chatbot/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      const data = await response.json();
+
+      // Update the typing indicator with the real response
+      if (data.status === 'success') {
+        typingIndicator.textContent = data.reply;
+      } else {
+        typingIndicator.textContent = "Error: Couldn't reach the server right now.";
+      }
+
+    } catch (error) {
+      console.error("Chatbot Error:", error);
+      typingIndicator.textContent = "Oops! My circuits are crossed. Try again later.";
+    }
+  });
+
+  // Helper to append a bubble
+  function appendMessage(senderType, text) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('vx-message');
+    msgDiv.classList.add(senderType === 'ai' ? 'ai-message' : 'user-message');
+    msgDiv.textContent = text;
+    chatMessages.appendChild(msgDiv);
+
+    // Auto-scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    return msgDiv;
+  }
+}
 
 
 
