@@ -35,6 +35,9 @@
                 </div>
                 <button id="vx-search-submit" class="vx-search-submit" type="submit">Search</button>
             </form>
+
+            <!-- Ajax Live Search Dropdown Container -->
+            <ul id="vx-search-results" class="vx-search-dropdown" style="display: none;"></ul>
         </div>
 
         <div id="icons">
@@ -100,8 +103,10 @@
                         <p class="basket_price"></p>
                         <div class="basket_quantity_row">
                             <p class="basket_quantity_text"></p>
-                            <button class="basket_qty_btn qty-count--minus" type="button" aria-label="Decrease quantity">-</button>
-                            <button class="basket_qty_btn qty-count--add" type="button" aria-label="Increase quantity">+</button>
+                            <button class="basket_qty_btn qty-count--minus" type="button"
+                                aria-label="Decrease quantity">-</button>
+                            <button class="basket_qty_btn qty-count--add" type="button"
+                                aria-label="Increase quantity">+</button>
                         </div>
 
                         <button class="remove_from_cart" type="button">

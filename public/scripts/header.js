@@ -55,6 +55,73 @@ fetch(headerFile)
           goToShopAll();
         }
       }, true);
+
+      // ==========================
+      // Ajax Live Autocomplete
+      // ==========================
+      const resultsContainer = headerEl.querySelector('#vx-search-results');
+      let debounceTimer = null;
+
+      if (resultsContainer) {
+        input.addEventListener('input', (e) => {
+          const query = e.target.value.trim();
+
+          if (!query) {
+            resultsContainer.style.display = 'none';
+            resultsContainer.innerHTML = '';
+            return;
+          }
+
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
+              .then(res => res.json())
+              .then(data => {
+                resultsContainer.innerHTML = '';
+
+                if (!data.success || !data.results || data.results.length === 0) {
+                  resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">No products found.</li>';
+                  resultsContainer.style.display = 'block';
+                  return;
+                }
+
+                data.results.slice(0, 5).forEach(product => {
+                  const li = document.createElement('li');
+                  li.innerHTML = `
+                    <img src="${product.image_url}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/placeholder.png'">
+                    <div class="vx-search-dropdown-info">
+                      <span class="vx-search-dropdown-title">${product.name}</span>
+                      <span class="vx-search-dropdown-price">£${Number(product.price).toFixed(2)}</span>
+                    </div>
+                  `;
+                  li.addEventListener('click', () => {
+                    window.location.href = `ProductPage.html?id=${product.id}`;
+                  });
+                  resultsContainer.appendChild(li);
+                });
+
+                resultsContainer.style.display = 'flex';
+                resultsContainer.style.flexDirection = 'column';
+              })
+              .catch(err => console.error('Live search error:', err));
+          }, 300);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!form.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.style.display = 'none';
+          }
+        });
+
+        // Focus brings it back if there's text
+        input.addEventListener('focus', () => {
+          if (input.value.trim() && resultsContainer.innerHTML !== '') {
+            resultsContainer.style.display = 'flex';
+          }
+        });
+      }
+
     })();
 
     const userMenuBtn = headerEl.querySelector('#userMenuBtn');

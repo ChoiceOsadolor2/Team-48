@@ -238,6 +238,8 @@ header #search {
   transform: translate(-50%, -50%);
   width: 40%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -1127,6 +1129,111 @@ body:has(#basket.open) #theme-toggle-container {
 
 .user-menu-item.danger:hover {
   color: white !important;
+}
+
+/* ===============================
+   Ajax Live Search Dropdown
+=============================== */
+.vx-search-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  /* Just below the search bar */
+  left: 0;
+  right: 0;
+  max-width: 500px;
+  margin: 0 auto;
+  background: rgba(250, 240, 240, 0.95);
+  backdrop-filter: blur(8px);
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: 'MiniPixel', sans-serif;
+}
+
+html[data-theme="dark"] .vx-search-dropdown {
+  background: rgba(5, 0, 54, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.vx-search-dropdown li {
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+html[data-theme="dark"] .vx-search-dropdown li {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vx-search-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.vx-search-dropdown li:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(5px);
+}
+
+html[data-theme="dark"] .vx-search-dropdown li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.vx-search-dropdown-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] .vx-search-dropdown-img {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vx-search-dropdown-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.vx-search-dropdown-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+html[data-theme="dark"] .vx-search-dropdown-title {
+  color: var(--text-light);
+}
+
+.vx-search-dropdown-price {
+  font-size: 1.1rem;
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+html[data-theme="dark"] .vx-search-dropdown-price {
+  color: #ff5252;
+}
+
+.vx-search-dropdown-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--sub-text-dark);
+  font-size: 1.2rem;
 }
 
 /* =========================
