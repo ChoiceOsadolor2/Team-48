@@ -219,9 +219,9 @@ main {
 } */
 
 #wrapper_overlay {
-    background-image: url(../assets/ShopAll_BG.png);
+    background-image: url(../assets/Veltrix-homepage-background.png);
     background-size: contain;
-    background-repeat: repeat;
+    background-repeat: repeat-y;
 
     height: 60vh;
     width: 100vw;
@@ -262,7 +262,7 @@ svg:hover {
 
 
 nav>a {
-    font-size: clamp(1rem, 1.5vw, 1.4rem);
+    /* Inherit global font size from style.css (30px) instead of shrinking clamp */
 }
 
 
