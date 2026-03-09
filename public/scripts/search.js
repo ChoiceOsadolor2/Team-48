@@ -1,17 +1,29 @@
 (function () {
+
   const form = document.getElementById("search-form");
   const input = document.getElementById("search-bar");
+
   if (!form || !input) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", function (e) {
+
     e.preventDefault();
 
     const query = (input.value || "").trim();
-    if (!query) return;
 
+    // If search box is empty remove stored query
+    if (!query) {
+      localStorage.removeItem("veltrix_search_query");
+      window.location.href = "ShopAll.html";
+      return;
+    }
+
+    // Save query so ShopAll page can read it
     localStorage.setItem("veltrix_search_query", query);
 
-    // IMPORTANT: make sure this path matches where ShopAll actually lives
+    // Redirect to shop page
     window.location.href = "ShopAll.html";
+
   });
+
 })();

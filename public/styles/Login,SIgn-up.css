@@ -1,4 +1,11 @@
 /*import the google font */
+@font-face {
+    font-family: 'MiniPixel';
+    src: url('../fonts/mini-pixel-7.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
     margin: 0;
@@ -17,6 +24,43 @@ body {
     background-size: cover;
     background-position: center;
     color: white;
+}
+
+/* Login page uses the same animated background setup as home/product pages */
+body.login-page {
+    background-color: #000;
+    background-image: url('../assets/Veltrix-homepage-background.png');
+    background-repeat: repeat-y;
+    background-size: 100vw auto;
+    background-position: var(--bg-y-pos, center 0);
+    image-rendering: auto;
+    overflow-x: hidden;
+}
+
+/* Match product page navbar exactly */
+body.login-page header,
+body.login-page header * {
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+body.login-page nav > a {
+    font-size: 30px;
+    white-space: nowrap;
+}
+
+body.login-page #theme-toggle-button + label {
+    font-family: 'MiniPixel', sans-serif !important;
+    box-sizing: border-box;
+}
+
+body.login-page .user-menu-item {
+    box-sizing: border-box !important;
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+body.login-page .user-menu-dropdown {
+    right: 24px !important;
+    left: auto !important;
 }
 
 
@@ -39,26 +83,28 @@ body {
 }
 
 .login-box .input-box {
-    position: relative; 
+    position: relative;
     width: 100%;
     height: 50px;
     margin: 30px 0;
 }
 
 .input-box input {
-   width: 100%;
-   height: 100%;
-   background: transparent;
-   border: none;
-   outline: none;
-   border: 2px solid rgb(69, 96, 106);
-   border-radius: 40px;
-   font-size: 16px;
-   color: white;
-   padding: 20px 45px 20px 20px; /*position username & pass*/
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    border: 2px solid rgb(69, 96, 106);
+    border-radius: 40px;
+    font-size: 16px;
+    color: white;
+    padding: 20px 45px 20px 20px;
+    /*position username & pass*/
 }
 
-.input-box input::placeholder { /*colour change for placeholders (user&pass) */
+.input-box input::placeholder {
+    /*colour change for placeholders (user&pass) */
     color: rgb(255, 255, 255);
 }
 
@@ -102,6 +148,20 @@ body {
     font-weight: 600;
 }
 
+/* Ensure hover does not change appearance */
+.login-box .login-button:hover {
+    background: white;
+    color: rgb(59, 59, 59);
+    box-shadow: 0 0 10px rgba(0, 0, 0, .1);
+}
+
+
+
+
+
+
+
+
 .login-box .register-link {
     font-size: 15px;
     text-align: center;
@@ -129,7 +189,3 @@ body {
     accent-color: #ffffff;
     cursor: pointer;
 }
-
-
-
-

@@ -1,25 +1,29 @@
 // moving background animation --> backgrund is of a section to to repeat, this section x position is dcremented by 1 each time. 
 // Moving background
-let x= 0;
-const section=document.getElementById('wrapper_overlay');
+let x = 0;
+const section = document.getElementById('wrapper_overlay');
 
-function moveX(){
-x--
-section.style.backgroundPosition= `${x}px`;
-
-}
-
-let y=0;
-const section2=document.querySelector('main');
-
-function moveY(){
-y++
-section2.style.backgroundPosition= `0 ${y}px`;
+function moveX() {
+  if (section) {
+    x--;
+    section.style.backgroundPosition = `${x}px`;
+  }
 
 }
-setInterval(moveY,20)
 
-setInterval(moveX,30)
+let y = 0;
+const section2 = document.querySelector('main');
+
+function moveY() {
+  y++
+  if (section2) {
+    section2.style.backgroundPosition = `center ${y}px`;
+  }
+  document.body.style.setProperty('--bg-y-pos', `center ${y}px`);
+}
+setInterval(moveY, 20)
+
+setInterval(moveX, 30)
 
 
 
@@ -69,20 +73,22 @@ setInterval(moveX,30)
 const filter = document.getElementById("filter");
 let lastScrollY = window.scrollY;
 
-window.addEventListener("scroll", () => {
+if (filter) {
+  window.addEventListener("scroll", () => {
     if (window.scrollY > lastScrollY) {
-        filter.style.opacity = "0";
+      filter.style.opacity = "0";
     } else {
-        filter.style.opacity = "1";
+      filter.style.opacity = "1";
     }
 
     lastScrollY = window.scrollY;
-});
+  });
+}
 
 
 
 
-                                            // Dark Mode Toggle 
+// Dark Mode Toggle 
 document.querySelector("html").setAttribute("data-theme", 'dark');
 
 
@@ -91,7 +97,7 @@ const ThemeToggleContainer = document.createElement('div');
 ThemeToggleContainer.setAttribute('id', 'theme-toggle-container');
 document.body.appendChild(ThemeToggleContainer);
 
-const ThemeToggle= document.createElement('input');
+const ThemeToggle = document.createElement('input');
 const ThemeToggleLabel = document.createElement('label');
 ThemeToggleLabel.setAttribute('for', 'theme-toggle-button');
 ThemeToggle.type = "checkbox";
@@ -100,8 +106,8 @@ ThemeToggle.setAttribute('data-theme-toggle', '');
 ThemeToggle.setAttribute('aria-label', 'Change to light theme');
 
 
-ThemeToggleContainer.appendChild(ThemeToggle);  
-ThemeToggleContainer.appendChild(ThemeToggleLabel);         
+ThemeToggleContainer.appendChild(ThemeToggle);
+ThemeToggleContainer.appendChild(ThemeToggleLabel);
 
 
 // Sourced from Codepen
@@ -163,6 +169,7 @@ let currentThemeSetting = calculateSettingAsThemeString({ localStorageTheme, sys
 */
 updateButton({ buttonEl: button, isDark: currentThemeSetting === "dark" });
 updateThemeOnHtmlEl({ theme: currentThemeSetting });
+button.checked = (currentThemeSetting === "dark");
 
 /**
 * 4. Add an event listener to toggle the theme
@@ -175,7 +182,103 @@ button.addEventListener("click", (event) => {
   updateThemeOnHtmlEl({ theme: newTheme });
 
   currentThemeSetting = newTheme;
-}); 
+  button.checked = (currentThemeSetting === "dark");
+});
+
+
+// ============================================
+// Reviews: Infinite Loop + Drag to Scroll
+// ============================================
+
+const reviewsSlider = document.querySelector('.reviews-scroll-container');
+
+if (reviewsSlider) {
+
+  // --- Infinite Loop Setup ---
+  const originalCards = Array.from(reviewsSlider.children);
+  const totalCards = originalCards.length;
+
+  // Clone all cards and append a copy at the end and prepend at the start
+  originalCards.forEach(card => {
+    const cloneEnd = card.cloneNode(true);
+    cloneEnd.setAttribute('aria-hidden', 'true');
+    reviewsSlider.appendChild(cloneEnd);
+  });
+
+  originalCards.forEach(card => {
+    const cloneStart = card.cloneNode(true);
+    cloneStart.setAttribute('aria-hidden', 'true');
+    reviewsSlider.prepend(cloneStart);
+  });
+
+  // Calculate card width (including gap)
+  function getCardWidth() {
+    const card = reviewsSlider.querySelector('.review-card');
+    const gap = parseInt(getComputedStyle(reviewsSlider).gap) || 32;
+    return card.offsetWidth + gap;
+  }
+
+  // Start scroll position = width of one full set of clones (at the start)
+  function initScroll() {
+    reviewsSlider.scrollLeft = getCardWidth() * totalCards;
+  }
+
+  initScroll();
+
+  // On scroll: silently jump when entering the clone zones
+  let isJumping = false;
+  reviewsSlider.addEventListener('scroll', () => {
+    if (isJumping) return;
+    const cardW = getCardWidth();
+    const cloneSetWidth = cardW * totalCards;
+    const sl = reviewsSlider.scrollLeft;
+    const maxScroll = reviewsSlider.scrollWidth - reviewsSlider.clientWidth;
+
+    // If scrolled into the leading clone zone, jump to same position in real cards
+    if (sl < cloneSetWidth - cardW) {
+      isJumping = true;
+      reviewsSlider.scrollLeft = sl + cloneSetWidth;
+      requestAnimationFrame(() => { isJumping = false; });
+    }
+
+    // If scrolled into the trailing clone zone, jump back
+    if (sl > cloneSetWidth * 2 - cardW) {
+      isJumping = true;
+      reviewsSlider.scrollLeft = sl - cloneSetWidth;
+      requestAnimationFrame(() => { isJumping = false; });
+    }
+  });
+
+  // --- Drag to Scroll ---
+  let isDown = false;
+  let startX;
+  let scrollStart;
+
+  reviewsSlider.addEventListener('mousedown', (e) => {
+    isDown = true;
+    reviewsSlider.classList.add('active');
+    startX = e.pageX - reviewsSlider.offsetLeft;
+    scrollStart = reviewsSlider.scrollLeft;
+  });
+
+  reviewsSlider.addEventListener('mouseleave', () => {
+    isDown = false;
+    reviewsSlider.classList.remove('active');
+  });
+
+  reviewsSlider.addEventListener('mouseup', () => {
+    isDown = false;
+    reviewsSlider.classList.remove('active');
+  });
+
+  reviewsSlider.addEventListener('mousemove', (e) => {
+    if (!isDown) return;
+    e.preventDefault();
+    const x = e.pageX - reviewsSlider.offsetLeft;
+    const walk = (x - startX) * 1.5;
+    reviewsSlider.scrollLeft = scrollStart - walk;
+  });
+}
 
 
 

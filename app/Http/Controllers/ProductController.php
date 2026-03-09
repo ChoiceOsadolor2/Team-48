@@ -41,25 +41,35 @@ class ProductController extends Controller
     }
 
     // GET /search
-    public function search(Request $request)
-    {
-        $term = $request->input('q');
+   public function search(Request $request)
+{
+    $term = $request->input('q');
+    $category = $request->input('category');
 
-        if (!$term) {
-            return response()->json([
-                'success' => false,
-                'message' => 'No search term provided',
-            ], 400);
-        }
-
-        $products = Product::with('category')
-            ->where('name', 'like', "%{$term}%")
-            ->orWhere('description', 'like', "%{$term}%")
-            ->get();
-
+    if (!$term) {
         return response()->json([
-            'success' => true,
-            'results' => $products,
-        ]);
+            'success' => false,
+            'message' => 'No search term provided',
+        ], 400);
     }
+
+    $query = Product::with('category')
+        ->where(function ($q) use ($term) {
+            $q->where('name', 'like', "%{$term}%")
+              ->orWhere('description', 'like', "%{$term}%");
+        });
+
+    if ($category) {
+        $query->whereHas('category', function ($q) use ($category) {
+            $q->where('slug', $category);
+        });
+    }
+
+    $products = $query->get();
+
+    return response()->json([
+        'success' => true,
+        'results' => $products,
+    ]);
+}
 }

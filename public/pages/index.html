@@ -1,131 +1,350 @@
 <!DOCTYPE html>
 <html lang="en" class="home">
+
 <head>
   <meta charset="UTF-8" />
   <title>Veltrix</title>
   <link rel="shortcut icon" href="../assets/MainLogo.png" type="image/x-icon">
+
   <link rel="stylesheet" href="../styles/styleHomepage.css" />
   <link rel="stylesheet" href="../styles/style.css">
 
-
   <!-- Pixel font -->
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <!-- Force page to start at top on reload -->
+  <script>
+    if ('scrollRestoration' in history) {
+      history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+  </script>
 </head>
 
 <body>
-<header> </header>
+  <header></header>
 
   <!-- Search bar (pops up when clicked) -->
   <div class="search-container">
     <input type="text" placeholder="Search..." class="search-bar" id="Search_Input">
-    <button  class="search-close">✖</button>
+    <button class="search-close">✖</button>
   </div>
 
+  <main>
+    <!-- Main section -->
+    <section class="main">
+      <div class="main-center">
+        <img src="../assets/MainLogo.png" class="main-logo" alt="Veltrix Logo">
 
-  <!-- Main section -->
-   <main>
-  <section class="main">
-    <!-- <img src="../assets/Veltrix-homepage-background.png" class="main-bg" alt="background"> could hvae just made the background of this section the image instead -->
+        <!-- <p class="main-subtitle">GAMING DIGITAL HUB</p> -->
 
-    <div class="main-center">
+        <p class="main-desc">Your game, Our Mission</p>
+      </div>
+    </section>
 
-      <img src="../assets/MainLogo.png" class="main-logo" alt="Veltrix Logo">
-
-      <!-- <p class="main-subtitle">GAMING DIGITAL HUB</p> -->
-
-      <p class="main-desc
-      ">
-        Your game, Our Mission
-      </p>
-
-      <button class="cta" onclick="window.location.href='ShopAll.html'">Explore</button>
+    <!-- ALL PRODUCTS (top row, centered) -->
+    <div class="categories-all" id="categories">
+      <a class="cat-box" href="../pages/ShopAll.html">
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24">
+          <path fill="currentColor" d="M4 4h16v4H4zm0 6h16v4H4zm0 6h16v4H4z" />
+        </svg>
+        <span>All Products</span>
+      </a>
     </div>
 
-  </section>
+    <!-- Categories (filters row) -->
+    <section class="categories">
 
+      <a class="cat-box" href="../pages/ShopAll.html?category=Video+Games">
+        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 717 669">
+          <path
+            d="M143 96V24h72v72h-72zm359-72h71v72h-71V24zm143 215V96h72v287h-72v71h-72v72h72v72h72v71H573v-71h-71v-72H215v72h-72v71H0v-71h72v-72h71v-72H72v-71H0V96h72v143h71v-71h72V96h72v72h143V96h72v72h71v71h72zm-358 72v-72h-72v72h72zm215 0v-72h-72v72h72z" />
+        </svg>
+        <span>Video Games</span>
+      </a>
 
-  <!-- Categories -->
-  <section class="categories">
+      <a class="cat-box" href="../pages/ShopAll.html?category=Consoles%20and%20PCs">
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 48 48">
+          <g fill="none">
+            <rect width="28" height="40" x="10" y="4" stroke="currentColor" stroke-width="4" rx="2" />
+            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"
+              d="M16 12h16v10H16zm0 20h8m-4 4v-8" />
+            <rect width="4" height="4" x="27" y="33" fill="currentColor" rx="2" />
+            <rect width="4" height="4" x="30" y="26" fill="currentColor" rx="2" />
+          </g>
+        </svg>
+        <span>Consoles and PCs</span>
+      </a>
 
-    <a class="cat-box" href='../pages/ShopAll.html?category=Video+Games'>
-      <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 717 669"><path d="M143 96V24h72v72h-72zm359-72h71v72h-71V24zm143 215V96h72v287h-72v71h-72v72h72v72h72v71H573v-71h-71v-72H215v72h-72v71H0v-71h72v-72h71v-72H72v-71H0V96h72v143h71v-71h72V96h72v72h143V96h72v72h71v71h72zm-358 72v-72h-72v72h72zm215 0v-72h-72v72h72z"/></svg> 
-      Video Games</a>
-    <a class="cat-box" href="../pages/ShopAll.html?category=Consoles and PCs"> <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 48 48">
-    <g fill="none">
-        <rect width="28" height="40" x="10" y="4" stroke="currentColor" stroke-width="4" rx="2"/>
-        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M16 12h16v10H16zm0 20h8m-4 4v-8"/>
-        <rect width="4" height="4" x="27" y="33" fill="currentColor" rx="2"/>
-        <rect width="4" height="4" x="30" y="26" fill="currentColor" rx="2"/>
-    </g>
-</svg>Consoles and PCs</a>
-    <a class="cat-box" href='../pages/ShopAll.html?category=Accesories'> <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24">
-    <g fill="currentColor">
-        <path d="M22 18a4 4 0 1 1-8 0a4 4 0 0 1 8 0Z" opacity=".5"/>
-        <path d="M18.416 15.876a.75.75 0 0 1 .208 1.04l-.223.334H19a.75.75 0 0 1 .624 1.166l-1 1.5a.75.75 0 1 1-1.248-.832l.223-.334H17a.75.75 0 0 1-.624-1.166l1-1.5a.75.75 0 0 1 1.04-.208Z"/>
-        <path  d="M22 7.3V5.188c0-.175 0-.262-.004-.335c-.08-1.541-1.385-2.774-3.017-2.85C18.901 2 18.81 2 18.625 2c-.307 0-.46 0-.59.006c-2.72.126-4.895 2.18-5.029 4.749c-.006.122-.006.267-.006.558v8.393a5.502 5.502 0 0 1 4.765-3.201V11.3c0-.552.474-1 1.058-1c1.755 0 3.177-1.343 3.177-3ZM20.25 5a.75.75 0 0 0-1.5 0v2.5a.75.75 0 0 0 1.5 0V5Z" clip-rule="evenodd"/>
-        <path d="M2 9.3V7.187c0-.174 0-.26.004-.334c.08-1.541 1.385-2.774 3.017-2.85C5.098 4 5.19 4 5.375 4c.307 0 .46 0 .59.006c2.72.126 4.895 2.18 5.029 4.749c.006.122.006.267.006.557V19.75C11 20.993 9.933 22 8.618 22c-1.316 0-2.383-1.007-2.383-2.25V13.3c0-.552-.474-1-1.059-1C3.422 12.3 2 10.957 2 9.3Z" opacity=".5"/>
-        <path d="M11 18.25H6.235v1.5H11v-1.5Zm-6.5-12a.75.75 0 0 0-.75.75v2.5a.75.75 0 0 0 1.5 0V7a.75.75 0 0 0-.75-.75Z"/>
-    </g>
-</svg>Accesories</a>
-    <a class="cat-box" href='../pages/ShopAll.html?category=Monitors+and+Displays'>
-      <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 1025 1024"><path d="M960.193 768h-384v128h64q53 0 90.5 37.5t37.5 90.5h-512q0-53 37.5-90.5t90.5-37.5h64V768h-384q-27 0-45.5-18.5T.193 704V64q0-26 18.5-45t45.5-19h896q26 0 45 19t19 45v640q0 27-18.5 45.5t-45.5 18.5zm-64-640h-768v512h768V128zm-704 448V191h512z"/></svg>
-      Monitors and Displays</a>
-    <a class="cat-box" href='../pages/ShopAll.html?category=Gaming+Chairs+And+Desks'>Gaming Chairs and Desks</a>
+      <a class="cat-box" href="../pages/ShopAll.html?category=Accesories">
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 24 24">
+          <g fill="currentColor">
+            <path d="M22 18a4 4 0 1 1-8 0a4 4 0 0 1 8 0Z" opacity=".5" />
+            <path
+              d="M18.416 15.876a.75.75 0 0 1 .208 1.04l-.223.334H19a.75.75 0 0 1 .624 1.166l-1 1.5a.75.75 0 1 1-1.248-.832l.223-.334H17a.75.75 0 0 1-.624-1.166l1-1.5a.75.75 0 0 1 1.04-.208Z" />
+            <path
+              d="M22 7.3V5.188c0-.175 0-.262-.004-.335c-.08-1.541-1.385-2.774-3.017-2.85C18.901 2 18.81 2 18.625 2c-.307 0-.46 0-.59.006c-2.72.126-4.895 2.18-5.029 4.749c-.006.122-.006.267-.006.558v8.393a5.502 5.502 0 0 1 4.765-3.201V11.3c0-.552.474-1 1.058-1c1.755 0 3.177-1.343 3.177-3ZM20.25 5a.75.75 0 0 0-1.5 0v2.5a.75.75 0 0 0 1.5 0V5Z"
+              clip-rule="evenodd" />
+            <path
+              d="M2 9.3V7.187c0-.174 0-.26.004-.334c.08-1.541 1.385-2.774 3.017-2.85C5.098 4 5.19 4 5.375 4c.307 0 .46 0 .59.006c2.72.126 4.895 2.18 5.029 4.749c.006.122.006.267.006.557V19.75C11 20.993 9.933 22 8.618 22c-1.316 0-2.383-1.007-2.383-2.25V13.3c0-.552-.474-1-1.059-1C3.422 12.3 2 10.957 2 9.3Z"
+              opacity=".5" />
+            <path
+              d="M11 18.25H6.235v1.5H11v-1.5Zm-6.5-12a.75.75 0 0 0-.75.75v2.5a.75.75 0 0 0 1.5 0V7a.75.75 0 0 0-.75-.75Z" />
+          </g>
+        </svg>
+        <span>Accesories</span>
+      </a>
 
-  </section>
+      <a class="cat-box" href="../pages/ShopAll.html?category=Hardware">
+        <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 1025 1024">
+          <path
+            d="M960.193 768h-384v128h64q53 0 90.5 37.5t37.5 90.5h-512q0-53 37.5-90.5t90.5-37.5h64V768h-384q-27 0-45.5-18.5T.193 704V64q0-26 18.5-45t45.5-19h896q26 0 45 19t19 45v640q0 27-18.5 45.5t-45.5 18.5zm-64-640h-768v512h768V128zm-704 448V191h512z" />
+        </svg>
+        <span>Hardware</span>
+      </a>
 
+    </section>
 
-  <!-- Digital Playground section (keyboard with hover feature) -->
-  <section class="digital-section">
+    <!-- Customer Reviews section -->
+    <section class="reviews-section" id="reviews-section">
+      <div class="reviews-inner">
+        <h2>Customer Reviews</h2>
+        <p class="main-desc">What our players are saying</p>
 
-    <div class="digital-inner">
+        <div class="reviews-scroll-container">
+          <!-- Review 1 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Best place to get all my gaming gear. The UI is absolutely insane!"</p>
+            <p class="review-author">Alex G</p>
+          </div>
+          <!-- Review 2 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Fast shipping and incredible customer support. Highly recommended."</p>
+            <p class="review-author">Sarah M</p>
+          </div>
+          <!-- Review 3 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★☆</div>
+            <p class="review-text">"Really love the crazy selection of gaming hardware they have."</p>
+            <p class="review-author">Jordan K</p>
+          </div>
+          <!-- Review 4 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Got my new mechanical keyboard here. Typing feels like a dream."</p>
+            <p class="review-author">Chris T</p>
+          </div>
+          <!-- Review 5 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"The neon glow effects on the site alone make me want to buy more!"</p>
+            <p class="review-author">Emma W</p>
+          </div>
+          <!-- Review 6 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★☆</div>
+            <p class="review-text">"Great prices on the latest consoles. Delivery was on point."</p>
+            <p class="review-author">David L</p>
+          </div>
+          <!-- Review 7 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Obsessed with the aesthetics. My setup finally feels complete thanks to Veltrix!"
+            </p>
+            <p class="review-author">Mia R</p>
+          </div>
+          <!-- Review 8 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"Customer service helped me pick the perfect gaming mouse. 10/10 experience."</p>
+            <p class="review-author">Jason H</p>
+          </div>
+          <!-- Review 9 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★★</div>
+            <p class="review-text">"The ultimate hub. Upgraded my whole rig and saved a ton."</p>
+            <p class="review-author">Tyler B</p>
+          </div>
+          <!-- Review 10 -->
+          <div class="review-card">
+            <div class="review-stars">★★★★☆</div>
+            <p class="review-text">"Amazing selection of indie and AAA games. Quick codes straight to my inbox."</p>
+            <p class="review-author">- Chloe S.</p>
+          </div>
+        </div>
 
-      <h2>Digital Playground</h2>
-
-      <p class="main-desc">
-        Hover over the keyboard 
-      </p>
-
-      <div class="keyboard-wrapper">
-
-        <div class="keyboard">
-          <div class="keyboard-rgb"></div>
-          <img src="../assets/keyboard.png" alt="Keyboard" class="keyboard-img" />
+        <div class="swipe-indicator">
+          <p>Swipe for more reviews</p>
         </div>
 
       </div>
+    </section>
 
-    </div>
+    <!-- ===== About Us (Unified) Section ===== -->
+    <section class="hp-about-section" id="about-us-section">
+      <div class="hp-about-inner">
 
-  </section>
-</main>
-  <!-- RGB hover function using javascript -->
+        <!-- Intro -->
+        <div class="hp-about-text">
+          <h2 class="hp-about-heading">About Us</h2>
+          <p>Veltrix is dedicated to delivering reliable, premium gaming accessories that blend durability with modern
+            design.</p>
+          <p>Our team focuses on user-focused engineering, quality testing, and continuous innovation to give gamers the
+            tools they truly deserve.</p>
+        </div>
+
+        <!-- Services subsection -->
+        <div class="hp-subsection">
+          <p class="hp-subsection-label">What we offer</p>
+          <div class="hp-services-grid">
+            <div class="hp-service-card">
+              <i class="fa-solid fa-gamepad hp-service-icon"></i>
+              <h3>Premium Gaming Gear</h3>
+              <p>Top-quality keyboards, mice, controllers, and accessories engineered for performance and durability.
+              </p>
+            </div>
+            <div class="hp-service-card">
+              <i class="fa-solid fa-screwdriver-wrench hp-service-icon"></i>
+              <h3>Custom Builds</h3>
+              <p>We help gamers create personalized setups tailored to their playstyle and comfort.</p>
+            </div>
+            <div class="hp-service-card">
+              <i class="fa-solid fa-headset hp-service-icon"></i>
+              <h3>24/7 Support</h3>
+              <p>Our team is always available to help with upgrades, troubleshooting, and product support.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Values subsection -->
+        <div class="hp-subsection">
+          <p class="hp-subsection-label">What we stand for</p>
+          <div class="hp-values-grid">
+            <div class="hp-value-card">
+              <h3>Innovation</h3>
+              <p>We push boundaries to bring the latest technology to gamers worldwide.</p>
+            </div>
+            <div class="hp-value-card">
+              <h3>Quality</h3>
+              <p>Every product goes through strict testing to ensure top-notch performance.</p>
+            </div>
+            <div class="hp-value-card">
+              <h3>Community</h3>
+              <p>Gamers come first, your feedback and experience shape our future designs.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ===== Contact Us Section ===== -->
+    <section class="contact-section" id="contact-us">
+      <div class="contact-inner">
+        <h2 class="section-title">Contact Us</h2>
+        <p class="contact-subtitle">If you have any questions, feel free to reach out using the form below.</p>
+
+        <form class="contact-form" id="contactForm" novalidate>
+          <div class="form-group">
+            <label for="name">Name</label>
+            <div class="input-wrapper">
+              <input type="text" id="name" name="name" required>
+            </div>
+            <span class="error-message" id="nameError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <div class="input-wrapper">
+              <input type="email" id="email" name="email" required>
+            </div>
+            <span class="error-message" id="emailError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Query Title</label>
+            <div class="input-wrapper">
+              <input type="text" id="subject" name="subject" required>
+            </div>
+            <span class="error-message" id="subjectError"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Your Message</label>
+            <div class="input-wrapper">
+              <textarea id="message" name="message" rows="6" required></textarea>
+            </div>
+            <span class="error-message" id="messageError"></span>
+          </div>
+
+          <div class="submit-wrap">
+            <button type="submit" class="btn-submit">Submit</button>
+            <span class="success-message" id="contactSuccessMsg"></span>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="../scripts/header.js"></script>
+  <script src="../scripts/animations.js" defer></script>
+  <script src="../scripts/products.js?v=8"></script>
   <script>
-    const keyboard = document.querySelector(".keyboard");
-    const rgb = document.querySelector(".keyboard-rgb");
+    document.addEventListener('DOMContentLoaded', () => {
+      const contactForm = document.getElementById('contactForm');
+      const successMsg = document.getElementById('contactSuccessMsg');
+      if (contactForm) {
+        contactForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          let isValid = true;
+          if (successMsg) {
+            successMsg.style.display = "none";
+            successMsg.textContent = "";
+          }
 
-    if (keyboard && rgb) {
-      keyboard.addEventListener("mousemove", (e) => {
-        const rect = keyboard.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+          const fields = [
+            { id: 'name', errorId: 'nameError' },
+            { id: 'email', errorId: 'emailError' },
+            { id: 'subject', errorId: 'subjectError' },
+            { id: 'message', errorId: 'messageError' }
+          ];
 
-        rgb.style.setProperty("--mx", x + "px");
-        rgb.style.setProperty("--my", y + "px");
-      });
+          fields.forEach(field => {
+            const input = document.getElementById(field.id);
+            const errorSpan = document.getElementById(field.errorId);
 
-      keyboard.addEventListener("mouseleave", () => {
-        rgb.style.setProperty("--mx", "50%");
-        rgb.style.setProperty("--my", "80%");
-      });
-    }
+            if (!input.value.trim()) {
+              errorSpan.textContent = "Empty Field";
+              errorSpan.style.display = "block";
+              isValid = false;
+            } else {
+              errorSpan.style.display = "none";
+            }
 
+            // Hide error when user starts typing
+            input.addEventListener('input', () => {
+              errorSpan.style.display = "none";
+              if (successMsg) {
+                successMsg.style.display = "none";
+                successMsg.textContent = "";
+              }
+            }, { once: true });
+          });
+
+          if (isValid) {
+            if (successMsg) {
+              successMsg.textContent = "Message Successfully Sent";
+              successMsg.style.display = "block";
+            }
+            contactForm.reset();
+          }
+        });
+      }
+    });
   </script>
-
-<script src="../scripts/header.js"></script>
-
-<script src="../scripts/animations.js" defer></script>
 </body>
+
 </html>
-
-

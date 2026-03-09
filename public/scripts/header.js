@@ -14,12 +14,6 @@ fetch(headerFile)
         if (footerEl) footerEl.innerHTML = html;
       });
 
-    // ===============================
-    // ✅ GLOBAL SEARCH (ALL pages)
-    // - Enter or button always redirects to ShopAll.html?q=...
-    // - Runs after header.html is injected
-    // - Uses capture to beat other key handlers
-    // ===============================
     (function bindVeltrixSearch() {
       const form =
         headerEl.querySelector('#vx-search-form') ||
@@ -43,7 +37,7 @@ fetch(headerFile)
       function goToShopAll() {
         const q = (input.value || '').trim();
         if (!q) return;
-        try { closeSection('search'); } catch (_) {}
+        try { closeSection('search'); } catch (_) { }
         window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
       }
 
@@ -63,14 +57,31 @@ fetch(headerFile)
       }, true);
     })();
 
-    // ===============================
-    // Existing user menu logic (unchanged)
-    // ===============================
     const userMenuBtn = headerEl.querySelector('#userMenuBtn');
     const userMenuDropdown = headerEl.querySelector('#userMenuDropdown');
     const adminLink = headerEl.querySelector('#admin-link');
+    const ordersLink = headerEl.querySelector('#orders-link');
+    const logoEl = headerEl.querySelector('#header_logo');
+
+    if (logoEl) {
+      const goHomeTop = () => {
+        window.location.href = '/pages/index.html';
+      };
+
+      logoEl.style.cursor = 'pointer';
+      logoEl.setAttribute('role', 'link');
+      logoEl.setAttribute('tabindex', '0');
+      logoEl.addEventListener('click', goHomeTop);
+      logoEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          goHomeTop();
+        }
+      });
+    }
 
     if (adminLink) adminLink.style.display = 'none';
+    if (ordersLink) ordersLink.style.display = 'none';
 
     if (userMenuBtn && userMenuDropdown) {
       const closeMenu = () => {
@@ -98,7 +109,7 @@ fetch(headerFile)
         .then(data => {
           if (data.logged_in) {
             userMenuDropdown.innerHTML = `
-              <a href="/orders" class="user-menu-item">Previous Orders</a>
+              <a href="/pages/orders.html" class="user-menu-item">Previous Orders</a>
               <a href="/profile" class="user-menu-item">Profile Info</a>
               <button type="button" class="user-menu-item danger" id="logoutBtn">
                 Logout
@@ -193,12 +204,30 @@ function openPanel(id) {
     obj.classList.add('open');
     obj.classList.remove('close');
   }
+  syncCartScrollLock();
 }
 
 function closePanel(id) {
   const obj = document.getElementById(id);
   obj.classList.remove('open');
   obj.classList.add('close');
+  syncCartScrollLock();
 }
 
+function syncCartScrollLock() {
+  const basketEl = document.getElementById('basket');
+  const isCartOpen = !!basketEl && basketEl.classList.contains('open');
 
+  document.body.classList.toggle('cart-open', isCartOpen);
+  document.documentElement.classList.toggle('cart-open', isCartOpen);
+}
+
+// Inline Header Search Toggle
+window.toggleInlineSearch = function () {
+  const headerEl = document.querySelector('header');
+  const searchInput = document.getElementById('vx-search-input');
+
+  if (headerEl) {
+    headerEl.classList.toggle('search-active');
+  }
+};

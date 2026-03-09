@@ -57,7 +57,9 @@ Route::get('/dashboard', function () {
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
+
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
+Route::get('/products/search-json', [ProductController::class, 'search'])->name('products.search.json');
 
 Route::get('/product', function () {
     return redirect('/products');
