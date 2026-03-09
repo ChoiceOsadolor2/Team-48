@@ -160,9 +160,11 @@ main{
 }
 
 html.home{
-  background-color: var(--background-color-alt);
+  /* background-color: var(--background-color-alt); */
 }
-
+.basket_count{
+  font-family: Arial, Helvetica, sans-serif;
+}
 
 
 
