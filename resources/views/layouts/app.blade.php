@@ -7,8 +7,14 @@
 
         <title>{{ config('app.name', 'Laravel') }}</title>
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+        <style>
+            body, h1, h2, h3, h4, h5, h6, .font-sans {
+                font-family: 'Pixelify Sans', sans-serif !important;
+            }
+        </style>
 
         <script src="https://cdn.tailwindcss.com"></script>
 
