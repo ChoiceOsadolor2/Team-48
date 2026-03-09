@@ -7,10 +7,11 @@ fetch(headerFile)
     headerEl.innerHTML = html;
 
     // Extract chatbot from header to prevent CSS flex/filter containing-block traps
+    // Extract fixed UI elements from header to prevent CSS flex/filter containing-block traps
     const chatbotUI = document.getElementById('vx-chatbot-container');
-    if (chatbotUI) {
-      document.body.appendChild(chatbotUI);
-    }
+    if (chatbotUI) document.body.appendChild(chatbotUI);
+    const scrollTopBtn = document.getElementById('vx-scroll-top');
+    if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
 
     const footerFile = '../pages/footer.html';
     fetch(footerFile)
@@ -231,6 +232,7 @@ fetch(headerFile)
       });
 
     initChatbot();
+    initScrollTop();
   });
 
 ; (async function () {
@@ -258,6 +260,31 @@ fetch(headerFile)
     console.error('Logout check error:', err);
   }
 })();
+
+/* =========================================
+   SCROLL TO TOP LOGIC
+   ========================================= */
+function initScrollTop() {
+  const scrollTopBtn = document.getElementById('vx-scroll-top');
+  if (!scrollTopBtn) return;
+
+  // Show/hide based on scroll position
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      scrollTopBtn.classList.remove('hidden');
+    } else {
+      scrollTopBtn.classList.add('hidden');
+    }
+  });
+
+  // Smooth scroll to top on click
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
 
 /* =========================================
    AI CHATBOT LOGIC

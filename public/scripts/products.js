@@ -127,9 +127,9 @@ function getImageUrl(product) {
 
 const NO_IMAGE_SVG = encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">' +
-    '<rect width="400" height="300" fill="transparent"/>' +
-    '<text x="200" y="155" text-anchor="middle" fill="#8a8a8a" ' +
-      'font-family="Arial, sans-serif" font-size="28">No image</text>' +
+  '<rect width="400" height="300" fill="transparent"/>' +
+  '<text x="200" y="155" text-anchor="middle" fill="#8a8a8a" ' +
+  'font-family="Arial, sans-serif" font-size="28">No image</text>' +
   '</svg>'
 );
 const NO_IMAGE_DATA_URI = `data:image/svg+xml;charset=UTF-8,${NO_IMAGE_SVG}`;
@@ -765,9 +765,9 @@ window.RemoveFromCart = async function (productId) {
   sortSelect.addEventListener("change", function () {
 
     const base =
-      window.visibleBaseProducts?.length
+      window.visibleBaseProducts
         ? [...window.visibleBaseProducts]
-        : window.currentCategoryProducts?.length
+        : window.currentCategoryProducts
           ? [...window.currentCategoryProducts]
           : [...window.allProducts];
 
