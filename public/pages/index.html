@@ -319,17 +319,23 @@
             if (!input.value.trim()) {
               errorSpan.textContent = "Empty Field";
               errorSpan.style.display = "block";
+              errorSpan.style.animation = "none";
+              void errorSpan.offsetWidth;
+              errorSpan.style.animation = "fadeSlideUp 0.3s ease";
               isValid = false;
             } else {
               errorSpan.style.display = "none";
+              errorSpan.style.animation = "none";
             }
 
             // Hide error when user starts typing
             input.addEventListener('input', () => {
               errorSpan.style.display = "none";
+              errorSpan.style.animation = "none";
               if (successMsg) {
                 successMsg.style.display = "none";
                 successMsg.textContent = "";
+                successMsg.style.animation = "none";
               }
             }, { once: true });
           });
@@ -338,6 +344,9 @@
             if (successMsg) {
               successMsg.textContent = "Message Successfully Sent";
               successMsg.style.display = "block";
+              successMsg.style.animation = "none";
+              void successMsg.offsetWidth;
+              successMsg.style.animation = "fadeSlideUp 0.3s ease";
             }
             contactForm.reset();
           }

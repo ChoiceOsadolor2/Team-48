@@ -77,9 +77,29 @@ body.login-page .user-menu-dropdown {
     padding: 30px 40px;
 }
 
+/* Login page card matches review/cart bubble style */
+body.auth-login-page .login-box {
+    background-color: #1d1d1d;
+    border: 1px solid #444;
+    backdrop-filter: none;
+    font-family: 'MiniPixel', sans-serif;
+}
+
+body.auth-login-page .login-box *,
+body.auth-login-page .login-box input,
+body.auth-login-page .login-box button,
+body.auth-login-page .login-box a,
+body.auth-login-page .login-box label,
+body.auth-login-page .login-box h1,
+body.auth-login-page .login-box p,
+body.auth-login-page .login-box .field-error {
+    font-family: 'MiniPixel', sans-serif;
+}
+
 .login-box h1 {
-    font-size: 35px;
+    font-size: 30px;
     text-align: center;
+    font-weight: 400;
 }
 
 .login-box .input-box {
@@ -89,18 +109,124 @@ body.login-page .user-menu-dropdown {
     margin: 30px 0;
 }
 
+/* Wrapper glow layer keeps showing even during browser recommendation popups */
+body.auth-login-page .login-box .input-box::after {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+body.auth-login-page .login-box .input-box:hover::after,
+body.auth-login-page .login-box .input-box:focus-within::after {
+    opacity: 1;
+    animation: veltrixGlow 2s infinite alternate;
+}
+
 .input-box input {
     width: 100%;
     height: 100%;
-    background: transparent;
-    border: none;
+    background: #000;
+    border: 1px solid #444;
     outline: none;
-    border: 2px solid rgb(69, 96, 106);
-    border-radius: 40px;
+    border-radius: 12px;
     font-size: 16px;
     color: white;
-    padding: 20px 45px 20px 20px;
+    padding: 0.9rem 45px 0.9rem 0.9rem;
     /*position username & pass*/
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.auth-login-page .input-box input {
+    font-size: 1.1em;
+}
+
+body.auth-login-page .login-box .remember-forgot,
+body.auth-login-page .login-box .remember-forgot .remember-wrap,
+body.auth-login-page .login-box .remember-forgot .remember-text,
+body.auth-login-page .login-box .remember-forgot a,
+body.auth-login-page .login-box .login-button,
+body.auth-login-page .login-box .register-link,
+body.auth-login-page .login-box .register-link p,
+body.auth-login-page .login-box .register-link p a {
+    font-size: 1.1em;
+}
+
+/* Keep Remember me and Forgot password exactly equal (no nested em compounding). */
+body.auth-login-page .login-box .remember-forgot {
+    align-items: center;
+    font-size: 1.1em;
+}
+
+body.auth-login-page .login-box .remember-forgot .remember-wrap,
+body.auth-login-page .login-box .remember-forgot .remember-text,
+body.auth-login-page .login-box .remember-forgot a {
+    font-size: inherit;
+    font-weight: 400 !important;
+    line-height: 1;
+}
+
+body.auth-login-page .login-box h1,
+body.auth-login-page .login-box input,
+body.auth-login-page .login-box .remember-forgot,
+body.auth-login-page .login-box .remember-forgot .remember-wrap,
+body.auth-login-page .login-box .remember-forgot .remember-text,
+body.auth-login-page .login-box .remember-forgot a,
+body.auth-login-page .login-box .login-button,
+body.auth-login-page .login-box .register-link,
+body.auth-login-page .login-box .register-link p,
+body.auth-login-page .login-box .register-link p a,
+body.auth-login-page .login-box .field-error {
+    font-weight: 400 !important;
+}
+
+body.auth-login-page .input-box input:not(.input-error):hover,
+body.auth-login-page .input-box input:not(.input-error):focus,
+body.auth-login-page .input-box input:not(.input-error):focus-visible,
+body.auth-login-page .input-box input:not(.input-error):active {
+    background: #1d1d1d;
+}
+
+/* Keep browser autofill from turning fields white */
+body.auth-login-page .input-box input:-webkit-autofill,
+body.auth-login-page .input-box input:-webkit-autofill:visited {
+    -webkit-text-fill-color: #fff !important;
+    -webkit-box-shadow: 0 0 0 1000px #000 inset !important;
+    box-shadow: 0 0 0 1000px #000 inset !important;
+    background-color: #000 !important;
+    border: 1px solid #444 !important;
+    caret-color: #fff;
+    transition: background-color 99999s ease-in-out 0s;
+}
+
+body.auth-login-page .input-box input:-webkit-autofill:hover,
+body.auth-login-page .input-box input:-webkit-autofill:focus,
+body.auth-login-page .input-box input:-webkit-autofill:active {
+    -webkit-text-fill-color: #fff !important;
+    -webkit-box-shadow: 0 0 0 1000px #1d1d1d inset !important;
+    box-shadow: 0 0 0 1000px #1d1d1d inset !important;
+    background-color: #1d1d1d !important;
+    border: 1px solid #444 !important;
+}
+
+body.auth-login-page .input-box input:autofill,
+body.auth-login-page .input-box input:autofill:hover,
+body.auth-login-page .input-box input:autofill:focus {
+    -webkit-text-fill-color: #fff !important;
+    box-shadow: 0 0 0 1000px #000 inset !important;
+    background-color: #000 !important;
+    border: 1px solid #444 !important;
+}
+
+body.auth-login-page .input-box input:autofill:hover,
+body.auth-login-page .input-box input:autofill:focus,
+body.auth-login-page .input-box input:autofill:active {
+    box-shadow: 0 0 0 1000px #1d1d1d inset !important;
+    background-color: #1d1d1d !important;
 }
 
 .input-box input::placeholder {
@@ -115,6 +241,14 @@ body.login-page .user-menu-dropdown {
     top: 50%;
     transform: translateY(-50%);
     font-size: 20px;
+}
+
+#togglePassword {
+    cursor: pointer;
+}
+
+.toggle-password {
+    cursor: pointer;
 }
 
 .login-box .remember-forgot {
@@ -155,6 +289,28 @@ body.login-page .user-menu-dropdown {
     box-shadow: 0 0 10px rgba(0, 0, 0, .1);
 }
 
+/* Login page button matches textbox interactions */
+body.auth-login-page .login-box .login-button {
+    height: 50px;
+    background: #000;
+    border: 1px solid #444;
+    border-radius: 12px;
+    box-shadow: none;
+    color: #fff;
+    font-weight: 400;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.auth-login-page .login-box .login-button:hover,
+body.auth-login-page .login-box .login-button:focus,
+body.auth-login-page .login-box .login-button:focus-visible,
+body.auth-login-page .login-box .login-button:active {
+    background: #1d1d1d;
+    color: #fff;
+    animation: veltrixGlow 2s infinite alternate;
+    box-shadow: none;
+}
+
 
 
 
@@ -178,7 +334,7 @@ body.login-page .user-menu-dropdown {
     text-decoration: underline;
 }
 
-.remember-forgot label {
+.remember-forgot .remember-wrap {
     color: #fff;
     display: flex;
     align-items: center;
@@ -188,4 +344,60 @@ body.login-page .user-menu-dropdown {
 .remember-forgot input[type="checkbox"] {
     accent-color: #ffffff;
     cursor: pointer;
+}
+
+/* Login page: mini bubble checkbox style */
+body.auth-login-page .remember-forgot .remember-wrap {
+    gap: 10px;
+}
+
+body.auth-login-page .remember-forgot input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    margin: 0;
+    border: 1px solid #444;
+    border-radius: 6px;
+    background: #000;
+    display: inline-grid;
+    place-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+body.auth-login-page .remember-forgot input[type="checkbox"]::after {
+    content: "";
+    width: 6px;
+    height: 10px;
+    border-right: 2px solid #fff;
+    border-bottom: 2px solid #fff;
+    transform: rotate(45deg) scale(0);
+    transform-origin: center;
+    transition: transform 0.15s ease;
+    margin-top: -1px;
+}
+
+body.auth-login-page .remember-forgot input[type="checkbox"]:checked {
+    background: #1d1d1d;
+}
+
+body.auth-login-page .remember-forgot input[type="checkbox"]:checked::after {
+    transform: rotate(45deg) scale(1);
+}
+
+body.auth-login-page .remember-forgot input[type="checkbox"]:hover,
+body.auth-login-page .remember-forgot input[type="checkbox"]:active {
+    background: #1d1d1d;
+    animation: veltrixGlow 2s infinite alternate;
+    outline: none;
+}
+
+/* Final override: keep "Don't have an account?" and "Register" identical */
+body.auth-login-page .login-box .register-link p,
+body.auth-login-page .login-box .register-link p a {
+    font-size: 1em !important;
+    font-weight: 400 !important;
+    line-height: 1;
 }
