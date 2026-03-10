@@ -10,46 +10,58 @@
 
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> 
+
+    <style>
+      .field-error {
+        display: none;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -24px;
+        font-size: 16px;
+        color: #ffa825;
+        font-family: 'MiniPixel', sans-serif;
+        text-align: center;
+      }
+    </style>
 </head>
 
-<body class="login-page">
+<body class="login-page auth-login-page">
 
 <header></header>
 
 <div class="login-box">
-    <form id="form">
+    <form id="form" autocomplete="off" novalidate>
         <h1>Register</h1>
 
         <div class="input-box">
-            <input type="text" id="email" placeholder="Email" required>
+            <input type="email" id="email" placeholder="Email" required autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
             <i class='bx bx-envelope'></i>
+            <p id="registerEmailError" class="field-error"></p>
         </div>
         
         <div class="input-box">
-            <input type="text" id="username" placeholder="Username" required>
+            <input type="text" id="username" placeholder="Username" required autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
             <i class='bx bxs-user'></i>
+            <p id="registerUsernameError" class="field-error"></p>
         </div>
 
         <div class="input-box">
-            <input type="password" id="password" placeholder="Password" required>
-            <i class='bx bxs-lock-alt'></i>
+            <input type="password" id="password" placeholder="Password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+            <i id="toggleRegisterPassword" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0" aria-label="Show password" aria-pressed="false"></i>
+            <p id="registerPasswordError" class="field-error"></p>
         </div>
 
         <div class="input-box">
-            <input type="password" id="password2" placeholder="Retype Password" required>
-            <i class='bx bxs-lock-alt'></i>
+            <input type="password" id="password2" placeholder="Retype Password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+            <i id="toggleRegisterPassword2" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0" aria-label="Show password" aria-pressed="false"></i>
+            <p id="registerPassword2Error" class="field-error"></p>
         </div>
 
-        <div class="remember-forgot">
-            <label>
-                <input type="checkbox"> Remember me
-            </label>
-        </div>
-
-        <button type="submit" class="login-button">Create an account</button>
+        <button type="submit" class="login-button">Register</button>
 
         <div class="register-link">
-            <p>Already have an account? <a href="login.html">Login</a></p>
+            <p>Already have an account? <a href="/pages/login.html">Login</a></p>
         </div>
     </form>
 </div>
@@ -58,17 +70,98 @@
 <script src="../scripts/animations.js" defer></script>
 
 <script>
+function wirePasswordToggle(iconId, inputId) {
+    const icon = document.getElementById(iconId);
+    const input = document.getElementById(inputId);
+    if (!icon || !input) return;
+
+    const toggle = () => {
+        const showing = input.type === "text";
+        input.type = showing ? "password" : "text";
+        icon.className = showing ? "bx bxs-lock-alt toggle-password" : "bx bx-lock-open-alt toggle-password";
+        icon.setAttribute("aria-label", showing ? "Show password" : "Hide password");
+        icon.setAttribute("aria-pressed", showing ? "false" : "true");
+    };
+
+    icon.addEventListener("click", toggle);
+    icon.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            toggle();
+        }
+    });
+}
+
+wirePasswordToggle("toggleRegisterPassword", "password");
+wirePasswordToggle("toggleRegisterPassword2", "password2");
+
+const emailInput = document.getElementById("email");
+const usernameInput = document.getElementById("username");
+const passwordInput = document.getElementById("password");
+const password2Input = document.getElementById("password2");
+
+const emailError = document.getElementById("registerEmailError");
+const usernameError = document.getElementById("registerUsernameError");
+const passwordError = document.getElementById("registerPasswordError");
+const password2Error = document.getElementById("registerPassword2Error");
+
+function showFieldError(el, message) {
+    if (!el) return;
+    el.textContent = message || "";
+    if (message) {
+        el.style.display = "block";
+        el.style.animation = "none";
+        void el.offsetWidth;
+        el.style.animation = "fadeSlideUp 0.3s ease";
+    } else {
+        el.style.display = "none";
+        el.style.animation = "none";
+    }
+}
+
+function clearRegisterErrors() {
+    showFieldError(emailError, "");
+    showFieldError(usernameError, "");
+    showFieldError(passwordError, "");
+    showFieldError(password2Error, "");
+}
+
+if (emailInput) emailInput.addEventListener("input", () => showFieldError(emailError, ""));
+if (usernameInput) usernameInput.addEventListener("input", () => showFieldError(usernameError, ""));
+if (passwordInput) passwordInput.addEventListener("input", () => showFieldError(passwordError, ""));
+if (password2Input) password2Input.addEventListener("input", () => showFieldError(password2Error, ""));
 
 document.getElementById("form").addEventListener("submit", async function (e) {
     e.preventDefault();
 
-    const email = document.getElementById("email").value.trim();
-    const username = document.getElementById("username").value.trim();
-    const password = document.getElementById("password").value.trim();
-    const password2 = document.getElementById("password2").value.trim();
+    const email = emailInput ? emailInput.value.trim() : "";
+    const username = usernameInput ? usernameInput.value.trim() : "";
+    const password = passwordInput ? passwordInput.value.trim() : "";
+    const password2 = password2Input ? password2Input.value.trim() : "";
+
+    clearRegisterErrors();
+
+    let hasEmptyField = false;
+    if (!email) {
+        showFieldError(emailError, "Empty Field");
+        hasEmptyField = true;
+    }
+    if (!username) {
+        showFieldError(usernameError, "Empty Field");
+        hasEmptyField = true;
+    }
+    if (!password) {
+        showFieldError(passwordError, "Empty Field");
+        hasEmptyField = true;
+    }
+    if (!password2) {
+        showFieldError(password2Error, "Empty Field");
+        hasEmptyField = true;
+    }
+    if (hasEmptyField) return;
 
     if (password !== password2) {
-        alert("Passwords do not match!");
+        showFieldError(password2Error, "Passwords do not match.");
         return;
     }
 
@@ -87,16 +180,15 @@ document.getElementById("form").addEventListener("submit", async function (e) {
         const data = await res.json();
 
         if (!res.ok || !data.success) {
-            alert(data.message || "Registration failed. Email may already exist.");
+            showFieldError(emailError, data.message || "Registration failed. Email may already exist.");
             return;
         }
 
-        alert("Account created! Logging you in...");
         window.location.href = "/profile";
 
     } catch (error) {
         console.error(error);
-        alert("Something went wrong. Please try again.");
+        showFieldError(emailError, "Something went wrong. Please try again.");
     }
 });
 </script>

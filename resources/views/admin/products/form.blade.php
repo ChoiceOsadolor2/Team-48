@@ -50,8 +50,8 @@
     <label class="block mb-1 text-gray-900 dark:text-gray-100">Product Image</label>
     <input type="file" name="image" accept="image/*" class="w-full border p-2 bg-white text-black">
 
-    @if(!empty($product?->image))
-        <img src="{{ asset('storage/' . $product->image) }}"
+    @if(!empty($product?->image_url))
+        <img src="{{ asset('storage/' . $product->image_url) }}"
              class="mt-2 h-24 object-cover rounded">
     @endif
 

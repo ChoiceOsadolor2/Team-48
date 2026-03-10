@@ -50,49 +50,103 @@ class CartController extends Controller
     }
 
     public function add(Request $request, Product $product)
-    {
-        $qty = (int) $request->input('quantity', 1);
-        if ($qty < 1) {
-            $qty = 1;
-        }
+{
+    $qty = (int) $request->input('quantity', 1);
+    if ($qty < 1) {
+        $qty = 1;
+    }
 
-        $cart = Session::get('cart', []);
+    $cart = Session::get('cart', []);
+    $currentQty = (int) ($cart[$product->id] ?? 0);
+    $newQty = $currentQty + $qty;
 
-        $cart[$product->id] = ($cart[$product->id] ?? 0) + $qty;
-
-        Session::put('cart', $cart);
+    if ($product->stock <= 0) {
+        $message = "'{$product->name}' is out of stock.";
 
         if ($request->wantsJson()) {
             return response()->json([
-                'success' => true,
-                'cart'    => $cart,
-            ]);
+                'success' => false,
+                'message' => $message,
+                'cart' => $cart,
+            ], 422);
         }
+
+        return back()->with('stock_error', $message);
+    }
+
+    if ($newQty > $product->stock) {
+        $message = "You can only add up to {$product->stock} unit(s) of '{$product->name}'.";
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+                'cart' => $cart,
+            ], 422);
+        }
+
+        return back()->with('stock_error', $message);
+    }
+
+    $cart[$product->id] = $newQty;
+
+    Session::put('cart', $cart);
+
+    if ($request->wantsJson()) {
+        return response()->json([
+            'success' => true,
+            'cart'    => $cart,
+        ]);
+    }
+
+    return redirect()->route('cart.index')
+        ->with('status', 'Item added to cart.');
+}
 
         return redirect()->route('cart.index')
             ->with('status', 'Item added to cart.');
     }
 
-    public function update(Request $request, Product $product)
-    {
-        $qty = (int) $request->input('quantity', 1);
+   public function update(Request $request, Product $product)
+{
+    $qty = (int) $request->input('quantity', 1);
+    $cart = Session::get('cart', []);
 
-        $cart = Session::get('cart', []);
-
-        if ($qty <= 0) {
-            unset($cart[$product->id]);
-        } else {
-            $cart[$product->id] = $qty;
-        }
-
+    if ($qty <= 0) {
+        unset($cart[$product->id]);
         Session::put('cart', $cart);
 
         if ($request->wantsJson()) {
             return $this->json($request);
         }
 
-        return back()->with('status', 'Cart updated.');
+        return back()->with('status', 'Item removed.');
     }
+
+    if ($qty > $product->stock) {
+        $message = "Only {$product->stock} unit(s) of '{$product->name}' are available.";
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => false,
+                'message' => $message,
+                'cart' => $cart,
+            ], 422);
+        }
+
+        return back()->with('stock_error', $message);
+    }
+
+    $cart[$product->id] = $qty;
+
+    Session::put('cart', $cart);
+
+    if ($request->wantsJson()) {
+        return $this->json($request);
+    }
+
+    return back()->with('status', 'Cart updated.');
+}
 
     public function remove(Product $product)
     {

@@ -127,9 +127,9 @@ function getImageUrl(product) {
 
 const NO_IMAGE_SVG = encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300">' +
-    '<rect width="400" height="300" fill="transparent"/>' +
-    '<text x="200" y="155" text-anchor="middle" fill="#8a8a8a" ' +
-      'font-family="Arial, sans-serif" font-size="28">No image</text>' +
+  '<rect width="400" height="300" fill="transparent"/>' +
+  '<text x="200" y="155" text-anchor="middle" fill="#8a8a8a" ' +
+  'font-family="Arial, sans-serif" font-size="28">No image</text>' +
   '</svg>'
 );
 const NO_IMAGE_DATA_URI = `data:image/svg+xml;charset=UTF-8,${NO_IMAGE_SVG}`;
@@ -332,11 +332,16 @@ window.AddToBasket = async function (id, qty = 1) {
     console.log('AddToBasket status:', res.status);
 
     if (!res.ok) {
-      const text = await res.text();
-      console.error('AddToBasket error body:', text);
-      alert('Could not add to cart. You may need to log in first.');
-      return;
-    }
+  let data = null;
+  try {
+    data = await res.json();
+  } catch (e) {}
+
+  console.error('AddToBasket failed:', data);
+  alert(data?.message || 'Could not add to cart.');
+  await loadCartFromBackend();
+  return;
+}
 
     await loadCartFromBackend();
   } catch (err) {
@@ -360,10 +365,16 @@ async function updateCartQty(productId, newQty) {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    console.error('Update qty failed:', res.status, text);
-    throw new Error('Update qty failed');
-  }
+  let data = null;
+  try {
+    data = await res.json();
+  } catch (e) {}
+
+  console.error('UpdateCartQty failed:', data);
+  alert(data?.message || 'Could not update cart.');
+  await loadCartFromBackend();
+  return;
+}
 
   // backend returns updated cart json
   return res.json();
@@ -765,9 +776,9 @@ window.RemoveFromCart = async function (productId) {
   sortSelect.addEventListener("change", function () {
 
     const base =
-      window.visibleBaseProducts?.length
+      window.visibleBaseProducts
         ? [...window.visibleBaseProducts]
-        : window.currentCategoryProducts?.length
+        : window.currentCategoryProducts
           ? [...window.currentCategoryProducts]
           : [...window.allProducts];
 

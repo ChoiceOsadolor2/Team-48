@@ -6,6 +6,13 @@ fetch(headerFile)
     const headerEl = document.querySelector('header');
     headerEl.innerHTML = html;
 
+    // Extract chatbot from header to prevent CSS flex/filter containing-block traps
+    // Extract fixed UI elements from header to prevent CSS flex/filter containing-block traps
+    const chatbotUI = document.getElementById('vx-chatbot-container');
+    if (chatbotUI) document.body.appendChild(chatbotUI);
+    const scrollTopBtn = document.getElementById('vx-scroll-top');
+    if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
+
     const footerFile = '../pages/footer.html';
     fetch(footerFile)
       .then(response => response.text())
@@ -55,6 +62,80 @@ fetch(headerFile)
           goToShopAll();
         }
       }, true);
+
+      // ==========================
+      // Ajax Live Autocomplete
+      // ==========================
+      const resultsContainer = headerEl.querySelector('#vx-search-results');
+      let debounceTimer = null;
+
+      if (resultsContainer) {
+        input.addEventListener('input', (e) => {
+          const query = e.target.value.trim();
+
+          if (!query) {
+            resultsContainer.style.display = 'none';
+            resultsContainer.innerHTML = '';
+            return;
+          }
+
+          clearTimeout(debounceTimer);
+          debounceTimer = setTimeout(() => {
+            fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
+              .then(res => res.json())
+              .then(data => {
+                resultsContainer.innerHTML = '';
+
+                if (!data.success || !data.results || data.results.length === 0) {
+                  resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">No products found.</li>';
+                  resultsContainer.style.display = 'block';
+                  return;
+                }
+
+                data.results.slice(0, 5).forEach(product => {
+                  let imgUrl = '../assets/MainLogo.png';
+                  if (product.image_url) {
+                    imgUrl = product.image_url.startsWith('http')
+                      ? product.image_url
+                      : '/storage/' + product.image_url.replace(/^\/+/, '');
+                  }
+
+                  const li = document.createElement('li');
+                  li.innerHTML = `
+                    <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
+                    <div class="vx-search-dropdown-info">
+                      <span class="vx-search-dropdown-title">${product.name}</span>
+                      <span class="vx-search-dropdown-price">£${Number(product.price).toFixed(2)}</span>
+                    </div>
+                  `;
+                  li.addEventListener('click', () => {
+                    window.location.href = `ProductPage.html?id=${product.id}`;
+                  });
+                  resultsContainer.appendChild(li);
+                });
+
+                resultsContainer.style.display = 'flex';
+                resultsContainer.style.flexDirection = 'column';
+              })
+              .catch(err => console.error('Live search error:', err));
+          }, 300);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!form.contains(e.target) && !resultsContainer.contains(e.target)) {
+            resultsContainer.style.display = 'none';
+          }
+        });
+
+        // Focus brings it back if there's text
+        input.addEventListener('focus', () => {
+          if (input.value.trim() && resultsContainer.innerHTML !== '') {
+            resultsContainer.style.display = 'flex';
+          }
+        });
+      }
+
     })();
 
     const userMenuBtn = headerEl.querySelector('#userMenuBtn');
@@ -109,7 +190,7 @@ fetch(headerFile)
         .then(data => {
           if (data.logged_in) {
             userMenuDropdown.innerHTML = `
-              <a href="/pages/orders.html" class="user-menu-item">Previous Orders</a>
+              <a href="/orders" class="user-menu-item">Previous Orders</a>
               <a href="/profile" class="user-menu-item">Profile Info</a>
               <button type="button" class="user-menu-item danger" id="logoutBtn">
                 Logout
@@ -156,10 +237,12 @@ fetch(headerFile)
       .catch(err => {
         console.error('User status error:', err);
       });
+
+    initChatbot();
+    initScrollTop();
   });
 
-
-(async function () {
+; (async function () {
   try {
     const res = await fetch('/user-status', {
       headers: { 'Accept': 'application/json' }
@@ -181,9 +264,121 @@ fetch(headerFile)
       window.location.reload();
     }
   } catch (err) {
-    console.error('Auto-logout check failed:', err);
+    console.error('Logout check error:', err);
   }
 })();
+
+/* =========================================
+   SCROLL TO TOP LOGIC
+   ========================================= */
+function initScrollTop() {
+  const scrollTopBtn = document.getElementById('vx-scroll-top');
+  if (!scrollTopBtn) return;
+
+  // Show/hide based on scroll position
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      scrollTopBtn.classList.remove('hidden');
+    } else {
+      scrollTopBtn.classList.add('hidden');
+    }
+  });
+
+  // Smooth scroll to top on click
+  scrollTopBtn.addEventListener('click', () => {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  });
+}
+
+/* =========================================
+   AI CHATBOT LOGIC
+   ========================================= */
+function initChatbot() {
+  const toggleBtn = document.getElementById('vx-chatbot-toggle');
+  const closeBtn = document.getElementById('vx-chatbot-close');
+  const chatWindow = document.getElementById('vx-chatbot-window');
+  const chatForm = document.getElementById('vx-chat-form');
+  const chatInput = document.getElementById('vx-chat-input');
+  const chatMessages = document.getElementById('vx-chat-messages');
+
+  if (!toggleBtn || !chatWindow) return;
+
+  // Toggle Window
+  const openChat = () => {
+    chatWindow.classList.remove('hidden');
+    chatInput.focus();
+  };
+
+  const closeChat = () => {
+    chatWindow.classList.add('hidden');
+  };
+
+  toggleBtn.addEventListener('click', () => {
+    if (chatWindow.classList.contains('hidden')) {
+      openChat();
+    } else {
+      closeChat();
+    }
+  });
+
+  closeBtn.addEventListener('click', closeChat);
+
+  // Handle Form Submission
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userMessage = chatInput.value.trim();
+    if (!userMessage) return;
+
+    // Append User Message
+    appendMessage('user', userMessage);
+    chatInput.value = '';
+
+    // Append 'Typing...' Indicator
+    const typingIndicator = appendMessage('ai', '...');
+
+    try {
+      // Send to Backend
+      const response = await fetch('/chatbot/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      const data = await response.json();
+
+      // Update the typing indicator with the real response
+      if (data.status === 'success') {
+        typingIndicator.textContent = data.reply;
+      } else {
+        typingIndicator.textContent = "Error: Couldn't reach the server right now.";
+      }
+
+    } catch (error) {
+      console.error("Chatbot Error:", error);
+      typingIndicator.textContent = "Oops! My circuits are crossed. Try again later.";
+    }
+  });
+
+  // Helper to append a bubble
+  function appendMessage(senderType, text) {
+    const msgDiv = document.createElement('div');
+    msgDiv.classList.add('vx-message');
+    msgDiv.classList.add(senderType === 'ai' ? 'ai-message' : 'user-message');
+    msgDiv.textContent = text;
+    chatMessages.appendChild(msgDiv);
+
+    // Auto-scroll to bottom
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+
+    return msgDiv;
+  }
+}
 
 
 

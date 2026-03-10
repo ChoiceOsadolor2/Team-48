@@ -238,6 +238,8 @@ header #search {
   transform: translate(-50%, -50%);
   width: 40%;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
@@ -895,6 +897,246 @@ body:has(#basket.open) #theme-toggle-container {
 /* Media Query */
 
 
+/* =========================================
+   SCROLL TO TOP BUTTON
+   ========================================= */
+#vx-scroll-top {
+  position: fixed;
+  bottom: 25px;
+  left: 50%;
+  margin-left: -25px;
+  z-index: 9998;
+  background: rgba(17, 17, 17, 0.8);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease, background 0.3s ease, opacity 0.3s ease, visibility 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  opacity: 1;
+  visibility: visible;
+}
+
+#vx-scroll-top:hover {
+  transform: scale(1.1);
+  background: #222;
+  border-color: #ff00a8;
+  color: #ff00a8;
+  box-shadow: 0 0 15px rgba(255, 0, 168, 0.4);
+}
+
+#vx-scroll-top.hidden {
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.8);
+  pointer-events: none;
+}
+
+/* =========================================
+   AI CHATBOT UI
+   ========================================= */
+
+#vx-chatbot-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 9999;
+  font-family: 'MiniPixel', sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+#vx-chatbot-toggle {
+  background: #111;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  font-size: 24px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transition: transform 0.3s ease, background 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+#vx-chatbot-toggle::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 50%;
+  border: 1px solid transparent;
+  animation: veltrixGlow 2s infinite alternate;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+#vx-chatbot-toggle:hover {
+  transform: scale(1.1);
+  background: #222;
+}
+
+#vx-chatbot-toggle:hover::after {
+  opacity: 1;
+}
+
+#vx-chatbot-window {
+  width: 350px;
+  height: 450px;
+  background: rgba(10, 10, 10, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid #444;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  bottom: 80px;
+  right: 0;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8);
+  transform-origin: bottom right;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease;
+  opacity: 1;
+  transform: scale(1);
+}
+
+#vx-chatbot-window.hidden {
+  opacity: 0;
+  transform: scale(0);
+  pointer-events: none;
+}
+
+.vx-chat-header {
+  background: #000;
+  color: #fff;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  font-size: 1.1rem;
+  letter-spacing: 1px;
+}
+
+#vx-chatbot-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+#vx-chatbot-close:hover {
+  color: #ffa825;
+}
+
+#vx-chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Custom Scrollbar for Chat */
+#vx-chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+#vx-chat-messages::-webkit-scrollbar-track {
+  background: #111;
+}
+
+#vx-chat-messages::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 4px;
+}
+
+.vx-message {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  animation: fadeSlideUp 0.3s ease forwards;
+}
+
+.vx-message.ai-message {
+  background: #1a1a1a;
+  color: #eee;
+  align-self: flex-start;
+  border: 1px solid #333;
+  border-top-left-radius: 2px;
+}
+
+.vx-message.user-message {
+  background: #2ecbff;
+  color: #000;
+  align-self: flex-end;
+  border-top-right-radius: 2px;
+  font-weight: bold;
+}
+
+#vx-chat-form {
+  display: flex;
+  padding: 10px;
+  border-top: 1px solid #333;
+  background: #050505;
+}
+
+#vx-chat-input {
+  flex: 1;
+  background: #111;
+  border: 1px solid #444;
+  border-radius: 8px;
+  padding: 10px 15px;
+  color: white;
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+#vx-chat-input:focus {
+  border-color: #ffa825;
+}
+
+#vx-chat-submit {
+  background: #111;
+  color: #ffa825;
+  border: 1px solid #444;
+  border-radius: 8px;
+  width: 45px;
+  margin-left: 8px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#vx-chat-submit:hover {
+  background: #222;
+  color: #ff00a8;
+}
+
 @media (max-width:800px) {
 
   header {
@@ -974,7 +1216,9 @@ body:has(#basket.open) #theme-toggle-container {
 .qty-input .qty-count {
   background: transparent;
   color: inherit;
-  font-weight: bold;
+  font-weight: normal;
+  font-style: normal;
+  font-display: block;
   font-size: inherit;
   border: none;
   display: inline-block;
@@ -1127,6 +1371,111 @@ body:has(#basket.open) #theme-toggle-container {
 
 .user-menu-item.danger:hover {
   color: white !important;
+}
+
+/* ===============================
+   Ajax Live Search Dropdown
+=============================== */
+.vx-search-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  /* Just below the search bar */
+  left: 0;
+  right: 0;
+  max-width: 500px;
+  margin: 0 auto;
+  background: rgba(250, 240, 240, 0.95);
+  backdrop-filter: blur(8px);
+  border: 2px solid var(--primary-color);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  max-height: 400px;
+  overflow-y: auto;
+  z-index: 1000;
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  font-family: 'MiniPixel', sans-serif;
+}
+
+html[data-theme="dark"] .vx-search-dropdown {
+  background: rgba(5, 0, 54, 0.95);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+}
+
+.vx-search-dropdown li {
+  padding: 12px 18px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+html[data-theme="dark"] .vx-search-dropdown li {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vx-search-dropdown li:last-child {
+  border-bottom: none;
+}
+
+.vx-search-dropdown li:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  transform: translateX(5px);
+}
+
+html[data-theme="dark"] .vx-search-dropdown li:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.vx-search-dropdown-img {
+  width: 50px;
+  height: 50px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+html[data-theme="dark"] .vx-search-dropdown-img {
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.vx-search-dropdown-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.vx-search-dropdown-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+}
+
+html[data-theme="dark"] .vx-search-dropdown-title {
+  color: var(--text-light);
+}
+
+.vx-search-dropdown-price {
+  font-size: 1.1rem;
+  color: #d32f2f;
+  font-weight: bold;
+}
+
+html[data-theme="dark"] .vx-search-dropdown-price {
+  color: #ff5252;
+}
+
+.vx-search-dropdown-empty {
+  padding: 20px;
+  text-align: center;
+  color: var(--sub-text-dark);
+  font-size: 1.2rem;
 }
 
 /* =========================

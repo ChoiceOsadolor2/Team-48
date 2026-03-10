@@ -35,6 +35,9 @@
                 </div>
                 <button id="vx-search-submit" class="vx-search-submit" type="submit">Search</button>
             </form>
+
+            <!-- Ajax Live Search Dropdown Container -->
+            <ul id="vx-search-results" class="vx-search-dropdown" style="display: none;"></ul>
         </div>
 
         <div id="icons">
@@ -72,6 +75,32 @@
 
         </div>
 
+        <!-- Scroll to Top Button -->
+        <button id="vx-scroll-top" class="hidden" aria-label="Scroll to Top">
+            <i class="fa-solid fa-arrow-up"></i>
+        </button>
+
+        <!-- Chatbot UI -->
+        <div id="vx-chatbot-container">
+            <button id="vx-chatbot-toggle" aria-label="Open Chat">
+                <i class="fa-solid fa-message"></i>
+            </button>
+            <div id="vx-chatbot-window" class="hidden">
+                <div class="vx-chat-header">
+                    <span>Veltrix AI Assistant</span>
+                    <button id="vx-chatbot-close">✖</button>
+                </div>
+                <div id="vx-chat-messages">
+                    <!-- Messages will be appended here -->
+                    <div class="vx-message ai-message">Hi there! How can I help you?</div>
+                </div>
+                <form id="vx-chat-form">
+                    <input type="text" id="vx-chat-input" placeholder="Ask a question..." autocomplete="off" required>
+                    <button type="submit" id="vx-chat-submit"><i class="fa-solid fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+
 
     </header>
 
@@ -100,8 +129,10 @@
                         <p class="basket_price"></p>
                         <div class="basket_quantity_row">
                             <p class="basket_quantity_text"></p>
-                            <button class="basket_qty_btn qty-count--minus" type="button" aria-label="Decrease quantity">-</button>
-                            <button class="basket_qty_btn qty-count--add" type="button" aria-label="Increase quantity">+</button>
+                            <button class="basket_qty_btn qty-count--minus" type="button"
+                                aria-label="Decrease quantity">-</button>
+                            <button class="basket_qty_btn qty-count--add" type="button"
+                                aria-label="Increase quantity">+</button>
                         </div>
 
                         <button class="remove_from_cart" type="button">
