@@ -332,11 +332,16 @@ window.AddToBasket = async function (id, qty = 1) {
     console.log('AddToBasket status:', res.status);
 
     if (!res.ok) {
-      const text = await res.text();
-      console.error('AddToBasket error body:', text);
-      alert('Could not add to cart. You may need to log in first.');
-      return;
-    }
+  let data = null;
+  try {
+    data = await res.json();
+  } catch (e) {}
+
+  console.error('AddToBasket failed:', data);
+  alert(data?.message || 'Could not add to cart.');
+  await loadCartFromBackend();
+  return;
+}
 
     await loadCartFromBackend();
   } catch (err) {
