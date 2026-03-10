@@ -93,9 +93,16 @@ fetch(headerFile)
                 }
 
                 data.results.slice(0, 5).forEach(product => {
+                  let imgUrl = '../assets/MainLogo.png';
+                  if (product.image_url) {
+                    imgUrl = product.image_url.startsWith('http')
+                      ? product.image_url
+                      : '/storage/' + product.image_url.replace(/^\/+/, '');
+                  }
+
                   const li = document.createElement('li');
                   li.innerHTML = `
-                    <img src="${product.image_url}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/placeholder.png'">
+                    <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
                     <div class="vx-search-dropdown-info">
                       <span class="vx-search-dropdown-title">${product.name}</span>
                       <span class="vx-search-dropdown-price">£${Number(product.price).toFixed(2)}</span>
