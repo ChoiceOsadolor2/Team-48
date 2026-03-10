@@ -25,7 +25,7 @@ html {
 
 
 body {
-    background-color: #000;
+    /* background-color: #000; */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -384,95 +384,4 @@ nav>a {
 .view_product:hover::after,
 .add_to_basket:hover::after {
     opacity: 1;
-}
-
-/* Hidden Content,Dynamic? */
-/* Basket */
-
-
-/* #basket,
-#menu{
-  backdrop-filter: blur(3px);
-  cursor: pointer;
-    height: 100vh;
-    width: 100vw;
-    display: none;
-    position: fixed;
-    z-index: 100;
-    
-
-}
-
-#basket_main{
-    width: 0em;
-    height: 100%;
-    position: fixed;
-    right: 0%;
-    background-color: white;
-    z-index: 102;
-
-
-}
-
-#menu_main{
-    width: 0em;
-    height: 100%;
-    position: fixed;
-    left: 0%;
-    background-color: white;
-        z-index: 102;
-
-}
-
-
-#menu_nav{
-    display: none;
-} */
-
-
-
-
-/* Media Query
-
-
-@media (max-width:800px) {
-
-  #Basket_Display,
-#Menu_Display{
-    display:none;
-    width: 80vw;
-    height: 100vh;
-    position: fixed;
-       
-    backdrop-filter: blur(3px);
-    z-index: 10;
-
-}
-
-#basket_main{
-    width: 0em;
-    height: 100%;
-    position: inherit;
-    right: 0%;
-    background-color: white;
-}
-
-#menu_main{
-     width: 0em;
-    height: 100%;
-    position: inherit;
-    left: 0%;
-    background-color: white;
-    overflow: hidden;
-
-}
-
-
-
-nav {
-    display: none;
-}
-
-#menu_nav {
-    display: block;
 }
