@@ -365,10 +365,16 @@ async function updateCartQty(productId, newQty) {
   });
 
   if (!res.ok) {
-    const text = await res.text();
-    console.error('Update qty failed:', res.status, text);
-    throw new Error('Update qty failed');
-  }
+  let data = null;
+  try {
+    data = await res.json();
+  } catch (e) {}
+
+  console.error('UpdateCartQty failed:', data);
+  alert(data?.message || 'Could not update cart.');
+  await loadCartFromBackend();
+  return;
+}
 
   // backend returns updated cart json
   return res.json();
