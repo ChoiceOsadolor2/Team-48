@@ -328,21 +328,14 @@ function initChatbot() {
 
   closeBtn.addEventListener('click', closeChat);
 
-  // Handle Form Submission
-  chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const userMessage = chatInput.value.trim();
+  async function sendChatMessage(userMessage) {
     if (!userMessage) return;
 
-    // Append User Message
     appendMessage('user', userMessage);
     chatInput.value = '';
-
-    // Append 'Typing...' Indicator
     const typingIndicator = appendMessage('ai', '...');
 
     try {
-      // Send to Backend
       const response = await fetch('/chatbot/ask', {
         method: 'POST',
         headers: {
@@ -354,31 +347,65 @@ function initChatbot() {
 
       const data = await response.json();
 
-      // Update the typing indicator with the real response
       if (data.status === 'success') {
-        typingIndicator.textContent = data.reply;
+        renderAiResponse(typingIndicator, data.reply, data.suggestions || []);
       } else {
         typingIndicator.textContent = "Error: Couldn't reach the server right now.";
       }
-
     } catch (error) {
       console.error('Chatbot Error:', error);
       typingIndicator.textContent = 'Oops! My circuits are crossed. Try again later.';
     }
+  }
+
+  // Handle Form Submission
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userMessage = chatInput.value.trim();
+    await sendChatMessage(userMessage);
   });
 
-  // Helper to append a bubble
   function appendMessage(senderType, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('vx-message');
     msgDiv.classList.add(senderType === 'ai' ? 'ai-message' : 'user-message');
     msgDiv.textContent = text;
     chatMessages.appendChild(msgDiv);
-
-    // Auto-scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
     return msgDiv;
+  }
+
+  function renderAiResponse(messageEl, text, suggestions) {
+    messageEl.textContent = '';
+
+    const body = document.createElement('div');
+    body.className = 'vx-message-body';
+    body.textContent = text;
+    messageEl.appendChild(body);
+
+    if (Array.isArray(suggestions) && suggestions.length) {
+      const chips = document.createElement('div');
+      chips.className = 'vx-chat-suggestions';
+
+      suggestions.slice(0, 4).forEach((suggestion) => {
+        const chip = document.createElement(suggestion.url ? 'a' : 'button');
+        chip.className = 'vx-chat-suggestion';
+        chip.textContent = suggestion.label || 'Open';
+
+        if (suggestion.url) {
+          chip.href = suggestion.url;
+        } else {
+          chip.type = 'button';
+          chip.addEventListener('click', () => sendChatMessage(suggestion.message || suggestion.label || 'Help'));
+        }
+
+        chips.appendChild(chip);
+      });
+
+      messageEl.appendChild(chips);
+    }
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 }
 

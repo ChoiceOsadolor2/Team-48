@@ -25,7 +25,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
                 
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -69,6 +69,17 @@
                     </div>
                     <h4 class="z-10 text-2xl font-bold text-gray-900 dark:text-white mb-3">View Orders</h4>
                     <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Process customer orders, view full details, and track order fulfillments.</p>
+                </a>
+
+                <a href="{{ route('admin.faqs.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-50 to-sky-50 dark:from-cyan-900/10 dark:to-sky-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="z-10 bg-cyan-100 dark:bg-cyan-900/40 p-5 rounded-2xl mb-6 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
+                        <svg class="w-10 h-10 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6M7 4h10a2 2 0 012 2v12l-4-3H7a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="z-10 text-2xl font-bold text-gray-900 dark:text-white mb-3">Chatbot FAQs</h4>
+                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Add and update FAQ answers that power the smarter chatbot.</p>
                 </a>
 
             </div>

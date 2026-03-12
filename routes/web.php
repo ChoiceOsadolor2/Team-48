@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 
 
 
@@ -155,6 +156,24 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/admin/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])
         ->name('admin.orders.cancel');
+
+    Route::get('/admin/faqs', [AdminFaqController::class, 'index'])
+        ->name('admin.faqs.index');
+
+    Route::get('/admin/faqs/create', [AdminFaqController::class, 'create'])
+        ->name('admin.faqs.create');
+
+    Route::post('/admin/faqs', [AdminFaqController::class, 'store'])
+        ->name('admin.faqs.store');
+
+    Route::get('/admin/faqs/{faq}/edit', [AdminFaqController::class, 'edit'])
+        ->name('admin.faqs.edit');
+
+    Route::put('/admin/faqs/{faq}', [AdminFaqController::class, 'update'])
+        ->name('admin.faqs.update');
+
+    Route::delete('/admin/faqs/{faq}', [AdminFaqController::class, 'destroy'])
+        ->name('admin.faqs.destroy');
 });
 
 

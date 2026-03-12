@@ -1094,6 +1094,40 @@ body:has(#basket.open) #theme-toggle-container {
   font-weight: bold;
 }
 
+.vx-message-body {
+  white-space: pre-wrap;
+}
+
+.vx-chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.vx-chat-suggestion {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #555;
+  background: #101010;
+  color: #ffa825;
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 0.78rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.vx-chat-suggestion:hover {
+  background: #1d1d1d;
+  border-color: #ff00a8;
+  transform: translateY(-1px);
+}
+
 #vx-chat-form {
   display: flex;
   padding: 10px;
