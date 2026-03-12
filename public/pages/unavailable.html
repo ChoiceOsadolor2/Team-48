@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en" class="home">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Unavailable</title>
+  <link rel="stylesheet" href="../styles/styleHomepage.css" />
+  <link rel="stylesheet" href="../styles/style.css" />
+  <link rel="stylesheet" href="../styles/footer.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+  <style>
+    main.unavailable-main {
+      position: relative !important;
+      top: 0 !important;
+      min-height: 100vh;
+      padding-top: 15vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      text-align: center;
+      background-image: url(../assets/Veltrix-homepage-background.png);
+      background-repeat: repeat-y;
+      background-size: contain;
+    }
+
+    .unavailable-card {
+      width: min(90vw, 720px);
+      padding: 40px 32px;
+      background: #1d1d1f;
+      border: 1px solid #444;
+      border-radius: 18px;
+    }
+
+    .unavailable-card h1 {
+      font-size: 5em;
+      margin: 0 0 20px;
+    }
+
+    .unavailable-card p {
+      font-size: 20px;
+      margin: 0;
+      color: #888;
+    }
+
+    .unavailable-home-link {
+      display: inline-block;
+      margin-top: 24px;
+      padding: 14px 24px;
+      background: #000;
+      border: 1px solid #444;
+      border-radius: 12px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 20px;
+    }
+  </style>
+</head>
+<body>
+  <header></header>
+
+  <div class="search-container">
+    <input type="text" placeholder="Search..." class="search-bar" id="Search_Input">
+    <button class="search-close">×</button>
+  </div>
+
+  <main class="unavailable-main">
+    <section class="unavailable-card">
+      <h1>Not Available</h1>
+      <p>This page is not available right now.</p>
+      <a class="unavailable-home-link" href="/pages/index.html">Back to Home</a>
+    </section>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="../scripts/header.js"></script>
+  <script src="../scripts/footer.js"></script>
+  <script src="../scripts/animations.js" defer></script>
+</body>
+</html>

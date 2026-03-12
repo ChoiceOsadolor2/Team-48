@@ -2,7 +2,8 @@
 @php($isProfilePage = request()->routeIs('profile.*'))
 @php($isOrdersPage = request()->routeIs('orders.*'))
 @php($isCheckoutPage = request()->routeIs('checkout.*'))
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage) data-theme="dark" @endif>
+@php($isAdminPage = request()->routeIs('admin.*'))
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) class="home" @endif @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) data-theme="dark" @endif>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,7 +14,10 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage)
+        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
+            <link rel="stylesheet" href="/styles/styleHomepage.css">
+        @endif
+        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
             <link rel="stylesheet" href="/styles/style.css">
             <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
         @endif
@@ -65,6 +69,20 @@
                     box-sizing: border-box !important;
                 }
 
+                body.orders-page #theme-toggle-button + label {
+                    min-width: 200px !important;
+                    padding: 12px 18px !important;
+                    font-size: 20px !important;
+                    line-height: 1 !important;
+                }
+
+                body.checkout-page #theme-toggle-button + label {
+                    min-width: 200px !important;
+                    padding: 12px 18px !important;
+                    font-size: 20px !important;
+                    line-height: 1 !important;
+                }
+
                 body.orders-page .user-menu-item,
                 body.checkout-page .user-menu-item {
                     box-sizing: border-box !important;
@@ -75,6 +93,40 @@
                 body.checkout-page .user-menu-dropdown {
                     right: 24px !important;
                     left: auto !important;
+                }
+
+                body.orders-page header svg {
+                    display: inline !important;
+                    vertical-align: baseline !important;
+                }
+
+                body.checkout-page header svg {
+                    display: inline !important;
+                    vertical-align: baseline !important;
+                }
+
+                body.orders-page .user-menu-btn {
+                    line-height: normal !important;
+                }
+
+                body.checkout-page .user-menu-btn {
+                    line-height: normal !important;
+                }
+
+                body.orders-page #icons > span {
+                    white-space: nowrap !important;
+                }
+
+                body.checkout-page #icons > span {
+                    white-space: nowrap !important;
+                }
+
+                body.orders-page #menu_nav {
+                    display: none !important;
+                }
+
+                body.checkout-page #menu_nav {
+                    display: none !important;
                 }
 
                 body.orders-page main.orders-content {
@@ -109,6 +161,87 @@
                 body.checkout-page main.checkout-content,
                 body.checkout-page main.checkout-content * {
                     font-family: 'MiniPixel', sans-serif !important;
+                }
+            @endif
+            @if ($isAdminPage)
+                @font-face {
+                    font-family: 'MiniPixel';
+                    src: url('/fonts/mini-pixel-7.ttf') format('truetype');
+                    font-weight: normal;
+                    font-style: normal;
+                    font-display: swap;
+                }
+
+                html[data-theme="dark"],
+                html[data-theme="dark"] body.admin-page {
+                    background-color: #000 !important;
+                }
+
+                body.admin-page {
+                    overflow-x: hidden;
+                    background-color: #000 !important;
+                    background-image: url('{{ asset('assets/Veltrix-homepage-background.png') }}');
+                    background-repeat: repeat-y;
+                    background-size: 100vw auto;
+                    background-position: var(--bg-y-pos, center 0);
+                }
+
+                body.admin-page header,
+                body.admin-page header * {
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.admin-page nav > a {
+                    font-size: 30px !important;
+                    white-space: nowrap !important;
+                }
+
+                body.admin-page #theme-toggle-button + label {
+                    font-family: 'MiniPixel', sans-serif !important;
+                    box-sizing: border-box !important;
+                    min-width: 200px !important;
+                    padding: 12px 18px !important;
+                    font-size: 20px !important;
+                    line-height: 1 !important;
+                }
+
+                body.admin-page .user-menu-item {
+                    box-sizing: border-box !important;
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.admin-page .user-menu-dropdown {
+                    right: 24px !important;
+                    left: auto !important;
+                }
+
+                body.admin-page header svg {
+                    display: inline !important;
+                    vertical-align: baseline !important;
+                }
+
+                body.admin-page .user-menu-btn {
+                    line-height: normal !important;
+                }
+
+                body.admin-page #icons > span {
+                    white-space: nowrap !important;
+                }
+
+                body.admin-page #menu_nav {
+                    display: none !important;
+                }
+
+                body.admin-page main.admin-content {
+                    background: transparent !important;
+                    position: relative !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    margin: 0;
+                    padding: 90px 0 40px;
+                    min-height: 100vh;
+                    z-index: 1;
                 }
             @endif
             @if ($isProfilePage)
@@ -162,6 +295,24 @@
                 body.profile-page .user-menu-dropdown {
                     right: 24px !important;
                     left: auto !important;
+                }
+
+                /* Match the static home/unavailable navbar shell under Tailwind preflight */
+                body.profile-page header svg {
+                    display: inline !important;
+                    vertical-align: baseline !important;
+                }
+
+                body.profile-page .user-menu-btn {
+                    line-height: normal !important;
+                }
+
+                body.profile-page #icons > span {
+                    white-space: nowrap !important;
+                }
+
+                body.profile-page #menu_nav {
+                    display: none !important;
                 }
 
                 body.profile-page main.profile-content {
@@ -435,15 +586,22 @@
         @endif
     </head>
 
-    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }} {{ $isCheckoutPage ? 'checkout-page' : '' }}" style="--bg-y-pos: center 0;">
-        <div class="{{ $isProfilePage || $isOrdersPage || $isCheckoutPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
-            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage)
-                @include('layouts.veltrix-header')
+    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }} {{ $isCheckoutPage ? 'checkout-page' : '' }} {{ $isAdminPage ? 'admin-page' : '' }}" style="--bg-y-pos: center 0;">
+        <div class="{{ $isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
+            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
+                <header></header>
             @else
                 @include('layouts.navigation')
             @endif
 
-            @if (! $isProfilePage && ! $isOrdersPage && ! $isCheckoutPage)
+            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
+                <div class="search-container">
+                    <input type="text" placeholder="Search..." class="search-bar" id="Search_Input">
+                    <button class="search-close">&times;</button>
+                </div>
+            @endif
+
+            @if (! $isProfilePage && ! $isOrdersPage && ! $isCheckoutPage && ! $isAdminPage)
                 @isset($header)
                     <header class="bg-white dark:bg-[#0A004A] shadow">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-gray-800 dark:text-gray-100">
@@ -453,13 +611,14 @@
                 @endisset
             @endif
 
-            <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }} {{ $isCheckoutPage ? 'checkout-content' : '' }}">
+            <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }} {{ $isCheckoutPage ? 'checkout-content' : '' }} {{ $isAdminPage ? 'admin-content' : '' }}">
                 {{ $slot }}
             </main>
         </div>
 
         @if ($isProfilePage)
             <script src="/scripts/header.js"></script>
+            <script src="/scripts/products.js?v=8"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
@@ -478,20 +637,40 @@
                     window.addEventListener('pageshow', goTop);
                 })();
             </script>
-        @elseif ($isOrdersPage || $isCheckoutPage)
+        @elseif ($isOrdersPage)
             <script src="/scripts/header.js"></script>
+            <script src="/scripts/products.js?v=8"></script>
+            <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
                     if (!localStorage.getItem('theme')) {
                         localStorage.setItem('theme', 'dark');
                     }
                     document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
-
-                    let y = 0;
-                    setInterval(function () {
-                        y += 1;
-                        document.body.style.setProperty('--bg-y-pos', `center ${y}px`);
-                    }, 20);
+                })();
+            </script>
+        @elseif ($isCheckoutPage)
+            <script src="/scripts/header.js"></script>
+            <script src="/scripts/products.js?v=8"></script>
+            <script src="/scripts/animations.js" defer></script>
+            <script>
+                (function () {
+                    if (!localStorage.getItem('theme')) {
+                        localStorage.setItem('theme', 'dark');
+                    }
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                })();
+            </script>
+        @elseif ($isAdminPage)
+            <script src="/scripts/header.js"></script>
+            <script src="/scripts/products.js?v=8"></script>
+            <script src="/scripts/animations.js" defer></script>
+            <script>
+                (function () {
+                    if (!localStorage.getItem('theme')) {
+                        localStorage.setItem('theme', 'dark');
+                    }
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
                 })();
             </script>
         @endif
