@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class OrdersController extends Controller
 {
@@ -24,5 +26,32 @@ class OrdersController extends Controller
         }
 
         return view('orders.show', compact('order'));
+    }
+
+    public function cancel(Order $order): RedirectResponse
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (strtolower($order->status) !== 'processing') {
+            return back()->with('status', 'Only processing orders can be cancelled.');
+        }
+
+        DB::transaction(function () use ($order) {
+            $order->load(['items.product']);
+
+            foreach ($order->items as $item) {
+                if ($item->product) {
+                    $item->product->increment('stock', (int) $item->quantity);
+                }
+            }
+
+            $order->update([
+                'status' => 'cancelled',
+            ]);
+        });
+
+        return back()->with('status', 'Order cancelled successfully.');
     }
 }

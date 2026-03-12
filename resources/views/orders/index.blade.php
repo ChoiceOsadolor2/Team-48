@@ -1,12 +1,11 @@
 <x-app-layout>
     <link rel="stylesheet" href="{{ asset('styles/orders.css') }}" />
 
-    <main class="orders-main w-full max-w-5xl mx-auto py-8">
+    <div class="orders-main w-full max-w-5xl mx-auto py-8">
         <div class="orders-container">
             
             <div class="orders-header mb-8">
                 <h1 class="orders-title text-3xl font-bold">Order History</h1>
-                <p class="orders-subtitle text-gray-600">Check the status of recent orders, manage returns, and discover similar products.</p>
             </div>
 
             @if ($orders->count() === 0)
@@ -25,7 +24,7 @@
                                 </div>
                                 <div class="order-info-block">
                                     <span class="label">Total</span>
-                                    <span class="value">£{{ number_format($order->total, 2) }}</span>
+                                    <span class="value">{{ number_format($order->total, 2) }} GBP</span>
                                 </div>
                                 <div class="order-info-block order-number-block">
                                     <span class="label">Order #</span>
@@ -37,9 +36,17 @@
                             </div>
                             
                             <div class="order-body">
-                                <div class="order-status {{ strtolower($order->status) }}">
-                                    <div class="status-indicator"></div>
-                                    <span>{{ ucfirst($order->status) }}</span>
+                                <div class="order-status-row">
+                                    <div class="order-status {{ strtolower($order->status) }}">
+                                        <div class="status-indicator"></div>
+                                        <span>{{ ucfirst($order->status) }}</span>
+                                    </div>
+                                    @if(strtolower($order->status) === 'processing')
+                                        <form method="POST" action="{{ route('orders.cancel', $order->id) }}" class="order-status-actions">
+                                            @csrf
+                                            <button type="submit" class="btn-ghost w-full">Cancel Order</button>
+                                        </form>
+                                    @endif
                                 </div>
                                 @if(strtolower($order->status) == 'processing')
                                     <p class="status-desc">Your order is being prepared for shipment.</p>
@@ -55,19 +62,20 @@
                                             @if($item->product && $item->product->image)
                                                 <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name ?? 'Product' }}">
                                             @else
-                                                <img src="{{ asset('assets/gameHeadset.png') }}" alt="Fallback Product">
+                                                <div class="order-item-no-image">No image</div>
                                             @endif
                                             
                                             <div class="item-details">
-                                                <h4>{{ $item->product->name ?? 'Unknown Product' }}</h4>
+                                                <h4><span class="item-label">Product Name:</span> {{ $item->product->name ?? 'Unknown Product' }}</h4>
                                                 @if($item->product && $item->product->platform)
-                                                    <p class="item-meta">Platform: {{ $item->product->platform }}</p>
+                                                    <p class="item-meta"><span class="item-label">Platform:</span> <span class="item-meta-value">{{ $item->product->platform }}</span></p>
                                                 @endif
-                                                <p class="item-price">£{{ number_format($item->price, 2) }} <span class="item-qty">Qty: {{ $item->quantity }}</span></p>
+                                                <p class="item-price"><span class="item-label">Price:</span> <span class="price-value">{{ number_format($item->price, 2) }} GBP</span></p>
+                                                <p class="item-qty"><span class="item-label">Quantity:</span> {{ $item->quantity }}</p>
                                             </div>
                                             <div class="item-actions">
-                                                <a href="{{ url('/pages/ShopAll.html') }}" class="btn-ghost block w-full">Buy it again</a>
-                                                <a href="{{ url('/pages/index.html#contact-us') }}" class="btn-ghost block w-full mt-2">Leave a review</a>
+                                                <a href="{{ $item->product ? url('/pages/ProductPage.html?id=' . $item->product->id) : url('/pages/ShopAll.html') }}" class="btn-ghost block w-full">Buy Again</a>
+                                                <a href="{{ url('/pages/index.html#contact-us') }}" class="btn-ghost block w-full mt-2">Leave Review</a>
                                             </div>
                                         </div>
                                     @endforeach
@@ -79,6 +87,6 @@
             @endif
 
         </div>
-    </main>
+    </div>
 
 </x-app-layout>

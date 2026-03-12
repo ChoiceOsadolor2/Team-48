@@ -18,7 +18,7 @@
             @endif
 
             <p class="mb-2"><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
-            <p class="mb-4"><strong>Total:</strong> £{{ number_format($order->total, 2) }}</p>
+            <p class="mb-4"><strong>Total:</strong> {{ number_format($order->total, 2) }} GBP</p>
 
             <h2 class="text-xl font-semibold mt-6 mb-4">Items</h2>
 
@@ -41,7 +41,7 @@
                                 {{ $item->quantity }}
                             </td>
                             <td class="px-6 py-4 border-b">
-                                £{{ number_format($item->price, 2) }}
+                                {{ number_format($item->price, 2) }} GBP
                             </td>
                         </tr>
                     @endforeach

@@ -12,7 +12,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-        @if ($isProfilePage)
+        @if ($isProfilePage || $isOrdersPage)
             <link rel="stylesheet" href="/styles/style.css">
             <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
         @endif
@@ -21,6 +21,14 @@
                 font-family: 'Pixelify Sans', sans-serif !important;
             }
             @if ($isOrdersPage)
+                @font-face {
+                    font-family: 'MiniPixel';
+                    src: url('/fonts/mini-pixel-7.ttf') format('truetype');
+                    font-weight: normal;
+                    font-style: normal;
+                    font-display: swap;
+                }
+
                 html[data-theme="dark"],
                 html[data-theme="dark"] body.orders-page {
                     background-color: #000 !important;
@@ -33,6 +41,48 @@
                     background-repeat: repeat-y;
                     background-size: 100vw auto;
                     background-position: var(--bg-y-pos, center 0);
+                }
+
+                body.orders-page header,
+                body.orders-page header * {
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.orders-page nav > a {
+                    font-size: 30px !important;
+                    white-space: nowrap !important;
+                }
+
+                body.orders-page #theme-toggle-button + label {
+                    font-family: 'MiniPixel', sans-serif !important;
+                    box-sizing: border-box !important;
+                }
+
+                body.orders-page .user-menu-item {
+                    box-sizing: border-box !important;
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.orders-page .user-menu-dropdown {
+                    right: 24px !important;
+                    left: auto !important;
+                }
+
+                body.orders-page main.orders-content {
+                    background: transparent !important;
+                    position: relative !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    margin: 0;
+                    padding: 90px 0 40px;
+                    min-height: 100vh;
+                    z-index: 1;
+                }
+
+                body.orders-page main.orders-content,
+                body.orders-page main.orders-content * {
+                    font-family: 'MiniPixel', sans-serif !important;
                 }
             @endif
             @if ($isProfilePage)
@@ -361,13 +411,13 @@
 
     <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }}" style="--bg-y-pos: center 0;">
         <div class="{{ $isProfilePage || $isOrdersPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
-            @if ($isProfilePage)
+            @if ($isProfilePage || $isOrdersPage)
                 @include('layouts.veltrix-header')
             @else
                 @include('layouts.navigation')
             @endif
 
-            @if (! $isProfilePage)
+            @if (! $isProfilePage && ! $isOrdersPage)
                 @isset($header)
                     <header class="bg-white dark:bg-[#0A004A] shadow">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-gray-800 dark:text-gray-100">
@@ -377,7 +427,7 @@
                 @endisset
             @endif
 
-            <main class="{{ $isProfilePage ? 'profile-content' : '' }}">
+            <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }}">
                 {{ $slot }}
             </main>
         </div>
@@ -403,6 +453,7 @@
                 })();
             </script>
         @elseif ($isOrdersPage)
+            <script src="/scripts/header.js"></script>
             <script>
                 (function () {
                     if (!localStorage.getItem('theme')) {
