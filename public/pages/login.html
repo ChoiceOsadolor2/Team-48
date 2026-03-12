@@ -219,6 +219,9 @@ document.getElementById("loginForm").addEventListener("submit", async function (
       window.location.href = redirectTo;
     } else if (res.status === 401) {
       showFieldError(passwordError, (data && data.message) || "Incorrect email or password.");
+    } else if (res.status === 422 && data.errors) {
+      if (data.errors.email?.[0]) showFieldError(emailError, data.errors.email[0]);
+      if (data.errors.password?.[0]) showFieldError(passwordError, data.errors.password[0]);
     } else {
       console.error("Login error:", res.status, dataText);
       showFieldError(passwordError, "Something went wrong. Please try again.");

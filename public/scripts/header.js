@@ -16,7 +16,8 @@ function bindVeltrixHeader(headerEl) {
     .then(html => {
       const footerEl = document.querySelector('footer');
       if (footerEl) footerEl.innerHTML = html;
-    });
+    })
+    .catch(err => console.error('Footer load error:', err));
 
   (function bindVeltrixSearch() {
     const form =
@@ -75,7 +76,13 @@ function bindVeltrixHeader(headerEl) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
           fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
-            .then(res => res.json())
+            .then(async res => {
+              if (!res.ok) {
+                throw new Error('Search request failed.');
+              }
+
+              return res.json();
+            })
             .then(data => {
               resultsContainer.innerHTML = '';
 
@@ -110,7 +117,11 @@ function bindVeltrixHeader(headerEl) {
               resultsContainer.style.display = 'flex';
               resultsContainer.style.flexDirection = 'column';
             })
-            .catch(err => console.error('Live search error:', err));
+            .catch(err => {
+              console.error('Live search error:', err);
+              resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">Search is unavailable right now.</li>';
+              resultsContainer.style.display = 'block';
+            });
         }, 300);
       });
 
@@ -241,7 +252,8 @@ if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
       if (!headerEl) return;
       headerEl.innerHTML = html;
       bindVeltrixHeader(headerEl);
-    });
+    })
+    .catch(err => console.error('Header load error:', err));
 }
 
 ; (async function () {
@@ -345,16 +357,23 @@ function initChatbot() {
         body: JSON.stringify({ message: userMessage })
       });
 
-      const data = await response.json();
+      const rawText = await response.text();
+      let data = null;
 
-      if (data.status === 'success') {
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseError) {
+        throw new Error('Chatbot returned an invalid response.');
+      }
+
+      if (response.ok && data.status === 'success') {
         renderAiResponse(typingIndicator, data.reply, data.suggestions || []);
       } else {
-        typingIndicator.textContent = "Error: Couldn't reach the server right now.";
+        typingIndicator.textContent = data?.message || data?.reply || "The chatbot couldn't answer right now. Please try again in a moment.";
       }
     } catch (error) {
       console.error('Chatbot Error:', error);
-      typingIndicator.textContent = 'Oops! My circuits are crossed. Try again later.';
+      typingIndicator.textContent = 'The chatbot could not reach the site backend. Make sure the Laravel server is running, then try again.';
     }
   }
 

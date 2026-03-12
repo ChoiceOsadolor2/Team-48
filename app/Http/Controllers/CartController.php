@@ -22,6 +22,15 @@ class CartController extends Controller
 
         $productIds = array_keys($cart);
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $missingProductIds = array_diff($productIds, $products->keys()->all());
+
+        if (!empty($missingProductIds)) {
+            foreach ($missingProductIds as $missingProductId) {
+                unset($cart[$missingProductId]);
+            }
+
+            Session::put('cart', $cart);
+        }
 
         $items = [];
         $total = 0;
@@ -201,6 +210,15 @@ class CartController extends Controller
 
         $productIds = array_keys($cart);
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $missingProductIds = array_diff($productIds, $products->keys()->all());
+
+        if (!empty($missingProductIds)) {
+            foreach ($missingProductIds as $missingProductId) {
+                unset($cart[$missingProductId]);
+            }
+
+            Session::put('cart', $cart);
+        }
 
         $items = [];
         $total = 0;
@@ -230,6 +248,9 @@ class CartController extends Controller
         return response()->json([
             'items' => $items,
             'total' => $total,
+            'message' => !empty($missingProductIds)
+                ? 'Some unavailable items were removed from your cart.'
+                : null,
         ]);
     }
 }

@@ -244,18 +244,31 @@ document.getElementById("form").addEventListener("submit", async function (e) {
             headers: { "Accept": "application/json" }
         });
 
-        const data = await res.json();
+        const rawText = await res.text();
+        let data = {};
+        try {
+            data = JSON.parse(rawText);
+        } catch (parseError) {
+            console.error("Non-JSON response from register-json:", rawText);
+        }
 
-        if (!res.ok || !data.success) {
-            showFieldError(emailError, data.message || "Registration failed. Email may already exist.");
+        if (res.ok && data.success) {
+            window.location.href = "/profile";
             return;
         }
 
-        window.location.href = "/profile";
+        if (res.status === 422 && data.errors) {
+            if (data.errors.email?.[0]) showFieldError(emailError, data.errors.email[0]);
+            if (data.errors.name?.[0]) showFieldError(usernameError, data.errors.name[0]);
+            if (data.errors.password?.[0]) showFieldError(passwordError, data.errors.password[0]);
+            return;
+        }
+
+        showFieldError(emailError, data.message || "Registration failed. Please check your details and try again.");
 
     } catch (error) {
         console.error(error);
-        showFieldError(emailError, "Something went wrong. Please try again.");
+        showFieldError(emailError, "Unable to contact server. Please try again.");
     }
 });
 </script>

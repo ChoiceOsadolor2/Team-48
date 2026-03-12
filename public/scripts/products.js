@@ -16,6 +16,58 @@ const ProductCard_template = document.querySelector('template');
 const container = document.getElementById('products_container');
 const container2 = document.getElementById('product_display');
 
+function ensureInlineNotice(id, parent, className = '') {
+  if (!parent) return null;
+
+  let notice = document.getElementById(id);
+  if (!notice) {
+    notice = document.createElement('div');
+    notice.id = id;
+    if (className) notice.className = className;
+    parent.prepend(notice);
+  }
+
+  return notice;
+}
+
+function setProductsPageError(message) {
+  const loadingEl = document.getElementById('loading_products');
+  if (!loadingEl) return;
+
+  loadingEl.style.display = 'block';
+  loadingEl.textContent = message;
+  loadingEl.style.color = '#ffa825';
+}
+
+function clearProductsPageError() {
+  const loadingEl = document.getElementById('loading_products');
+  if (!loadingEl) return;
+
+  loadingEl.textContent = 'Loading products...';
+  loadingEl.style.color = '';
+}
+
+function showBasketError(message) {
+  const basketError = document.getElementById('basket_stock_error');
+  if (!basketError) return;
+
+  basketError.textContent = message || '';
+  basketError.style.display = message ? 'block' : 'none';
+}
+
+function showProductPageError(message) {
+  if (!container2) return;
+
+  const notice = ensureInlineNotice('product_page_error', container2, 'product-page-error');
+  if (!notice) return;
+
+  notice.textContent = message;
+  notice.style.color = '#ffa825';
+  notice.style.textAlign = 'center';
+  notice.style.margin = '0 auto 20px';
+  notice.style.maxWidth = '820px';
+}
+
 
 // ===============================
 // SEARCH PATCH (binds to header search even if injected later)
@@ -175,6 +227,7 @@ async function loadCartFromBackend() {
     if (!res.ok) {
       const text = await res.text();
       console.error('Cart JSON error body:', text);
+      showBasketError('We could not load your cart right now.');
       return;
     }
 
@@ -186,8 +239,11 @@ async function loadCartFromBackend() {
       data = JSON.parse(text);
     } catch (e) {
       console.error('Non-JSON cart response (probably HTML login page).');
+      showBasketError('Your cart is unavailable right now. Please refresh or sign in again.');
       return;
     }
+
+    showBasketError(data.message || '');
 
     let rawItems = data.items || [];
 
@@ -308,6 +364,7 @@ async function loadCartFromBackend() {
     document.body.classList.add('cart-ready');
   } catch (err) {
     console.error('Error loading cart:', err);
+    showBasketError('We could not load your cart right now.');
   }
 }
 
@@ -334,15 +391,16 @@ window.AddToBasket = async function (id, qty = 1) {
       } catch (e) {}
 
       console.error('AddToBasket failed:', data);
-      alert(data?.message || 'Could not add to cart.');
+      showBasketError(data?.message || 'Could not add to cart.');
       await loadCartFromBackend();
       return;
     }
 
+    showBasketError('');
     await loadCartFromBackend();
   } catch (err) {
     console.error('Error adding to cart:', err);
-    alert('Could not add to cart.');
+    showBasketError('Could not add to cart.');
   }
 };
 
@@ -362,15 +420,16 @@ window.UpdateCartQty = async function (productId, qty) {
       } catch (e) {}
 
       console.error('UpdateCartQty failed:', data);
-      alert(data?.message || 'Could not update cart.');
+      showBasketError(data?.message || 'Could not update cart.');
       await loadCartFromBackend();
       return;
     }
 
+    showBasketError('');
     await loadCartFromBackend();
   } catch (e) {
     console.error(e);
-    alert('Could not update cart.');
+    showBasketError('Could not update cart.');
   }
 };
 
@@ -555,6 +614,7 @@ function initProductPageQty(product) {
 // Load Products
 
 if (container || container2) {
+  clearProductsPageError();
   fetch('/products', { credentials: 'include' })
     .then((res) => {
       if (!res.ok) throw new Error('Failed to load products from backend');
@@ -614,6 +674,8 @@ if (container || container2) {
 
 
           document.title = product.name;
+        } else {
+          showProductPageError('This product could not be found or is no longer available.');
         }
 
         loadCartFromBackend();
@@ -669,7 +731,15 @@ if (container || container2) {
       loadCartFromBackend();
 
     })
-    .catch((err) => console.error('Error loading products:', err));
+    .catch((err) => {
+      console.error('Error loading products:', err);
+      if (container) {
+        setProductsPageError('We could not load products right now. Please refresh and try again.');
+      }
+      if (container2) {
+        showProductPageError('We could not load this product right now. Please go back and try again.');
+      }
+    });
 }
 
 
@@ -727,14 +797,15 @@ window.UpdateCartQty = async function (productId, qty) {
     if (!res.ok) {
       const text = await res.text();
       console.error('UpdateCartQty failed:', res.status, text);
-      alert('Could not update cart.');
+      showBasketError('Could not update cart.');
       return;
     }
 
+    showBasketError('');
     await loadCartFromBackend();
   } catch (e) {
     console.error(e);
-    alert('Could not update cart.');
+    showBasketError('Could not update cart.');
   }
 };
 
@@ -749,14 +820,15 @@ window.RemoveFromCart = async function (productId) {
     if (!res.ok) {
       const text = await res.text();
       console.error('RemoveFromCart failed:', res.status, text);
-      alert('Could not remove item from cart.');
+      showBasketError('Could not remove item from cart.');
       return;
     }
 
+    showBasketError('');
     await loadCartFromBackend();
   } catch (e) {
     console.error(e);
-    alert('Could not remove item from cart.');
+    showBasketError('Could not remove item from cart.');
   }
 };
 
