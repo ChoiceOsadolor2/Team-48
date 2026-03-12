@@ -23,6 +23,11 @@
         font-family: 'MiniPixel', sans-serif;
         text-align: center;
       }
+
+      .masked-login-password {
+        -webkit-text-security: disc;
+        text-security: disc;
+      }
     </style>
 </head>
 
@@ -56,11 +61,12 @@
 
         <div class="input-box">
             <input
-              type="password"
+              type="text"
               id="loginPassword"
+              class="masked-login-password"
               placeholder="Password"
               required
-              autocomplete="new-password"
+              autocomplete="one-time-code"
               autocapitalize="off"
               autocorrect="off"
               spellcheck="false"
@@ -145,8 +151,8 @@ function togglePasswordVisibility() {
   if (!passwordInput || !togglePassword) return;
   unlockField(passwordInput);
 
-  const showing = passwordInput.type === "text";
-  passwordInput.type = showing ? "password" : "text";
+  const showing = !passwordInput.classList.contains("masked-login-password");
+  passwordInput.classList.toggle("masked-login-password", showing);
   togglePassword.className = showing ? "bx bxs-lock-alt" : "bx bx-lock-open-alt";
   togglePassword.setAttribute("aria-label", showing ? "Show password" : "Hide password");
   togglePassword.setAttribute("aria-pressed", showing ? "false" : "true");

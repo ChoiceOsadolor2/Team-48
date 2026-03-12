@@ -23,6 +23,11 @@
         font-family: 'MiniPixel', sans-serif;
         text-align: center;
       }
+
+      .masked-register-password {
+        -webkit-text-security: disc;
+        text-security: disc;
+      }
     </style>
 </head>
 
@@ -35,7 +40,22 @@
         <h1>Register</h1>
 
         <div class="input-box">
-            <input type="email" id="email" placeholder="Email" required autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
+            <input
+              type="text"
+              id="email"
+              placeholder="Email"
+              required
+              inputmode="email"
+              autocomplete="one-time-code"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+              readonly
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
+              data-form-type="other"
+            >
             <i class='bx bx-envelope'></i>
             <p id="registerEmailError" class="field-error"></p>
         </div>
@@ -47,13 +67,43 @@
         </div>
 
         <div class="input-box">
-            <input type="password" id="password" placeholder="Password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+            <input
+              type="text"
+              id="password"
+              class="masked-register-password"
+              placeholder="Password"
+              required
+              autocomplete="one-time-code"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+              readonly
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
+              data-form-type="other"
+            >
             <i id="toggleRegisterPassword" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0" aria-label="Show password" aria-pressed="false"></i>
             <p id="registerPasswordError" class="field-error"></p>
         </div>
 
         <div class="input-box">
-            <input type="password" id="password2" placeholder="Retype Password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
+            <input
+              type="text"
+              id="password2"
+              class="masked-register-password"
+              placeholder="Retype Password"
+              required
+              autocomplete="one-time-code"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+              readonly
+              data-lpignore="true"
+              data-1p-ignore="true"
+              data-bwignore="true"
+              data-form-type="other"
+            >
             <i id="toggleRegisterPassword2" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0" aria-label="Show password" aria-pressed="false"></i>
             <p id="registerPassword2Error" class="field-error"></p>
         </div>
@@ -70,14 +120,31 @@
 <script src="../scripts/animations.js" defer></script>
 
 <script>
+function unlockField(el) {
+    if (!el) return;
+    if (el.hasAttribute("readonly")) {
+        el.removeAttribute("readonly");
+    }
+}
+
+["email", "password", "password2"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+
+    el.addEventListener("focus", () => unlockField(el));
+    el.addEventListener("mousedown", () => unlockField(el));
+    el.addEventListener("touchstart", () => unlockField(el), { passive: true });
+});
+
 function wirePasswordToggle(iconId, inputId) {
     const icon = document.getElementById(iconId);
     const input = document.getElementById(inputId);
     if (!icon || !input) return;
 
     const toggle = () => {
-        const showing = input.type === "text";
-        input.type = showing ? "password" : "text";
+        unlockField(input);
+        const showing = !input.classList.contains("masked-register-password");
+        input.classList.toggle("masked-register-password", showing);
         icon.className = showing ? "bx bxs-lock-alt toggle-password" : "bx bx-lock-open-alt toggle-password";
         icon.setAttribute("aria-label", showing ? "Show password" : "Hide password");
         icon.setAttribute("aria-pressed", showing ? "false" : "true");
