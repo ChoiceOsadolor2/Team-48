@@ -280,5 +280,3 @@ if (reviewsSlider) {
   });
 }
 
-
-

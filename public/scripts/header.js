@@ -1,246 +1,248 @@
 const headerFile = '../pages/header.html';
 
-fetch(headerFile)
-  .then(response => response.text())
-  .then(html => {
-    const headerEl = document.querySelector('header');
-    headerEl.innerHTML = html;
+function bindVeltrixHeader(headerEl) {
+  if (!headerEl || headerEl.dataset.veltrixHeaderBound === '1') return;
+  headerEl.dataset.veltrixHeaderBound = '1';
 
-    // Extract chatbot from header to prevent CSS flex/filter containing-block traps
-    // Extract fixed UI elements from header to prevent CSS flex/filter containing-block traps
-    const chatbotUI = document.getElementById('vx-chatbot-container');
-    if (chatbotUI) document.body.appendChild(chatbotUI);
-    const scrollTopBtn = document.getElementById('vx-scroll-top');
-    if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
+  // Extract fixed UI elements from header to prevent CSS flex/filter containing-block traps
+  const chatbotUI = document.getElementById('vx-chatbot-container');
+  if (chatbotUI) document.body.appendChild(chatbotUI);
+  const scrollTopBtn = document.getElementById('vx-scroll-top');
+  if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
 
-    const footerFile = '../pages/footer.html';
-    fetch(footerFile)
-      .then(response => response.text())
-      .then(html => {
-        const footerEl = document.querySelector('footer');
-        if (footerEl) footerEl.innerHTML = html;
-      });
+  const footerFile = '../pages/footer.html';
+  fetch(footerFile)
+    .then(response => response.text())
+    .then(html => {
+      const footerEl = document.querySelector('footer');
+      if (footerEl) footerEl.innerHTML = html;
+    });
 
-    (function bindVeltrixSearch() {
-      const form =
-        headerEl.querySelector('#vx-search-form') ||
-        headerEl.querySelector('#global-search-form') ||
-        headerEl.querySelector('#search-form') ||
-        headerEl.querySelector('#search')?.querySelector('form');
+  (function bindVeltrixSearch() {
+    const form =
+      headerEl.querySelector('#vx-search-form') ||
+      headerEl.querySelector('#global-search-form') ||
+      headerEl.querySelector('#search-form') ||
+      headerEl.querySelector('#search')?.querySelector('form');
 
-      const input =
-        headerEl.querySelector('#vx-search-input') ||
-        headerEl.querySelector('#global-search-input') ||
-        headerEl.querySelector('#global_search') ||
-        headerEl.querySelector('#search-bar') ||
-        form?.querySelector('input[type="search"]') ||
-        form?.querySelector('input[type="text"]') ||
-        headerEl.querySelector('#search input');
+    const input =
+      headerEl.querySelector('#vx-search-input') ||
+      headerEl.querySelector('#global-search-input') ||
+      headerEl.querySelector('#global_search') ||
+      headerEl.querySelector('#search-bar') ||
+      form?.querySelector('input[type="search"]') ||
+      form?.querySelector('input[type="text"]') ||
+      headerEl.querySelector('#search input');
 
-      if (!form || !input) return;
-      if (form.dataset.boundSearch === '1') return;
-      form.dataset.boundSearch = '1';
+    if (!form || !input) return;
+    if (form.dataset.boundSearch === '1') return;
+    form.dataset.boundSearch = '1';
 
-      function goToShopAll() {
-        const q = (input.value || '').trim();
-        if (!q) return;
-        try { closeSection('search'); } catch (_) { }
-        window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
-      }
+    function goToShopAll() {
+      const q = (input.value || '').trim();
+      if (!q) return;
+      try { closeSection('search'); } catch (_) { }
+      window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
+    }
 
-      form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      goToShopAll();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
         e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
         goToShopAll();
-      });
+      }
+    }, true);
 
-      // Force Enter to work even if other scripts intercept it
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          e.stopPropagation();
-          if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-          goToShopAll();
+    const resultsContainer = headerEl.querySelector('#vx-search-results');
+    let debounceTimer = null;
+
+    if (resultsContainer) {
+      input.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+
+        if (!query) {
+          resultsContainer.style.display = 'none';
+          resultsContainer.innerHTML = '';
+          return;
         }
-      }, true);
 
-      // ==========================
-      // Ajax Live Autocomplete
-      // ==========================
-      const resultsContainer = headerEl.querySelector('#vx-search-results');
-      let debounceTimer = null;
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
+            .then(res => res.json())
+            .then(data => {
+              resultsContainer.innerHTML = '';
 
-      if (resultsContainer) {
-        input.addEventListener('input', (e) => {
-          const query = e.target.value.trim();
+              if (!data.success || !data.results || data.results.length === 0) {
+                resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">No products found.</li>';
+                resultsContainer.style.display = 'block';
+                return;
+              }
 
-          if (!query) {
-            resultsContainer.style.display = 'none';
-            resultsContainer.innerHTML = '';
-            return;
-          }
-
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(() => {
-            fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
-              .then(res => res.json())
-              .then(data => {
-                resultsContainer.innerHTML = '';
-
-                if (!data.success || !data.results || data.results.length === 0) {
-                  resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">No products found.</li>';
-                  resultsContainer.style.display = 'block';
-                  return;
+              data.results.slice(0, 5).forEach(product => {
+                let imgUrl = '../assets/MainLogo.png';
+                if (product.image_url) {
+                  imgUrl = product.image_url.startsWith('http')
+                    ? product.image_url
+                    : '/storage/' + product.image_url.replace(/^\/+/, '');
                 }
 
-                data.results.slice(0, 5).forEach(product => {
-                  let imgUrl = '../assets/MainLogo.png';
-                  if (product.image_url) {
-                    imgUrl = product.image_url.startsWith('http')
-                      ? product.image_url
-                      : '/storage/' + product.image_url.replace(/^\/+/, '');
-                  }
-
-                  const li = document.createElement('li');
-                  li.innerHTML = `
-                    <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
-                    <div class="vx-search-dropdown-info">
-                      <span class="vx-search-dropdown-title">${product.name}</span>
-                      <span class="vx-search-dropdown-price">£${Number(product.price).toFixed(2)}</span>
-                    </div>
-                  `;
-                  li.addEventListener('click', () => {
-                    window.location.href = `ProductPage.html?id=${product.id}`;
-                  });
-                  resultsContainer.appendChild(li);
+                const li = document.createElement('li');
+                li.innerHTML = `
+                  <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
+                  <div class="vx-search-dropdown-info">
+                    <span class="vx-search-dropdown-title">${product.name}</span>
+                    <span class="vx-search-dropdown-price">&#163;${Number(product.price).toFixed(2)}</span>
+                  </div>
+                `;
+                li.addEventListener('click', () => {
+                  window.location.href = `ProductPage.html?id=${product.id}`;
                 });
+                resultsContainer.appendChild(li);
+              });
 
-                resultsContainer.style.display = 'flex';
-                resultsContainer.style.flexDirection = 'column';
-              })
-              .catch(err => console.error('Live search error:', err));
-          }, 300);
-        });
+              resultsContainer.style.display = 'flex';
+              resultsContainer.style.flexDirection = 'column';
+            })
+            .catch(err => console.error('Live search error:', err));
+        }, 300);
+      });
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!form.contains(e.target) && !resultsContainer.contains(e.target)) {
-            resultsContainer.style.display = 'none';
-          }
-        });
+      document.addEventListener('click', (e) => {
+        if (!form.contains(e.target) && !resultsContainer.contains(e.target)) {
+          resultsContainer.style.display = 'none';
+        }
+      });
 
-        // Focus brings it back if there's text
-        input.addEventListener('focus', () => {
-          if (input.value.trim() && resultsContainer.innerHTML !== '') {
-            resultsContainer.style.display = 'flex';
-          }
-        });
-      }
-
-    })();
-
-    const userMenuBtn = headerEl.querySelector('#userMenuBtn');
-    const userMenuDropdown = headerEl.querySelector('#userMenuDropdown');
-    const adminLink = headerEl.querySelector('#admin-link');
-    const ordersLink = headerEl.querySelector('#orders-link');
-    const logoEl = headerEl.querySelector('#header_logo');
-
-    if (logoEl) {
-      const goHomeTop = () => {
-        window.location.href = '/pages/index.html';
-      };
-
-      logoEl.style.cursor = 'pointer';
-      logoEl.setAttribute('role', 'link');
-      logoEl.setAttribute('tabindex', '0');
-      logoEl.addEventListener('click', goHomeTop);
-      logoEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          goHomeTop();
+      input.addEventListener('focus', () => {
+        if (input.value.trim() && resultsContainer.innerHTML !== '') {
+          resultsContainer.style.display = 'flex';
         }
       });
     }
+  })();
 
-    if (adminLink) adminLink.style.display = 'none';
-    if (ordersLink) ordersLink.style.display = 'none';
+  const userMenuBtn = headerEl.querySelector('#userMenuBtn');
+  const userMenuDropdown = headerEl.querySelector('#userMenuDropdown');
+  const adminLink = headerEl.querySelector('#admin-link');
+  const logoEl = headerEl.querySelector('#header_logo');
 
-    if (userMenuBtn && userMenuDropdown) {
-      const closeMenu = () => {
-        userMenuDropdown.classList.remove('open');
-        userMenuBtn.setAttribute('aria-expanded', 'false');
-      };
+  if (logoEl) {
+    const goHomeTop = () => {
+      window.location.href = '/pages/index.html';
+    };
 
-      userMenuBtn.addEventListener('click', (e) => {
+    logoEl.style.cursor = 'pointer';
+    logoEl.setAttribute('role', 'link');
+    logoEl.setAttribute('tabindex', '0');
+    logoEl.addEventListener('click', goHomeTop);
+    logoEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        e.stopPropagation();
-        const open = userMenuDropdown.classList.toggle('open');
-        userMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
+        goHomeTop();
+      }
+    });
+  }
 
-      document.addEventListener('click', closeMenu);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMenu();
-      });
+  if (adminLink) adminLink.style.display = 'none';
+  if (userMenuBtn && userMenuDropdown) {
+    const closeMenu = () => {
+      userMenuDropdown.classList.remove('open');
+      userMenuBtn.setAttribute('aria-expanded', 'false');
+    };
 
-      fetch('/user-status', {
-        headers: { Accept: 'application/json' },
-        credentials: 'include'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.logged_in) {
-            userMenuDropdown.innerHTML = `
-              <a href="/orders" class="user-menu-item">Previous Orders</a>
-              <a href="/profile" class="user-menu-item">Profile Info</a>
-              <button type="button" class="user-menu-item danger" id="logoutBtn">
-                Logout
-              </button>
-            `;
+    userMenuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const open = userMenuDropdown.classList.toggle('open');
+      userMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
 
-            if (adminLink && data.user?.role === 'admin') {
-              adminLink.style.display = 'inline-block';
-            }
+    document.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
+    });
 
-            const logoutBtn = userMenuDropdown.querySelector('#logoutBtn');
-            if (logoutBtn) {
-              logoutBtn.onclick = async () => {
-                await fetch('/logout-json', { credentials: 'include' });
-                window.location.href = '/pages/login.html';
-              };
-            }
-          } else {
-            userMenuDropdown.innerHTML = `
-              <a href="/pages/login.html" class="user-menu-item">Login</a>
-              <a href="/pages/register.html" class="user-menu-item">Register</a>
-            `;
+    fetch('/user-status', {
+      headers: { Accept: 'application/json' },
+      credentials: 'include'
+    })
+      .then(res => res.json())
+      .then(data => {
+        if (data.logged_in) {
+          userMenuDropdown.innerHTML = `
+            <a href="/orders" class="user-menu-item">Previous Orders</a>
+            <a href="/profile" class="user-menu-item">Profile Info</a>
+            <button type="button" class="user-menu-item danger" id="logoutBtn">
+              Logout
+            </button>
+          `;
+
+          if (adminLink && data.user?.role === 'admin') {
+            adminLink.style.display = 'inline-block';
           }
-        })
-        .catch(() => {
+
+          const logoutBtn = userMenuDropdown.querySelector('#logoutBtn');
+          if (logoutBtn) {
+            logoutBtn.onclick = async () => {
+              await fetch('/logout-json', { credentials: 'include' });
+              window.location.href = '/pages/login.html';
+            };
+          }
+        } else {
           userMenuDropdown.innerHTML = `
             <a href="/pages/login.html" class="user-menu-item">Login</a>
             <a href="/pages/register.html" class="user-menu-item">Register</a>
           `;
-        });
-    }
-
-    fetch('/user-status', {
-      headers: { 'Accept': 'application/json' }
-    })
-      .then(res => res.text())
-      .then(text => {
-        try {
-          JSON.parse(text);
-        } catch (e) {
-          console.error('Non-JSON /user-status response:', text);
         }
       })
-      .catch(err => {
-        console.error('User status error:', err);
+      .catch(() => {
+        userMenuDropdown.innerHTML = `
+          <a href="/pages/login.html" class="user-menu-item">Login</a>
+          <a href="/pages/register.html" class="user-menu-item">Register</a>
+        `;
       });
+  }
 
-    initChatbot();
-    initScrollTop();
-  });
+  fetch('/user-status', {
+    headers: { 'Accept': 'application/json' }
+  })
+    .then(res => res.text())
+    .then(text => {
+      try {
+        JSON.parse(text);
+      } catch (e) {
+        console.error('Non-JSON /user-status response:', text);
+      }
+    })
+    .catch(err => {
+      console.error('User status error:', err);
+    });
+
+  initChatbot();
+  initScrollTop();
+}
+
+const existingHeader = document.querySelector('header');
+
+if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
+  bindVeltrixHeader(existingHeader);
+} else {
+  fetch(headerFile)
+    .then(response => response.text())
+    .then(html => {
+      const headerEl = document.querySelector('header');
+      if (!headerEl) return;
+      headerEl.innerHTML = html;
+      bindVeltrixHeader(headerEl);
+    });
+}
 
 ; (async function () {
   try {
@@ -360,8 +362,8 @@ function initChatbot() {
       }
 
     } catch (error) {
-      console.error("Chatbot Error:", error);
-      typingIndicator.textContent = "Oops! My circuits are crossed. Try again later.";
+      console.error('Chatbot Error:', error);
+      typingIndicator.textContent = 'Oops! My circuits are crossed. Try again later.';
     }
   });
 
@@ -380,12 +382,8 @@ function initChatbot() {
   }
 }
 
-
-
-
-
-/* Close and open functions have been refactored to be more generic and reusable 
-Rule- As long as you pass in the ID of the panel to be opened or closed , 
+/* Close and open functions have been refactored to be more generic and reusable
+Rule- As long as you pass in the ID of the panel to be opened or closed ,
 its class list is toggled between 'open' and 'close'
 These classLists can be found in Style.JS , Animations Sectio */
 
@@ -420,7 +418,6 @@ function syncCartScrollLock() {
 // Inline Header Search Toggle
 window.toggleInlineSearch = function () {
   const headerEl = document.querySelector('header');
-  const searchInput = document.getElementById('vx-search-input');
 
   if (headerEl) {
     headerEl.classList.toggle('search-active');

@@ -1,0 +1,117 @@
+<header>
+    <svg id="menu_nav" onclick="openPanel('nav')" xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+        viewBox="0 0 20 20">
+        <path fill="#ffffff" fill-rule="evenodd"
+            d="M2 8a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0-4a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 8a1 1 0 0 1 1-1h14a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Zm0 4a1 1 0 0 1 1-1h10.308a1 1 0 1 1 0 2H3a1 1 0 0 1-1-1Z" />
+    </svg>
+    <img id="header_logo" src="/assets/logo.png" alt="VeltrixLogo">
+    <nav id="nav">
+        <a href="/pages/index.html#categories">Products</a>
+        <a href="/pages/index.html#reviews-section">Reviews</a>
+        <a href="/pages/index.html#about-us-section">About Us</a>
+        <a href="/pages/index.html#contact-us">Contact us</a>
+        <a href="/admin" id="admin-link" style="display:none;">Admin</a>
+    </nav>
+    <div id="search" class="vx-search">
+        <form id="vx-search-form" class="vx-search-form" autocomplete="off">
+            <div id="vx-search-input-wrapper">
+                <input id="vx-search-input" class="vx-search-input" type="search" placeholder="Search products..."
+                    aria-label="Search products" autocomplete="off">
+            </div>
+            <button id="vx-search-submit" class="vx-search-submit" type="submit">Search</button>
+        </form>
+        <ul id="vx-search-results" class="vx-search-dropdown" style="display: none;"></ul>
+    </div>
+    <div id="icons">
+        <svg onclick="toggleInlineSearch()" xmlns="http://www.w3.org/2000/svg" width="35" height="35"
+            viewBox="0 0 20 20">
+            <path
+                d="M12.9 14.32a8 8 0 1 1 1.41-1.41l5.35 5.33l-1.42 1.42l-5.33-5.34zM8 14A6 6 0 1 0 8 2a6 6 0 0 0 0 12z" />
+        </svg>
+        <span>
+            <svg onclick="openPanel('basket')" xmlns="http://www.w3.org/2000/svg" width="35" height="35"
+                viewBox="0 0 24 24">
+                <path
+                    d="M0 1h4.764l.545 2h18.078l-3.666 11H7.78l-.5 2H22v2H4.72l1.246-4.989L3.236 3H0V1Zm7.764 11h10.515l2.334-7H5.855l1.909 7ZM4 21a2 2 0 1 1 4 0a2 2 0 0 1-4 0Zm14 0a2 2 0 1 1 4 0a2 2 0 0 1-4 0Z" />
+            </svg>
+            <span style="font-size: 1.7vw;" class="basket_count">(0)</span>
+        </span>
+        <div class="user-menu" id="userMenu">
+            <button id="userMenuBtn" class="user-menu-btn" type="button" aria-haspopup="true" aria-expanded="false">
+                <span id="userMenuIcon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" viewBox="0 0 24 24">
+                        <path fill="#ffffff"
+                            d="M12 4.75a2.25 2.25 0 1 0 0 4.5a2.25 2.25 0 0 0 0-4.5M8.25 7a3.75 3.75 0 1 1 7.5 0a3.75 3.75 0 0 1-7.5 0m1.064 5.819c.132.098.302.213.505.327c.513.29 1.265.59 2.18.59s1.668-.3 2.181-.59c.203-.114.373-.229.505-.327q.282.075.559.166l.96.315c.72.237 1.264.812 1.458 1.523l.397 2.864c.075.544-.21.939-.606 1.033c-1.047.25-2.812.53-5.453.53s-4.407-.28-5.454-.53c-.395-.094-.68-.489-.606-1.033l.397-2.864A2.23 2.23 0 0 1 7.796 13.3l.96-.315q.276-.09.558-.166m.71-1.355l-.291-.287l-.402.092q-.526.12-1.044.291l-.96.315a3.72 3.72 0 0 0-2.454 2.616l-.01.04l-.408 2.95c-.161 1.164.462 2.393 1.744 2.698c1.17.279 3.052.571 5.8.571c2.749 0 4.631-.292 5.801-.57c1.282-.306 1.906-1.535 1.745-2.698l-.409-2.95l-.01-.04a3.72 3.72 0 0 0-2.455-2.617l-.959-.315q-.517-.17-1.044-.29l-.402-.093l-.29.286z" />
+                    </svg>
+                </span>
+                <span class="user-menu-caret">&#9662;</span>
+            </button>
+            <div id="userMenuDropdown" class="user-menu-dropdown"></div>
+        </div>
+    </div>
+</header>
+
+<section id="basket" onclick="closePanel('basket')">
+    <div id="basket_main" onclick="event.stopPropagation()">
+        <div id="basket_header">
+            <svg onclick="closePanel('basket')" xmlns="http://www.w3.org/2000/svg" width="32" height="32"
+                viewBox="0 0 24 24" style="cursor:pointer;">
+                <path fill="#888888" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z" />
+            </svg>
+            <h1>Cart</h1>
+            <span class="basket_count">(0)</span>
+        </div>
+        <div id="basket_stock_error" style="display:none; color:#ff4d4d; font-weight:600; margin:10px 0;"></div>
+        <div id="basket_display"></div>
+        <template class="basket_template">
+            <span class="basket_product">
+                <img alt="Product image">
+                <div class="basket_product_info">
+                    <p class="basket_name"></p>
+                    <p class="basket_price"></p>
+                    <div class="basket_quantity_row">
+                        <p class="basket_quantity_text"></p>
+                        <button class="basket_qty_btn qty-count--minus" type="button"
+                            aria-label="Decrease quantity">-</button>
+                        <button class="basket_qty_btn qty-count--add" type="button"
+                            aria-label="Increase quantity">+</button>
+                    </div>
+                    <button class="remove_from_cart" type="button">Remove All</button>
+                </div>
+            </span>
+        </template>
+        <h1 style="margin-bottom: 5px;">Total: <p id="total"></p></h1>
+        <button id="basket_checkout_btn" onclick="window.location.href='/checkout'">Checkout</button>
+    </div>
+</section>
+
+<section id="Search_Results">
+    <p id="Results_header"></p>
+    <div id="Results_main" onclick="event.stopPropagation()">
+        <h1>Search Results</h1>
+        <div id="Search_Results_display"></div>
+    </div>
+</section>
+
+<button id="vx-scroll-top" class="hidden" aria-label="Scroll to Top">
+    <i class="fa-solid fa-arrow-up"></i>
+</button>
+
+<div id="vx-chatbot-container">
+    <button id="vx-chatbot-toggle" aria-label="Open Chat">
+        <i class="fa-solid fa-message"></i>
+    </button>
+    <div id="vx-chatbot-window" class="hidden">
+        <div class="vx-chat-header">
+            <span>Veltrix AI Assistant</span>
+            <button id="vx-chatbot-close">&#10006;</button>
+        </div>
+        <div id="vx-chat-messages">
+            <div class="vx-message ai-message">Hi there! How can I help you?</div>
+        </div>
+        <form id="vx-chat-form">
+            <input type="text" id="vx-chat-input" placeholder="Ask a question..." autocomplete="off" required>
+            <button type="submit" id="vx-chat-submit"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+</div>
