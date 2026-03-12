@@ -1,5 +1,78 @@
 const headerFile = '../pages/header.html';
 
+function initSiteToasts() {
+  if (window.__siteToastInit) return;
+
+  let toastRegion = document.getElementById('site-toast-region');
+  if (!toastRegion) {
+    toastRegion = document.createElement('div');
+    toastRegion.id = 'site-toast-region';
+    toastRegion.className = 'site-toast-region';
+    toastRegion.setAttribute('aria-live', 'polite');
+    toastRegion.setAttribute('aria-atomic', 'true');
+    document.body.appendChild(toastRegion);
+  }
+
+  window.__siteToastInit = true;
+
+  const TOAST_TITLES = {
+    success: 'Success',
+    error: 'Something went wrong',
+    info: 'Notice'
+  };
+
+  const TOAST_ICONS = {
+    success: 'OK',
+    error: '!',
+    info: 'i'
+  };
+
+  function closeToast(toast) {
+    if (!toast || toast.dataset.closing === '1') return;
+
+    toast.dataset.closing = '1';
+    toast.classList.remove('is-visible');
+    toast.classList.add('is-closing');
+    window.setTimeout(() => toast.remove(), 220);
+  }
+
+  window.showSiteToast = function (type, message, options = {}) {
+    const normalizedType = ['success', 'error', 'info'].includes(type) ? type : 'info';
+    const normalizedMessage = String(message || '').trim();
+
+    if (!normalizedMessage) return null;
+
+    const toast = document.createElement('div');
+    toast.className = `site-toast site-toast--${normalizedType}`;
+    toast.setAttribute('role', normalizedType === 'error' ? 'alert' : 'status');
+
+    const title = options.title || TOAST_TITLES[normalizedType];
+    const icon = options.icon || TOAST_ICONS[normalizedType];
+
+    toast.innerHTML = `
+      <span class="site-toast-icon" aria-hidden="true">${icon}</span>
+      <div class="site-toast-content">
+        <span class="site-toast-title">${title}</span>
+        <span class="site-toast-message"></span>
+      </div>
+      <button type="button" class="site-toast-close" aria-label="Dismiss notification">&times;</button>
+    `;
+
+    toast.querySelector('.site-toast-message').textContent = normalizedMessage;
+    toast.querySelector('.site-toast-close').addEventListener('click', () => closeToast(toast));
+
+    toastRegion.appendChild(toast);
+    window.requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    const duration = Number(options.duration || 5000);
+    if (duration > 0) {
+      window.setTimeout(() => closeToast(toast), duration);
+    }
+
+    return toast;
+  };
+}
+
 function bindVeltrixHeader(headerEl) {
   if (!headerEl || headerEl.dataset.veltrixHeaderBound === '1') return;
   headerEl.dataset.veltrixHeaderBound = '1';
@@ -238,6 +311,7 @@ function bindVeltrixHeader(headerEl) {
 
   initChatbot();
   initScrollTop();
+  initSiteToasts();
 }
 
 const existingHeader = document.querySelector('header');

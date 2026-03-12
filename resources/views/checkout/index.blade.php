@@ -6,12 +6,6 @@
             <h1 class="checkout-page-title">Checkout</h1>
         </div>
         <div class="checkout-container">
-            @if (session('status'))
-                <div class="checkout-flash">
-                    {{ session('status') }}
-                </div>
-            @endif
-
             <section class="checkout-form-section">
                 <form id="checkout-form" class="checkout-form" action="{{ route('checkout.place') }}" method="POST" novalidate>
                     @csrf

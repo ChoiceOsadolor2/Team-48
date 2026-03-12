@@ -66,11 +66,5 @@
                 </tfoot>
             </table>
         </div>
-
-        @if(session('status'))
-            <div class="mt-4 p-3 bg-green-100 text-green-800 rounded">
-                {{ session('status') }}
-            </div>
-        @endif
     </div>
 </x-app-layout>

@@ -954,6 +954,11 @@ body:has(#basket.open) #theme-toggle-container {
   align-items: flex-end;
 }
 
+#vx-chatbot-container,
+#vx-chatbot-container * {
+  font-family: 'MiniPixel', sans-serif !important;
+}
+
 #vx-chatbot-toggle {
   background: #111;
   color: #fff;
@@ -1174,6 +1179,128 @@ body:has(#basket.open) #theme-toggle-container {
   color: #ff00a8;
 }
 
+.site-toast-region {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  z-index: 10050;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: min(420px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.site-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(12, 12, 12, 0.94);
+  color: #fff;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.site-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.site-toast.is-closing {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+
+.site-toast-icon {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  border: 1px solid transparent;
+}
+
+.site-toast-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.site-toast-title {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.site-toast-message {
+  display: block;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.site-toast-close {
+  flex-shrink: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: 18px;
+  line-height: 1;
+  padding: 2px;
+  cursor: pointer;
+  opacity: 0.72;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.site-toast-close:hover,
+.site-toast-close:focus-visible {
+  opacity: 1;
+  transform: scale(1.05);
+  outline: none;
+}
+
+.site-toast--success {
+  border-color: rgba(46, 204, 113, 0.35);
+}
+
+.site-toast--success .site-toast-icon {
+  color: #8ff0b5;
+  background: rgba(46, 204, 113, 0.12);
+  border-color: rgba(46, 204, 113, 0.35);
+}
+
+.site-toast--error {
+  border-color: rgba(255, 107, 107, 0.35);
+}
+
+.site-toast--error .site-toast-icon {
+  color: #ff8d8d;
+  background: rgba(255, 107, 107, 0.12);
+  border-color: rgba(255, 107, 107, 0.35);
+}
+
+.site-toast--info {
+  border-color: rgba(88, 166, 255, 0.35);
+}
+
+.site-toast--info .site-toast-icon {
+  color: #9dc8ff;
+  background: rgba(88, 166, 255, 0.12);
+  border-color: rgba(88, 166, 255, 0.35);
+}
+
 @media (max-width:800px) {
 
   header {
@@ -1230,6 +1357,13 @@ body:has(#basket.open) #theme-toggle-container {
     a {
       font-size: 1.8rem;
     }
+  }
+
+  .site-toast-region {
+    top: 84px;
+    right: 12px;
+    left: 12px;
+    width: auto;
   }
 
 }

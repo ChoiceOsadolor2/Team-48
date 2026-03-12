@@ -15,12 +15,6 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden rounded-3xl bg-white shadow-sm">
                 <div class="p-6">
-                    @if (session('status'))
-                        <div class="mb-4 rounded-lg bg-green-50 px-4 py-3 text-sm text-green-700">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
                     @if ($faqs->isEmpty())
                         <p class="text-gray-600">No FAQs yet.</p>
                     @else

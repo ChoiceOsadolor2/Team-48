@@ -3,18 +3,6 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <h1 class="text-3xl font-extrabold text-gray-900 mb-8">Your Cart</h1>
 
-            @if (session('stock_error'))
-                <div class="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-800 rounded-lg shadow-sm">
-                    {{ session('stock_error') }}
-                </div>
-            @endif
-
-            @if (session('status'))
-                <div class="mb-6 p-4 bg-emerald-100 border-l-4 border-emerald-500 text-emerald-800 rounded-lg shadow-sm">
-                    {{ session('status') }}
-                </div>
-            @endif
-
             @if ($items->count() === 0)
                 <div class="bg-white rounded-2xl shadow-sm p-12 text-center border border-gray-100">
                     <div class="mx-auto w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mb-6">
