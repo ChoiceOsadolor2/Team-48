@@ -1031,6 +1031,7 @@ body:has(#basket.open) #theme-toggle-container {
   border-bottom: 1px solid #333;
   font-size: 1.1rem;
   letter-spacing: 1px;
+  font-family: 'MiniPixel', sans-serif;
 }
 
 #vx-chatbot-close {
@@ -1076,6 +1077,7 @@ body:has(#basket.open) #theme-toggle-container {
   font-size: 0.9rem;
   line-height: 1.4;
   animation: fadeSlideUp 0.3s ease forwards;
+  font-family: 'MiniPixel', sans-serif;
 }
 
 .vx-message.ai-message {
@@ -1164,6 +1166,7 @@ body:has(#basket.open) #theme-toggle-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  font-family: 'MiniPixel', sans-serif;
 }
 
 #vx-chat-submit:hover {

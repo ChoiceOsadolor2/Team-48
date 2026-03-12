@@ -43,6 +43,11 @@ body.login-page header * {
     font-family: 'MiniPixel', sans-serif !important;
 }
 
+body.login-page #vx-chatbot-container,
+body.login-page #vx-chatbot-container * {
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
 body.login-page nav > a {
     font-size: 30px;
     white-space: nowrap;
