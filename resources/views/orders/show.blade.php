@@ -1,65 +1,57 @@
 <x-app-layout>
+    <link rel="stylesheet" href="{{ asset('styles/orders.css') }}" />
 
-    <div class="max-w-4xl mx-auto py-8">
+    <div class="orders-main invoice-page-shell w-full max-w-5xl mx-auto py-8">
+        <div class="orders-container invoice-container">
+            <article class="order-card invoice-card">
+                <div class="order-body invoice-body">
+                    <div class="orders-header invoice-header">
+                        <h1 class="orders-title invoice-title">
+                            <span class="invoice-order-label">Order #:</span>
+                            <span class="invoice-order-number">VX-{{ $order->id }}</span>
+                        </h1>
+                    </div>
 
-        {{-- Page title --}}
-        <h1 class="text-3xl font-bold mb-6">
-            Order #{{ $order->id }}
-        </h1>
+                    <div class="invoice-summary">
+                        <p class="invoice-summary-line">
+                            <span class="item-label">Status:</span>
+                            <span class="invoice-summary-value">{{ ucfirst($order->status) }}</span>
+                        </p>
+                        <p class="invoice-summary-line">
+                            <span class="item-label">Total:</span>
+                            <span class="invoice-summary-value">{{ number_format($order->total, 2) }} GBP</span>
+                        </p>
+                    </div>
 
-        {{-- Order Details Card --}}
-        <div class="bg-white p-6 shadow rounded">
+                    <section class="invoice-items-section">
+                        <h2 class="invoice-section-title">Items</h2>
 
-            {{-- Flash success message --}}
-            @if (session('status'))
-                <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
-                    {{ session('status') }}
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Products</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($order->items as $item)
+                                    <tr>
+                                        <td>{{ optional($item->product)->name ?? 'Product Deleted' }}</td>
+                                        <td>{{ number_format($item->price, 2) }} GBP</td>
+                                        <td>{{ $item->quantity }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <div class="invoice-actions">
+                        <a href="{{ route('orders.index') }}" class="btn-secondary">Back to Orders</a>
+                    </div>
                 </div>
-            @endif
-
-            <p class="mb-2"><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
-            <p class="mb-4"><strong>Total:</strong> {{ number_format($order->total, 2) }} GBP</p>
-
-            <h2 class="text-xl font-semibold mt-6 mb-4">Items</h2>
-
-            <table class="min-w-full bg-white rounded">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="px-6 py-3 border-b text-left">Product</th>
-                        <th class="px-6 py-3 border-b text-left">Quantity</th>
-                        <th class="px-6 py-3 border-b text-left">Price</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach ($order->items as $item)
-                        <tr>
-                            <td class="px-6 py-4 border-b">
-                                {{ optional($item->product)->name ?? 'Product Deleted' }}
-                            </td>
-                            <td class="px-6 py-4 border-b">
-                                {{ $item->quantity }}
-                            </td>
-                            <td class="px-6 py-4 border-b">
-                                {{ number_format($item->price, 2) }} GBP
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            {{-- Back to orders --}}
-            <div class="mt-6">
-                <a 
-                    href="{{ route('orders.index') }}"
-                    class="px-5 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                >
-                    Back to Orders
-                </a>
-            </div>
-
+            </article>
         </div>
-
     </div>
-
 </x-app-layout>
