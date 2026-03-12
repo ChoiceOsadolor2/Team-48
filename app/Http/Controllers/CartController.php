@@ -60,7 +60,7 @@ class CartController extends Controller
     $currentQty = (int) ($cart[$product->id] ?? 0);
     $newQty = $currentQty + $qty;
 
-    if ($product->stock <= 0) {
+    if ((int) $product->stock <= 0) {
         $message = "'{$product->name}' is out of stock.";
 
         if ($request->wantsJson()) {
@@ -74,7 +74,7 @@ class CartController extends Controller
         return back()->with('stock_error', $message);
     }
 
-    if ($newQty > $product->stock) {
+    if ($newQty > (int) $product->stock) {
         $message = "You can only add up to {$product->stock} unit(s) of '{$product->name}'.";
 
         if ($request->wantsJson()) {
@@ -103,10 +103,6 @@ class CartController extends Controller
         ->with('status', 'Item added to cart.');
 }
 
-        return redirect()->route('cart.index')
-            ->with('status', 'Item added to cart.');
-    }
-
    public function update(Request $request, Product $product)
 {
     $qty = (int) $request->input('quantity', 1);
@@ -123,7 +119,7 @@ class CartController extends Controller
         return back()->with('status', 'Item removed.');
     }
 
-    if ($qty > $product->stock) {
+    if ($qty > (int) $product->stock) {
         $message = "Only {$product->stock} unit(s) of '{$product->name}' are available.";
 
         if ($request->wantsJson()) {
