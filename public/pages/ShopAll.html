@@ -178,6 +178,21 @@
       </template>
 
     </section>
+
+    <section class="shop-category-tabs" aria-labelledby="shop-category-tabs-title">
+      <div class="shop-category-tabs__inner">
+        <p class="shop-category-tabs__eyebrow">Quick navigation</p>
+        <h2 id="shop-category-tabs-title">Browse by category</h2>
+        <div class="shop-category-tabs__list" id="shop-category-tabs-list">
+          <a href="ShopAll.html" data-category-tab="all">All Products</a>
+          <a href="ShopAll.html?category=Video%20Games" data-category-tab="Video Games">Video Games</a>
+          <a href="ShopAll.html?category=Consoles%20and%20PCs" data-category-tab="Consoles and PCs">Consoles and PCs</a>
+          <a href="ShopAll.html?category=Accessories" data-category-tab="Accessories">Accessories</a>
+          <a href="ShopAll.html?category=Gaming%20Chairs%20and%20Desks" data-category-tab="Gaming Chairs and Desks">Gaming Chairs and Desks</a>
+          <a href="ShopAll.html?category=Monitors%20and%20Displays" data-category-tab="Monitors and Displays">Monitors and Displays</a>
+        </div>
+      </div>
+    </section>
   </main>
 
 
@@ -188,6 +203,16 @@
   <script src="../scripts/products.js?v=8"></script>
   <script>
     (function () {
+      const activeCategory = new URLSearchParams(window.location.search).get("category") || "all";
+      const categoryTabs = document.querySelectorAll("[data-category-tab]");
+      categoryTabs.forEach((tab) => {
+        const tabCategory = tab.getAttribute("data-category-tab");
+        if (tabCategory === activeCategory || (activeCategory === "all" && tabCategory === "all")) {
+          tab.classList.add("is-active");
+          tab.setAttribute("aria-current", "page");
+        }
+      });
+
       const query = (localStorage.getItem("veltrix_search_query") || "").trim().toLowerCase();
       if (!query) return;
 

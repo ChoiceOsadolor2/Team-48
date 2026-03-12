@@ -17,6 +17,7 @@
                                 <th class="px-3 py-2">Email</th>
                                 <th class="px-3 py-2">Role</th>
                                 <th class="px-3 py-2">Created</th>
+                                <th class="px-3 py-2 text-right">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -34,10 +35,30 @@
                                         </span>
                                     </td>
                                     <td class="px-3 py-2">{{ $user->created_at->format('Y-m-d') }}</td>
+                                    <td class="px-3 py-2 text-right">
+                                        <a href="{{ route('admin.users.edit', $user) }}" class="text-blue-500 hover:text-blue-400 mr-3">Edit</a>
+                                        <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="inline-block" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-500 hover:text-red-400">Delete</button>
+                                        </form>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+
+                    @if (session('success'))
+                        <div class="mt-4 p-4 text-sm text-green-700 bg-green-100 rounded-lg dark:bg-green-200 dark:text-green-800" role="alert">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="mt-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
 
                     @if ($users->isEmpty())
                         <p class="mt-4 text-sm text-gray-400">No users found.</p>

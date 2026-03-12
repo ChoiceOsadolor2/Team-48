@@ -116,8 +116,20 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/users', [UserController::class, 'index'])
         ->name('admin.users.index');
 
+    Route::get('/admin/users/{user}/edit', [UserController::class, 'edit'])
+        ->name('admin.users.edit');
+
+    Route::put('/admin/users/{user}', [UserController::class, 'update'])
+        ->name('admin.users.update');
+
+    Route::delete('/admin/users/{user}', [UserController::class, 'destroy'])
+        ->name('admin.users.destroy');
+
     Route::get('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])
         ->name('admin.products.index');
+
+    Route::get('/admin/stock', [\App\Http\Controllers\Admin\ProductController::class, 'stock'])
+        ->name('admin.products.stock');
 
     Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])
         ->name('admin.products.create');
