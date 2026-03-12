@@ -320,8 +320,6 @@ window.AddToBasket = async function (id, qty = 1) {
     qty = parseInt(qty, 10);
     if (!Number.isFinite(qty) || qty < 1) qty = 1;
 
-    console.log('AddToBasket called with id:', id, 'qty:', qty);
-
     const url = `/cart/add-json/${id}?quantity=${qty}`;
     const res = await fetch(url, {
       method: 'GET',
@@ -329,19 +327,17 @@ window.AddToBasket = async function (id, qty = 1) {
       credentials: 'include',
     });
 
-    console.log('AddToBasket status:', res.status);
-
     if (!res.ok) {
-  let data = null;
-  try {
-    data = await res.json();
-  } catch (e) {}
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (e) {}
 
-  console.error('AddToBasket failed:', data);
-  alert(data?.message || 'Could not add to cart.');
-  await loadCartFromBackend();
-  return;
-}
+      console.error('AddToBasket failed:', data);
+      alert(data?.message || 'Could not add to cart.');
+      await loadCartFromBackend();
+      return;
+    }
 
     await loadCartFromBackend();
   } catch (err) {
@@ -351,35 +347,32 @@ window.AddToBasket = async function (id, qty = 1) {
 };
 
 
-async function updateCartQty(productId, newQty) {
-  const res = await fetch(`/cart/update/${productId}`, {
-    method: 'PUT',
-    credentials: 'include',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-      // CSRF is required for PUT/DELETE in Laravel web routes
-      'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')?.content || ''
-    },
-    body: new URLSearchParams({ quantity: String(newQty) }),
-  });
-
-  if (!res.ok) {
-  let data = null;
+window.UpdateCartQty = async function (productId, qty) {
   try {
-    data = await res.json();
-  } catch (e) {}
+    const res = await fetch(`/cart/update-json/${productId}?quantity=${qty}`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    });
 
-  console.error('UpdateCartQty failed:', data);
-  alert(data?.message || 'Could not update cart.');
-  await loadCartFromBackend();
-  return;
-}
+    if (!res.ok) {
+      let data = null;
+      try {
+        data = await res.json();
+      } catch (e) {}
 
-  // backend returns updated cart json
-  return res.json();
-}
+      console.error('UpdateCartQty failed:', data);
+      alert(data?.message || 'Could not update cart.');
+      await loadCartFromBackend();
+      return;
+    }
 
+    await loadCartFromBackend();
+  } catch (e) {
+    console.error(e);
+    alert('Could not update cart.');
+  }
+};
 
 
 
