@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 @php($isProfilePage = request()->routeIs('profile.*'))
 @php($isOrdersPage = request()->routeIs('orders.*'))
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage) data-theme="dark" @endif>
+@php($isCheckoutPage = request()->routeIs('checkout.*'))
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage) data-theme="dark" @endif>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +13,7 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-        @if ($isProfilePage || $isOrdersPage)
+        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage)
             <link rel="stylesheet" href="/styles/style.css">
             <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
         @endif
@@ -20,7 +21,7 @@
             body, h1, h2, h3, h4, h5, h6, .font-sans {
                 font-family: 'Pixelify Sans', sans-serif !important;
             }
-            @if ($isOrdersPage)
+            @if ($isOrdersPage || $isCheckoutPage)
                 @font-face {
                     font-family: 'MiniPixel';
                     src: url('/fonts/mini-pixel-7.ttf') format('truetype');
@@ -30,11 +31,13 @@
                 }
 
                 html[data-theme="dark"],
-                html[data-theme="dark"] body.orders-page {
+                html[data-theme="dark"] body.orders-page,
+                html[data-theme="dark"] body.checkout-page {
                     background-color: #000 !important;
                 }
 
-                body.orders-page {
+                body.orders-page,
+                body.checkout-page {
                     overflow-x: hidden;
                     background-color: #000 !important;
                     background-image: url('{{ asset('assets/Veltrix-homepage-background.png') }}');
@@ -44,26 +47,32 @@
                 }
 
                 body.orders-page header,
-                body.orders-page header * {
+                body.orders-page header *,
+                body.checkout-page header,
+                body.checkout-page header * {
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
-                body.orders-page nav > a {
+                body.orders-page nav > a,
+                body.checkout-page nav > a {
                     font-size: 30px !important;
                     white-space: nowrap !important;
                 }
 
-                body.orders-page #theme-toggle-button + label {
+                body.orders-page #theme-toggle-button + label,
+                body.checkout-page #theme-toggle-button + label {
                     font-family: 'MiniPixel', sans-serif !important;
                     box-sizing: border-box !important;
                 }
 
-                body.orders-page .user-menu-item {
+                body.orders-page .user-menu-item,
+                body.checkout-page .user-menu-item {
                     box-sizing: border-box !important;
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
-                body.orders-page .user-menu-dropdown {
+                body.orders-page .user-menu-dropdown,
+                body.checkout-page .user-menu-dropdown {
                     right: 24px !important;
                     left: auto !important;
                 }
@@ -82,6 +91,23 @@
 
                 body.orders-page main.orders-content,
                 body.orders-page main.orders-content * {
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.checkout-page main.checkout-content {
+                    background: transparent !important;
+                    position: relative !important;
+                    top: 0 !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+                    margin: 0;
+                    padding: 90px 0 40px;
+                    min-height: 100vh;
+                    z-index: 1;
+                }
+
+                body.checkout-page main.checkout-content,
+                body.checkout-page main.checkout-content * {
                     font-family: 'MiniPixel', sans-serif !important;
                 }
             @endif
@@ -409,15 +435,15 @@
         @endif
     </head>
 
-    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }}" style="--bg-y-pos: center 0;">
-        <div class="{{ $isProfilePage || $isOrdersPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
-            @if ($isProfilePage || $isOrdersPage)
+    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }} {{ $isCheckoutPage ? 'checkout-page' : '' }}" style="--bg-y-pos: center 0;">
+        <div class="{{ $isProfilePage || $isOrdersPage || $isCheckoutPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
+            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage)
                 @include('layouts.veltrix-header')
             @else
                 @include('layouts.navigation')
             @endif
 
-            @if (! $isProfilePage && ! $isOrdersPage)
+            @if (! $isProfilePage && ! $isOrdersPage && ! $isCheckoutPage)
                 @isset($header)
                     <header class="bg-white dark:bg-[#0A004A] shadow">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-gray-800 dark:text-gray-100">
@@ -427,7 +453,7 @@
                 @endisset
             @endif
 
-            <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }}">
+            <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }} {{ $isCheckoutPage ? 'checkout-content' : '' }}">
                 {{ $slot }}
             </main>
         </div>
@@ -452,7 +478,7 @@
                     window.addEventListener('pageshow', goTop);
                 })();
             </script>
-        @elseif ($isOrdersPage)
+        @elseif ($isOrdersPage || $isCheckoutPage)
             <script src="/scripts/header.js"></script>
             <script>
                 (function () {

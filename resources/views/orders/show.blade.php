@@ -49,6 +49,7 @@
 
                     <div class="invoice-actions">
                         <a href="{{ route('orders.index') }}" class="btn-secondary">Back to Orders</a>
+                        <a href="{{ url('/pages/index.html') }}" class="btn-secondary">Back to Home</a>
                     </div>
                 </div>
             </article>

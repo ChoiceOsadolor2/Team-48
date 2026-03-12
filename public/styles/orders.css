@@ -294,6 +294,13 @@ body {
 
 .invoice-actions {
     margin-top: 28px;
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    width: 100%;
+}
+
+.invoice-actions .btn-secondary {
     width: 180px;
 }
 
