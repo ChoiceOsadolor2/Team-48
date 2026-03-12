@@ -128,6 +128,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'index'])
         ->name('admin.products.index');
 
+    Route::get('/admin/stock', [\App\Http\Controllers\Admin\ProductController::class, 'stock'])
+        ->name('admin.products.stock');
+
     Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])
         ->name('admin.products.create');
 

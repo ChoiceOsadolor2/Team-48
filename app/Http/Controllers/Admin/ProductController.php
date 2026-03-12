@@ -50,6 +50,21 @@ class ProductController extends Controller
     ]);
 }
 
+    public function stock()
+    {
+        $products = Product::with('category')
+            ->orderByRaw('CASE WHEN stock = 0 THEN 0 ELSE 1 END')
+            ->orderBy('stock')
+            ->orderBy('name')
+            ->get();
+
+        return view('admin.products.stock', [
+            'products' => $products,
+            'inStockCount' => $products->where('stock', '>', 0)->count(),
+            'outOfStockCount' => $products->where('stock', '<=', 0)->count(),
+        ]);
+    }
+
 
     public function create()
     {
