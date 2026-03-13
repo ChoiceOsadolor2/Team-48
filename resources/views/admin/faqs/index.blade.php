@@ -1,18 +1,20 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center justify-between gap-4">
-            <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Chatbot FAQs</h2>
-                <p class="mt-1 text-sm text-gray-500">Manage the FAQ answers used by the chatbot.</p>
-            </div>
-            <a href="{{ route('admin.faqs.create') }}" class="rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-500">
-                + Add FAQ
-            </a>
-        </div>
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">Chatbot FAQs</h2>
     </x-slot>
 
     <div class="py-12">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="flex items-center justify-between gap-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+                <div>
+                    <h3 class="text-xl font-semibold text-gray-900">Chatbot FAQs</h3>
+                    <p class="mt-1 text-sm text-gray-500">Manage the FAQ answers used by the chatbot.</p>
+                </div>
+                <a href="{{ route('admin.faqs.create') }}" class="rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-500">
+                    + Add FAQ
+                </a>
+            </div>
+
             <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.faqs.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr,220px,auto] md:items-end">
