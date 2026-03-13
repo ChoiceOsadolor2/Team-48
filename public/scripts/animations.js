@@ -1,29 +1,77 @@
-// moving background animation --> backgrund is of a section to to repeat, this section x position is dcremented by 1 each time. 
-// Moving background
-let x = 0;
+// moving background animation --> background is a section that repeats.
 const section = document.getElementById('wrapper_overlay');
+const section2 = document.querySelector('main');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-function moveX() {
+let x = 0;
+let y = 0;
+let animationFrameId = null;
+let lastFrameTime = 0;
+
+function updateBackgroundPositions() {
   if (section) {
-    x--;
     section.style.backgroundPosition = `${x}px`;
   }
 
-}
-
-let y = 0;
-const section2 = document.querySelector('main');
-
-function moveY() {
-  y++
   if (section2) {
     section2.style.backgroundPosition = `center ${y}px`;
   }
+
   document.body.style.setProperty('--bg-y-pos', `center ${y}px`);
 }
-setInterval(moveY, 20)
 
-setInterval(moveX, 30)
+function animateBackground(timestamp) {
+  if (document.hidden || prefersReducedMotion.matches) {
+    animationFrameId = null;
+    return;
+  }
+
+  if (!lastFrameTime || timestamp - lastFrameTime >= 40) {
+    x -= 1;
+    y += 1;
+    updateBackgroundPositions();
+    lastFrameTime = timestamp;
+  }
+
+  animationFrameId = window.requestAnimationFrame(animateBackground);
+}
+
+function startBackgroundAnimation() {
+  if (animationFrameId || prefersReducedMotion.matches) return;
+  animationFrameId = window.requestAnimationFrame(animateBackground);
+}
+
+function stopBackgroundAnimation() {
+  if (!animationFrameId) return;
+  window.cancelAnimationFrame(animationFrameId);
+  animationFrameId = null;
+}
+
+if (section || section2) {
+  updateBackgroundPositions();
+  startBackgroundAnimation();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopBackgroundAnimation();
+      return;
+    }
+
+    lastFrameTime = 0;
+    startBackgroundAnimation();
+  });
+
+  if (typeof prefersReducedMotion.addEventListener === 'function') {
+    prefersReducedMotion.addEventListener('change', () => {
+      if (prefersReducedMotion.matches) {
+        stopBackgroundAnimation();
+      } else {
+        lastFrameTime = 0;
+        startBackgroundAnimation();
+      }
+    });
+  }
+}
 
 
 
@@ -74,7 +122,13 @@ const filter = document.getElementById("filter");
 let lastScrollY = window.scrollY;
 
 if (filter) {
+  let filterTicking = false;
+
   window.addEventListener("scroll", () => {
+    if (filterTicking) return;
+    filterTicking = true;
+
+    window.requestAnimationFrame(() => {
     if (window.scrollY > lastScrollY) {
       filter.style.opacity = "0";
     } else {
@@ -82,7 +136,9 @@ if (filter) {
     }
 
     lastScrollY = window.scrollY;
-  });
+      filterTicking = false;
+    });
+  }, { passive: true });
 }
 
 

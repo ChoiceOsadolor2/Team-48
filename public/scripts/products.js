@@ -12,8 +12,8 @@ const searchQ = parameters.get('q');
 // ===============================
 // DOM
 // ===============================
-const ProductCard_template = document.querySelector('template');
 const container = document.getElementById('products_container');
+const ProductCard_template = container?.querySelector('template') || null;
 const container2 = document.getElementById('product_display');
 const minPriceInput = document.getElementById('filter_min_price');
 const maxPriceInput = document.getElementById('filter_max_price');
@@ -197,6 +197,7 @@ function renderRelatedProducts(currentProduct, products) {
   if (!relatedContainer || !currentProduct) return;
 
   relatedContainer.innerHTML = '';
+  const fragment = document.createDocumentFragment();
 
   const currentCategoryName = currentProduct.category?.name || '';
   const related = products
@@ -233,8 +234,10 @@ function renderRelatedProducts(currentProduct, products) {
     card.appendChild(title);
     card.appendChild(price);
     card.appendChild(link);
-    relatedContainer.appendChild(card);
+    fragment.appendChild(card);
   });
+
+  relatedContainer.appendChild(fragment);
 }
 
 function isShopAllPage() {
@@ -529,15 +532,21 @@ function bindShopFilterControls() {
   }
 
   // Try bind immediately
-  bind(findHeaderSearchInput());
+  const immediateInput = findHeaderSearchInput();
+  bind(immediateInput);
 
   // Observe DOM because header.js injects elements later
   const obs = new MutationObserver(() => {
     const input = findHeaderSearchInput();
-    if (input) bind(input);
+    if (input) {
+      bind(input);
+      obs.disconnect();
+    }
   });
 
-  obs.observe(document.documentElement, { childList: true, subtree: true });
+  if (!immediateInput) {
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+  }
 
   // manual test
   window.__applySearchFilter = applySearchFilter;
@@ -586,6 +595,13 @@ const NO_IMAGE_DATA_URI = `data:image/svg+xml;charset=UTF-8,${NO_IMAGE_SVG}`;
 function setProductImage(imgEl, product) {
   if (!imgEl) return;
   const resolvedUrl = getImageUrl(product);
+  const isProductHeroImage = imgEl.classList.contains('product_image') && Boolean(container2);
+
+  imgEl.decoding = 'async';
+  imgEl.loading = isProductHeroImage ? 'eager' : 'lazy';
+  if (isProductHeroImage) {
+    imgEl.fetchPriority = 'high';
+  }
 
   // No image configured: show a simple "No image" placeholder.
   if (!resolvedUrl) {
@@ -612,14 +628,10 @@ document.body.classList.remove('cart-ready');
 
 async function loadCartFromBackend() {
   try {
-    console.log('Loading cart from backend...');
-
     const res = await fetch('/cart/json', {
       headers: { Accept: 'application/json' },
       credentials: 'include',
     });
-
-    console.log('Cart JSON status:', res.status);
 
     if (!res.ok) {
       const text = await res.text();
@@ -629,8 +641,6 @@ async function loadCartFromBackend() {
     }
 
     const text = await res.text();
-    console.log('Cart JSON raw response:', text);
-
     let data = {};
     try {
       data = JSON.parse(text);
@@ -671,6 +681,7 @@ async function loadCartFromBackend() {
     }
 
     BasketContainer.innerHTML = '';
+    const fragment = document.createDocumentFragment();
 
     const basketTemplate = document.querySelector('.basket_template');
     if (!basketTemplate) {
@@ -743,8 +754,10 @@ async function loadCartFromBackend() {
         };
       }
 
-      BasketContainer.appendChild(clone);
+      fragment.appendChild(clone);
     });
+
+    BasketContainer.appendChild(fragment);
 
 
     const count = items.reduce((acc, it) => acc + (it.quantity || 0), 0);
@@ -849,12 +862,13 @@ window.UpdateCartQty = async function (productId, qty) {
 function renderProducts(list) {
   if (!container || !ProductCard_template) return;
 
-  container.innerHTML = '';
+  container.querySelectorAll('.product_card').forEach((card) => card.remove());
   toggleEmptyProductsState(list);
   updateResultsSummary(list);
   if (resultsSummary) {
     resultsSummary.textContent = `${list.length} product${list.length === 1 ? '' : 's'}`;
   }
+  const fragment = document.createDocumentFragment();
 
   list.forEach((product) => {
     const clone = ProductCard_template.content.cloneNode(true);
@@ -920,8 +934,10 @@ function renderProducts(list) {
       }
     }
 
-    container.appendChild(clone);
+    fragment.appendChild(clone);
   });
+
+  container.appendChild(fragment);
 }
 
 
