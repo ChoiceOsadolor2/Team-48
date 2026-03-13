@@ -334,6 +334,7 @@
       const emailInput = document.getElementById('email');
       const subjectDisplay = document.getElementById('subject_display');
       const subjectInput = document.getElementById('subject');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       if (nameDisplay && nameInput) {
         const syncName = () => {
@@ -378,7 +379,7 @@
       }
 
       if (contactForm) {
-        contactForm.addEventListener('submit', (e) => {
+        contactForm.addEventListener('submit', async (e) => {
           e.preventDefault();
           let isValid = true;
           if (successMsg) {
@@ -410,6 +411,13 @@
               void errorSpan.offsetWidth;
               errorSpan.style.animation = "fadeSlideUp 0.3s ease";
               isValid = false;
+            } else if (field.id === 'email' && !emailPattern.test(value)) {
+              errorSpan.textContent = "Please enter a valid email format";
+              errorSpan.style.display = "block";
+              errorSpan.style.animation = "none";
+              void errorSpan.offsetWidth;
+              errorSpan.style.animation = "fadeSlideUp 0.3s ease";
+              isValid = false;
             } else {
               errorSpan.style.display = "none";
               errorSpan.style.animation = "none";
@@ -428,25 +436,58 @@
           });
 
             if (isValid) {
-              if (successMsg) {
-                successMsg.textContent = "Message Successfully Sent";
-                successMsg.style.display = "block";
-                successMsg.style.animation = "none";
-                void successMsg.offsetWidth;
-                successMsg.style.animation = "fadeSlideUp 0.3s ease";
-              }
-              contactForm.reset();
-              if (nameDisplay && nameInput) {
-                nameDisplay.textContent = "";
-                nameInput.value = "";
-              }
-              if (emailDisplay && emailInput) {
-                emailDisplay.textContent = "";
-                emailInput.value = "";
-              }
-              if (subjectDisplay && subjectInput) {
-                subjectDisplay.textContent = "";
-                subjectInput.value = "";
+              const payload = {
+                name: nameInput?.value?.trim() || "",
+                email: emailInput?.value?.trim() || "",
+                subject: subjectInput?.value?.trim() || "",
+                message: document.getElementById('message')?.value?.trim() || ""
+              };
+
+              try {
+                const response = await fetch('/contact-queries', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                  },
+                  body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                  const payload = await response.json().catch(() => null);
+                  throw new Error(payload?.message || 'Failed to submit contact query.');
+                }
+
+                if (successMsg) {
+                  successMsg.textContent = "Message Successfully Sent";
+                  successMsg.style.display = "block";
+                  successMsg.style.animation = "none";
+                  void successMsg.offsetWidth;
+                  successMsg.style.animation = "fadeSlideUp 0.3s ease";
+                }
+                contactForm.reset();
+                if (nameDisplay && nameInput) {
+                  nameDisplay.textContent = "";
+                  nameInput.value = "";
+                }
+                if (emailDisplay && emailInput) {
+                  emailDisplay.textContent = "";
+                  emailInput.value = "";
+                }
+                if (subjectDisplay && subjectInput) {
+                  subjectDisplay.textContent = "";
+                  subjectInput.value = "";
+                }
+              } catch (error) {
+                if (successMsg) {
+                  successMsg.textContent = error.message === 'The email field must be a valid email address.'
+                    ? "Please enter a valid email format"
+                    : "Unable to send message right now";
+                  successMsg.style.display = "block";
+                  successMsg.style.animation = "none";
+                  void successMsg.offsetWidth;
+                  successMsg.style.animation = "fadeSlideUp 0.3s ease";
+                }
               }
             }
         });

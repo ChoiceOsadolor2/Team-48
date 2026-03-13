@@ -13,11 +13,14 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
+use App\Http\Controllers\Admin\ContactQueryController as AdminContactQueryController;
 use App\Models\Category;
+use App\Models\ContactQuery;
 use App\Models\Faq;
 use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Schema;
+use App\Http\Controllers\ContactQueryController;
 
 
 
@@ -72,6 +75,9 @@ Route::get('/search', [ProductController::class, 'search'])->name('products.sear
 Route::get('/products/search-json', [ProductController::class, 'search'])->name('products.search.json');
 
 Route::post('/chatbot/ask', [App\Http\Controllers\ChatbotController::class, 'ask']);
+Route::post('/contact-queries', [ContactQueryController::class, 'store'])
+    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
+    ->name('contact-queries.store');
 
 Route::get('/product', function () {
     return redirect('/products');
@@ -150,6 +156,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->take(5)
             ->get();
 
+        $contactQueryCount = ContactQuery::count();
         $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
 
         return view('admin.dashboard', compact(
@@ -167,6 +174,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'topCategories',
             'recentOrders',
             'faqCount',
+            'contactQueryCount',
         ));
     })->name('admin.dashboard');
 
@@ -215,6 +223,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/faqs', [AdminFaqController::class, 'index'])
         ->name('admin.faqs.index');
+
+    Route::get('/admin/contact-queries', [AdminContactQueryController::class, 'index'])
+        ->name('admin.contact-queries.index');
+
+    Route::delete('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'destroy'])
+        ->name('admin.contact-queries.destroy');
 
     Route::get('/admin/faqs/create', [AdminFaqController::class, 'create'])
         ->name('admin.faqs.create');

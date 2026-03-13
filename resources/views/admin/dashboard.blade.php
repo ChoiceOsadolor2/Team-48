@@ -115,6 +115,12 @@
                                 <span class="text-2xl font-bold text-cyan-900">{{ $faqCount }}</span>
                             </div>
                         </div>
+                        <div class="rounded-2xl bg-sky-50 p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-sky-900">Contact queries</span>
+                                <span class="text-2xl font-bold text-sky-900">{{ $contactQueryCount }}</span>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -160,7 +166,7 @@
                 </section>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-8">
                 
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
@@ -215,6 +221,17 @@
                     </div>
                     <h4 class="z-10 text-2xl font-bold text-gray-900 dark:text-white mb-3">Chatbot FAQs</h4>
                     <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Add and update FAQ answers that power the smarter chatbot.</p>
+                </a>
+
+                <a href="{{ route('admin.contact-queries.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/10 dark:to-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="z-10 bg-sky-100 dark:bg-sky-900/40 p-5 rounded-2xl mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
+                        <svg class="w-10 h-10 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.195-3.586C3.44 15.166 3 13.635 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="z-10 text-2xl font-bold text-gray-900 dark:text-white mb-3">Contact Queries</h4>
+                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review messages submitted through the Contact Us forms and keep support requests organised.</p>
                 </a>
 
             </div>
