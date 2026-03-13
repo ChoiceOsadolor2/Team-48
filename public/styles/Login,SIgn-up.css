@@ -95,13 +95,13 @@ html[data-theme="light"] .login-page-title {
 .login-box {
     width: 450px;
     height: 80%;
-    margin-top: 165px;
+    margin-top: 190px;
     background: transparent;
     border: 1px solid #444;
     backdrop-filter: blur(15px);
     color: white;
     border-radius: 20px;
-    padding: 30px 40px;
+    padding: 18px 40px 18px;
 }
 
 /* Login page card matches review/cart bubble style */
@@ -389,7 +389,7 @@ body.auth-login-page .login-box .login-button:active::after {
 .login-box .register-link {
     font-size: 15px;
     text-align: center;
-    margin: 20px 0 15px;
+    margin: 12px 0 6px;
 }
 
 .register-link p a {
@@ -503,5 +503,14 @@ body.auth-login-page .login-box .register-link p a {
 #forgotPasswordForm .register-link,
 #forgotPasswordForm .register-link p,
 #forgotPasswordForm .register-link p a {
+    font-size: 20px !important;
+}
+
+#form input,
+#form input::placeholder,
+#form .login-button,
+#form .register-link,
+#form .register-link p,
+#form .register-link p a {
     font-size: 20px !important;
 }
