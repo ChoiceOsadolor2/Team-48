@@ -261,7 +261,14 @@
           <div class="form-group">
             <label for="name">Name</label>
             <div class="contact-field-wrap">
-              <input type="text" id="name" name="name" class="contact-field" required>
+              <div
+                id="name_display"
+                class="contact-field contact-editable-field"
+                contenteditable="true"
+                role="textbox"
+                aria-label="Name"
+                aria-multiline="false"></div>
+              <input type="hidden" id="name" name="name" required>
             </div>
             <span class="error-message" id="nameError"></span>
           </div>
@@ -269,7 +276,14 @@
           <div class="form-group">
             <label for="email">Email</label>
             <div class="contact-field-wrap">
-              <input type="email" id="email" name="email" class="contact-field" required>
+              <div
+                id="email_display"
+                class="contact-field contact-editable-field"
+                contenteditable="true"
+                role="textbox"
+                aria-label="Email"
+                aria-multiline="false"></div>
+              <input type="hidden" id="email" name="email" required>
             </div>
             <span class="error-message" id="emailError"></span>
           </div>
@@ -277,7 +291,14 @@
           <div class="form-group">
             <label for="subject">Query Title</label>
             <div class="contact-field-wrap">
-              <input type="text" id="subject" name="subject" class="contact-field" required>
+              <div
+                id="subject_display"
+                class="contact-field contact-editable-field"
+                contenteditable="true"
+                role="textbox"
+                aria-label="Query Title"
+                aria-multiline="false"></div>
+              <input type="hidden" id="subject" name="subject" required>
             </div>
             <span class="error-message" id="subjectError"></span>
           </div>
@@ -307,6 +328,55 @@
     document.addEventListener('DOMContentLoaded', () => {
       const contactForm = document.getElementById('contactForm');
       const successMsg = document.getElementById('contactSuccessMsg');
+      const nameDisplay = document.getElementById('name_display');
+      const nameInput = document.getElementById('name');
+      const emailDisplay = document.getElementById('email_display');
+      const emailInput = document.getElementById('email');
+      const subjectDisplay = document.getElementById('subject_display');
+      const subjectInput = document.getElementById('subject');
+
+      if (nameDisplay && nameInput) {
+        const syncName = () => {
+          nameInput.value = nameDisplay.textContent.trim();
+        };
+
+        nameDisplay.addEventListener('input', syncName);
+        nameDisplay.addEventListener('blur', syncName);
+        nameDisplay.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        });
+      }
+
+      if (emailDisplay && emailInput) {
+        const syncEmail = () => {
+          emailInput.value = emailDisplay.textContent.trim();
+        };
+
+        emailDisplay.addEventListener('input', syncEmail);
+        emailDisplay.addEventListener('blur', syncEmail);
+        emailDisplay.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        });
+      }
+
+      if (subjectDisplay && subjectInput) {
+        const syncSubject = () => {
+          subjectInput.value = subjectDisplay.textContent.trim();
+        };
+
+        subjectDisplay.addEventListener('input', syncSubject);
+        subjectDisplay.addEventListener('blur', syncSubject);
+        subjectDisplay.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+          }
+        });
+      }
+
       if (contactForm) {
         contactForm.addEventListener('submit', (e) => {
           e.preventDefault();
@@ -326,8 +396,14 @@
           fields.forEach(field => {
             const input = document.getElementById(field.id);
             const errorSpan = document.getElementById(field.errorId);
+            const displayInput = ['name', 'email', 'subject'].includes(field.id)
+              ? document.getElementById(`${field.id}_display`)
+              : input;
+            const value = ['name', 'email', 'subject'].includes(field.id)
+              ? (displayInput?.textContent || '').trim()
+              : (input.value || '').trim();
 
-            if (!input.value.trim()) {
+            if (!value) {
               errorSpan.textContent = "Empty Field";
               errorSpan.style.display = "block";
               errorSpan.style.animation = "none";
@@ -340,7 +416,7 @@
             }
 
             // Hide error when user starts typing
-            input.addEventListener('input', () => {
+            displayInput.addEventListener('input', () => {
               errorSpan.style.display = "none";
               errorSpan.style.animation = "none";
               if (successMsg) {
@@ -351,16 +427,28 @@
             }, { once: true });
           });
 
-          if (isValid) {
-            if (successMsg) {
-              successMsg.textContent = "Message Successfully Sent";
-              successMsg.style.display = "block";
-              successMsg.style.animation = "none";
-              void successMsg.offsetWidth;
-              successMsg.style.animation = "fadeSlideUp 0.3s ease";
+            if (isValid) {
+              if (successMsg) {
+                successMsg.textContent = "Message Successfully Sent";
+                successMsg.style.display = "block";
+                successMsg.style.animation = "none";
+                void successMsg.offsetWidth;
+                successMsg.style.animation = "fadeSlideUp 0.3s ease";
+              }
+              contactForm.reset();
+              if (nameDisplay && nameInput) {
+                nameDisplay.textContent = "";
+                nameInput.value = "";
+              }
+              if (emailDisplay && emailInput) {
+                emailDisplay.textContent = "";
+                emailInput.value = "";
+              }
+              if (subjectDisplay && subjectInput) {
+                subjectDisplay.textContent = "";
+                subjectInput.value = "";
+              }
             }
-            contactForm.reset();
-          }
         });
       }
     });

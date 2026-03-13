@@ -1,7 +1,8 @@
 .site-footer {
     margin: 0;
     padding: 0;
-    font-size: 25px;
+    font-size: 30px;
+    font-weight: 400;
     color: white;
     background: rgb(0, 0, 0);
     padding-top: 30px;
@@ -28,9 +29,9 @@
 }
 
 .site-footer h3 {
-    color: orange;
+    color: #ffa825;
     margin-bottom: 15px;
-    font-size: 40px;
+    font-size: 30px;
     text-align: center;
 }
 
@@ -99,15 +100,14 @@
 }
 
 .site-footer a:hover {
-    color: rgb(255, 162, 0);
+    color: #ffa825;
 }
 
 .footer-social-icons i:hover {
-    color: rgb(255, 157, 0);
+    color: #ffa825;
 }
 
 .footer-bottom-bar {
-    background: rgb(56, 43, 195);
     text-align: center;
     padding: 10px 0;
     margin-top: 50px;
@@ -117,14 +117,18 @@
     color: rgb(229, 198, 198);
     margin: 0;
     font-size: 20px;
+    font-weight: 400;
     padding: 7px;
 }
 
 .footer-bottom-bar {
     background: linear-gradient(
-        90deg, /*this is the gradient direction from left to right */
-        /*270deg if want right to left */
-        rgb(209, 12, 12), rgb(153, 108, 24), rgb(219, 219, 60), rgb(3, 131, 3), rgb(14, 14, 237), rgb(60, 5, 100), rgb(240, 125, 240)
+        90deg,
+        #ff00a8,
+        #ff5ebd,
+        #a800ff,
+        #0022ff,
+        #00eaff
     );
     background-size: 1500% 1400%; /*big gradient */
     /* can change the speed of the rainbow based on its seconds */

@@ -217,7 +217,7 @@ main {
 }
 
 .cat-box:hover {
-  background: #2a2a2a;
+  background: #1d1d1d;
   transform: scale(1.04);
   transition: ease-in-out 0.2s;
 }
@@ -233,7 +233,7 @@ main {
 }
 
 .cat-box:hover svg {
-  background: #2a2a2a;
+  background: transparent;
   animation: elastic 0.6s ease;
 }
 
@@ -376,15 +376,18 @@ main {
 }
 
 .review-text {
-  font-size: 20px;
+  font-size: var(--page-text-size);
   line-height: 1.6;
   flex-grow: 1;
+  font-weight: normal;
+  color: #fff;
 }
 
 .review-author {
-  font-size: 18px;
+  font-size: var(--page-text-size);
   color: #888;
   margin-top: auto;
+  font-weight: normal;
 }
 
 .cat-box span {
@@ -492,17 +495,29 @@ main {
 }
 
 .hp-subsection-label {
+  position: relative;
   font-size: var(--page-text-size);
   color: #ffa825;
   letter-spacing: 3px;
   text-transform: uppercase;
-  border-bottom: 1px solid;
+  border-bottom: none;
   box-shadow: none !important;
   padding-bottom: 0.5rem;
   width: 100%;
   text-align: center;
   margin: 0;
   animation: veltrixGlow 2s infinite alternate;
+}
+
+.hp-subsection-label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-bottom: 1px solid transparent;
+  animation: veltrixGlow 2s infinite alternate;
+  pointer-events: none;
 }
 
 .hp-services-grid {
@@ -541,7 +556,7 @@ main {
 
 .hp-service-card p {
   font-size: var(--page-text-size);
-  color: #aaa;
+  color: #888;
   line-height: 1.6;
 }
 
@@ -576,7 +591,7 @@ main {
 
 .hp-value-card p {
   font-size: var(--page-text-size);
-  color: #aaa;
+  color: #888;
   line-height: 1.6;
 }
 
@@ -678,9 +693,16 @@ html.home main {
   box-shadow: none;
 }
 
+.contact-editable-field {
+  min-height: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: text;
+}
+
 .contact-field:hover,
 .contact-field:focus {
-  background-color: #1d1d1f;
+  background-color: #1d1d1d;
   border-color: transparent;
 }
 
@@ -701,7 +723,8 @@ html.home main {
 .btn-submit {
   position: relative;
   margin-top: 15px;
-  padding: 18px 30px;
+  min-height: 60px;
+  padding: 12px 30px;
   border: 1px solid #444;
   border-radius: 12px;
   background-color: #000;
@@ -709,6 +732,9 @@ html.home main {
   font-size: var(--page-text-size);
   cursor: pointer;
   font-family: 'MiniPixel', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.3s ease;
 }
 
@@ -728,7 +754,7 @@ html.home main {
 }
 
 .btn-submit:hover {
-  background-color: #1d1d1f;
+  background-color: #1d1d1d;
   transform: translateY(-2px);
 }
 
