@@ -15,7 +15,7 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.faqs.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                    <div class="flex flex-col gap-4 md:flex-row md:items-end">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr,220px,auto] md:items-end">
                         <div class="flex-1">
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Search FAQs</label>
                             <input
@@ -25,6 +25,15 @@
                                 class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm"
                                 placeholder="Search keyword or answer..."
                             />
+                        </div>
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold text-gray-700">Category</label>
+                            <select name="category" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm">
+                                <option value="">All categories</option>
+                                @foreach(($categories ?? \App\Models\Faq::CATEGORIES) as $value => $label)
+                                    <option value="{{ $value }}" {{ ($category ?? request('category')) === $value ? 'selected' : '' }}>{{ $label }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="flex gap-2">
                             <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
@@ -55,6 +64,7 @@
                             <thead class="bg-gray-50 text-left">
                                 <tr class="text-xs uppercase tracking-[0.18em] text-gray-500">
                                     <th class="px-5 py-4 font-semibold">Keyword</th>
+                                    <th class="px-5 py-4 font-semibold">Category</th>
                                     <th class="px-5 py-4 font-semibold">Answer preview</th>
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
@@ -65,6 +75,11 @@
                                         <td class="px-5 py-4">
                                             <span class="inline-flex rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
                                                 {{ $faq->keyword }}
+                                            </span>
+                                        </td>
+                                        <td class="px-5 py-4">
+                                            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                                                {{ \App\Models\Faq::CATEGORIES[$faq->category] ?? ucfirst(str_replace('_', ' ', $faq->category)) }}
                                             </span>
                                         </td>
                                         <td class="px-5 py-4 text-gray-600">{{ \Illuminate\Support\Str::limit($faq->answer, 140) }}</td>

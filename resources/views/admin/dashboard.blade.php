@@ -152,6 +152,7 @@
                             <p class="text-xs uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Processing orders</p>
                             <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Open the orders still being fulfilled</p>
                         </a>
+
                     </div>
                 </section>
             </div>
