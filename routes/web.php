@@ -230,6 +230,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'show'])
         ->name('admin.contact-queries.show');
 
+    Route::post('/admin/contact-queries/{contactQuery}/toggle', [AdminContactQueryController::class, 'toggleResolved'])
+        ->name('admin.contact-queries.toggle');
+
     Route::delete('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'destroy'])
         ->name('admin.contact-queries.destroy');
 

@@ -21,6 +21,20 @@ class ContactQueryController extends Controller
         return view('admin.contact-queries.show', compact('contactQuery'));
     }
 
+    public function toggleResolved(ContactQuery $contactQuery)
+    {
+        $contactQuery->update([
+            'resolved_at' => $contactQuery->resolved_at ? null : now(),
+        ]);
+
+        return redirect()->back()->with(
+            'status',
+            $contactQuery->resolved_at
+                ? 'Contact query marked as resolved.'
+                : 'Contact query marked as unresolved.'
+        );
+    }
+
     public function destroy(ContactQuery $contactQuery)
     {
         $contactQuery->delete();

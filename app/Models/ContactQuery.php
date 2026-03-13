@@ -14,5 +14,10 @@ class ContactQuery extends Model
         'email',
         'subject',
         'message',
+        'resolved_at',
+    ];
+
+    protected $casts = [
+        'resolved_at' => 'datetime',
     ];
 }

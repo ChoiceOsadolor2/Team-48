@@ -21,6 +21,7 @@
                                     <tr>
                                         <th class="px-4 py-3 text-left font-semibold text-gray-700">From</th>
                                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Subject</th>
+                                        <th class="px-4 py-3 text-left font-semibold text-gray-700">Status</th>
                                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Message</th>
                                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Received</th>
                                         <th class="px-4 py-3 text-left font-semibold text-gray-700">Actions</th>
@@ -34,6 +35,21 @@
                                                 <p class="text-gray-500">{{ $contactQuery->email }}</p>
                                             </td>
                                             <td class="px-4 py-3 align-top font-semibold text-gray-900">{{ $contactQuery->subject }}</td>
+                                            <td class="px-4 py-3 align-top">
+                                                <div class="flex items-center gap-3">
+                                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $contactQuery->resolved_at ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
+                                                        {{ $contactQuery->resolved_at ? 'Resolved' : 'Unresolved' }}
+                                                    </span>
+                                                    <form action="{{ route('admin.contact-queries.toggle', $contactQuery) }}" method="POST">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors {{ $contactQuery->resolved_at ? 'bg-emerald-500' : 'bg-gray-300' }}"
+                                                            aria-label="Toggle resolved status">
+                                                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition {{ $contactQuery->resolved_at ? 'translate-x-5' : 'translate-x-1' }}"></span>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            </td>
                                             <td class="px-4 py-3 align-top text-gray-600">{{ \Illuminate\Support\Str::limit($contactQuery->message, 180) }}</td>
                                             <td class="px-4 py-3 align-top text-gray-500">{{ $contactQuery->created_at->format('d M Y, H:i') }}</td>
                                             <td class="px-4 py-3 align-top">
