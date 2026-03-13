@@ -1069,9 +1069,20 @@ if (container || container2) {
         console.log('Selected product:', product);
 
         if (product) {
+          const img = container2.querySelector('.product_image');
+          const nameEl = container2.querySelector('.product_name');
+          const brandEl = container2.querySelector('#product_brand');
+          const descEl = container2.querySelector('.product_description');
+          const priceEl = container2.querySelector('.product_price');
+
+          setProductImage(img, product);
+          if (nameEl) nameEl.textContent = product.name;
+          if (brandEl) brandEl.textContent = product.brand || '';
+          if (descEl) descEl.textContent = product.description || '';
+          if (priceEl) priceEl.textContent = `${product.price} GBP`;
+
           const button = container2.querySelector('.add_to_basket');
           const getQty = initProductPageQty(product);
-          updateProductDetailView(product, products);
 
           if (button) {
             const stock = Number(product.stock ?? 0);
@@ -1096,10 +1107,6 @@ if (container || container2) {
 
 
           document.title = product.name;
-          setProductLoadingState(false);
-        } else {
-          showProductPageError('This product could not be found or is no longer available.');
-          setProductLoadingState(false);
         }
 
         loadCartFromBackend();

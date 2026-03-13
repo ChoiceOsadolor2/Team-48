@@ -19,43 +19,17 @@
 </button>
 
 <section id="product_display">
-  <div id="product_loading_state" class="product-loading-state" aria-live="polite">
-    <div class="product-loading-card product-loading-card--image"></div>
-    <div class="product-loading-copy">
-      <div class="product-loading-line product-loading-line--title"></div>
-      <div class="product-loading-line product-loading-line--meta"></div>
-      <div class="product-loading-line"></div>
-      <div class="product-loading-line"></div>
-      <div class="product-loading-line product-loading-line--short"></div>
-    </div>
-  </div>
-
   <div id="product_carousal">
     <img class="product_image" id="main_image" alt="Main Product Image">
+    
   </div>
 
   <div id="product_info">
     <div class="product_meta_bubble">
-      <div class="product_badges">
-        <span class="product_badge" id="product_category_badge" hidden></span>
-        <span class="product_badge" id="product_platform_badge" hidden></span>
-        <span class="product_badge" id="product_stock_badge">Checking stock</span>
-      </div>
       <h1 class="product_name"></h1>
       <sub id="product_brand"></sub>
       <p class="product_description"> </p>
       <span class="product_price"></span>
-
-      <div class="product_highlights">
-        <div class="product_highlight">
-          <span class="product_highlight_label">Delivery</span>
-          <strong id="product_delivery">Delivery estimate loading...</strong>
-        </div>
-        <div class="product_highlight">
-          <span class="product_highlight_label">Availability</span>
-          <strong id="product_availability_text">Checking availability...</strong>
-        </div>
-      </div>
     </div>
 
 
@@ -79,54 +53,8 @@
 
     <button class="add_to_basket"> Add to Basket</button>
   </div>
-</section>
 
-<section class="product-extra-panels" id="product_extra_panels">
-  <article class="product-info-panel">
-    <p class="product-panel-eyebrow">Why shop this</p>
-    <h2>Quick details</h2>
-    <div class="product-detail-grid">
-      <div class="product-detail-item">
-        <span>Category</span>
-        <strong id="product_detail_category">Loading...</strong>
-      </div>
-      <div class="product-detail-item">
-        <span>Platform</span>
-        <strong id="product_detail_platform">Loading...</strong>
-      </div>
-      <div class="product-detail-item">
-        <span>Stock left</span>
-        <strong id="product_detail_stock">Loading...</strong>
-      </div>
-      <div class="product-detail-item">
-        <span>Dispatch</span>
-        <strong id="product_detail_dispatch">Loading...</strong>
-      </div>
-      <div class="product-detail-item">
-        <span>Support</span>
-        <strong id="product_detail_support">Loading...</strong>
-      </div>
-      <div class="product-detail-item">
-        <span>Price tier</span>
-        <strong id="product_detail_price_tier">Loading...</strong>
-      </div>
-      <div class="product-detail-item">
-        <span>Returns</span>
-        <strong id="product_detail_returns">Loading...</strong>
-      </div>
-      <div class="product-detail-item">
-        <span>Product ID</span>
-        <strong id="product_detail_sku">Loading...</strong>
-      </div>
-    </div>
-  </article>
-
-  <article class="product-info-panel">
-    <p class="product-panel-eyebrow">You might also like</p>
-    <h2>Related products</h2>
-    <div id="related_products" class="related-products-grid"></div>
-    <p id="related_products_empty" class="related-products-empty" hidden>No related products to show yet.</p>
-  </article>
+  
 </section>
 
 </main>
