@@ -758,6 +758,15 @@
             @endif
 
             <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }} {{ $isCheckoutPage ? 'checkout-content' : '' }} {{ $isAdminPage ? 'admin-content' : '' }}">
+                @if ($isAdminPage && ! request()->routeIs('admin.dashboard'))
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
+                        <a href="{{ route('admin.dashboard') }}"
+                           class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-black/85">
+                            <span aria-hidden="true">←</span>
+                            <span>Dashboard</span>
+                        </a>
+                    </div>
+                @endif
                 {{ $slot }}
             </main>
         </div>
