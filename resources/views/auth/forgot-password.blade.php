@@ -36,11 +36,10 @@
 <body class="login-page auth-login-page">
 <header></header>
 
+<h1 class="login-page-title">Forgot Password</h1>
 <div class="login-box">
     <form id="forgotPasswordForm" method="POST" action="{{ route('password.email') }}" novalidate autocomplete="off">
         @csrf
-        <h1>Forgot Password</h1>
-
         <div class="input-box">
             <input
                 type="email"
@@ -65,7 +64,7 @@
             <p class="field-success">{{ session('status') }}</p>
         @endif
 
-        <button type="submit" class="login-button">Email Password Reset Link</button>
+        <button type="submit" class="login-button">Reset Password</button>
 
         <div class="register-link">
             <p><a href="/pages/login.html">Back to Login</a></p>

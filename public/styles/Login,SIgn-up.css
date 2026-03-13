@@ -491,3 +491,17 @@ body.auth-login-page .login-box .register-link p a {
     font-weight: 400 !important;
     line-height: 1;
 }
+
+#forgotPasswordForm input::placeholder {
+    font-size: 20px;
+}
+
+#forgotPasswordForm .login-button {
+    font-size: 20px !important;
+}
+
+#forgotPasswordForm .register-link,
+#forgotPasswordForm .register-link p,
+#forgotPasswordForm .register-link p a {
+    font-size: 20px !important;
+}
