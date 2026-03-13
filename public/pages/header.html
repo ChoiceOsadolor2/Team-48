@@ -33,8 +33,6 @@
                 </div>
                 <button id="vx-search-submit" class="vx-search-submit" type="submit">Search</button>
             </form>
-
-            <!-- Ajax Live Search Dropdown Container -->
             <ul id="vx-search-results" class="vx-search-dropdown" style="display: none;"></ul>
         </div>
 
@@ -179,7 +177,7 @@
                 if (!q) return;
 
                 // always go to ShopAll with the query
-                window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
+                window.location.href = `/pages/ShopAll.html?q=${encodeURIComponent(q)}`;
             });
         })();
     </script>

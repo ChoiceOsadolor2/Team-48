@@ -172,7 +172,7 @@ function bindVeltrixHeader(headerEl) {
       const q = (input.value || '').trim();
       if (!q) return;
       try { closeSection('search'); } catch (_) { }
-      window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
+      window.location.href = `/pages/ShopAll.html?q=${encodeURIComponent(q)}`;
     }
 
     form.addEventListener('submit', (e) => {
@@ -189,7 +189,17 @@ function bindVeltrixHeader(headerEl) {
       }
     }, true);
 
-    const resultsContainer = headerEl.querySelector('#vx-search-results');
+    let resultsContainer = headerEl.querySelector('#vx-search-results');
+    if (!resultsContainer) {
+      resultsContainer = document.createElement('ul');
+      resultsContainer.id = 'vx-search-results';
+      resultsContainer.className = 'vx-search-dropdown';
+      resultsContainer.style.display = 'none';
+      const searchRoot = headerEl.querySelector('#search');
+      if (searchRoot) {
+        searchRoot.appendChild(resultsContainer);
+      }
+    }
     let debounceTimer = null;
     let searchController = null;
 
@@ -248,7 +258,7 @@ function bindVeltrixHeader(headerEl) {
                   </div>
                 `;
                 li.addEventListener('click', () => {
-                  window.location.href = `ProductPage.html?id=${product.id}`;
+                  window.location.href = `/pages/ProductPage.html?id=${product.id}`;
                 });
                 fragment.appendChild(li);
               });
