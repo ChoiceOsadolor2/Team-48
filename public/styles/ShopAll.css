@@ -74,9 +74,9 @@ main {
     width: min(920px, calc(100vw - 96px));
     margin: 0 auto 20px;
     padding: 18px 22px;
-    border: 1px solid #565656;
+    border: 1px solid #444;
     border-radius: 24px;
-    background: rgba(0, 0, 0, 0.88);
+    background: #1d1d1d;
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
 }
 
@@ -95,19 +95,20 @@ main {
     min-height: 56px;
     padding: 8px 18px;
     border-radius: 12px;
-    border: 1px solid #666666;
+    border: 1px solid #444;
     background: #080808;
     color: #fff;
     font-family: 'MiniPixel', sans-serif;
-    font-size: 0.85rem;
+    font-size: 30px;
     cursor: pointer;
     position: relative;
-    transition: background-color 0.2s ease, border-color 0.2s ease;
+    transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 #toggle_filters:hover {
     background: #1d1d1d;
     border-color: transparent;
+    transform: translateY(-2px);
 }
 
 #toggle_filters::after {
@@ -185,10 +186,10 @@ html[data-theme="light"] .shop-category-tabs__list a {
 .shop-toolbar__summary {
     margin: 0;
     text-align: right;
-    color: #d9d9d9;
+    color: #fff;
     max-width: 190px;
     line-height: 1.4;
-    font-size: 0.95rem;
+    font-size: 20px;
     align-self: center;
 }
 
@@ -209,8 +210,8 @@ html[data-theme="light"] .shop-category-tabs__list a {
 }
 
 .shop-filter-field span {
-    font-size: 0.8rem;
-    color: #cfcfcf;
+    font-size: 20px;
+    color: #fff;
     letter-spacing: 0.06em;
     text-transform: uppercase;
 }
@@ -245,7 +246,7 @@ html[data-theme="light"] .shop-category-tabs__list a {
     min-height: 38px;
     padding: 10px 12px 12px;
     border-radius: 12px;
-    border: 1px solid #555;
+    border: 1px solid #444;
     background: #080808;
     position: relative;
     transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -279,8 +280,8 @@ html[data-theme="light"] .shop-category-tabs__list a {
     display: flex;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 10px;
-    color: #cfcfcf;
+    margin-bottom: 0;
+    color: #fff;
     font-size: 0.78rem;
 }
 
@@ -373,7 +374,7 @@ html[data-theme="light"] .shop-category-tabs__list a {
     gap: 12px;
     flex-wrap: nowrap;
     padding-top: 0;
-    margin-top: -94px;
+    margin-top: -98px;
     margin-left: 548px;
 }
 
@@ -387,11 +388,11 @@ html[data-theme="light"] .shop-category-tabs__list a {
     min-height: 38px;
     padding: 8px 14px;
     border-radius: 12px;
-    border: 1px solid #666666;
+    border: 1px solid #444;
     background: #080808;
     color: #fff;
     font-family: 'MiniPixel', sans-serif;
-    font-size: 0.85rem;
+    font-size: 20px;
     cursor: pointer;
     position: relative;
     transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -430,7 +431,7 @@ html[data-theme="light"] .shop-category-tabs__list a {
 }
 
 .shop-filter-actions .is-secondary {
-    color: #ffb6c9;
+    color: #ffa825;
 }
 
 .shop-empty-state {
@@ -543,7 +544,7 @@ html[data-theme="light"] .shop-category-tabs__list a {
     display: inline-block;
     width: 200px;
     font-family: 'MiniPixel', sans-serif;
-    font-size: 0.9rem;
+    font-size: 20px;
     color: white;
 }
 
@@ -572,7 +573,7 @@ html[data-theme="light"] .shop-category-tabs__list a {
 }
 
 .select-selected:hover {
-    background-color: #2a2a2a;
+    background-color: #1d1d1d;
 }
 
 /* Pseudo element for the "Sort by:" text */
@@ -657,7 +658,7 @@ html[data-theme="light"] .shop-category-tabs__list a {
 
 .select-items div:hover,
 .same-as-selected {
-    background-color: #2a2a2a;
+    background-color: #1d1d1d;
     color: white;
 }
 
@@ -727,7 +728,7 @@ svg:hover {
     padding: 20px;
     border-radius: 14px;
     background: #000000;
-    border: 1px solid #666666;
+    border: 1px solid #444;
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     display: flex;
     flex-direction: column;
@@ -771,13 +772,13 @@ svg:hover {
 
 .product_price {
     font-family: 'MiniPixel', 'Segoe UI', Arial, sans-serif !important;
-    font-size: 1.3em;
+    font-size: 30px;
     margin-top: 5px;
     display: block;
 }
 
 .product_name {
-    font-size: 1.5em;
+    font-size: 30px;
     font-weight: normal;
     margin-top: auto;
 }
@@ -791,10 +792,10 @@ svg:hover {
     background: #000000 !important;
     background-image: none !important;
     color: white;
-    border: 1px solid #666666 !important;
+    border: 1px solid #444 !important;
     border-radius: 14px;
     font-family: 'MiniPixel', sans-serif;
-    font-size: 1.1em;
+    font-size: 20px;
     font-weight: 100 !important;
     cursor: pointer;
     text-align: center;
@@ -813,7 +814,7 @@ svg:hover {
 
 .view_product:hover,
 .add_to_basket:hover {
-    background: #2a2a2a !important;
+    background: #1d1d1d !important;
     transform: translateY(-2px);
     border-color: transparent !important;
 }
