@@ -9,6 +9,22 @@ use Illuminate\Support\Facades\Schema;
 
 class FaqController extends Controller
 {
+    public function bulkAction(Request $request)
+    {
+        $data = $request->validate([
+            'action' => ['required', 'in:delete'],
+            'selected' => ['required', 'array', 'min:1'],
+            'selected.*' => ['integer', 'exists:faqs,id'],
+        ]);
+
+        $selectedIds = array_unique($data['selected']);
+
+        Faq::query()->whereIn('id', $selectedIds)->delete();
+
+        return redirect()->route('admin.faqs.index')
+            ->with('status', count($selectedIds) . ' FAQs deleted successfully.');
+    }
+
     public function index(Request $request)
     {
         $search = trim((string) $request->query('q', ''));

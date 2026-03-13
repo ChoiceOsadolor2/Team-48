@@ -12,6 +12,22 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    public function bulkAction(Request $request)
+    {
+        $data = $request->validate([
+            'action' => ['required', 'in:delete'],
+            'selected' => ['required', 'array', 'min:1'],
+            'selected.*' => ['integer', 'exists:products,id'],
+        ]);
+
+        $selectedIds = array_unique($data['selected']);
+
+        Product::query()->whereIn('id', $selectedIds)->delete();
+
+        return redirect()->route('admin.products.index')
+            ->with('status', count($selectedIds) . ' products deleted successfully.');
+    }
+
     public function index(Request $request)
 {
     $categoryKey = $request->query('category');

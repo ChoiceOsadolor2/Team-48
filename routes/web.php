@@ -221,6 +221,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'store'])
         ->name('admin.products.store');
 
+    Route::post('/admin/products/bulk', [\App\Http\Controllers\Admin\ProductController::class, 'bulkAction'])
+        ->name('admin.products.bulk');
+
     Route::get('/admin/products/{product}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])
         ->name('admin.products.edit');
 
@@ -246,6 +249,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/contact-queries', [AdminContactQueryController::class, 'index'])
         ->name('admin.contact-queries.index');
 
+    Route::post('/admin/contact-queries/bulk', [AdminContactQueryController::class, 'bulkAction'])
+        ->name('admin.contact-queries.bulk');
+
     Route::get('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'show'])
         ->name('admin.contact-queries.show');
 
@@ -260,6 +266,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/admin/faqs', [AdminFaqController::class, 'store'])
         ->name('admin.faqs.store');
+
+    Route::post('/admin/faqs/bulk', [AdminFaqController::class, 'bulkAction'])
+        ->name('admin.faqs.bulk');
 
     Route::get('/admin/faqs/{faq}/edit', [AdminFaqController::class, 'edit'])
         ->name('admin.faqs.edit');

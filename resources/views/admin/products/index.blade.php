@@ -94,10 +94,36 @@
                         No products matched these filters.
                     </div>
                 @else
+                    <form method="POST" action="{{ route('admin.products.bulk') }}">
+                        @csrf
+                        <div class="border-b border-gray-200 bg-gray-50 px-5 py-4 dark:border-gray-700 dark:bg-gray-900/70">
+                            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                                <div class="flex items-center gap-3">
+                                    <label class="flex items-center gap-2 text-sm font-semibold text-gray-700 dark:text-gray-200">
+                                        <input type="checkbox" data-check-all="products" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
+                                        Select all
+                                    </label>
+                                    <span class="text-xs text-gray-500 dark:text-gray-400">Choose products, then run a bulk action.</span>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <select name="action" class="rounded-xl border border-gray-300 px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+                                        <option value="">Bulk action</option>
+                                        <option value="delete">Delete selected</option>
+                                    </select>
+                                    <button type="submit" class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800 dark:bg-cyan-600 dark:hover:bg-cyan-500" onclick="return confirm('Apply this bulk action to the selected products?');">
+                                        Apply
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
                             <thead class="bg-gray-50 text-left dark:bg-gray-900/70">
                                 <tr class="text-xs uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+                                    <th class="px-5 py-4 font-semibold">
+                                        <span class="sr-only">Select</span>
+                                    </th>
                                     <th class="px-5 py-4 font-semibold">Product</th>
                                     <th class="px-5 py-4 font-semibold">Category</th>
                                     <th class="px-5 py-4 font-semibold">Price</th>
@@ -108,6 +134,9 @@
                             <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                                 @foreach ($products as $product)
                                     <tr class="transition hover:bg-gray-50/80 dark:hover:bg-gray-900/40">
+                                        <td class="px-5 py-4">
+                                            <input type="checkbox" name="selected[]" value="{{ $product->id }}" data-check-item="products" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
+                                        </td>
                                         <td class="px-5 py-4">
                                             <div class="font-semibold text-gray-900 dark:text-white">{{ $product->name }}</div>
                                             <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->platform ?: 'No platform set' }}</div>
@@ -136,15 +165,9 @@
                                                    class="rounded-lg border border-cyan-200 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-900/20">
                                                     Edit
                                                 </a>
-                                                <form action="{{ route('admin.products.destroy', $product) }}"
-                                                      method="POST"
-                                                      onsubmit="return confirm('Delete this product?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/20">
-                                                        Delete
-                                                    </button>
-                                                </form>
+                                                <button type="submit" form="delete-product-{{ $product->id }}" class="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/20" onclick="return confirm('Delete this product?');">
+                                                    Delete
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -152,8 +175,27 @@
                             </tbody>
                         </table>
                     </div>
+                    </form>
+                    @foreach ($products as $product)
+                        <form id="delete-product-{{ $product->id }}" action="{{ route('admin.products.destroy', $product) }}" method="POST" class="hidden">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    @endforeach
                 @endif
             </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const master = document.querySelector('[data-check-all="products"]');
+            const items = document.querySelectorAll('[data-check-item="products"]');
+            if (!master || !items.length) return;
+
+            master.addEventListener('change', function () {
+                items.forEach((item) => item.checked = master.checked);
+            });
+        });
+    </script>
 </x-app-layout>
