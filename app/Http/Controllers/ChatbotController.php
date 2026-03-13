@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Faq;
 use App\Models\Product;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class ChatbotController extends Controller
@@ -81,7 +82,9 @@ class ChatbotController extends Controller
         ]);
 
         $message = trim($request->input('message'));
-        $faqs = Faq::query()->get();
+        $faqs = Schema::hasTable('faqs')
+            ? Faq::query()->get()
+            : collect();
         $context = $request->session()->get('chatbot_context', []);
 
         if ($faqs->isEmpty()) {

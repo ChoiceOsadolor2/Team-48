@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class FaqController extends Controller
 {
     public function index()
     {
-        $faqs = Faq::query()->orderBy('keyword')->get();
+        $faqs = Schema::hasTable('faqs')
+            ? Faq::query()->orderBy('keyword')->get()
+            : collect();
 
         return view('admin.faqs.index', compact('faqs'));
     }

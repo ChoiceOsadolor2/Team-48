@@ -17,6 +17,7 @@ use App\Models\Category;
 use App\Models\Faq;
 use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Support\Facades\Schema;
 
 
 
@@ -149,7 +150,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->take(5)
             ->get();
 
-        $faqCount = Faq::count();
+        $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
 
         return view('admin.dashboard', compact(
             'totalUsers',
