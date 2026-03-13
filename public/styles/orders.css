@@ -24,6 +24,7 @@ body {
 
 .orders-title {
     font-size: 100px;
+    font-weight: 700;
     line-height: normal;
     margin-top: 0 !important;
     margin-bottom: 20px;
@@ -48,9 +49,13 @@ body {
 
 .invoice-page-shell {
     min-height: calc(100vh - 160px);
-    padding-top: 24px;
+    padding-top: 0;
     padding-bottom: 0;
     box-sizing: border-box;
+}
+
+.invoice-page-header {
+    margin-bottom: 18px;
 }
 
 .invoice-header {
@@ -194,12 +199,12 @@ body {
 }
 
 .invoice-card {
-    background: #1d1d1f;
+    background: #1d1d1d;
     overflow: hidden;
 }
 
 .invoice-body {
-    background: #1d1d1f;
+    background: #1d1d1d;
     padding: 36px;
 }
 
@@ -255,7 +260,7 @@ body {
     width: 100%;
     border-collapse: separate;
     border-spacing: 0;
-    background: #1d1d1f;
+    background: #1d1d1d;
     border: 1px solid #444;
     border-radius: 14px;
     overflow: hidden;
@@ -281,6 +286,9 @@ body {
 .invoice-body .invoice-order-label,
 .invoice-body .invoice-table th {
     color: #888;
+    font-size: 20px;
+    font-weight: 400;
+    opacity: 1;
 }
 
 .invoice-table td {
@@ -302,6 +310,7 @@ body {
 
 .invoice-actions .btn-secondary {
     width: 180px;
+    font-size: 20px;
 }
 
 .order-status-row {

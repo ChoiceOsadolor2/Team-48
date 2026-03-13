@@ -2,6 +2,10 @@
     <link rel="stylesheet" href="{{ asset('styles/orders.css') }}" />
 
     <div class="orders-main invoice-page-shell w-full max-w-5xl mx-auto py-8">
+        <div class="orders-header invoice-page-header">
+            <h1 class="orders-title">Invoice</h1>
+        </div>
+
         <div class="orders-container invoice-container">
             <article class="order-card invoice-card">
                 <div class="order-body invoice-body">
@@ -29,7 +33,7 @@
                         <table class="invoice-table">
                             <thead>
                                 <tr>
-                                    <th>Products</th>
+                                    <th>Product</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
                                 </tr>

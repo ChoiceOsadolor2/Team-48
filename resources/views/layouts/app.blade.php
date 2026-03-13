@@ -632,6 +632,11 @@
                     animation: veltrixGlow 2s infinite alternate !important;
                 }
 
+                body.profile-page .profile-panel .contact-field-wrap:hover::after,
+                body.profile-page .profile-panel .contact-field-wrap:focus-within::after {
+                    opacity: 1 !important;
+                }
+
                 body.profile-page .profile-panel .contact-field:hover,
                 body.profile-page .profile-panel .contact-field:focus,
                 body.profile-page .profile-panel .contact-field:focus-visible,
