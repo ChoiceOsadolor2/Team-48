@@ -29,34 +29,45 @@ body {
 .checkout-page-title {
     margin: 0;
     color: #fff;
-    font-size: 5em;
+    font-size: 100px;
     font-weight: bold;
     line-height: normal;
 }
 
 .checkout-form-section,
 .checkout-summary-section {
-    background: #1d1d1f;
-    border: 1px solid #444;
-    border-radius: 18px;
     box-shadow: none;
 }
 
 .checkout-form-section {
+    background: #1d1d1f;
+    border: 1px solid #444;
+    border-radius: 18px;
     padding: 40px;
 }
 
 .checkout-summary-section {
+    position: relative;
+}
+
+.checkout-summary-sticky {
+    position: static;
+    background: #1d1d1f;
+    border: 1px solid #444;
+    border-radius: 18px;
     padding: 30px;
+    box-sizing: border-box;
+    width: 100%;
 }
 
 .checkout-summary-title {
     margin-top: 0;
     margin-bottom: 20px;
     color: #fff;
-    font-size: 20px;
+    font-size: 30px;
     font-weight: 400;
     line-height: 1.1;
+    text-align: center;
 }
 
 .checkout-subtitle {
@@ -93,9 +104,10 @@ body {
 
 .form-section h2 {
     margin: 0 0 20px;
-    font-size: 20px;
+    font-size: 30px;
     font-weight: 400;
     color: #fff;
+    text-align: center;
 }
 
 .form-group {
@@ -119,7 +131,12 @@ body {
 }
 
 .form-group > label {
-    margin-bottom: 8px;
+    position: relative;
+    top: 10px;
+    margin-bottom: 0;
+    align-self: flex-start;
+    width: 100%;
+    text-align: left;
     color: #fff;
     font-size: 20px;
     font-weight: 400;
@@ -133,6 +150,27 @@ body {
     color: #ffa825;
     font-size: 16px;
     text-align: center;
+}
+
+.checkout-field-wrap {
+    position: relative;
+    display: block;
+    width: 100%;
+}
+
+.checkout-field-wrap::after {
+    content: '';
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: 12px;
+    border: 1px solid transparent;
+    animation: veltrixGlow 2s infinite alternate;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 input[type="text"],
@@ -182,11 +220,10 @@ textarea.checkout-decoy-input::placeholder {
 input[type="text"]:hover,
 input[type="email"]:hover,
 select:hover,
- .checkout-editable-field:hover,
+.checkout-editable-field:hover,
 textarea.checkout-decoy-input:hover {
     background: #1d1d1d;
     border-color: transparent;
-    animation: veltrixGlow 2s infinite alternate;
     box-shadow: none;
     outline: none;
 }
@@ -197,15 +234,19 @@ select:focus,
 input[type="text"]:focus-visible,
 input[type="email"]:focus-visible,
 select:focus-visible,
- .checkout-editable-field:focus,
- .checkout-editable-field:focus-visible,
+.checkout-editable-field:focus,
+.checkout-editable-field:focus-visible,
 textarea.checkout-decoy-input:focus,
 textarea.checkout-decoy-input:focus-visible {
     background: #1d1d1d;
     border-color: transparent;
-    animation: veltrixGlow 2s infinite alternate;
     box-shadow: none;
     outline: none;
+}
+
+.checkout-field-wrap:hover::after,
+.checkout-field-wrap:focus-within::after {
+    opacity: 1;
 }
 
 textarea.checkout-decoy-input {
@@ -326,8 +367,8 @@ textarea.checkout-decoy-input {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #8a8a8a;
-    font-size: 14px;
+    color: #888;
+    font-size: 20px;
     text-align: center;
 }
 
@@ -510,7 +551,7 @@ textarea.checkout-decoy-input {
     opacity: 1;
 }
 
-@media (min-width: 1024px) {
+@media (min-width: 700px) {
     .checkout-container {
         flex-direction: row;
         align-items: flex-start;
@@ -522,12 +563,11 @@ textarea.checkout-decoy-input {
 
     .checkout-summary-section {
         flex: 1;
-        position: sticky;
-        top: 110px;
+        align-self: flex-start;
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 700px) {
     .form-row {
         flex-direction: column;
         gap: 0;

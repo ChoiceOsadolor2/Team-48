@@ -271,23 +271,40 @@ header.search-active #search {
   width: 100%;
   box-sizing: border-box;
   padding: 10px 15px;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: #000;
+  border: 1px solid #444;
   border-radius: 8px;
   color: white;
   font-family: 'MiniPixel', sans-serif;
-  font-size: 1.1rem;
+  font-size: 20px;
   transition: all 0.3s ease;
 }
 
 #vx-search-input::placeholder {
-  color: white;
+  color: #888;
+  font-size: 20px;
   opacity: 1;
   /* Override Firefox's default opacity */
 }
 
+#vx-search-input::-webkit-search-cancel-button,
+#vx-search-input::-webkit-search-decoration,
+#vx-search-input::-webkit-search-results-button,
+#vx-search-input::-webkit-search-results-decoration {
+  -webkit-appearance: none;
+  appearance: none;
+  display: none;
+}
+
 #vx-search-input:focus {
+  background: #1d1d1d;
   outline: none;
+  border-color: transparent;
+}
+
+#vx-search-input:hover {
+  background: #1d1d1d;
+  border-color: transparent;
 }
 
 #vx-search-input-wrapper::after {
@@ -318,10 +335,16 @@ header.search-active #search {
   border-radius: 8px;
   border: 1px solid #444;
   font-family: 'MiniPixel', sans-serif;
-  font-size: 1.1rem;
+  font-size: 20px;
   font-weight: normal;
   cursor: pointer;
   transition: transform 0.3s ease;
+}
+
+#vx-search-submit:hover,
+#vx-search-submit:focus-visible {
+  background: #1d1d1d;
+  outline: none;
 }
 
 #vx-search-submit::after {
