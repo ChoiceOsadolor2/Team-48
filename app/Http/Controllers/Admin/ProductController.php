@@ -12,6 +12,24 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    public function updateStock(Request $request, Product $product)
+    {
+        $data = $request->validate([
+            'stock' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $product->update([
+            'stock' => $data['stock'],
+        ]);
+
+        return redirect()->route('admin.products.index', array_filter([
+            'q' => $request->input('q'),
+            'stock' => $request->input('filter_stock'),
+            'category' => $request->input('category_filter'),
+        ], fn ($value) => $value !== null && $value !== ''))
+            ->with('status', 'Stock updated for ' . $product->name . '.');
+    }
+
     public function bulkAction(Request $request)
     {
         $data = $request->validate([

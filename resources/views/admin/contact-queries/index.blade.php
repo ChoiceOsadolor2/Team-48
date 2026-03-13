@@ -57,9 +57,10 @@
                         No contact queries matched the current filters.
                     </div>
                 @else
-                    <form method="POST" action="{{ route('admin.contact-queries.bulk') }}">
+                    <form id="bulk-queries-form" method="POST" action="{{ route('admin.contact-queries.bulk') }}">
                         @csrf
-                        <div class="border-b border-gray-200 bg-gray-50 px-5 py-4">
+                    </form>
+                    <div class="border-b border-gray-200 bg-gray-50 px-5 py-4">
                             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <div class="flex items-center gap-3">
                                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -69,13 +70,13 @@
                                     <span class="text-xs text-gray-500">Choose queries, then resolve, unresolve, or delete them in one go.</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <select name="action" class="rounded-xl border border-gray-300 px-3 py-2 text-sm">
+                                    <select name="action" form="bulk-queries-form" class="rounded-xl border border-gray-300 px-3 py-2 text-sm">
                                         <option value="">Bulk action</option>
                                         <option value="resolve">Mark resolved</option>
                                         <option value="unresolve">Mark unresolved</option>
                                         <option value="delete">Delete selected</option>
                                     </select>
-                                    <button type="submit" class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800" onclick="return confirm('Apply this bulk action to the selected contact queries?');">
+                                    <button type="submit" form="bulk-queries-form" class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800" onclick="return confirm('Apply this bulk action to the selected contact queries?');">
                                         Apply
                                     </button>
                                 </div>
@@ -99,7 +100,7 @@
                                 @foreach ($contactQueries as $contactQuery)
                                     <tr class="transition hover:bg-gray-50/80">
                                         <td class="px-5 py-4 align-top">
-                                            <input type="checkbox" name="selected[]" value="{{ $contactQuery->id }}" data-check-item="queries" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
+                                            <input type="checkbox" name="selected[]" value="{{ $contactQuery->id }}" form="bulk-queries-form" data-check-item="queries" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
                                         </td>
                                         <td class="px-5 py-4 align-top">
                                             <p class="font-semibold text-gray-900">{{ $contactQuery->name }}</p>
@@ -136,7 +137,6 @@
                             </tbody>
                         </table>
                     </div>
-                    </form>
                     @foreach ($contactQueries as $contactQuery)
                         <form id="delete-query-{{ $contactQuery->id }}" action="{{ route('admin.contact-queries.destroy', $contactQuery) }}" method="POST" class="hidden">
                             @csrf

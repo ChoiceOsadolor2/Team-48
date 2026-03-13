@@ -9,6 +9,49 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
+    public function updateStatus(Request $request, Order $order)
+    {
+        $data = $request->validate([
+            'status' => ['required', 'in:processing,completed,cancelled'],
+        ]);
+
+        $newStatus = $data['status'];
+
+        if ($order->status === $newStatus) {
+            return redirect()->route('admin.orders.index', array_filter([
+                'q' => $request->input('q'),
+                'status' => $request->input('current_status_filter'),
+                'from' => $request->input('from'),
+                'to' => $request->input('to'),
+            ], fn ($value) => $value !== null && $value !== ''))
+                ->with('status', 'Order status was already set to ' . $newStatus . '.');
+        }
+
+        if ($newStatus === 'cancelled' && $order->status !== 'cancelled') {
+            DB::transaction(function () use ($order) {
+                $order->load('items.product');
+
+                foreach ($order->items as $item) {
+                    if ($item->product) {
+                        $item->product->increment('stock', $item->quantity);
+                    }
+                }
+
+                $order->update(['status' => 'cancelled']);
+            });
+        } else {
+            $order->update(['status' => $newStatus]);
+        }
+
+        return redirect()->route('admin.orders.index', array_filter([
+            'q' => $request->input('q'),
+            'status' => $request->input('current_status_filter'),
+            'from' => $request->input('from'),
+            'to' => $request->input('to'),
+        ], fn ($value) => $value !== null && $value !== ''))
+            ->with('status', 'Order #' . $order->id . ' updated to ' . $newStatus . '.');
+    }
+
     public function index(Request $request)
     {
         $q      = trim((string) $request->get('q', ''));

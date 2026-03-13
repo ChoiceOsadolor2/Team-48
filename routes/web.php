@@ -230,6 +230,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::put('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])
         ->name('admin.products.update');
 
+    Route::patch('/admin/products/{product}/stock', [\App\Http\Controllers\Admin\ProductController::class, 'updateStock'])
+        ->name('admin.products.update-stock');
+
     Route::delete('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])
         ->name('admin.products.destroy');
 
@@ -239,6 +242,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/orders/{order}', [AdminOrderController::class, 'show'])
         ->name('admin.orders.show');
+
+    Route::patch('/admin/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])
+        ->name('admin.orders.update-status');
 
     Route::post('/admin/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])
         ->name('admin.orders.cancel');
