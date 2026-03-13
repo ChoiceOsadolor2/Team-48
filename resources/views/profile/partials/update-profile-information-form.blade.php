@@ -1,7 +1,7 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+            {{ __('Update Information') }}
         </h2>
     </header>
 
@@ -16,8 +16,8 @@
         {{-- Name --}}
         <div class="profile-field">
             <x-input-label for="name" :value="__('Name')" />
-            <div class="profile-input-wrap">
-                <x-text-input id="name" name="name" type="text" class="block w-full profile-textbox"
+            <div class="profile-input-wrap contact-field-wrap">
+                <x-text-input id="name" name="name" type="text" class="block w-full contact-field profile-textbox"
                     :value="old('name', $user->name)" required autocomplete="off" readonly
                     onfocus="this.removeAttribute('readonly');" autocapitalize="words" spellcheck="false" />
             </div>
@@ -27,8 +27,8 @@
         {{-- Email --}}
         <div class="profile-field">
             <x-input-label for="email" :value="__('Email')" />
-            <div class="profile-input-wrap">
-                <x-text-input id="email" name="email" type="email" class="block w-full profile-textbox"
+            <div class="profile-input-wrap contact-field-wrap">
+                <x-text-input id="email" name="email" type="email" class="block w-full contact-field profile-textbox"
                     :value="old('email', $user->email)" required autocomplete="off" readonly
                     onfocus="this.removeAttribute('readonly');" autocapitalize="off" spellcheck="false" />
             </div>
@@ -57,12 +57,12 @@
         {{-- Phone --}}
         <div class="profile-field">
             <x-input-label for="phone_display" :value="__('Phone')" />
-            <div class="profile-input-wrap">
+            <div class="profile-input-wrap contact-field-wrap">
                 <input type="hidden" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
                 <textarea
                     id="phone_display"
                     name="vx_phone_display"
-                    class="block w-full profile-textbox profile-textarea-singleline"
+                    class="block w-full contact-field profile-textbox profile-textarea-singleline"
                     autocomplete="off"
                     readonly
                     onfocus="this.removeAttribute('readonly');"
@@ -81,11 +81,11 @@
         {{-- Address --}}
         <div class="profile-field">
             <x-input-label for="address_display" :value="__('Address')" />
-            <div class="profile-input-wrap">
+            <div class="profile-input-wrap contact-field-wrap">
                 <input type="hidden" id="address" name="address" value="{{ old('address', $user->address) }}">
                 <div
                     id="address_display"
-                    class="profile-textbox profile-editable-field"
+                    class="contact-field contact-editable-field profile-textbox profile-editable-field"
                     contenteditable="true"
                     role="textbox"
                     aria-label="Address"
@@ -101,12 +101,12 @@
         {{-- Date of Birth --}}
         <div class="profile-field">
             <x-input-label for="date_of_birth" :value="__('Date of Birth')" />
-            <div class="profile-input-wrap">
+            <div class="profile-input-wrap contact-field-wrap">
                 <x-text-input
                     id="date_of_birth"
                     name="date_of_birth"
                     type="date"
-                    class="block w-full profile-textbox"
+                    class="block w-full contact-field profile-textbox"
                     :value="old('date_of_birth', $user->date_of_birth)"
                     autocomplete="off"
                     readonly

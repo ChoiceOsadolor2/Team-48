@@ -7,11 +7,11 @@
 
     <div class="profile-field">
         <x-input-label for="delete_confirmation_visible" :value="__('Confirmation')" />
-        <div class="profile-input-wrap">
+        <div class="profile-input-wrap contact-field-wrap">
             <x-text-input
                 id="delete_confirmation_visible"
                 type="text"
-                class="block w-full profile-textbox"
+                class="block w-full contact-field profile-textbox"
                 placeholder="Type DELETE"
                 x-model="confirmation"
                 autocomplete="off"
@@ -45,12 +45,12 @@
 
             <div class="mt-6">
                 <x-input-label for="password" value="{{ __('Password') }}" class="sr-only" />
-                <div class="profile-input-wrap w-3/4">
+                <div class="profile-input-wrap contact-field-wrap w-3/4">
                     <x-text-input
                         id="password"
                         name="password"
                         type="password"
-                        class="block w-full profile-textbox"
+                        class="block w-full contact-field profile-textbox"
                         placeholder="{{ __('Password') }}"
                     />
                 </div>

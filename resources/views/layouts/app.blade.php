@@ -478,6 +478,20 @@
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
+                body.profile-page .profile-page-title {
+                    position: absolute;
+                    top: 90px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    width: 100%;
+                    margin: 0;
+                    text-align: center;
+                    font-size: 100px;
+                    font-weight: 700;
+                    line-height: 1;
+                    z-index: 2;
+                }
+
                 /* The profile forms use semantic <header> tags; stop the global navbar styles from hijacking them. */
                 body.profile-page main.profile-content header {
                     position: static !important;
@@ -538,7 +552,7 @@
 
                 body.profile-page .profile-panel input::placeholder,
                 body.profile-page .profile-panel textarea::placeholder {
-                    color: #aaa !important;
+                    color: #888 !important;
                 }
 
                 @keyframes profileBorderGlow {
@@ -570,6 +584,8 @@
                     border-radius: 12px !important;
                     box-shadow: none;
                     outline: none !important;
+                    font-size: 20px !important;
+                    font-weight: 400 !important;
                     transition: background-color 0.15s ease, border-color 0.15s ease !important;
                     filter: none !important;
                 }
@@ -601,38 +617,40 @@
                 body.profile-page .profile-panel .profile-field label {
                     display: inline-block !important;
                     margin-bottom: 6px !important;
+                    font-size: 20px !important;
+                    font-weight: 400 !important;
                 }
 
                 body.profile-page .profile-panel .profile-input-wrap {
                     position: relative !important;
+                    display: block !important;
                     width: 100% !important;
                     margin-top: 4px !important;
                 }
 
-                body.profile-page .profile-panel .profile-textbox:hover {
-                    background: #1d1d1d !important;
-                    animation: profileBorderGlow 2s infinite alternate !important;
-                    outline: none !important;
+                body.profile-page .profile-panel .contact-field-wrap::after {
+                    animation: veltrixGlow 2s infinite alternate !important;
                 }
 
-                body.profile-page .profile-panel .profile-textbox:focus,
-                body.profile-page .profile-panel .profile-textbox:focus-visible,
-                body.profile-page .profile-panel .profile-textbox:active {
+                body.profile-page .profile-panel .contact-field:hover,
+                body.profile-page .profile-panel .contact-field:focus,
+                body.profile-page .profile-panel .contact-field:focus-visible,
+                body.profile-page .profile-panel .contact-field:active {
                     background: #1d1d1d !important;
-                    animation: profileBorderGlow 2s infinite alternate !important;
+                    border-color: transparent !important;
                     outline: none !important;
                     --tw-ring-shadow: 0 0 #0000 !important;
                     --tw-ring-offset-shadow: 0 0 #0000 !important;
                     --tw-shadow: 0 0 #0000 !important;
                 }
 
-                body.profile-page .profile-panel .profile-textbox:not(:hover):not(:focus):not(:focus-visible):not(:active) {
-                    animation: none !important;
-                    border-color: #444 !important;
-                }
-
                 body.profile-page .profile-panel input[type="date"]::-webkit-calendar-picker-indicator {
                     filter: invert(1) brightness(1.2);
+                }
+
+                body.profile-page .profile-panel input[type="date"]:not([value])::-webkit-datetime-edit,
+                body.profile-page .profile-panel input[type="date"][value=""]::-webkit-datetime-edit {
+                    color: #888 !important;
                 }
 
                 /* Match login/register typography scale */
@@ -640,6 +658,14 @@
                     font-size: 30px !important;
                     line-height: 1 !important;
                     font-weight: 400 !important;
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.profile-page .profile-panel header h2 {
+                    font-size: 30px !important;
+                    line-height: 1 !important;
+                    font-weight: 400 !important;
+                    font-family: 'MiniPixel', sans-serif !important;
                 }
 
                 body.profile-page .profile-panel .text-sm,
@@ -650,6 +676,20 @@
                 body.profile-page .profile-panel p {
                     font-size: 20px !important;
                     font-weight: 400 !important;
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.profile-page .profile-panel .profile-inline-error,
+                body.profile-page .profile-panel .profile-inline-error li {
+                    color: #ffa825 !important;
+                    font-family: 'MiniPixel', sans-serif !important;
+                    font-size: 16px !important;
+                    font-weight: 400 !important;
+                    line-height: 1 !important;
+                    list-style: none !important;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    text-align: center !important;
                 }
 
                 body.profile-page .profile-panel .profile-action-button {
@@ -675,11 +715,7 @@
                     border-width: 1px !important;
                     border-style: solid !important;
                     border-color: transparent;
-                    animation-name: profileEdgeGlow !important;
-                    animation-duration: 2s !important;
-                    animation-iteration-count: infinite !important;
-                    animation-direction: alternate !important;
-                    animation-timing-function: ease-in-out !important;
+                    animation: veltrixGlow 2s infinite alternate !important;
                     opacity: 0 !important;
                     transition: opacity 0.3s ease !important;
                     pointer-events: none !important;
@@ -698,14 +734,14 @@
                 }
 
                 body.profile-page .profile-panel .profile-action-button:hover {
-                    background-color: #2a2a2a !important;
+                    background-color: #1d1d1d !important;
                     border-color: transparent !important;
                     transform: translateY(-2px) !important;
                     box-shadow: none !important;
                 }
 
                 body.profile-page .profile-panel .profile-action-button:focus-visible {
-                    background-color: #2a2a2a !important;
+                    background-color: #1d1d1d !important;
                     border-color: transparent !important;
                     transform: translateY(-2px) !important;
                     outline: none !important;
@@ -787,6 +823,7 @@
                     goTop();
                     window.addEventListener('load', goTop, { once: true });
                     window.addEventListener('pageshow', goTop);
+
                 })();
             </script>
         @elseif ($isOrdersPage)
