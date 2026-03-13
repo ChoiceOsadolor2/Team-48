@@ -38,6 +38,11 @@ body {
     background-position: var(--bg-y-pos, 0px 0px);
 }
 
+html[data-theme="light"] body {
+    background-color: #f6efe6;
+    color: #111;
+}
+
 
 
 main {
@@ -72,6 +77,36 @@ main {
     border-radius: 28px;
     background: rgba(0, 0, 0, 0.88);
     box-shadow: 0 18px 50px rgba(0, 0, 0, 0.45);
+}
+
+html[data-theme="light"] .shop-toolbar,
+html[data-theme="light"] .shop-category-tabs,
+html[data-theme="light"] .product_card,
+html[data-theme="light"] .shop-empty-state,
+html[data-theme="light"] .select-selected,
+html[data-theme="light"] .select-items,
+html[data-theme="light"] .shop-filter-field input,
+html[data-theme="light"] .shop-filter-field select,
+html[data-theme="light"] .shop-filter-actions button {
+    background: rgba(255, 255, 255, 0.94);
+    color: #111;
+    border-color: rgba(17, 17, 17, 0.12);
+}
+
+html[data-theme="light"] .shop-toolbar h2,
+html[data-theme="light"] .shop-toolbar__summary,
+html[data-theme="light"] .shop-filter-field,
+html[data-theme="light"] .shop-category-tabs h2,
+html[data-theme="light"] .shop-empty-state,
+html[data-theme="light"] .product_name,
+html[data-theme="light"] .product_price {
+    color: #111;
+}
+
+html[data-theme="light"] .shop-category-tabs__list a {
+    background: rgba(255, 255, 255, 0.9);
+    color: #111;
+    border-color: rgba(17, 17, 17, 0.14);
 }
 
 .shop-toolbar__header {

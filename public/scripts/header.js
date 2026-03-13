@@ -1,4 +1,4 @@
-const headerFile = '../pages/header.html';
+const headerFile = '/pages/header.html';
 
 function initSiteToasts() {
   if (window.__siteToastInit) return;
@@ -83,7 +83,7 @@ function bindVeltrixHeader(headerEl) {
   const scrollTopBtn = document.getElementById('vx-scroll-top');
   if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
 
-  const footerFile = '../pages/footer.html';
+  const footerFile = '/pages/footer.html';
   fetch(footerFile)
     .then(response => response.text())
     .then(html => {
@@ -166,7 +166,7 @@ function bindVeltrixHeader(headerEl) {
               }
 
               data.results.slice(0, 5).forEach(product => {
-                let imgUrl = '../assets/MainLogo.png';
+                let imgUrl = '/assets/MainLogo.png';
                 if (product.image_url) {
                   imgUrl = product.image_url.startsWith('http')
                     ? product.image_url
@@ -175,7 +175,7 @@ function bindVeltrixHeader(headerEl) {
 
                 const li = document.createElement('li');
                 li.innerHTML = `
-                  <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
+                  <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='/assets/MainLogo.png'">
                   <div class="vx-search-dropdown-info">
                     <span class="vx-search-dropdown-title">${product.name}</span>
                     <span class="vx-search-dropdown-price">&#163;${Number(product.price).toFixed(2)}</span>

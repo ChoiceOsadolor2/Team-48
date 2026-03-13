@@ -7,13 +7,25 @@
     session('stock_error') ? ['type' => 'error', 'message' => session('stock_error')] : null,
     session('status') ? ['type' => 'success', 'message' => session('status')] : null,
 ])->filter()->values())
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) class="home" @endif @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) data-theme="dark" @endif>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) class="home" @endif>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <script>
+            (function () {
+                try {
+                    const savedTheme = localStorage.getItem('theme');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                    document.documentElement.setAttribute('data-theme', theme);
+                } catch (_) {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            })();
+        </script>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -168,12 +180,6 @@
                     font-display: swap;
                 }
 
-                html[data-theme="dark"],
-                html[data-theme="dark"] body.orders-page,
-                html[data-theme="dark"] body.checkout-page {
-                    background-color: #000 !important;
-                }
-
                 body.orders-page,
                 body.checkout-page {
                     overflow-x: hidden;
@@ -182,6 +188,12 @@
                     background-repeat: repeat-y;
                     background-size: 100vw auto;
                     background-position: var(--bg-y-pos, center 0);
+                }
+
+                html[data-theme="light"] body.orders-page,
+                html[data-theme="light"] body.checkout-page {
+                    background-color: #f6efe6 !important;
+                    color: #111 !important;
                 }
 
                 body.orders-page header,
@@ -306,11 +318,6 @@
                     font-display: swap;
                 }
 
-                html[data-theme="dark"],
-                html[data-theme="dark"] body.admin-page {
-                    background-color: #000 !important;
-                }
-
                 body.admin-page {
                     overflow-x: hidden;
                     background-color: #000 !important;
@@ -318,6 +325,11 @@
                     background-repeat: repeat-y;
                     background-size: 100vw auto;
                     background-position: var(--bg-y-pos, center 0);
+                }
+
+                html[data-theme="light"] body.admin-page {
+                    background-color: #f6efe6 !important;
+                    color: #111 !important;
                 }
 
                 body.admin-page header,
@@ -387,11 +399,6 @@
                     font-display: swap;
                 }
 
-                html[data-theme="dark"],
-                html[data-theme="dark"] body.profile-page {
-                    background-color: #000 !important;
-                }
-
                 body.profile-page {
                     overflow-x: hidden;
                     background-color: #000 !important;
@@ -399,6 +406,11 @@
                     background-repeat: repeat-y;
                     background-size: 100vw auto;
                     background-position: var(--bg-y-pos, center 0);
+                }
+
+                html[data-theme="light"] body.profile-page {
+                    background-color: #f6efe6 !important;
+                    color: #111 !important;
                 }
 
                 /* Match the exact nav typography/sizing helpers used on other working pages */
@@ -764,10 +776,8 @@
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
 
                     // Always start profile at the top on refresh/navigation.
                     if ('scrollRestoration' in history) {
@@ -785,10 +795,8 @@
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
                 })();
             </script>
         @elseif ($isCheckoutPage)
@@ -797,10 +805,8 @@
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
                 })();
             </script>
         @elseif ($isAdminPage)
@@ -809,10 +815,8 @@
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
                 })();
             </script>
         @endif

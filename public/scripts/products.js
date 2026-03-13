@@ -82,6 +82,152 @@ function showProductPageError(message) {
   notice.style.maxWidth = '820px';
 }
 
+function setProductLoadingState(isLoading) {
+  const loadingState = document.getElementById('product_loading_state');
+  const extraPanels = document.getElementById('product_extra_panels');
+  if (loadingState) {
+    loadingState.hidden = !isLoading;
+  }
+
+  if (container2) {
+    container2.classList.toggle('is-loading', isLoading);
+    container2.classList.toggle('is-ready', !isLoading);
+  }
+
+  if (extraPanels) {
+    extraPanels.classList.toggle('is-ready', !isLoading);
+  }
+}
+
+function getDeliveryEstimate(product) {
+  const stock = Number(product?.stock ?? 0);
+  if (stock <= 0) return 'Restock update pending';
+  if (stock <= 3) return 'Dispatch in 1-2 days';
+  return 'Dispatches within 24 hours';
+}
+
+function getPriceTier(product) {
+  const price = Number(product?.price ?? 0);
+  if (price >= 500) return 'Premium';
+  if (price >= 150) return 'Mid-range';
+  return 'Everyday pick';
+}
+
+function updateProductDetailView(product, allProducts) {
+  if (!container2 || !product) return;
+
+  const img = container2.querySelector('.product_image');
+  const nameEl = container2.querySelector('.product_name');
+  const brandEl = container2.querySelector('#product_brand');
+  const descEl = container2.querySelector('.product_description');
+  const priceEl = container2.querySelector('.product_price');
+  const categoryBadge = document.getElementById('product_category_badge');
+  const platformBadge = document.getElementById('product_platform_badge');
+  const stockBadge = document.getElementById('product_stock_badge');
+  const availabilityText = document.getElementById('product_availability_text');
+  const deliveryText = document.getElementById('product_delivery');
+  const detailCategory = document.getElementById('product_detail_category');
+  const detailPlatform = document.getElementById('product_detail_platform');
+  const detailStock = document.getElementById('product_detail_stock');
+  const detailDispatch = document.getElementById('product_detail_dispatch');
+  const detailSupport = document.getElementById('product_detail_support');
+  const detailPriceTier = document.getElementById('product_detail_price_tier');
+  const detailReturns = document.getElementById('product_detail_returns');
+  const detailSku = document.getElementById('product_detail_sku');
+
+  setProductImage(img, product);
+  if (nameEl) nameEl.textContent = product.name;
+  if (brandEl) brandEl.textContent = product.brand || product.category?.name || '';
+  if (descEl) descEl.textContent = product.description || 'No product description is available yet.';
+  if (priceEl) priceEl.textContent = `${product.price} GBP`;
+
+  if (categoryBadge) {
+    const categoryName = product.category?.name || 'General';
+    categoryBadge.hidden = false;
+    categoryBadge.textContent = categoryName;
+  }
+
+  if (platformBadge) {
+    if (product.platform) {
+      platformBadge.hidden = false;
+      platformBadge.textContent = product.platform;
+    } else {
+      platformBadge.hidden = true;
+    }
+  }
+
+  const stock = Number(product.stock ?? 0);
+  const stockMessage = stock <= 0 ? 'Out of stock' : stock <= 3 ? `Low stock: ${stock} left` : `In stock: ${stock} left`;
+  if (stockBadge) {
+    stockBadge.textContent = stockMessage;
+    stockBadge.classList.toggle('is-low-stock', stock > 0 && stock <= 3);
+    stockBadge.classList.toggle('is-out', stock <= 0);
+  }
+
+  if (availabilityText) {
+    availabilityText.textContent = stock <= 0 ? 'Currently unavailable' : `${stock} ready to order`;
+  }
+
+  const deliveryEstimate = getDeliveryEstimate(product);
+  if (deliveryText) deliveryText.textContent = deliveryEstimate;
+  if (detailCategory) detailCategory.textContent = product.category?.name || 'General';
+  if (detailPlatform) detailPlatform.textContent = product.platform || 'Universal';
+  if (detailStock) detailStock.textContent = stock <= 0 ? 'Unavailable' : `${stock} units`;
+  if (detailDispatch) detailDispatch.textContent = deliveryEstimate;
+  if (detailSupport) detailSupport.textContent = 'Help available 7 days a week';
+  if (detailPriceTier) detailPriceTier.textContent = getPriceTier(product);
+  if (detailReturns) detailReturns.textContent = '14-day returns support';
+  if (detailSku) detailSku.textContent = `VEL-${String(product.id).padStart(4, '0')}`;
+
+  renderRelatedProducts(product, allProducts || []);
+}
+
+function renderRelatedProducts(currentProduct, products) {
+  const relatedContainer = document.getElementById('related_products');
+  const emptyState = document.getElementById('related_products_empty');
+  if (!relatedContainer || !currentProduct) return;
+
+  relatedContainer.innerHTML = '';
+
+  const currentCategoryName = currentProduct.category?.name || '';
+  const related = products
+    .filter((item) => String(item.id) !== String(currentProduct.id))
+    .filter((item) => item.category?.name === currentCategoryName)
+    .slice(0, 4);
+
+  if (!related.length) {
+    if (emptyState) emptyState.hidden = false;
+    return;
+  }
+
+  if (emptyState) emptyState.hidden = true;
+
+  related.forEach((product) => {
+    const card = document.createElement('article');
+    card.className = 'related-product-card';
+
+    const image = document.createElement('img');
+    setProductImage(image, product);
+    image.alt = `${product.name} image`;
+
+    const title = document.createElement('h3');
+    title.textContent = product.name;
+
+    const price = document.createElement('p');
+    price.textContent = `${product.price} GBP`;
+
+    const link = document.createElement('a');
+    link.href = `ProductPage.html?id=${product.id}`;
+    link.textContent = 'View product';
+
+    card.appendChild(image);
+    card.appendChild(title);
+    card.appendChild(price);
+    card.appendChild(link);
+    relatedContainer.appendChild(card);
+  });
+}
+
 function isShopAllPage() {
   return Boolean(container && !container2);
 }
@@ -783,6 +929,7 @@ function initProductPageQty(product) {
 if (container || container2) {
   clearProductsPageError();
   bindShopFilterControls();
+  setProductLoadingState(Boolean(container2));
   fetch(buildShopRequestUrl(), { credentials: 'include' })
     .then((res) => {
       if (!res.ok) throw new Error('Failed to load products from backend');
@@ -802,22 +949,9 @@ if (container || container2) {
         console.log('Selected product:', product);
 
         if (product) {
-          const img = container2.querySelector('.product_image');
-          const nameEl = container2.querySelector('.product_name');
-          const brandEl = container2.querySelector('#product_brand');
-          const descEl = container2.querySelector('.product_description');
-          const priceEl = container2.querySelector('.product_price');
-
-          setProductImage(img, product);
-          if (nameEl) nameEl.textContent = product.name;
-          if (brandEl) brandEl.textContent = product.brand || '';
-          if (descEl) descEl.textContent = product.description || '';
-          if (priceEl) priceEl.textContent = `${product.price} GBP`;
-
-
-
           const button = container2.querySelector('.add_to_basket');
           const getQty = initProductPageQty(product);
+          updateProductDetailView(product, products);
 
           if (button) {
             const stock = Number(product.stock ?? 0);
@@ -842,8 +976,10 @@ if (container || container2) {
 
 
           document.title = product.name;
+          setProductLoadingState(false);
         } else {
           showProductPageError('This product could not be found or is no longer available.');
+          setProductLoadingState(false);
         }
 
         loadCartFromBackend();
@@ -870,6 +1006,7 @@ if (container || container2) {
       }
       if (container2) {
         showProductPageError('We could not load this product right now. Please go back and try again.');
+        setProductLoadingState(false);
       }
     });
 }
