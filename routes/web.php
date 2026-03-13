@@ -13,6 +13,10 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
+use App\Models\Category;
+use App\Models\Faq;
+use App\Models\Order;
+use App\Models\Product;
 
 
 
@@ -111,7 +115,55 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin', function () {
-        return view('admin.dashboard');
+        $totalUsers = User::count();
+        $totalProducts = Product::count();
+        $inStockProducts = Product::where('stock', '>', 0)->count();
+        $outOfStockProducts = Product::where('stock', '<=', 0)->count();
+        $lowStockProducts = Product::where('stock', '>', 0)
+            ->where('stock', '<=', 5)
+            ->orderBy('stock')
+            ->orderBy('name')
+            ->take(5)
+            ->get(['id', 'name', 'stock']);
+
+        $totalOrders = Order::count();
+        $processingOrders = Order::where('status', 'processing')->count();
+        $cancelledOrders = Order::where('status', 'cancelled')->count();
+        $completedOrders = Order::whereIn('status', ['completed', 'delivered'])->count();
+        $totalRevenue = (float) Order::whereNotIn('status', ['cancelled'])->sum('total');
+        $averageOrderValue = $totalOrders > 0
+            ? (float) Order::whereNotIn('status', ['cancelled'])->avg('total')
+            : 0.0;
+
+        $topCategories = Category::withCount('products')
+            ->orderByDesc('products_count')
+            ->orderBy('name')
+            ->take(4)
+            ->get(['id', 'name']);
+
+        $recentOrders = Order::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $faqCount = Faq::count();
+
+        return view('admin.dashboard', compact(
+            'totalUsers',
+            'totalProducts',
+            'inStockProducts',
+            'outOfStockProducts',
+            'lowStockProducts',
+            'totalOrders',
+            'processingOrders',
+            'cancelledOrders',
+            'completedOrders',
+            'totalRevenue',
+            'averageOrderValue',
+            'topCategories',
+            'recentOrders',
+            'faqCount',
+        ));
     })->name('admin.dashboard');
 
     Route::get('/admin/users', [UserController::class, 'index'])

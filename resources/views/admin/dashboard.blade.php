@@ -25,6 +25,141 @@
                 </div>
             </div>
 
+            <div class="mb-10 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+                <div class="rounded-3xl border border-white/10 bg-black/70 p-6 text-white shadow-xl">
+                    <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
+                    <p class="mt-3 text-4xl font-bold">{{ number_format($totalUsers) }}</p>
+                    <p class="mt-2 text-sm text-gray-300">Registered accounts on the platform.</p>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-black/70 p-6 text-white shadow-xl">
+                    <p class="text-sm uppercase tracking-[0.2em] text-emerald-300">Products</p>
+                    <p class="mt-3 text-4xl font-bold">{{ number_format($totalProducts) }}</p>
+                    <p class="mt-2 text-sm text-gray-300">{{ $inStockProducts }} in stock, {{ $outOfStockProducts }} out of stock.</p>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-black/70 p-6 text-white shadow-xl">
+                    <p class="text-sm uppercase tracking-[0.2em] text-amber-300">Orders</p>
+                    <p class="mt-3 text-4xl font-bold">{{ number_format($totalOrders) }}</p>
+                    <p class="mt-2 text-sm text-gray-300">{{ $processingOrders }} processing, {{ $completedOrders }} completed.</p>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-black/70 p-6 text-white shadow-xl">
+                    <p class="text-sm uppercase tracking-[0.2em] text-pink-300">Revenue</p>
+                    <p class="mt-3 text-4xl font-bold">£{{ number_format($totalRevenue, 2) }}</p>
+                    <p class="mt-2 text-sm text-gray-300">Average order value £{{ number_format($averageOrderValue, 2) }}.</p>
+                </div>
+            </div>
+
+            <div class="mb-10 grid grid-cols-1 xl:grid-cols-3 gap-6">
+                <section class="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 xl:col-span-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Stock health</p>
+                            <h3 class="mt-2 text-2xl font-bold text-gray-900 dark:text-white">Inventory snapshot</h3>
+                        </div>
+                        <a href="{{ route('admin.products.stock') }}" class="text-sm font-semibold text-cyan-600 hover:text-cyan-500">View stock</a>
+                    </div>
+                    <div class="mt-5 grid grid-cols-2 gap-4">
+                        <div class="rounded-2xl bg-emerald-50 p-4 text-emerald-900">
+                            <p class="text-sm font-semibold">Available</p>
+                            <p class="mt-2 text-3xl font-bold">{{ $inStockProducts }}</p>
+                        </div>
+                        <div class="rounded-2xl bg-rose-50 p-4 text-rose-900">
+                            <p class="text-sm font-semibold">Out of stock</p>
+                            <p class="mt-2 text-3xl font-bold">{{ $outOfStockProducts }}</p>
+                        </div>
+                    </div>
+                    <div class="mt-5">
+                        <div class="mb-3 flex items-center justify-between">
+                            <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">Low stock alerts</p>
+                            <span class="text-xs text-gray-400">5 units or fewer</span>
+                        </div>
+                        @if ($lowStockProducts->isEmpty())
+                            <p class="rounded-2xl bg-gray-50 px-4 py-3 text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-400">No products currently need urgent restocking.</p>
+                        @else
+                            <div class="space-y-3">
+                                @foreach ($lowStockProducts as $product)
+                                    <div class="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3 dark:bg-gray-900">
+                                        <span class="font-semibold text-gray-800 dark:text-gray-100">{{ $product->name }}</span>
+                                        <span class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">{{ $product->stock }} left</span>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </section>
+
+                <section class="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 xl:col-span-1">
+                    <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Order mix</p>
+                    <h3 class="mt-2 text-2xl font-bold text-gray-900 dark:text-white">Current fulfilment status</h3>
+                    <div class="mt-5 space-y-4">
+                        <div class="rounded-2xl bg-amber-50 p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-amber-900">Processing</span>
+                                <span class="text-2xl font-bold text-amber-900">{{ $processingOrders }}</span>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl bg-emerald-50 p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-emerald-900">Completed</span>
+                                <span class="text-2xl font-bold text-emerald-900">{{ $completedOrders }}</span>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl bg-rose-50 p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-rose-900">Cancelled</span>
+                                <span class="text-2xl font-bold text-rose-900">{{ $cancelledOrders }}</span>
+                            </div>
+                        </div>
+                        <div class="rounded-2xl bg-cyan-50 p-4">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-cyan-900">Chatbot FAQs</span>
+                                <span class="text-2xl font-bold text-cyan-900">{{ $faqCount }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800 xl:col-span-1">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Best covered areas</p>
+                            <h3 class="mt-2 text-2xl font-bold text-gray-900 dark:text-white">Top categories</h3>
+                        </div>
+                        <a href="{{ route('admin.products.index') }}" class="text-sm font-semibold text-cyan-600 hover:text-cyan-500">Manage products</a>
+                    </div>
+                    <div class="mt-5 space-y-3">
+                        @forelse ($topCategories as $category)
+                            <div class="rounded-2xl bg-gray-50 px-4 py-4 dark:bg-gray-900">
+                                <div class="flex items-center justify-between">
+                                    <span class="font-semibold text-gray-800 dark:text-gray-100">{{ $category->name }}</span>
+                                    <span class="text-sm text-gray-500 dark:text-gray-400">{{ $category->products_count }} products</span>
+                                </div>
+                            </div>
+                        @empty
+                            <p class="rounded-2xl bg-gray-50 px-4 py-3 text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-400">No category data is available yet.</p>
+                        @endforelse
+                    </div>
+                    <div class="mt-6">
+                        <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Latest orders</p>
+                        <div class="mt-3 space-y-3">
+                            @forelse ($recentOrders as $order)
+                                <div class="flex items-center justify-between rounded-2xl border border-gray-100 px-4 py-3 dark:border-gray-700">
+                                    <div>
+                                        <p class="font-semibold text-gray-900 dark:text-white">Order #{{ $order->id }}</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ $order->user?->name ?? 'Guest' }}</p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-semibold text-gray-900 dark:text-white">£{{ number_format($order->total, 2) }}</p>
+                                        <p class="text-sm text-gray-500 dark:text-gray-400">{{ ucfirst($order->status) }}</p>
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="rounded-2xl bg-gray-50 px-4 py-3 text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-400">No orders have been placed yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </section>
+            </div>
+
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
                 
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">

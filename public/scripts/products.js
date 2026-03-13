@@ -15,6 +15,14 @@ const searchQ = parameters.get('q');
 const ProductCard_template = document.querySelector('template');
 const container = document.getElementById('products_container');
 const container2 = document.getElementById('product_display');
+const minPriceInput = document.getElementById('filter_min_price');
+const maxPriceInput = document.getElementById('filter_max_price');
+const availabilitySelect = document.getElementById('filter_availability');
+const sortSelect = document.getElementById('sort_products');
+const applyFiltersButton = document.getElementById('apply_filters');
+const clearFiltersButton = document.getElementById('clear_filters');
+const resultsSummary = document.getElementById('results_summary');
+const emptyProductsState = document.getElementById('empty_products_state');
 
 function ensureInlineNotice(id, parent, className = '') {
   if (!parent) return null;
@@ -72,6 +80,145 @@ function showProductPageError(message) {
   notice.style.textAlign = 'center';
   notice.style.margin = '0 auto 20px';
   notice.style.maxWidth = '820px';
+}
+
+function isShopAllPage() {
+  return Boolean(container && !container2);
+}
+
+function syncShopControlsFromQuery() {
+  if (!isShopAllPage()) return;
+
+  if (minPriceInput) minPriceInput.value = parameters.get('min_price') || '';
+  if (maxPriceInput) maxPriceInput.value = parameters.get('max_price') || '';
+  if (availabilitySelect) availabilitySelect.value = parameters.get('availability') || '';
+  if (sortSelect) sortSelect.value = parameters.get('sort') || 'default';
+
+  const sortLabel = document.querySelector('.custom-select .val');
+  const selectedSortOption = sortSelect?.selectedOptions?.[0];
+  if (sortLabel && selectedSortOption) {
+    sortLabel.textContent = selectedSortOption.textContent;
+  }
+}
+
+function buildShopRequestUrl() {
+  const requestParams = new URLSearchParams();
+
+  ['category', 'q', 'availability', 'min_price', 'max_price', 'sort'].forEach((key) => {
+    const value = parameters.get(key);
+    if (value) requestParams.set(key, value);
+  });
+
+  const queryString = requestParams.toString();
+  return queryString ? `/products?${queryString}` : '/products';
+}
+
+function applyShopFilters() {
+  if (!isShopAllPage()) return;
+
+  const nextParams = new URLSearchParams(window.location.search);
+
+  const setOrDelete = (key, value) => {
+    const normalized = String(value || '').trim();
+    if (normalized) {
+      nextParams.set(key, normalized);
+    } else {
+      nextParams.delete(key);
+    }
+  };
+
+  setOrDelete('min_price', minPriceInput?.value);
+  setOrDelete('max_price', maxPriceInput?.value);
+  setOrDelete('availability', availabilitySelect?.value);
+  setOrDelete('sort', sortSelect?.value === 'default' ? '' : sortSelect?.value);
+
+  const nextQuery = nextParams.toString();
+  const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}`;
+  window.location.href = nextUrl;
+}
+
+function clearShopFilters() {
+  if (!isShopAllPage()) return;
+
+  const nextParams = new URLSearchParams(window.location.search);
+  ['min_price', 'max_price', 'availability', 'sort'].forEach((key) => nextParams.delete(key));
+
+  const nextQuery = nextParams.toString();
+  const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}`;
+  window.location.href = nextUrl;
+}
+
+function updateShopTitle(products) {
+  const titleEl = document.getElementById('title');
+  if (!titleEl) return;
+
+  if (searchQ) {
+    titleEl.textContent = `Results for "${searchQ}"`;
+    return;
+  }
+
+  if (category) {
+    titleEl.textContent = category;
+    return;
+  }
+
+  titleEl.textContent = products.length ? 'All Products' : 'Shop All';
+}
+
+function updateResultsSummary(products) {
+  if (!resultsSummary) return;
+
+  const summaryParts = [`${products.length} product${products.length === 1 ? '' : 's'}`];
+
+  if (category) summaryParts.push(category);
+  if (parameters.get('availability') === 'in_stock') summaryParts.push('in stock only');
+  if (parameters.get('availability') === 'out_of_stock') summaryParts.push('out of stock only');
+  if (parameters.get('min_price')) summaryParts.push(`from £${parameters.get('min_price')}`);
+  if (parameters.get('max_price')) summaryParts.push(`up to £${parameters.get('max_price')}`);
+
+  resultsSummary.textContent = summaryParts.join(' • ');
+}
+
+function toggleEmptyProductsState(products) {
+  if (!emptyProductsState) return;
+  emptyProductsState.hidden = products.length > 0;
+}
+
+function bindShopFilterControls() {
+  if (!isShopAllPage()) return;
+
+  syncShopControlsFromQuery();
+
+  if (applyFiltersButton && applyFiltersButton.dataset.bound !== '1') {
+    applyFiltersButton.dataset.bound = '1';
+    applyFiltersButton.addEventListener('click', applyShopFilters);
+  }
+
+  if (clearFiltersButton && clearFiltersButton.dataset.bound !== '1') {
+    clearFiltersButton.dataset.bound = '1';
+    clearFiltersButton.addEventListener('click', clearShopFilters);
+  }
+
+  [minPriceInput, maxPriceInput].forEach((input) => {
+    if (!input || input.dataset.bound === '1') return;
+    input.dataset.bound = '1';
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        applyShopFilters();
+      }
+    });
+  });
+
+  if (availabilitySelect && availabilitySelect.dataset.bound !== '1') {
+    availabilitySelect.dataset.bound = '1';
+    availabilitySelect.addEventListener('change', applyShopFilters);
+  }
+
+  if (sortSelect && sortSelect.dataset.bound !== '1') {
+    sortSelect.dataset.bound = '1';
+    sortSelect.addEventListener('change', applyShopFilters);
+  }
 }
 
 
@@ -459,6 +606,8 @@ function renderProducts(list) {
   if (!container || !ProductCard_template) return;
 
   container.innerHTML = '';
+  toggleEmptyProductsState(list);
+  updateResultsSummary(list);
 
   list.forEach((product) => {
     const clone = ProductCard_template.content.cloneNode(true);
@@ -470,6 +619,12 @@ function renderProducts(list) {
 
     if (priceEl) priceEl.textContent = `${product.price} GBP`;
     if (nameEl) nameEl.textContent = product.name;
+    if (clone.firstElementChild) {
+      clone.firstElementChild.dataset.name = product.name || '';
+      clone.firstElementChild.dataset.price = product.price || '';
+      clone.firstElementChild.dataset.category = product.category?.name || '';
+      clone.firstElementChild.dataset.stock = product.stock || 0;
+    }
     setProductImage(img, product);
 
     // Ensure card description is hidden even if template has it
@@ -627,7 +782,8 @@ function initProductPageQty(product) {
 
 if (container || container2) {
   clearProductsPageError();
-  fetch('/products', { credentials: 'include' })
+  bindShopFilterControls();
+  fetch(buildShopRequestUrl(), { credentials: 'include' })
     .then((res) => {
       if (!res.ok) throw new Error('Failed to load products from backend');
       return res.json();
@@ -694,50 +850,14 @@ if (container || container2) {
         return;
       }
 
-      // ---------------------------
-      // Category filtering (Shop All)
-      // ---------------------------
-      let currentCategory = [];
-
-      if (category) {
-        currentCategory = products.filter(
-          (p) => p.category && p.category.name === category
-        );
-
-        const titleEl = document.getElementById('title');
-        if (titleEl) titleEl.textContent = category;
-      } else {
-        currentCategory = products;
-
-        const titleEl = document.getElementById('title');
-        if (titleEl) titleEl.textContent = 'All Products';
-      }
-
-      window.currentCategoryProducts = currentCategory;
-      window.visibleBaseProducts = currentCategory;
-
-      if (searchQ) {
-        const term = searchQ.trim().toLowerCase();
-
-        const filtered = currentCategory.filter(p =>
-          (p.name || '').toLowerCase().includes(term)
-        );
-
-        const titleEl = document.getElementById('title');
-        if (titleEl) titleEl.textContent = `Results for "${searchQ}"`;
-
-        renderProducts(filtered);
-
-      } else {
-        renderProducts(currentCategory);
-      }
+      updateShopTitle(products);
+      window.currentCategoryProducts = products;
+      window.visibleBaseProducts = products;
+      renderProducts(products);
 
       // Hide loading message after products are rendered
       const loadingEl = document.getElementById("loading_products");
       if (loadingEl) loadingEl.style.display = "none";
-
-      // Init search AFTER we have products + base list
-      initShopSearch();
 
       // Cart
       loadCartFromBackend();
