@@ -14,63 +14,83 @@
   <header></header>
 
   <main>
-    <h1 style="width: 100%; text-align: center; font-size: 5em;" id="title">All Products</h1>
+    <h1 style="width: 100%; text-align: center; font-size: 100px;" id="title">All Products</h1>
+    <div class="shop-toolbar-toggle-row">
+      <button type="button" id="toggle_filters">Show filters</button>
+    </div>
 
-    <section class="shop-toolbar" aria-labelledby="shop-toolbar-title">
+    <section class="shop-toolbar is-hidden" aria-label="Shop filters">
       <div class="shop-toolbar__header">
-        <div>
-          <p class="shop-toolbar__eyebrow">Search smarter</p>
-          <h2 id="shop-toolbar-title">Filter the catalogue</h2>
-        </div>
         <p class="shop-toolbar__summary" id="results_summary">Loading products...</p>
       </div>
 
       <div class="shop-filter-grid">
-        <label class="shop-filter-field">
-          <span>Minimum price</span>
-          <input type="number" id="filter_min_price" min="0" step="0.01" placeholder="0">
-        </label>
-
-        <label class="shop-filter-field">
-          <span>Maximum price</span>
-          <input type="number" id="filter_max_price" min="0" step="0.01" placeholder="500">
-        </label>
-
-        <label class="shop-filter-field">
-          <span>Availability</span>
-          <select id="filter_availability">
-            <option value="">All products</option>
-            <option value="in_stock">In stock only</option>
-            <option value="out_of_stock">Out of stock only</option>
-          </select>
-        </label>
-      </div>
-    </section>
-
-    <div id="sort_container" style="width:100%; text-align:center;">
-      <div class="shop-toolbar__sort-row">
-        <div class="custom-select" style="display:inline-block; position:relative; text-align:left;">
-          <select id="sort_products" style="display:none;">
-            <option value="default">Default</option>
-            <option value="newest">Newest First</option>
-            <option value="price_low">Price Low to High</option>
-            <option value="price_high">Price High to Low</option>
-            <option value="name_asc">Name A to Z</option>
-            <option value="name_desc">Name Z to A</option>
-            <option value="stock_high">Stock High to Low</option>
-          </select>
-
-          <div class="select-selected">
-            <span class="val">Default</span>
+        <label class="shop-filter-field shop-filter-field--range">
+          <span>Price range</span>
+          <div class="shop-price-range">
+            <div class="shop-price-range__values">
+              <span>From <strong id="filter_min_price_value">0</strong></span>
+              <span>To <strong id="filter_max_price_value">10000</strong></span>
+            </div>
+            <div class="shop-price-range__sliders">
+              <div class="shop-price-range__track"></div>
+              <div class="shop-price-range__fill" id="shop_price_range_fill"></div>
+              <input type="range" id="filter_min_price_range" min="0" max="10000" step="1" value="0" aria-label="Minimum price">
+              <input type="range" id="filter_max_price_range" min="0" max="10000" step="1" value="10000" aria-label="Maximum price">
+            </div>
+            <input type="hidden" id="filter_min_price" value="">
+            <input type="hidden" id="filter_max_price" value="">
           </div>
+        </label>
 
-          <div class="select-items select-hide">
-            <div data-value="newest">Newest First</div>
-            <div data-value="price_low">Price Low to High</div>
-            <div data-value="price_high">Price High to Low</div>
-            <div data-value="name_asc">Name A to Z</div>
-            <div data-value="name_desc">Name Z to A</div>
-            <div data-value="stock_high">Stock High to Low</div>
+        <div class="shop-filter-field">
+          <span>Availability</span>
+          <div class="custom-select custom-select--availability" style="display:inline-block; position:relative; text-align:left;">
+            <select id="filter_availability" style="display:none;">
+              <option value="">All products</option>
+              <option value="in_stock">In stock only</option>
+              <option value="out_of_stock">Out of stock only</option>
+            </select>
+
+            <div class="select-selected">
+              <span class="val">All products</span>
+            </div>
+
+            <div class="select-items select-hide">
+              <div data-value="">All products</div>
+              <div data-value="in_stock">In stock only</div>
+              <div data-value="out_of_stock">Out of stock only</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="shop-toolbar__sort-row">
+        <div class="shop-filter-field shop-filter-field--sort">
+          <span>Sort by</span>
+          <div class="custom-select" style="display:inline-block; position:relative; text-align:left;">
+            <select id="sort_products" style="display:none;">
+              <option value="default">Default</option>
+              <option value="newest">Newest First</option>
+              <option value="price_low">Price Low to High</option>
+              <option value="price_high">Price High to Low</option>
+              <option value="name_asc">Name A to Z</option>
+              <option value="name_desc">Name Z to A</option>
+              <option value="stock_high">Stock High to Low</option>
+            </select>
+
+            <div class="select-selected">
+              <span class="val">Default</span>
+            </div>
+
+            <div class="select-items select-hide">
+              <div data-value="newest">Newest First</div>
+              <div data-value="price_low">Price Low to High</div>
+              <div data-value="price_high">Price High to Low</div>
+              <div data-value="name_asc">Name A to Z</div>
+              <div data-value="name_desc">Name Z to A</div>
+              <div data-value="stock_high">Stock High to Low</div>
+            </div>
           </div>
         </div>
 
@@ -79,117 +99,82 @@
           <button type="button" id="clear_filters" class="is-secondary">Clear all</button>
         </div>
       </div>
-    </div>
+    </section>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const customSelect = document.querySelector(".custom-select");
-        if (!customSelect) return;
+        const customSelects = document.querySelectorAll(".custom-select");
+        if (!customSelects.length) return;
 
-        const selectedDiv = customSelect.querySelector(".select-selected");
-        const valSpan = selectedDiv.querySelector(".val");
-        const itemsDiv = customSelect.querySelector(".select-items");
-        const nativeSelect = document.getElementById("sort_products");
-        const itemDivs = itemsDiv.querySelectorAll("div");
+        function closeAllSelect(except) {
+          customSelects.forEach((customSelect) => {
+            if (customSelect === except) return;
+            const selectedDiv = customSelect.querySelector(".select-selected");
+            const itemsDiv = customSelect.querySelector(".select-items");
+            if (selectedDiv) selectedDiv.classList.remove("select-arrow-active");
+            if (itemsDiv) itemsDiv.classList.add("select-hide");
+          });
+        }
 
-        selectedDiv.addEventListener("click", function (e) {
-          e.stopPropagation();
-          itemsDiv.classList.toggle("select-hide");
-          selectedDiv.classList.toggle("select-arrow-active");
+        customSelects.forEach((customSelect) => {
+          const selectedDiv = customSelect.querySelector(".select-selected");
+          const valSpan = selectedDiv?.querySelector(".val");
+          const itemsDiv = customSelect.querySelector(".select-items");
+          const nativeSelect = customSelect.querySelector("select");
+          const itemDivs = itemsDiv ? Array.from(itemsDiv.querySelectorAll("div")) : [];
 
-          if (!itemsDiv.classList.contains("select-hide")) {
-            const currentChildren = Array.from(itemsDiv.children);
-            const visibleChildren = currentChildren.filter(d => d.style.display !== "none");
+          if (!selectedDiv || !valSpan || !itemsDiv || !nativeSelect) return;
 
-            currentChildren.forEach(d => {
-              d.style.borderTopLeftRadius = "0";
-              d.style.borderTopRightRadius = "0";
-              d.style.borderBottomLeftRadius = "0";
-              d.style.borderBottomRightRadius = "0";
-            });
-
-            if (visibleChildren.length > 0) {
-              visibleChildren[0].style.borderTopLeftRadius = "9px";
-              visibleChildren[0].style.borderTopRightRadius = "9px";
-              visibleChildren[visibleChildren.length - 1].style.borderBottomLeftRadius = "9px";
-              visibleChildren[visibleChildren.length - 1].style.borderBottomRightRadius = "9px";
-            }
-          }
-        });
-
-        itemDivs.forEach(item => {
-          item.addEventListener("click", function (e) {
+          selectedDiv.addEventListener("click", function (e) {
             e.stopPropagation();
-            const value = this.getAttribute("data-value");
-            const text = this.innerHTML;
+            const willOpen = itemsDiv.classList.contains("select-hide");
+            closeAllSelect(customSelect);
+            itemsDiv.classList.toggle("select-hide", !willOpen);
+            selectedDiv.classList.toggle("select-arrow-active", willOpen);
 
-            valSpan.innerHTML = text;
+            if (!itemsDiv.classList.contains("select-hide")) {
+              const visibleChildren = itemDivs.filter((d) => d.style.display !== "none");
 
-            Array.from(nativeSelect.options).forEach(opt => {
-              if (opt.value === value) {
-                opt.selected = true;
+              itemDivs.forEach((d) => {
+                d.style.borderTopLeftRadius = "0";
+                d.style.borderTopRightRadius = "0";
+                d.style.borderBottomLeftRadius = "0";
+                d.style.borderBottomRightRadius = "0";
+              });
+
+              if (visibleChildren.length > 0) {
+                visibleChildren[0].style.borderTopLeftRadius = "9px";
+                visibleChildren[0].style.borderTopRightRadius = "9px";
+                visibleChildren[visibleChildren.length - 1].style.borderBottomLeftRadius = "9px";
+                visibleChildren[visibleChildren.length - 1].style.borderBottomRightRadius = "9px";
               }
+            }
+          });
+
+          itemDivs.forEach((item) => {
+            item.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const value = this.getAttribute("data-value") ?? "";
+              const text = this.innerHTML;
+
+              valSpan.innerHTML = text;
+              nativeSelect.value = value;
+              nativeSelect.dispatchEvent(new Event("change"));
+              closeAllSelect();
             });
-            nativeSelect.dispatchEvent(new Event("change"));
+          });
 
-            itemDivs.forEach(div => div.style.display = "block");
-
-            let injectedDefault = itemsDiv.querySelector('div[data-value="default"]');
-            if (injectedDefault) {
-              injectedDefault.style.display = "block";
+          nativeSelect.addEventListener("change", function () {
+            const selectedOption = nativeSelect.selectedOptions[0];
+            if (selectedOption) {
+              valSpan.textContent = selectedOption.textContent;
             }
-
-            this.style.display = "none";
-
-            if (value !== "default") {
-              let defaultOpt = itemsDiv.querySelector('div[data-value="default"]');
-              if (!defaultOpt) {
-                defaultOpt = document.createElement("div");
-                defaultOpt.setAttribute("data-value", "default");
-                defaultOpt.innerHTML = "Default";
-                defaultOpt.addEventListener("click", itemClickReset);
-                itemsDiv.prepend(defaultOpt);
-              }
-            } else {
-              let defaultOpt = itemsDiv.querySelector('div[data-value="default"]');
-              if (defaultOpt) defaultOpt.style.display = "none";
-            }
-
-            closeAllSelect();
           });
         });
 
-        function itemClickReset(e) {
-          e.stopPropagation();
-          const value = this.getAttribute("data-value");
-          const text = this.innerHTML;
-          valSpan.innerHTML = text;
-          nativeSelect.value = value;
-          nativeSelect.dispatchEvent(new Event("change"));
-
-          itemDivs.forEach(div => div.style.display = "block");
-
-          let injectedDefault = itemsDiv.querySelector('div[data-value="default"]');
-          if (injectedDefault) {
-            injectedDefault.style.display = "none";
-          }
-
+        document.addEventListener("click", function () {
           closeAllSelect();
-        }
-
-        function closeAllSelect() {
-          itemsDiv.classList.add("select-hide");
-          selectedDiv.classList.remove("select-arrow-active");
-        }
-
-        document.addEventListener("click", closeAllSelect);
-
-        let defaultOpt = document.createElement("div");
-        defaultOpt.setAttribute("data-value", "default");
-        defaultOpt.innerHTML = "Default";
-        defaultOpt.style.display = "none";
-        defaultOpt.addEventListener("click", itemClickReset);
-        itemsDiv.prepend(defaultOpt);
+        });
       });
     </script>
 
@@ -214,38 +199,11 @@
       </template>
     </section>
 
-    <section class="shop-category-tabs" aria-labelledby="shop-category-tabs-title">
-      <div class="shop-category-tabs__inner">
-        <p class="shop-category-tabs__eyebrow">Quick navigation</p>
-        <h2 id="shop-category-tabs-title">Browse by category</h2>
-        <div class="shop-category-tabs__list" id="shop-category-tabs-list">
-          <a href="ShopAll.html" data-category-tab="all">All Products</a>
-          <a href="ShopAll.html?category=Video%20Games" data-category-tab="Video Games">Video Games</a>
-          <a href="ShopAll.html?category=Consoles%20and%20PCs" data-category-tab="Consoles and PCs">Consoles and PCs</a>
-          <a href="ShopAll.html?category=Accessories" data-category-tab="Accessories">Accessories</a>
-          <a href="ShopAll.html?category=Gaming%20Chairs%20and%20Desks" data-category-tab="Gaming Chairs and Desks">Gaming Chairs and Desks</a>
-          <a href="ShopAll.html?category=Monitors%20and%20Displays" data-category-tab="Monitors and Displays">Monitors and Displays</a>
-        </div>
-      </div>
-    </section>
   </main>
 
   <script src="../scripts/header.js"></script>
   <script src="../scripts/animations.js" defer></script>
   <script src="../scripts/products.js?v=9"></script>
-  <script>
-    (function () {
-      const activeCategory = new URLSearchParams(window.location.search).get("category") || "all";
-      const categoryTabs = document.querySelectorAll("[data-category-tab]");
-      categoryTabs.forEach((tab) => {
-        const tabCategory = tab.getAttribute("data-category-tab");
-        if (tabCategory === activeCategory || (activeCategory === "all" && tabCategory === "all")) {
-          tab.classList.add("is-active");
-          tab.setAttribute("aria-current", "page");
-        }
-      });
-    })();
-  </script>
 </body>
 
 </html>

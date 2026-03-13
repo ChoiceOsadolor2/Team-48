@@ -17,12 +17,21 @@ const container = document.getElementById('products_container');
 const container2 = document.getElementById('product_display');
 const minPriceInput = document.getElementById('filter_min_price');
 const maxPriceInput = document.getElementById('filter_max_price');
+const minPriceRange = document.getElementById('filter_min_price_range');
+const maxPriceRange = document.getElementById('filter_max_price_range');
+const minPriceValue = document.getElementById('filter_min_price_value');
+const maxPriceValue = document.getElementById('filter_max_price_value');
+const priceRangeFill = document.getElementById('shop_price_range_fill');
 const availabilitySelect = document.getElementById('filter_availability');
 const sortSelect = document.getElementById('sort_products');
 const applyFiltersButton = document.getElementById('apply_filters');
 const clearFiltersButton = document.getElementById('clear_filters');
+const toggleFiltersButton = document.getElementById('toggle_filters');
 const resultsSummary = document.getElementById('results_summary');
 const emptyProductsState = document.getElementById('empty_products_state');
+const shopToolbar = document.querySelector('.shop-toolbar');
+const PRICE_RANGE_MIN = 0;
+let currentPriceRangeMax = 10000;
 
 function ensureInlineNotice(id, parent, className = '') {
   if (!parent) return null;
@@ -232,18 +241,88 @@ function isShopAllPage() {
   return Boolean(container && !container2);
 }
 
+function updatePriceRangeBounds(products = [], explicitMax = null) {
+  if (!minPriceRange || !maxPriceRange) return;
+
+  const prices = products
+    .map((product) => Number(product?.price ?? 0))
+    .filter((price) => Number.isFinite(price) && price >= 0);
+
+  const highestFilteredPrice = prices.length ? Math.ceil(Math.max(...prices)) : 0;
+  const highestPrice = Number.isFinite(Number(explicitMax))
+    ? Math.ceil(Number(explicitMax))
+    : highestFilteredPrice;
+
+  currentPriceRangeMax = Math.max(PRICE_RANGE_MIN, highestPrice);
+
+  minPriceRange.max = String(currentPriceRangeMax);
+  maxPriceRange.max = String(currentPriceRangeMax);
+
+  if (Number(minPriceRange.value || 0) > currentPriceRangeMax) {
+    minPriceRange.value = String(currentPriceRangeMax);
+  }
+  if (Number(maxPriceRange.value || 0) > currentPriceRangeMax || !maxPriceRange.value) {
+    maxPriceRange.value = String(currentPriceRangeMax);
+  }
+}
+
+function syncPriceRangeUI() {
+  if (!minPriceRange || !maxPriceRange || !minPriceInput || !maxPriceInput) return;
+
+  let min = Number(minPriceRange.value || PRICE_RANGE_MIN);
+  let max = Number(maxPriceRange.value || currentPriceRangeMax);
+
+  min = Math.max(PRICE_RANGE_MIN, Math.min(min, currentPriceRangeMax));
+  max = Math.max(PRICE_RANGE_MIN, Math.min(max, currentPriceRangeMax));
+  minPriceRange.value = String(min);
+  maxPriceRange.value = String(max);
+
+  if (min > max) {
+    if (document.activeElement === minPriceRange) {
+      max = min;
+      maxPriceRange.value = String(max);
+    } else {
+      min = max;
+      minPriceRange.value = String(min);
+    }
+  }
+
+  minPriceInput.value = min <= PRICE_RANGE_MIN ? '' : String(min);
+  maxPriceInput.value = max >= currentPriceRangeMax ? '' : String(max);
+
+  if (minPriceValue) minPriceValue.textContent = String(min);
+  if (maxPriceValue) maxPriceValue.textContent = String(max);
+
+  if (priceRangeFill) {
+    const span = Math.max(1, currentPriceRangeMax - PRICE_RANGE_MIN);
+    const left = ((min - PRICE_RANGE_MIN) / span) * 100;
+    const right = ((max - PRICE_RANGE_MIN) / span) * 100;
+    priceRangeFill.style.left = `${left}%`;
+    priceRangeFill.style.width = `${Math.max(0, right - left)}%`;
+  }
+}
+
 function syncShopControlsFromQuery() {
   if (!isShopAllPage()) return;
 
   if (minPriceInput) minPriceInput.value = parameters.get('min_price') || '';
   if (maxPriceInput) maxPriceInput.value = parameters.get('max_price') || '';
+  if (minPriceRange) minPriceRange.value = parameters.get('min_price') || String(PRICE_RANGE_MIN);
+  if (maxPriceRange) maxPriceRange.value = parameters.get('max_price') || String(currentPriceRangeMax);
   if (availabilitySelect) availabilitySelect.value = parameters.get('availability') || '';
   if (sortSelect) sortSelect.value = parameters.get('sort') || 'default';
+  syncPriceRangeUI();
 
-  const sortLabel = document.querySelector('.custom-select .val');
+  const sortLabel = document.querySelector('.shop-toolbar__sort-row .custom-select .val');
   const selectedSortOption = sortSelect?.selectedOptions?.[0];
   if (sortLabel && selectedSortOption) {
     sortLabel.textContent = selectedSortOption.textContent;
+  }
+
+  const availabilityLabel = document.querySelector('.custom-select--availability .val');
+  const selectedAvailabilityOption = availabilitySelect?.selectedOptions?.[0];
+  if (availabilityLabel && selectedAvailabilityOption) {
+    availabilityLabel.textContent = selectedAvailabilityOption.textContent;
   }
 }
 
@@ -335,6 +414,15 @@ function bindShopFilterControls() {
 
   syncShopControlsFromQuery();
 
+  if (toggleFiltersButton && shopToolbar && toggleFiltersButton.dataset.bound !== '1') {
+    toggleFiltersButton.dataset.bound = '1';
+    toggleFiltersButton.addEventListener('click', () => {
+      const willHide = !shopToolbar.classList.contains('is-hidden');
+      shopToolbar.classList.toggle('is-hidden', willHide);
+      toggleFiltersButton.textContent = willHide ? 'Show filters' : 'Hide filters';
+    });
+  }
+
   if (applyFiltersButton && applyFiltersButton.dataset.bound !== '1') {
     applyFiltersButton.dataset.bound = '1';
     applyFiltersButton.addEventListener('click', applyShopFilters);
@@ -356,14 +444,24 @@ function bindShopFilterControls() {
     });
   });
 
+  [minPriceRange, maxPriceRange].forEach((input) => {
+    if (!input || input.dataset.bound === '1') return;
+    input.dataset.bound = '1';
+    input.addEventListener('input', syncPriceRangeUI);
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        syncPriceRangeUI();
+      }
+    });
+  });
+
   if (availabilitySelect && availabilitySelect.dataset.bound !== '1') {
     availabilitySelect.dataset.bound = '1';
-    availabilitySelect.addEventListener('change', applyShopFilters);
   }
 
   if (sortSelect && sortSelect.dataset.bound !== '1') {
     sortSelect.dataset.bound = '1';
-    sortSelect.addEventListener('change', applyShopFilters);
   }
 }
 
@@ -754,6 +852,9 @@ function renderProducts(list) {
   container.innerHTML = '';
   toggleEmptyProductsState(list);
   updateResultsSummary(list);
+  if (resultsSummary) {
+    resultsSummary.textContent = `${list.length} product${list.length === 1 ? '' : 's'}`;
+  }
 
   list.forEach((product) => {
     const clone = ProductCard_template.content.cloneNode(true);
@@ -937,8 +1038,11 @@ if (container || container2) {
     })
     .then((data) => {
       const products = Array.isArray(data) ? data : data.products || [];
+      const shopMaxPrice = Array.isArray(data) ? null : data.shop_max_price;
       window.allProducts = products;
       localStorage.setItem('products', JSON.stringify(products));
+      updatePriceRangeBounds(products, shopMaxPrice);
+      syncShopControlsFromQuery();
 
 
       // Product page (single item)
@@ -1106,32 +1210,3 @@ window.RemoveFromCart = async function (productId) {
     showBasketError('Could not remove item from cart.', { toast: true, type: 'error' });
   }
 };
-
-//product sorting
-(function initSorting() {
-
-  const sortSelect = document.getElementById("sort_products");
-  if (!sortSelect) return;
-
-  sortSelect.addEventListener("change", function () {
-
-    const base =
-      window.visibleBaseProducts
-        ? [...window.visibleBaseProducts]
-        : window.currentCategoryProducts
-          ? [...window.currentCategoryProducts]
-          : [...window.allProducts];
-
-    if (this.value === "price_low") {
-      base.sort((a, b) => Number(a.price) - Number(b.price));
-    }
-
-    if (this.value === "price_high") {
-      base.sort((a, b) => Number(b.price) - Number(a.price));
-    }
-
-    renderProducts(base);
-
-  });
-
-})();

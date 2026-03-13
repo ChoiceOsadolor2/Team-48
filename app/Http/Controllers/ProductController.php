@@ -26,6 +26,7 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'products' => $q->get(),
+            'shop_max_price' => (float) Product::query()->max('price'),
             'filters' => [
                 'category' => $request->query('category'),
                 'q' => trim((string) $request->query('q', '')),
