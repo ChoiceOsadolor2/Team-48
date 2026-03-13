@@ -156,6 +156,22 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->take(5)
             ->get();
 
+        $latestUsers = User::query()
+            ->latest()
+            ->take(3)
+            ->get(['id', 'name', 'email', 'created_at']);
+
+        $latestProducts = Product::query()
+            ->with('category')
+            ->latest()
+            ->take(3)
+            ->get(['id', 'category_id', 'name', 'stock', 'created_at']);
+
+        $latestQueries = ContactQuery::query()
+            ->latest()
+            ->take(3)
+            ->get(['id', 'name', 'subject', 'created_at', 'resolved_at']);
+
         $contactQueryCount = ContactQuery::count();
         $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
 
@@ -173,6 +189,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'averageOrderValue',
             'topCategories',
             'recentOrders',
+            'latestUsers',
+            'latestProducts',
+            'latestQueries',
             'faqCount',
             'contactQueryCount',
         ));

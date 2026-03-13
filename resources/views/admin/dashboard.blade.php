@@ -157,6 +157,100 @@
                 </section>
             </div>
 
+            <section class="mb-8 rounded-3xl border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Activity summary</p>
+                        <h3 class="mt-2 text-xl font-bold text-gray-900 dark:text-white">Latest movement across the store</h3>
+                    </div>
+                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-200">Live snapshot</span>
+                </div>
+
+                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-4">
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                        <div class="mb-3 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Recent orders</h4>
+                            <a href="{{ route('admin.orders.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                        </div>
+                        <div class="space-y-3">
+                            @forelse ($recentOrders as $order)
+                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <span class="font-semibold text-gray-900 dark:text-white">#{{ $order->id }}</span>
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $order->status === 'cancelled' ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' : ($order->status === 'completed' || $order->status === 'delivered' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200') }}">
+                                            {{ ucfirst($order->status) }}
+                                        </span>
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $order->user?->name ?? 'Unknown customer' }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $order->created_at->diffForHumans() }}</p>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No recent orders yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                        <div class="mb-3 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">New users</h4>
+                            <a href="{{ route('admin.users.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                        </div>
+                        <div class="space-y-3">
+                            @forelse ($latestUsers as $user)
+                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $user->name }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $user->created_at->diffForHumans() }}</p>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No recent user signups yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                        <div class="mb-3 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">New products</h4>
+                            <a href="{{ route('admin.products.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                        </div>
+                        <div class="space-y-3">
+                            @forelse ($latestProducts as $product)
+                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $product->name }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->category->name ?? 'No category' }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->stock }} in stock • {{ $product->created_at->diffForHumans() }}</p>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No recently added products yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                        <div class="mb-3 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Latest queries</h4>
+                            <a href="{{ route('admin.contact-queries.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                        </div>
+                        <div class="space-y-3">
+                            @forelse ($latestQueries as $query)
+                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <p class="font-semibold text-gray-900 dark:text-white">{{ $query->name }}</p>
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $query->resolved_at ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200' }}">
+                                            {{ $query->resolved_at ? 'Resolved' : 'Open' }}
+                                        </span>
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($query->subject, 34) }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $query->created_at->diffForHumans() }}</p>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No recent customer queries yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-6">
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
