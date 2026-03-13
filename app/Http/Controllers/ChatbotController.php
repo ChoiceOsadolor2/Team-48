@@ -25,7 +25,7 @@ class ChatbotController extends Controller
             'suggestions' => [
                 ['label' => 'Shipping times', 'message' => 'How long does shipping take?'],
                 ['label' => 'Delivery options', 'message' => 'What delivery options do you offer?'],
-                ['label' => 'Contact support', 'url' => '/pages/contact.html'],
+                ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
             ],
         ],
         'returns' => [
@@ -34,7 +34,7 @@ class ChatbotController extends Controller
             'suggestions' => [
                 ['label' => 'Start a return', 'message' => 'How do I start a return?'],
                 ['label' => 'Order help', 'message' => 'How do I check my order status?'],
-                ['label' => 'Contact support', 'url' => '/pages/contact.html'],
+                ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
             ],
         ],
         'orders' => [
@@ -59,7 +59,7 @@ class ChatbotController extends Controller
             'keywords' => ['contact', 'support', 'agent', 'human', 'phone', 'email', 'speak', 'talk'],
             'faq_keywords' => ['contact'],
             'suggestions' => [
-                ['label' => 'Contact us', 'url' => '/pages/contact.html'],
+                ['label' => 'Contact us', 'url' => '/pages/index.html#contactus'],
                 ['label' => 'Shipping help', 'message' => 'I need help with shipping.'],
                 ['label' => 'Returns help', 'message' => 'I need help with returns.'],
             ],
@@ -92,7 +92,7 @@ class ChatbotController extends Controller
                 'status' => 'success',
                 'reply' => "I can't find the local FAQ knowledge base yet. Please run the site setup so I can answer store questions.",
                 'suggestions' => [
-                    ['label' => 'Contact support', 'url' => '/pages/contact.html'],
+                    ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
                     ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
                 ],
             ]);
@@ -243,7 +243,7 @@ class ChatbotController extends Controller
         }
 
         $suggestions[] = ['label' => 'Browse all products', 'url' => '/pages/ShopAll.html'];
-        $suggestions[] = ['label' => 'Contact support', 'url' => '/pages/contact.html'];
+        $suggestions[] = ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'];
 
         $suggestions = collect($suggestions)
             ->unique(fn ($item) => ($item['label'] ?? '') . '|' . ($item['url'] ?? '') . '|' . ($item['message'] ?? ''))

@@ -1,139 +1,158 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Products') }}
-        </h2>
+        <div class="flex items-center justify-between gap-4">
+            <div>
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    {{ __('Products') }}
+                </h2>
+                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage catalogue items, stock, and pricing from one place.</p>
+            </div>
+            <a href="{{ route('admin.products.create') }}"
+               class="inline-flex items-center rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-cyan-500">
+                + Add Product
+            </a>
+        </div>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                @php
+                    $currentCategory = $categoryKey ?? request('category');
+                @endphp
 
-                    <div class="mb-4">
-                        <a href="{{ route('admin.products.create') }}"
-                           class="inline-block px-4 py-2 bg-blue-600 text-white rounded">
-                            + Add Product
-                        </a>
-                    </div>
-
-                    <form method="GET" action="{{ route('admin.products.index') }}" class="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Search</label>
-                                <input
-                                    type="text"
-                                    name="q"
-                                    value="{{ $search ?? request('q') }}"
-                                    class="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
-                                    placeholder="Search name, description, platform..."
-                                />
-                            </div>
-
-                            <div>
-                                <label class="block text-sm font-semibold mb-1">Stock</label>
-                                <select name="stock" class="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
-                                    <option value="">All stock levels</option>
-                                    <option value="in_stock" {{ ($stockFilter ?? request('stock')) === 'in_stock' ? 'selected' : '' }}>In stock</option>
-                                    <option value="low_stock" {{ ($stockFilter ?? request('stock')) === 'low_stock' ? 'selected' : '' }}>Low stock</option>
-                                    <option value="out_of_stock" {{ ($stockFilter ?? request('stock')) === 'out_of_stock' ? 'selected' : '' }}>Out of stock</option>
-                                </select>
-                            </div>
-
-                            <div class="flex items-end gap-2">
-                                @if($currentCategory)
-                                    <input type="hidden" name="category" value="{{ $currentCategory }}">
-                                @endif
-                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Apply</button>
-                                <a href="{{ $currentCategory ? route('admin.products.index', ['category' => $currentCategory]) : route('admin.products.index') }}" class="px-4 py-2 bg-gray-200 rounded dark:bg-gray-700">Clear</a>
-                            </div>
+                <form method="GET" action="{{ route('admin.products.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/70">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Search</label>
+                            <input
+                                type="text"
+                                name="q"
+                                value="{{ $search ?? request('q') }}"
+                                class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+                                placeholder="Search name, description, platform..."
+                            />
                         </div>
-                    </form>
 
-                    @php
-                        // Comes from controller: 'Games', 'Consoles and PCs', etc.
-                        $currentCategory = $categoryKey ?? request('category');
-                    @endphp
+                        <div>
+                            <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Stock</label>
+                            <select name="stock" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+                                <option value="">All stock levels</option>
+                                <option value="in_stock" {{ ($stockFilter ?? request('stock')) === 'in_stock' ? 'selected' : '' }}>In stock</option>
+                                <option value="low_stock" {{ ($stockFilter ?? request('stock')) === 'low_stock' ? 'selected' : '' }}>Low stock</option>
+                                <option value="out_of_stock" {{ ($stockFilter ?? request('stock')) === 'out_of_stock' ? 'selected' : '' }}>Out of stock</option>
+                            </select>
+                        </div>
 
-                    {{-- Category tabs --}}
-                    <div class="mb-6 flex flex-wrap gap-1 text-xs">
-                        {{-- All --}}
-                        <a href="{{ route('admin.products.index') }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ !$currentCategory ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            All
-                        </a>
-
-                        {{-- Games -> key "Games" --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Games']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Games' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Games
-                        </a>
-
-                        {{-- Consoles and PCs -> key "Consoles and PCs" --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Consoles and PCs']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Consoles and PCs' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Consoles and PCs
-                        </a>
-
-                        {{-- Accessories -> key "Accessories" --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Accessories']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Accessories' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Accessories
-                        </a>
-
-                        {{-- Hardware -> key "Hardware" (chairs + monitors) --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Hardware']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Hardware' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Hardware
-                        </a>
+                        <div class="flex items-end gap-2">
+                            @if ($currentCategory)
+                                <input type="hidden" name="category" value="{{ $currentCategory }}">
+                            @endif
+                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
+                            <a href="{{ $currentCategory ? route('admin.products.index', ['category' => $currentCategory]) : route('admin.products.index') }}" class="rounded-xl bg-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600">Clear</a>
+                        </div>
                     </div>
+                </form>
 
-                    @if ($products->isEmpty())
-                        <p>No products yet.</p>
-                    @else
-                        <table class="w-full border-collapse text-sm">
-                            <thead>
-                                <tr class="border-b border-gray-700">
-                                    <th class="text-left p-2">Name</th>
-                                    <th class="text-left p-2">Category</th>
-                                    <th class="text-left p-2">Price</th>
-                                    <th class="text-left p-2">Stock</th>
-                                    <th class="text-left p-2">Actions</th>
+                <div class="mt-4 flex flex-wrap gap-2 text-sm">
+                    <a href="{{ route('admin.products.index') }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ !$currentCategory ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        All
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Games']) }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Games' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        Games
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Consoles and PCs']) }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Consoles and PCs' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        Consoles and PCs
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Accessories']) }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Accessories' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        Accessories
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Hardware']) }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Hardware' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        Hardware
+                    </a>
+                </div>
+            </div>
+
+            <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-700">
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Product inventory</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400">A cleaner view of products, stock status, and actions.</p>
+                    </div>
+                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                        {{ $products->count() }} shown
+                    </span>
+                </div>
+
+                @if ($products->isEmpty())
+                    <div class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400">
+                        No products matched these filters.
+                    </div>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full text-sm">
+                            <thead class="bg-gray-50 text-left dark:bg-gray-900/70">
+                                <tr class="text-xs uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
+                                    <th class="px-5 py-4 font-semibold">Product</th>
+                                    <th class="px-5 py-4 font-semibold">Category</th>
+                                    <th class="px-5 py-4 font-semibold">Price</th>
+                                    <th class="px-5 py-4 font-semibold">Stock</th>
+                                    <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
                                 @foreach ($products as $product)
-                                    <tr class="border-b border-gray-700">
-                                        <td class="p-2">{{ $product->name }}</td>
-                                        <td class="p-2">{{ $product->category->name ?? '-' }}</td>
-                                        <td class="p-2">£{{ number_format($product->price, 2) }}</td>
-                                        <td class="p-2">{{ $product->stock }}</td>
-                                        <td class="p-2 flex gap-3">
-                                            <a href="{{ route('admin.products.edit', $product) }}"
-                                               class="text-blue-400 hover:underline">Edit</a>
-
-                                            <form action="{{ route('admin.products.destroy', $product) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Delete this product?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-400 hover:underline">
-                                                    Delete
-                                                </button>
-                                            </form>
+                                    <tr class="transition hover:bg-gray-50/80 dark:hover:bg-gray-900/40">
+                                        <td class="px-5 py-4">
+                                            <div class="font-semibold text-gray-900 dark:text-white">{{ $product->name }}</div>
+                                            <div class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->platform ?: 'No platform set' }}</div>
+                                        </td>
+                                        <td class="px-5 py-4 text-gray-600 dark:text-gray-300">{{ $product->category->name ?? '-' }}</td>
+                                        <td class="px-5 py-4 font-semibold text-gray-900 dark:text-white">£{{ number_format($product->price, 2) }}</td>
+                                        <td class="px-5 py-4">
+                                            @php
+                                                $stockClasses = $product->stock <= 0
+                                                    ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200'
+                                                    : ($product->stock <= 5
+                                                        ? 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200'
+                                                        : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200');
+                                                $stockLabel = $product->stock <= 0
+                                                    ? 'Out of stock'
+                                                    : ($product->stock <= 5 ? 'Low stock' : 'In stock');
+                                            @endphp
+                                            <div class="flex items-center gap-3">
+                                                <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $stockClasses }}">{{ $stockLabel }}</span>
+                                                <span class="text-sm text-gray-500 dark:text-gray-400">{{ $product->stock }} units</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-4">
+                                            <div class="flex justify-end gap-2">
+                                                <a href="{{ route('admin.products.edit', $product) }}"
+                                                   class="rounded-lg border border-cyan-200 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-900/20">
+                                                    Edit
+                                                </a>
+                                                <form action="{{ route('admin.products.destroy', $product) }}"
+                                                      method="POST"
+                                                      onsubmit="return confirm('Delete this product?');">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/20">
+                                                        Delete
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    @endif
-
-                </div>
+                    </div>
+                @endif
             </div>
         </div>
     </div>
