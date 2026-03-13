@@ -13,6 +13,7 @@ class CategorySeeder extends Seeder
             ['name' => 'Video Games', 'slug' => 'video-games'],
             ['name' => 'Consoles and PCs', 'slug' => 'consoles-and-pcs'],
             ['name' => 'Accessories', 'slug' => 'accessories'],
+            ['name' => 'Hardware', 'slug' => 'hardware'],
             ['name' => 'Monitors and Displays', 'slug' => 'monitors-and-displays'],
             ['name' => 'Gaming Chairs and Desks', 'slug' => 'gaming-chairs-and-desks'],
         ];

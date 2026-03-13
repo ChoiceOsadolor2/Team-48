@@ -12,6 +12,32 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    private function homepageCategoryNames(): array
+    {
+        return [
+            'Video Games',
+            'Consoles and PCs',
+            'Accessories',
+            'Hardware',
+        ];
+    }
+
+    private function adminFormCategories()
+    {
+        Category::firstOrCreate(
+            ['slug' => 'hardware'],
+            ['name' => 'Hardware']
+        );
+
+        $orderedNames = $this->homepageCategoryNames();
+
+        return Category::query()
+            ->whereIn('name', $orderedNames)
+            ->get()
+            ->sortBy(fn (Category $category) => array_search($category->name, $orderedNames, true))
+            ->values();
+    }
+
     public function updateStock(Request $request, Product $product)
     {
         $data = $request->validate([
@@ -63,6 +89,7 @@ class ProductController extends Controller
             'Accessories',
         ],
         'Hardware' => [
+            'Hardware',
             'Gaming Chairs and Desks',
             'Monitors and Displays',
         ],
@@ -122,7 +149,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = $this->adminFormCategories();
 
         return view('admin.products.create', compact('categories'));
     }
@@ -156,7 +183,7 @@ class ProductController extends Controller
 
     public function edit(Product $product)
     {
-        $categories = Category::orderBy('name')->get();
+        $categories = $this->adminFormCategories();
 
         return view('admin.products.edit', compact('product', 'categories'));
     }

@@ -13,7 +13,7 @@ class ProductController extends Controller
         'Accessories' => ['Accessories'],
         'Gaming Chairs and Desks' => ['Gaming Chairs and Desks'],
         'Monitors and Displays' => ['Monitors and Displays'],
-        'Hardware' => ['Gaming Chairs and Desks', 'Monitors and Displays'],
+        'Hardware' => ['Hardware', 'Gaming Chairs and Desks', 'Monitors and Displays'],
     ];
 
     // GET products
