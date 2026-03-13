@@ -23,7 +23,7 @@ body {
 }
 
 .orders-title {
-    font-size: 5em;
+    font-size: 100px;
     line-height: normal;
     margin-top: 0 !important;
     margin-bottom: 20px;
@@ -79,7 +79,7 @@ body {
 
 /* Order Card */
 .order-card {
-    background: #1d1d1f;
+    background: #1d1d1d;
     border: 1px solid #444;
     border-radius: 18px;
     overflow: hidden;
@@ -88,7 +88,7 @@ body {
 
 /* Header of the Card */
 .order-header {
-    background-color: #1d1d1f;
+    background-color: #1d1d1d;
     padding: 20px;
     display: flex;
     flex-wrap: wrap;
@@ -117,7 +117,7 @@ body {
 .order-info-block .label {
     font-size: 20px;
     font-weight: 400;
-    text-transform: uppercase;
+    text-transform: none;
     color: #888;
 }
 
@@ -179,7 +179,7 @@ body {
 }
 
 .btn-secondary:hover {
-    background: #1d1d1f;
+    background: #1d1d1d;
     transform: translateY(-2px);
 }
 
@@ -417,8 +417,8 @@ body {
     background: #111;
     border-radius: 8px;
     border: 1px solid #333;
-    color: #8a8a8a;
-    font-size: 14px;
+    color: #888;
+    font-size: 20px;
     text-align: center;
 }
 
@@ -436,7 +436,7 @@ body {
 .item-meta {
     margin: 0 0 5px 0;
     font-size: 20px;
-    color: #aaa;
+    color: #888;
 }
 
 .item-meta-value {
@@ -506,7 +506,7 @@ body {
 }
 
 .btn-ghost:hover {
-    background: #1d1d1f;
+    background: #1d1d1d;
     transform: translateY(-2px);
 }
 
@@ -544,7 +544,7 @@ html.dark-mode .orders-title {
 
 html.dark-mode .orders-subtitle,
 html.dark-mode .status-desc {
-    color: #aaa;
+    color: #888;
 }
 
 html.dark-mode .btn-secondary {

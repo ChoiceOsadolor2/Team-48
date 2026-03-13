@@ -1,7 +1,7 @@
 <x-app-layout>
     <link rel="stylesheet" href="{{ asset('styles/orders.css') }}" />
 
-    <div class="orders-main w-full max-w-5xl mx-auto py-8">
+    <div class="orders-main w-full max-w-5xl mx-auto">
         <div class="orders-container">
             
             <div class="orders-header mb-8">
@@ -19,7 +19,7 @@
                         <article class="order-card">
                             <div class="order-header">
                                 <div class="order-info-block">
-                                    <span class="label">Order placed</span>
+                                    <span class="label">Order Placed</span>
                                     <span class="value">{{ $order->created_at->format('M d, Y') }}</span>
                                 </div>
                                 <div class="order-info-block">
