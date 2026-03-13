@@ -52,7 +52,11 @@
                         <p class="text-sm text-gray-500">Searchable answers powering the site chatbot.</p>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
-                        {{ $faqs->count() }} shown
+                        @if ($faqs instanceof \Illuminate\Contracts\Pagination\Paginator)
+                            Showing {{ $faqs->firstItem() ?? 0 }}-{{ $faqs->lastItem() ?? 0 }} of {{ $faqs->total() }}
+                        @else
+                            {{ $faqs->count() }} shown
+                        @endif
                     </span>
                 </div>
 
@@ -130,6 +134,12 @@
                             @method('DELETE')
                         </form>
                     @endforeach
+                @endif
+
+                @if ($faqs instanceof \Illuminate\Contracts\Pagination\Paginator && $faqs->hasPages())
+                    <div class="border-t border-gray-200 px-5 py-4">
+                        {{ $faqs->links() }}
+                    </div>
                 @endif
             </div>
         </div>

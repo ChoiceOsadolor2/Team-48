@@ -54,7 +54,8 @@ class ContactQueryController extends Controller
                 $query->whereNull('resolved_at');
             })
             ->latest()
-            ->get();
+            ->paginate(15)
+            ->appends($request->query());
 
         return view('admin.contact-queries.index', compact('contactQueries', 'search', 'status'));
     }

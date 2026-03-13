@@ -48,7 +48,7 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400">A clearer list of users, roles, and recent signups.</p>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                        {{ $users->count() }} shown
+                        Showing {{ $users->firstItem() ?? 0 }}-{{ $users->lastItem() ?? 0 }} of {{ $users->total() }}
                     </span>
                 </div>
 
@@ -94,6 +94,12 @@
                                 @endforeach
                             </tbody>
                         </table>
+                    </div>
+                @endif
+
+                @if ($users instanceof \Illuminate\Contracts\Pagination\Paginator && $users->hasPages())
+                    <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-700">
+                        {{ $users->links() }}
                     </div>
                 @endif
             </div>

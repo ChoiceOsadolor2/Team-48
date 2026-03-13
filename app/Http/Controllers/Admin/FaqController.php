@@ -41,7 +41,8 @@ class FaqController extends Controller
                 ->when($category !== '', fn ($query) => $query->where('category', $category))
                 ->orderBy('category')
                 ->orderBy('keyword')
-                ->get()
+                ->paginate(15)
+                ->appends($request->query())
             : collect();
 
         $categories = Faq::CATEGORIES;

@@ -85,7 +85,7 @@
                         <p class="text-sm text-gray-500 dark:text-gray-400">A cleaner view of products, stock status, and actions.</p>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                        {{ $products->count() }} shown
+                        Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }}
                     </span>
                 </div>
 
@@ -199,6 +199,12 @@
                             @method('DELETE')
                         </form>
                     @endforeach
+                @endif
+
+                @if ($products instanceof \Illuminate\Contracts\Pagination\Paginator && $products->hasPages())
+                    <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-700">
+                        {{ $products->links() }}
+                    </div>
                 @endif
             </div>
         </div>

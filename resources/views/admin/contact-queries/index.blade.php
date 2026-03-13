@@ -48,7 +48,7 @@
                         <p class="text-sm text-gray-500">Customer messages with quick status control and cleaner scanning.</p>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
-                        {{ $contactQueries->count() }} shown
+                        Showing {{ $contactQueries->firstItem() ?? 0 }}-{{ $contactQueries->lastItem() ?? 0 }} of {{ $contactQueries->total() }}
                     </span>
                 </div>
 
@@ -143,6 +143,12 @@
                             @method('DELETE')
                         </form>
                     @endforeach
+                @endif
+
+                @if ($contactQueries instanceof \Illuminate\Contracts\Pagination\Paginator && $contactQueries->hasPages())
+                    <div class="border-t border-gray-200 px-5 py-4">
+                        {{ $contactQueries->links() }}
+                    </div>
                 @endif
             </div>
         </div>

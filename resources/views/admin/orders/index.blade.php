@@ -66,7 +66,11 @@
                     <p class="text-sm text-gray-500 dark:text-gray-400">A cleaner table for fulfilment and customer review.</p>
                 </div>
                 <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                    {{ $orders->count() }} shown
+                    @if (($orders->firstItem() ?? 0) <= 1 && ($orders->lastItem() ?? 0) === $orders->total())
+                        Showing {{ $orders->count() }} of {{ $orders->total() }} orders
+                    @else
+                        Showing {{ $orders->firstItem() ?? 0 }}-{{ $orders->lastItem() ?? 0 }} of {{ $orders->total() }} orders
+                    @endif
                 </span>
             </div>
 

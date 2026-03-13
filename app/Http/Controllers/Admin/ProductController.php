@@ -94,7 +94,7 @@ class ProductController extends Controller
         $query->where('stock', '>', 0)->where('stock', '<=', 5);
     }
 
-    $products = $query->get();
+    $products = $query->paginate(15)->appends($request->query());
 
     return view('admin.products.index', [
         'products'    => $products,
