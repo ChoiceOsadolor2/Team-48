@@ -227,6 +227,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/contact-queries', [AdminContactQueryController::class, 'index'])
         ->name('admin.contact-queries.index');
 
+    Route::get('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'show'])
+        ->name('admin.contact-queries.show');
+
     Route::delete('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'destroy'])
         ->name('admin.contact-queries.destroy');
 

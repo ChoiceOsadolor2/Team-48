@@ -16,6 +16,11 @@ class ContactQueryController extends Controller
         return view('admin.contact-queries.index', compact('contactQueries'));
     }
 
+    public function show(ContactQuery $contactQuery)
+    {
+        return view('admin.contact-queries.show', compact('contactQuery'));
+    }
+
     public function destroy(ContactQuery $contactQuery)
     {
         $contactQuery->delete();

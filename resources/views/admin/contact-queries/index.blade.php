@@ -37,11 +37,14 @@
                                             <td class="px-4 py-3 align-top text-gray-600">{{ \Illuminate\Support\Str::limit($contactQuery->message, 180) }}</td>
                                             <td class="px-4 py-3 align-top text-gray-500">{{ $contactQuery->created_at->format('d M Y, H:i') }}</td>
                                             <td class="px-4 py-3 align-top">
-                                                <form action="{{ route('admin.contact-queries.destroy', $contactQuery) }}" method="POST" onsubmit="return confirm('Delete this contact query?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="font-semibold text-red-600 hover:text-red-500">Delete</button>
-                                                </form>
+                                                <div class="flex items-center gap-3">
+                                                    <a href="{{ route('admin.contact-queries.show', $contactQuery) }}" class="font-semibold text-cyan-600 hover:text-cyan-500">View</a>
+                                                    <form action="{{ route('admin.contact-queries.destroy', $contactQuery) }}" method="POST" onsubmit="return confirm('Delete this contact query?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="font-semibold text-red-600 hover:text-red-500">Delete</button>
+                                                    </form>
+                                                </div>
                                             </td>
                                         </tr>
                                     @endforeach
