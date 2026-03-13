@@ -167,12 +167,14 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->take(3)
             ->get(['id', 'category_id', 'name', 'stock', 'created_at']);
 
-        $latestQueries = ContactQuery::query()
-            ->latest()
-            ->take(3)
-            ->get(['id', 'name', 'subject', 'created_at', 'resolved_at']);
+        $latestQueries = Schema::hasTable('contact_queries')
+            ? ContactQuery::query()
+                ->latest()
+                ->take(3)
+                ->get(['id', 'name', 'subject', 'created_at', 'resolved_at'])
+            : collect();
 
-        $contactQueryCount = ContactQuery::count();
+        $contactQueryCount = Schema::hasTable('contact_queries') ? ContactQuery::count() : 0;
         $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
 
         return view('admin.dashboard', compact(

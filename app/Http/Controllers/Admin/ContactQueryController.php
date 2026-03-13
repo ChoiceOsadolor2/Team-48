@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ContactQuery;
+use Illuminate\Support\Facades\Schema;
 
 class ContactQueryController extends Controller
 {
@@ -37,6 +38,11 @@ class ContactQueryController extends Controller
     {
         $search = trim((string) $request->query('q', ''));
         $status = trim((string) $request->query('status', ''));
+
+        if (!Schema::hasTable('contact_queries')) {
+            $contactQueries = ContactQuery::query()->whereRaw('1 = 0')->paginate(15);
+            return view('admin.contact-queries.index', compact('contactQueries', 'search', 'status'));
+        }
 
         $contactQueries = ContactQuery::query()
             ->when($search !== '', function ($query) use ($search) {
