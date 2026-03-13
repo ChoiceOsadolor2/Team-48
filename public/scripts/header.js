@@ -1,4 +1,62 @@
 const headerFile = '/pages/header.html';
+const footerFile = '/pages/footer.html';
+const PAGE_CHROME_CACHE_TTL = 5 * 60 * 1000;
+let userStatusPromise = null;
+
+function readCachedPageChrome(cacheKey) {
+  try {
+    const raw = sessionStorage.getItem(cacheKey);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!parsed?.html || !parsed?.savedAt) return null;
+    if (Date.now() - parsed.savedAt > PAGE_CHROME_CACHE_TTL) return null;
+
+    return parsed.html;
+  } catch (_) {
+    return null;
+  }
+}
+
+function writeCachedPageChrome(cacheKey, html) {
+  try {
+    sessionStorage.setItem(cacheKey, JSON.stringify({ html, savedAt: Date.now() }));
+  } catch (_) {
+    // Ignore storage failures.
+  }
+}
+
+async function fetchTextWithSessionCache(url, cacheKey) {
+  const cached = readCachedPageChrome(cacheKey);
+  if (cached) return cached;
+
+  const response = await fetch(url, { credentials: 'same-origin' });
+  if (!response.ok) throw new Error(`Failed to load ${url}`);
+
+  const html = await response.text();
+  writeCachedPageChrome(cacheKey, html);
+  return html;
+}
+
+function getUserStatus() {
+  if (!userStatusPromise) {
+    userStatusPromise = fetch('/user-status', {
+      headers: { Accept: 'application/json' },
+      credentials: 'include'
+    })
+      .then(async (res) => {
+        if (!res.ok) return null;
+        try {
+          return await res.json();
+        } catch (_) {
+          return null;
+        }
+      })
+      .catch(() => null);
+  }
+
+  return userStatusPromise;
+}
 
 function initSiteToasts() {
   if (window.__siteToastInit) return;
@@ -83,9 +141,7 @@ function bindVeltrixHeader(headerEl) {
   const scrollTopBtn = document.getElementById('vx-scroll-top');
   if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
 
-  const footerFile = '/pages/footer.html';
-  fetch(footerFile)
-    .then(response => response.text())
+  fetchTextWithSessionCache(footerFile, 'veltrix:footer')
     .then(html => {
       const footerEl = document.querySelector('footer');
       if (footerEl) footerEl.innerHTML = html;
@@ -135,6 +191,7 @@ function bindVeltrixHeader(headerEl) {
 
     const resultsContainer = headerEl.querySelector('#vx-search-results');
     let debounceTimer = null;
+    let searchController = null;
 
     if (resultsContainer) {
       input.addEventListener('input', (e) => {
@@ -143,12 +200,19 @@ function bindVeltrixHeader(headerEl) {
         if (!query) {
           resultsContainer.style.display = 'none';
           resultsContainer.innerHTML = '';
+          if (searchController) searchController.abort();
           return;
         }
 
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
-          fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
+          if (searchController) searchController.abort();
+          searchController = new AbortController();
+
+          fetch(`/products/search-json?q=${encodeURIComponent(query)}`, {
+            signal: searchController.signal,
+            credentials: 'include'
+          })
             .then(async res => {
               if (!res.ok) {
                 throw new Error('Search request failed.');
@@ -165,6 +229,8 @@ function bindVeltrixHeader(headerEl) {
                 return;
               }
 
+              const fragment = document.createDocumentFragment();
+
               data.results.slice(0, 5).forEach(product => {
                 let imgUrl = '/assets/MainLogo.png';
                 if (product.image_url) {
@@ -175,7 +241,7 @@ function bindVeltrixHeader(headerEl) {
 
                 const li = document.createElement('li');
                 li.innerHTML = `
-                  <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='/assets/MainLogo.png'">
+                  <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='/assets/MainLogo.png'" loading="lazy" decoding="async">
                   <div class="vx-search-dropdown-info">
                     <span class="vx-search-dropdown-title">${product.name}</span>
                     <span class="vx-search-dropdown-price">&#163;${Number(product.price).toFixed(2)}</span>
@@ -184,18 +250,20 @@ function bindVeltrixHeader(headerEl) {
                 li.addEventListener('click', () => {
                   window.location.href = `ProductPage.html?id=${product.id}`;
                 });
-                resultsContainer.appendChild(li);
+                fragment.appendChild(li);
               });
 
+              resultsContainer.appendChild(fragment);
               resultsContainer.style.display = 'flex';
               resultsContainer.style.flexDirection = 'column';
             })
             .catch(err => {
+              if (err.name === 'AbortError') return;
               console.error('Live search error:', err);
               resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">Search is unavailable right now.</li>';
               resultsContainer.style.display = 'block';
             });
-        }, 300);
+        }, 220);
       });
 
       document.addEventListener('click', (e) => {
@@ -253,13 +321,9 @@ function bindVeltrixHeader(headerEl) {
       if (e.key === 'Escape') closeMenu();
     });
 
-    fetch('/user-status', {
-      headers: { Accept: 'application/json' },
-      credentials: 'include'
-    })
-      .then(res => res.json())
+    getUserStatus()
       .then(data => {
-        if (data.logged_in) {
+        if (data?.logged_in) {
           userMenuDropdown.innerHTML = `
             <a href="/orders" class="user-menu-item">Previous Orders</a>
             <a href="/profile" class="user-menu-item">Profile Info</a>
@@ -275,7 +339,9 @@ function bindVeltrixHeader(headerEl) {
           const logoutBtn = userMenuDropdown.querySelector('#logoutBtn');
           if (logoutBtn) {
             logoutBtn.onclick = async () => {
-              await fetch('/logout-json', { credentials: 'include' });
+              try {
+                await fetch('/logout-json', { credentials: 'include' });
+              } catch (_) {}
               window.location.href = '/pages/login.html';
             };
           }
@@ -294,21 +360,6 @@ function bindVeltrixHeader(headerEl) {
       });
   }
 
-  fetch('/user-status', {
-    headers: { 'Accept': 'application/json' }
-  })
-    .then(res => res.text())
-    .then(text => {
-      try {
-        JSON.parse(text);
-      } catch (e) {
-        console.error('Non-JSON /user-status response:', text);
-      }
-    })
-    .catch(err => {
-      console.error('User status error:', err);
-    });
-
   initChatbot();
   initScrollTop();
   initSiteToasts();
@@ -319,8 +370,7 @@ const existingHeader = document.querySelector('header');
 if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
   bindVeltrixHeader(existingHeader);
 } else {
-  fetch(headerFile)
-    .then(response => response.text())
+  fetchTextWithSessionCache(headerFile, 'veltrix:header')
     .then(html => {
       const headerEl = document.querySelector('header');
       if (!headerEl) return;
@@ -332,13 +382,8 @@ if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
 
 ; (async function () {
   try {
-    const res = await fetch('/user-status', {
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (!res.ok) return;
-
-    const data = await res.json();
+    const data = await getUserStatus();
+    if (!data) return;
 
     const remember = localStorage.getItem('rememberLogin') === '1';
     const temp = sessionStorage.getItem('tempLoggedIn') === '1';
@@ -363,14 +408,24 @@ function initScrollTop() {
   const scrollTopBtn = document.getElementById('vx-scroll-top');
   if (!scrollTopBtn) return;
 
-  // Show/hide based on scroll position
-  window.addEventListener('scroll', () => {
+  let ticking = false;
+
+  function syncScrollTopVisibility() {
     if (window.scrollY > 300) {
       scrollTopBtn.classList.remove('hidden');
     } else {
       scrollTopBtn.classList.add('hidden');
     }
-  });
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(syncScrollTopVisibility);
+  }, { passive: true });
+
+  syncScrollTopVisibility();
 
   // Smooth scroll to top on click
   scrollTopBtn.addEventListener('click', () => {
