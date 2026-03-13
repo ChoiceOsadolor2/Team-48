@@ -1,4 +1,77 @@
-const headerFile = '../pages/header.html';
+const headerFile = '/pages/header.html';
+
+function initSiteToasts() {
+  if (window.__siteToastInit) return;
+
+  let toastRegion = document.getElementById('site-toast-region');
+  if (!toastRegion) {
+    toastRegion = document.createElement('div');
+    toastRegion.id = 'site-toast-region';
+    toastRegion.className = 'site-toast-region';
+    toastRegion.setAttribute('aria-live', 'polite');
+    toastRegion.setAttribute('aria-atomic', 'true');
+    document.body.appendChild(toastRegion);
+  }
+
+  window.__siteToastInit = true;
+
+  const TOAST_TITLES = {
+    success: 'Success',
+    error: 'Something went wrong',
+    info: 'Notice'
+  };
+
+  const TOAST_ICONS = {
+    success: 'OK',
+    error: '!',
+    info: 'i'
+  };
+
+  function closeToast(toast) {
+    if (!toast || toast.dataset.closing === '1') return;
+
+    toast.dataset.closing = '1';
+    toast.classList.remove('is-visible');
+    toast.classList.add('is-closing');
+    window.setTimeout(() => toast.remove(), 220);
+  }
+
+  window.showSiteToast = function (type, message, options = {}) {
+    const normalizedType = ['success', 'error', 'info'].includes(type) ? type : 'info';
+    const normalizedMessage = String(message || '').trim();
+
+    if (!normalizedMessage) return null;
+
+    const toast = document.createElement('div');
+    toast.className = `site-toast site-toast--${normalizedType}`;
+    toast.setAttribute('role', normalizedType === 'error' ? 'alert' : 'status');
+
+    const title = options.title || TOAST_TITLES[normalizedType];
+    const icon = options.icon || TOAST_ICONS[normalizedType];
+
+    toast.innerHTML = `
+      <span class="site-toast-icon" aria-hidden="true">${icon}</span>
+      <div class="site-toast-content">
+        <span class="site-toast-title">${title}</span>
+        <span class="site-toast-message"></span>
+      </div>
+      <button type="button" class="site-toast-close" aria-label="Dismiss notification">&times;</button>
+    `;
+
+    toast.querySelector('.site-toast-message').textContent = normalizedMessage;
+    toast.querySelector('.site-toast-close').addEventListener('click', () => closeToast(toast));
+
+    toastRegion.appendChild(toast);
+    window.requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    const duration = Number(options.duration || 5000);
+    if (duration > 0) {
+      window.setTimeout(() => closeToast(toast), duration);
+    }
+
+    return toast;
+  };
+}
 
 function bindVeltrixHeader(headerEl) {
   if (!headerEl || headerEl.dataset.veltrixHeaderBound === '1') return;
@@ -10,13 +83,14 @@ function bindVeltrixHeader(headerEl) {
   const scrollTopBtn = document.getElementById('vx-scroll-top');
   if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
 
-  const footerFile = '../pages/footer.html';
+  const footerFile = '/pages/footer.html';
   fetch(footerFile)
     .then(response => response.text())
     .then(html => {
       const footerEl = document.querySelector('footer');
       if (footerEl) footerEl.innerHTML = html;
-    });
+    })
+    .catch(err => console.error('Footer load error:', err));
 
   (function bindVeltrixSearch() {
     const form =
@@ -75,7 +149,13 @@ function bindVeltrixHeader(headerEl) {
         clearTimeout(debounceTimer);
         debounceTimer = setTimeout(() => {
           fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
-            .then(res => res.json())
+            .then(async res => {
+              if (!res.ok) {
+                throw new Error('Search request failed.');
+              }
+
+              return res.json();
+            })
             .then(data => {
               resultsContainer.innerHTML = '';
 
@@ -86,7 +166,7 @@ function bindVeltrixHeader(headerEl) {
               }
 
               data.results.slice(0, 5).forEach(product => {
-                let imgUrl = '../assets/MainLogo.png';
+                let imgUrl = '/assets/MainLogo.png';
                 if (product.image_url) {
                   imgUrl = product.image_url.startsWith('http')
                     ? product.image_url
@@ -95,7 +175,7 @@ function bindVeltrixHeader(headerEl) {
 
                 const li = document.createElement('li');
                 li.innerHTML = `
-                  <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
+                  <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='/assets/MainLogo.png'">
                   <div class="vx-search-dropdown-info">
                     <span class="vx-search-dropdown-title">${product.name}</span>
                     <span class="vx-search-dropdown-price">&#163;${Number(product.price).toFixed(2)}</span>
@@ -110,7 +190,11 @@ function bindVeltrixHeader(headerEl) {
               resultsContainer.style.display = 'flex';
               resultsContainer.style.flexDirection = 'column';
             })
-            .catch(err => console.error('Live search error:', err));
+            .catch(err => {
+              console.error('Live search error:', err);
+              resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">Search is unavailable right now.</li>';
+              resultsContainer.style.display = 'block';
+            });
         }, 300);
       });
 
@@ -227,6 +311,7 @@ function bindVeltrixHeader(headerEl) {
 
   initChatbot();
   initScrollTop();
+  initSiteToasts();
 }
 
 const existingHeader = document.querySelector('header');
@@ -241,7 +326,8 @@ if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
       if (!headerEl) return;
       headerEl.innerHTML = html;
       bindVeltrixHeader(headerEl);
-    });
+    })
+    .catch(err => console.error('Header load error:', err));
 }
 
 ; (async function () {
@@ -328,21 +414,14 @@ function initChatbot() {
 
   closeBtn.addEventListener('click', closeChat);
 
-  // Handle Form Submission
-  chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const userMessage = chatInput.value.trim();
+  async function sendChatMessage(userMessage) {
     if (!userMessage) return;
 
-    // Append User Message
     appendMessage('user', userMessage);
     chatInput.value = '';
-
-    // Append 'Typing...' Indicator
     const typingIndicator = appendMessage('ai', '...');
 
     try {
-      // Send to Backend
       const response = await fetch('/chatbot/ask', {
         method: 'POST',
         headers: {
@@ -352,33 +431,74 @@ function initChatbot() {
         body: JSON.stringify({ message: userMessage })
       });
 
-      const data = await response.json();
+      const rawText = await response.text();
+      let data = null;
 
-      // Update the typing indicator with the real response
-      if (data.status === 'success') {
-        typingIndicator.textContent = data.reply;
-      } else {
-        typingIndicator.textContent = "Error: Couldn't reach the server right now.";
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseError) {
+        throw new Error('Chatbot returned an invalid response.');
       }
 
+      if (response.ok && data.status === 'success') {
+        renderAiResponse(typingIndicator, data.reply, data.suggestions || []);
+      } else {
+        typingIndicator.textContent = data?.message || data?.reply || "The chatbot couldn't answer right now. Please try again in a moment.";
+      }
     } catch (error) {
       console.error('Chatbot Error:', error);
-      typingIndicator.textContent = 'Oops! My circuits are crossed. Try again later.';
+      typingIndicator.textContent = 'The chatbot could not reach the site backend. Make sure the Laravel server is running, then try again.';
     }
+  }
+
+  // Handle Form Submission
+  chatForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const userMessage = chatInput.value.trim();
+    await sendChatMessage(userMessage);
   });
 
-  // Helper to append a bubble
   function appendMessage(senderType, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('vx-message');
     msgDiv.classList.add(senderType === 'ai' ? 'ai-message' : 'user-message');
     msgDiv.textContent = text;
     chatMessages.appendChild(msgDiv);
-
-    // Auto-scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
     return msgDiv;
+  }
+
+  function renderAiResponse(messageEl, text, suggestions) {
+    messageEl.textContent = '';
+
+    const body = document.createElement('div');
+    body.className = 'vx-message-body';
+    body.textContent = text;
+    messageEl.appendChild(body);
+
+    if (Array.isArray(suggestions) && suggestions.length) {
+      const chips = document.createElement('div');
+      chips.className = 'vx-chat-suggestions';
+
+      suggestions.slice(0, 4).forEach((suggestion) => {
+        const chip = document.createElement(suggestion.url ? 'a' : 'button');
+        chip.className = 'vx-chat-suggestion';
+        chip.textContent = suggestion.label || 'Open';
+
+        if (suggestion.url) {
+          chip.href = suggestion.url;
+        } else {
+          chip.type = 'button';
+          chip.addEventListener('click', () => sendChatMessage(suggestion.message || suggestion.label || 'Help'));
+        }
+
+        chips.appendChild(chip);
+      });
+
+      messageEl.appendChild(chips);
+    }
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 }
 

@@ -12,6 +12,11 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\FaqController as AdminFaqController;
+use App\Models\Category;
+use App\Models\Faq;
+use App\Models\Order;
+use App\Models\Product;
 
 
 
@@ -57,6 +62,9 @@ Route::get('/dashboard', function () {
 
 Route::get('/products', [ProductController::class, 'index'])->name('products.index');
 Route::get('/products/search-json', [ProductController::class, 'search'])->name('products.search.json');
+Route::middleware(['auth', 'admin'])->get('/products/create', function () {
+    return redirect()->route('admin.products.create');
+});
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
@@ -110,7 +118,55 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin', function () {
-        return view('admin.dashboard');
+        $totalUsers = User::count();
+        $totalProducts = Product::count();
+        $inStockProducts = Product::where('stock', '>', 0)->count();
+        $outOfStockProducts = Product::where('stock', '<=', 0)->count();
+        $lowStockProducts = Product::where('stock', '>', 0)
+            ->where('stock', '<=', 5)
+            ->orderBy('stock')
+            ->orderBy('name')
+            ->take(5)
+            ->get(['id', 'name', 'stock']);
+
+        $totalOrders = Order::count();
+        $processingOrders = Order::where('status', 'processing')->count();
+        $cancelledOrders = Order::where('status', 'cancelled')->count();
+        $completedOrders = Order::whereIn('status', ['completed', 'delivered'])->count();
+        $totalRevenue = (float) Order::whereNotIn('status', ['cancelled'])->sum('total');
+        $averageOrderValue = $totalOrders > 0
+            ? (float) Order::whereNotIn('status', ['cancelled'])->avg('total')
+            : 0.0;
+
+        $topCategories = Category::withCount('products')
+            ->orderByDesc('products_count')
+            ->orderBy('name')
+            ->take(4)
+            ->get(['id', 'name']);
+
+        $recentOrders = Order::with('user')
+            ->latest()
+            ->take(5)
+            ->get();
+
+        $faqCount = Faq::count();
+
+        return view('admin.dashboard', compact(
+            'totalUsers',
+            'totalProducts',
+            'inStockProducts',
+            'outOfStockProducts',
+            'lowStockProducts',
+            'totalOrders',
+            'processingOrders',
+            'cancelledOrders',
+            'completedOrders',
+            'totalRevenue',
+            'averageOrderValue',
+            'topCategories',
+            'recentOrders',
+            'faqCount',
+        ));
     })->name('admin.dashboard');
 
     Route::get('/admin/users', [UserController::class, 'index'])
@@ -155,6 +211,24 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/admin/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])
         ->name('admin.orders.cancel');
+
+    Route::get('/admin/faqs', [AdminFaqController::class, 'index'])
+        ->name('admin.faqs.index');
+
+    Route::get('/admin/faqs/create', [AdminFaqController::class, 'create'])
+        ->name('admin.faqs.create');
+
+    Route::post('/admin/faqs', [AdminFaqController::class, 'store'])
+        ->name('admin.faqs.store');
+
+    Route::get('/admin/faqs/{faq}/edit', [AdminFaqController::class, 'edit'])
+        ->name('admin.faqs.edit');
+
+    Route::put('/admin/faqs/{faq}', [AdminFaqController::class, 'update'])
+        ->name('admin.faqs.update');
+
+    Route::delete('/admin/faqs/{faq}', [AdminFaqController::class, 'destroy'])
+        ->name('admin.faqs.destroy');
 });
 
 

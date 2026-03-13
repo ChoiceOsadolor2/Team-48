@@ -4,13 +4,6 @@
             <h1 class="text-2xl font-bold">All Orders</h1>
         </div>
 
-        {{-- Flash message --}}
-        @if (session('status'))
-            <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
-                {{ session('status') }}
-            </div>
-        @endif
-
         <div class="bg-white shadow rounded mb-6 p-4">
             <form method="GET" action="{{ route('admin.orders.index') }}" class="bg-white shadow rounded p-4 mb-6">
     <div class="grid grid-cols-1 md:grid-cols-4 gap-4">

@@ -89,7 +89,6 @@ if (filter) {
 
 
 // Dark Mode Toggle 
-document.querySelector("html").setAttribute("data-theme", 'dark');
 
 
 // Create a button element for theme toggling
@@ -182,6 +181,16 @@ button.addEventListener("click", (event) => {
   updateThemeOnHtmlEl({ theme: newTheme });
 
   currentThemeSetting = newTheme;
+  button.checked = (currentThemeSetting === "dark");
+});
+
+systemSettingDark.addEventListener("change", (event) => {
+  if (localStorage.getItem("theme") !== null) return;
+
+  const nextTheme = event.matches ? "dark" : "light";
+  updateButton({ buttonEl: button, isDark: nextTheme === "dark" });
+  updateThemeOnHtmlEl({ theme: nextTheme });
+  currentThemeSetting = nextTheme;
   button.checked = (currentThemeSetting === "dark");
 });
 
@@ -279,4 +288,3 @@ if (reviewsSlider) {
     reviewsSlider.scrollLeft = scrollStart - walk;
   });
 }
-

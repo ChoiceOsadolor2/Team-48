@@ -37,9 +37,19 @@ body.login-page {
     overflow-x: hidden;
 }
 
+html[data-theme="light"] body.login-page {
+    background-color: #f6efe6;
+    color: #111;
+}
+
 /* Match product page navbar exactly */
 body.login-page header,
 body.login-page header * {
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+body.login-page #vx-chatbot-container,
+body.login-page #vx-chatbot-container * {
     font-family: 'MiniPixel', sans-serif !important;
 }
 
@@ -83,6 +93,26 @@ body.auth-login-page .login-box {
     border: 1px solid #444;
     backdrop-filter: none;
     font-family: 'MiniPixel', sans-serif;
+}
+
+html[data-theme="light"] body.auth-login-page .login-box {
+    background-color: rgba(255, 255, 255, 0.92);
+    border-color: rgba(17, 17, 17, 0.12);
+    color: #111;
+}
+
+html[data-theme="light"] body.auth-login-page .login-box *,
+html[data-theme="light"] body.auth-login-page .login-box h1,
+html[data-theme="light"] body.auth-login-page .login-box p,
+html[data-theme="light"] body.auth-login-page .login-box a,
+html[data-theme="light"] body.auth-login-page .login-box label {
+    color: #111 !important;
+}
+
+html[data-theme="light"] .input-box input {
+    background: #fff;
+    color: #111;
+    border-color: rgba(17, 17, 17, 0.12);
 }
 
 body.auth-login-page .login-box *,

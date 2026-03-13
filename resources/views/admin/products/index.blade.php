@@ -10,12 +10,6 @@
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
 
-                    @if (session('status'))
-                        <div class="mb-4 text-green-400">
-                            {{ session('status') }}
-                        </div>
-                    @endif
-
                     <div class="mb-4">
                         <a href="{{ route('admin.products.create') }}"
                            class="inline-block px-4 py-2 bg-blue-600 text-white rounded">
@@ -111,4 +105,3 @@
         </div>
     </div>
 </x-app-layout>
-

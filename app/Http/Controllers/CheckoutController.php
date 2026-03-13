@@ -24,6 +24,18 @@ class CheckoutController extends Controller
 
         $productIds = array_keys($cart);
         $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $missingProductIds = array_diff($productIds, $products->keys()->all());
+
+        if (!empty($missingProductIds)) {
+            foreach ($missingProductIds as $missingProductId) {
+                unset($cart[$missingProductId]);
+            }
+
+            Session::put('cart', $cart);
+
+            return redirect()->route('cart.index')
+                ->with('stock_error', 'Some items in your cart are no longer available and were removed.');
+        }
 
         $items = [];
         $total = 0;
@@ -69,6 +81,19 @@ class CheckoutController extends Controller
                 ->lockForUpdate()
                 ->get()
                 ->keyBy('id');
+            $missingProductIds = array_diff($productIds, $products->keys()->all());
+
+            if (!empty($missingProductIds)) {
+                foreach ($missingProductIds as $missingProductId) {
+                    unset($cart[$missingProductId]);
+                }
+
+                Session::put('cart', $cart);
+                DB::rollBack();
+
+                return redirect()->route('cart.index')
+                    ->with('stock_error', 'Some items in your cart are no longer available and were removed.');
+            }
 
             // ✅ Validate stock before creating order
             foreach ($cart as $productId => $qty) {

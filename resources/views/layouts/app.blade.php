@@ -3,13 +3,29 @@
 @php($isOrdersPage = request()->routeIs('orders.*'))
 @php($isCheckoutPage = request()->routeIs('checkout.*'))
 @php($isAdminPage = request()->routeIs('admin.*'))
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) class="home" @endif @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) data-theme="dark" @endif>
+@php($siteNotifications = collect([
+    session('stock_error') ? ['type' => 'error', 'message' => session('stock_error')] : null,
+    session('status') ? ['type' => 'success', 'message' => session('status')] : null,
+])->filter()->values())
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) class="home" @endif>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <title>{{ config('app.name', 'Laravel') }}</title>
+        <script>
+            (function () {
+                try {
+                    const savedTheme = localStorage.getItem('theme');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                    document.documentElement.setAttribute('data-theme', theme);
+                } catch (_) {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            })();
+        </script>
 
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +41,136 @@
             body, h1, h2, h3, h4, h5, h6, .font-sans {
                 font-family: 'Pixelify Sans', sans-serif !important;
             }
+            .site-toast-region {
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                z-index: 10050;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                width: min(420px, calc(100vw - 32px));
+                pointer-events: none;
+            }
+
+            .site-toast {
+                pointer-events: auto;
+                display: flex;
+                align-items: flex-start;
+                gap: 12px;
+                padding: 14px 16px;
+                border-radius: 16px;
+                border: 1px solid rgba(255, 255, 255, 0.16);
+                background: rgba(12, 12, 12, 0.94);
+                color: #fff;
+                box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                opacity: 0;
+                transform: translateY(-12px);
+                transition: opacity 0.25s ease, transform 0.25s ease;
+            }
+
+            .site-toast.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            .site-toast.is-closing {
+                opacity: 0;
+                transform: translateY(-8px);
+            }
+
+            .site-toast-icon {
+                flex-shrink: 0;
+                width: 34px;
+                height: 34px;
+                border-radius: 999px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 18px;
+                line-height: 1;
+                border: 1px solid transparent;
+            }
+
+            .site-toast-content {
+                flex: 1;
+                min-width: 0;
+            }
+
+            .site-toast-title {
+                display: block;
+                font-size: 0.95rem;
+                font-weight: 700;
+                margin-bottom: 4px;
+            }
+
+            .site-toast-message {
+                display: block;
+                font-size: 0.9rem;
+                line-height: 1.45;
+                word-break: break-word;
+            }
+
+            .site-toast-close {
+                flex-shrink: 0;
+                border: 0;
+                background: transparent;
+                color: inherit;
+                font-size: 18px;
+                line-height: 1;
+                padding: 2px;
+                cursor: pointer;
+                opacity: 0.72;
+                transition: opacity 0.2s ease, transform 0.2s ease;
+            }
+
+            .site-toast-close:hover,
+            .site-toast-close:focus-visible {
+                opacity: 1;
+                transform: scale(1.05);
+                outline: none;
+            }
+
+            .site-toast--success {
+                border-color: rgba(46, 204, 113, 0.35);
+            }
+
+            .site-toast--success .site-toast-icon {
+                color: #8ff0b5;
+                background: rgba(46, 204, 113, 0.12);
+                border-color: rgba(46, 204, 113, 0.35);
+            }
+
+            .site-toast--error {
+                border-color: rgba(255, 107, 107, 0.35);
+            }
+
+            .site-toast--error .site-toast-icon {
+                color: #ff8d8d;
+                background: rgba(255, 107, 107, 0.12);
+                border-color: rgba(255, 107, 107, 0.35);
+            }
+
+            .site-toast--info {
+                border-color: rgba(88, 166, 255, 0.35);
+            }
+
+            .site-toast--info .site-toast-icon {
+                color: #9dc8ff;
+                background: rgba(88, 166, 255, 0.12);
+                border-color: rgba(88, 166, 255, 0.35);
+            }
+
+            @media (max-width: 640px) {
+                .site-toast-region {
+                    top: 84px;
+                    right: 12px;
+                    left: 12px;
+                    width: auto;
+                }
+            }
             @if ($isOrdersPage || $isCheckoutPage)
                 @font-face {
                     font-family: 'MiniPixel';
@@ -32,12 +178,6 @@
                     font-weight: normal;
                     font-style: normal;
                     font-display: swap;
-                }
-
-                html[data-theme="dark"],
-                html[data-theme="dark"] body.orders-page,
-                html[data-theme="dark"] body.checkout-page {
-                    background-color: #000 !important;
                 }
 
                 body.orders-page,
@@ -48,6 +188,12 @@
                     background-repeat: repeat-y;
                     background-size: 100vw auto;
                     background-position: var(--bg-y-pos, center 0);
+                }
+
+                html[data-theme="light"] body.orders-page,
+                html[data-theme="light"] body.checkout-page {
+                    background-color: #f6efe6 !important;
+                    color: #111 !important;
                 }
 
                 body.orders-page header,
@@ -172,11 +318,6 @@
                     font-display: swap;
                 }
 
-                html[data-theme="dark"],
-                html[data-theme="dark"] body.admin-page {
-                    background-color: #000 !important;
-                }
-
                 body.admin-page {
                     overflow-x: hidden;
                     background-color: #000 !important;
@@ -184,6 +325,11 @@
                     background-repeat: repeat-y;
                     background-size: 100vw auto;
                     background-position: var(--bg-y-pos, center 0);
+                }
+
+                html[data-theme="light"] body.admin-page {
+                    background-color: #f6efe6 !important;
+                    color: #111 !important;
                 }
 
                 body.admin-page header,
@@ -253,11 +399,6 @@
                     font-display: swap;
                 }
 
-                html[data-theme="dark"],
-                html[data-theme="dark"] body.profile-page {
-                    background-color: #000 !important;
-                }
-
                 body.profile-page {
                     overflow-x: hidden;
                     background-color: #000 !important;
@@ -265,6 +406,11 @@
                     background-repeat: repeat-y;
                     background-size: 100vw auto;
                     background-position: var(--bg-y-pos, center 0);
+                }
+
+                html[data-theme="light"] body.profile-page {
+                    background-color: #f6efe6 !important;
+                    color: #111 !important;
                 }
 
                 /* Match the exact nav typography/sizing helpers used on other working pages */
@@ -616,16 +762,22 @@
             </main>
         </div>
 
+        <div
+            id="site-toast-region"
+            class="site-toast-region"
+            aria-live="polite"
+            aria-atomic="true"
+            data-session-toasts='@json($siteNotifications)'
+        ></div>
+
         @if ($isProfilePage)
             <script src="/scripts/header.js"></script>
             <script src="/scripts/products.js?v=8"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
 
                     // Always start profile at the top on refresh/navigation.
                     if ('scrollRestoration' in history) {
@@ -643,10 +795,8 @@
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
                 })();
             </script>
         @elseif ($isCheckoutPage)
@@ -655,10 +805,8 @@
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
                 })();
             </script>
         @elseif ($isAdminPage)
@@ -667,12 +815,107 @@
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
-                    if (!localStorage.getItem('theme')) {
-                        localStorage.setItem('theme', 'dark');
-                    }
-                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
                 })();
             </script>
         @endif
+
+        <script>
+            (function () {
+                const toastRegion = document.getElementById('site-toast-region');
+
+                if (!toastRegion || window.__siteToastInit) {
+                    return;
+                }
+
+                window.__siteToastInit = true;
+
+                const TOAST_TITLES = {
+                    success: 'Success',
+                    error: 'Something went wrong',
+                    info: 'Notice'
+                };
+
+                const TOAST_ICONS = {
+                    success: 'OK',
+                    error: '!',
+                    info: 'i'
+                };
+
+                function normalizeToast(type, message) {
+                    return {
+                        type: ['success', 'error', 'info'].includes(type) ? type : 'info',
+                        message: String(message || '').trim()
+                    };
+                }
+
+                function closeToast(toast) {
+                    if (!toast || toast.dataset.closing === '1') {
+                        return;
+                    }
+
+                    toast.dataset.closing = '1';
+                    toast.classList.remove('is-visible');
+                    toast.classList.add('is-closing');
+                    window.setTimeout(() => toast.remove(), 220);
+                }
+
+                function renderToast(rawType, rawMessage, options = {}) {
+                    const { type, message } = normalizeToast(rawType, rawMessage);
+                    if (!message) {
+                        return null;
+                    }
+
+                    const toast = document.createElement('div');
+                    toast.className = `site-toast site-toast--${type}`;
+                    toast.setAttribute('role', type === 'error' ? 'alert' : 'status');
+
+                    const title = options.title || TOAST_TITLES[type];
+                    const icon = options.icon || TOAST_ICONS[type];
+
+                    toast.innerHTML = `
+                        <span class="site-toast-icon" aria-hidden="true">${icon}</span>
+                        <div class="site-toast-content">
+                            <span class="site-toast-title">${title}</span>
+                            <span class="site-toast-message"></span>
+                        </div>
+                        <button type="button" class="site-toast-close" aria-label="Dismiss notification">&times;</button>
+                    `;
+
+                    toast.querySelector('.site-toast-message').textContent = message;
+                    toast.querySelector('.site-toast-close').addEventListener('click', () => closeToast(toast));
+
+                    toastRegion.appendChild(toast);
+                    window.requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+                    const duration = Number(options.duration || 5000);
+                    if (duration > 0) {
+                        window.setTimeout(() => closeToast(toast), duration);
+                    }
+
+                    return toast;
+                }
+
+                window.showSiteToast = function (type, message, options = {}) {
+                    return renderToast(type, message, options);
+                };
+
+                let sessionToasts = [];
+                try {
+                    sessionToasts = JSON.parse(toastRegion.dataset.sessionToasts || '[]');
+                } catch (_) {
+                    sessionToasts = [];
+                }
+
+                sessionToasts.forEach((toast) => {
+                    if (!toast || !toast.message) {
+                        return;
+                    }
+
+                    renderToast(toast.type, toast.message);
+                });
+            })();
+        </script>
     </body>
 </html>

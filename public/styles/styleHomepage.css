@@ -46,6 +46,27 @@ main {
   font-size: var(--page-text-size);
 }
 
+html[data-theme="light"] body {
+  color: #111;
+  background-color: #f6efe6;
+}
+
+html[data-theme="light"] main {
+  background-color: #f6efe6;
+}
+
+html[data-theme="light"] .search-container {
+  background: rgba(255, 250, 244, 0.96);
+  border-color: rgba(17, 17, 17, 0.18);
+}
+
+html[data-theme="light"] .search-bar,
+html[data-theme="light"] .search-close {
+  background: #fff;
+  color: #111;
+  border-color: rgba(17, 17, 17, 0.12);
+}
+
 /* Navigation Bar */
 .nav {
   position: fixed;
@@ -220,6 +241,29 @@ main {
   background: #1d1d1d;
   transform: scale(1.04);
   transition: ease-in-out 0.2s;
+}
+
+html[data-theme="light"] .cat-box,
+html[data-theme="light"] .review-card,
+html[data-theme="light"] .hp-service-card,
+html[data-theme="light"] .hp-value-card,
+html[data-theme="light"] .contact-form,
+html[data-theme="light"] .contact-field-wrap,
+html[data-theme="light"] .submit-wrap,
+html[data-theme="light"] .swipe-indicator {
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+  border-color: rgba(17, 17, 17, 0.1);
+}
+
+html[data-theme="light"] .main-desc,
+html[data-theme="light"] .review-text,
+html[data-theme="light"] .review-author,
+html[data-theme="light"] .hp-about-text p,
+html[data-theme="light"] .contact-subtitle,
+html[data-theme="light"] .error-message,
+html[data-theme="light"] .success-message {
+  color: #2a2a2a;
 }
 
 .cat-box:hover::after {
