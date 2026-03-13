@@ -11,6 +11,22 @@
     </div>
 
     <div>
+        <label class="mb-2 block text-sm font-medium text-gray-700">Category</label>
+        <select
+            name="category"
+            class="w-full rounded-lg border border-gray-300 px-4 py-3 text-gray-900 focus:border-cyan-500 focus:outline-none">
+            @foreach(($categories ?? \App\Models\Faq::CATEGORIES) as $value => $label)
+                <option value="{{ $value }}" {{ old('category', optional($faq)->category ?? 'general') === $value ? 'selected' : '' }}>
+                    {{ $label }}
+                </option>
+            @endforeach
+        </select>
+        @error('category')
+            <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
+        @enderror
+    </div>
+
+    <div>
         <label class="mb-2 block text-sm font-medium text-gray-700">Answer</label>
         <textarea name="answer"
                   rows="7"

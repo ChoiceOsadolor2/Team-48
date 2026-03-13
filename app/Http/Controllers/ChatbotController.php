@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Faq;
+use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -18,6 +19,33 @@ class ChatbotController extends Controller
         'what', 'with', 'you', 'your',
     ];
 
+    private const SYNONYMS = [
+        'money back' => 'refund',
+        'send back' => 'return',
+        'cancel purchase' => 'cancel order',
+        'cancel my order' => 'cancel order',
+        'track package' => 'track order',
+        'where is my order' => 'order status',
+        'log in' => 'login',
+        'sign in' => 'login',
+        'sign up' => 'register',
+        'gaming pc' => 'pc',
+        'in stock' => 'available',
+        'out of stock' => 'unavailable',
+        'available now' => 'available',
+        'open hours' => 'opening hours',
+        'when are you open' => 'opening hours',
+        'opening times' => 'opening hours',
+        'recommend me' => 'recommend',
+        'what should i buy' => 'recommend',
+        'best product' => 'recommend',
+        'delete my account' => 'account deletion',
+        'remove my account' => 'account deletion',
+        'close my account' => 'account deletion',
+        'card payment' => 'payment',
+        'pay by card' => 'payment',
+    ];
+
     private const INTENTS = [
         'shipping' => [
             'keywords' => ['shipping', 'delivery', 'deliver', 'dispatch', 'arrive', 'arrival', 'postage', 'ship', 'shipped'],
@@ -29,8 +57,8 @@ class ChatbotController extends Controller
             ],
         ],
         'returns' => [
-            'keywords' => ['return', 'returns', 'refund', 'exchange', 'send back', 'cancel order', 'replacement'],
-            'faq_keywords' => ['returns'],
+            'keywords' => ['return', 'returns', 'refund', 'exchange', 'cancel order', 'replacement'],
+            'faq_keywords' => ['returns', 'refund'],
             'suggestions' => [
                 ['label' => 'Start a return', 'message' => 'How do I start a return?'],
                 ['label' => 'Order help', 'message' => 'How do I check my order status?'],
@@ -38,7 +66,7 @@ class ChatbotController extends Controller
             ],
         ],
         'orders' => [
-            'keywords' => ['order', 'orders', 'track', 'tracking', 'status', 'where', 'purchase', 'bought'],
+            'keywords' => ['order', 'orders', 'track', 'tracking', 'status', 'purchase', 'bought'],
             'faq_keywords' => ['order', 'orders', 'status'],
             'suggestions' => [
                 ['label' => 'Track my order', 'message' => 'How do I track my order?'],
@@ -47,12 +75,57 @@ class ChatbotController extends Controller
             ],
         ],
         'account' => [
-            'keywords' => ['account', 'login', 'sign in', 'register', 'profile', 'password', 'reset', 'email'],
-            'faq_keywords' => ['password'],
+            'keywords' => ['account', 'login', 'register', 'profile', 'password', 'reset', 'email'],
+            'faq_keywords' => ['password', 'account'],
             'suggestions' => [
                 ['label' => 'Profile info', 'url' => '/profile'],
                 ['label' => 'Login page', 'url' => '/pages/login.html'],
                 ['label' => 'Reset password', 'message' => 'How do I reset my password?'],
+            ],
+        ],
+        'payment' => [
+            'keywords' => ['payment', 'card', 'visa', 'mastercard', 'paypal', 'checkout', 'billing'],
+            'faq_keywords' => ['payment', 'checkout'],
+            'suggestions' => [
+                ['label' => 'Checkout help', 'message' => 'I need help with checkout.'],
+                ['label' => 'Order help', 'message' => 'How do I check my order status?'],
+                ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
+            ],
+        ],
+        'stock' => [
+            'keywords' => ['stock', 'available', 'availability', 'unavailable', 'sold out', 'restock'],
+            'faq_keywords' => ['stock', 'available'],
+            'suggestions' => [
+                ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
+                ['label' => 'Consoles and PCs', 'url' => '/pages/ShopAll.html?category=Consoles%20and%20PCs'],
+                ['label' => 'Video games', 'url' => '/pages/ShopAll.html?category=Games'],
+            ],
+        ],
+        'recommendations' => [
+            'keywords' => ['recommend', 'suggest', 'best', 'looking for', 'which product', 'what should i buy'],
+            'faq_keywords' => ['recommend', 'product'],
+            'suggestions' => [
+                ['label' => 'Video games', 'url' => '/pages/ShopAll.html?category=Games'],
+                ['label' => 'Consoles and PCs', 'url' => '/pages/ShopAll.html?category=Consoles%20and%20PCs'],
+                ['label' => 'Accessories', 'url' => '/pages/ShopAll.html?category=Accessories'],
+            ],
+        ],
+        'account_deletion' => [
+            'keywords' => ['account deletion', 'delete account', 'remove account', 'close account'],
+            'faq_keywords' => ['account', 'delete'],
+            'suggestions' => [
+                ['label' => 'Profile info', 'url' => '/profile'],
+                ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
+                ['label' => 'Account help', 'message' => 'I need help with my account.'],
+            ],
+        ],
+        'opening_hours' => [
+            'keywords' => ['opening hours', 'open', 'hours', 'closing time', 'open today'],
+            'faq_keywords' => ['hours', 'open'],
+            'suggestions' => [
+                ['label' => 'Contact us', 'url' => '/pages/index.html#contactus'],
+                ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
+                ['label' => 'Store help', 'message' => 'How can I contact support?'],
             ],
         ],
         'contact' => [
@@ -78,13 +151,11 @@ class ChatbotController extends Controller
     public function ask(Request $request)
     {
         $request->validate([
-            'message' => 'required|string|max:500'
+            'message' => 'required|string|max:500',
         ]);
 
         $message = trim($request->input('message'));
-        $faqs = Schema::hasTable('faqs')
-            ? Faq::query()->get()
-            : collect();
+        $faqs = Schema::hasTable('faqs') ? Faq::query()->get() : collect();
         $context = $request->session()->get('chatbot_context', []);
 
         if ($faqs->isEmpty()) {
@@ -99,12 +170,12 @@ class ChatbotController extends Controller
         }
 
         $intent = $this->detectIntent($message, $context);
-        $bestFaq = $this->findBestFaq($message, $intent, $faqs);
+        $bestFaq = $this->findBestFaq($message, $intent, $faqs, $context);
         $reply = $bestFaq['faq']?->answer;
         $fallbackSuggestions = [];
 
         if (! $reply) {
-            [$reply, $fallbackSuggestions] = $this->buildFallback($message, $intent);
+            [$reply, $fallbackSuggestions] = $this->buildFallback($message, $intent, $context);
         }
 
         if ($reply && $intent) {
@@ -116,6 +187,11 @@ class ChatbotController extends Controller
         $request->session()->put('chatbot_context', [
             'intent' => $intent,
             'message' => $message,
+            'normalized_message' => $this->normalize($message),
+            'tokens' => $this->tokenize($message),
+            'faq_keyword' => $bestFaq['faq']?->keyword,
+            'faq_category' => $bestFaq['faq']?->category,
+            'recent_intents' => $this->rememberRecentIntent($context, $intent),
             'updated_at' => now()->toIso8601String(),
         ]);
 
@@ -132,6 +208,9 @@ class ChatbotController extends Controller
         $normalized = $this->normalize($message);
         $tokens = $this->tokenize($message);
         $scores = [];
+        $recentIntents = $context['recent_intents'] ?? [];
+        $isFollowUp = $this->looksLikeFollowUp($normalized);
+        $isShortMessage = count($tokens) <= 4;
 
         foreach (self::INTENTS as $intent => $config) {
             $score = 0;
@@ -141,7 +220,7 @@ class ChatbotController extends Controller
                 $keywordTokens = $this->tokenize($keyword);
 
                 if ($keywordNormalized !== '' && str_contains($normalized, $keywordNormalized)) {
-                    $score += 8;
+                    $score += 9;
                 }
 
                 foreach ($tokens as $token) {
@@ -155,6 +234,14 @@ class ChatbotController extends Controller
                 }
             }
 
+            if (($context['intent'] ?? null) === $intent && ($isFollowUp || $isShortMessage)) {
+                $score += 8;
+            }
+
+            if (in_array($intent, $recentIntents, true)) {
+                $score += 2;
+            }
+
             $scores[$intent] = $score;
         }
 
@@ -166,20 +253,22 @@ class ChatbotController extends Controller
             return $bestIntent;
         }
 
-        if ($this->looksLikeFollowUp($normalized) && ! empty($context['intent'])) {
+        if (($isFollowUp || $isShortMessage) && ! empty($context['intent'])) {
             return $context['intent'];
         }
 
         return null;
     }
 
-    private function findBestFaq(string $message, ?string $intent, $faqs): array
+    private function findBestFaq(string $message, ?string $intent, $faqs, array $context): array
     {
         $tokens = $this->tokenize($message);
         $normalized = $this->normalize($message);
         $bestFaq = null;
         $bestScore = 0;
         $preferredFaqKeywords = $intent ? (self::INTENTS[$intent]['faq_keywords'] ?? []) : [];
+        $previousFaqKeyword = $this->normalize((string) ($context['faq_keyword'] ?? ''));
+        $previousFaqCategory = $context['faq_category'] ?? null;
 
         foreach ($faqs as $faq) {
             $faqKeyword = $this->normalize($faq->keyword);
@@ -201,9 +290,25 @@ class ChatbotController extends Controller
             }
 
             foreach ($preferredFaqKeywords as $preferredKeyword) {
-                if ($faqKeyword === $this->normalize($preferredKeyword)) {
+                if (str_contains($faqKeyword, $this->normalize($preferredKeyword))) {
                     $score += 12;
                 }
+            }
+
+            if ($intent && ($faq->category ?? 'general') === $intent) {
+                $score += 18;
+            }
+
+            if (($faq->category ?? 'general') === 'general') {
+                $score += 1;
+            }
+
+            if ($previousFaqKeyword !== '' && $faqKeyword === $previousFaqKeyword && $this->looksLikeFollowUp($normalized)) {
+                $score += 10;
+            }
+
+            if ($previousFaqCategory && ($faq->category ?? null) === $previousFaqCategory && $this->looksLikeFollowUp($normalized)) {
+                $score += 8;
             }
 
             if ($score > $bestScore) {
@@ -218,15 +323,31 @@ class ChatbotController extends Controller
         ];
     }
 
-    private function buildFallback(string $message, ?string $intent): array
+    private function buildFallback(string $message, ?string $intent, array $context): array
     {
-        $tokens = $this->tokenize($message);
+        $tokens = array_values(array_unique(array_merge(
+            $this->tokenize($message),
+            array_slice($context['tokens'] ?? [], 0, 3)
+        )));
+
+        $categoryFilters = $this->guessRelevantProductCategories($tokens, $intent, $context);
 
         $products = Product::query()
+            ->with('category')
+            ->when(! empty($categoryFilters), function ($query) use ($categoryFilters) {
+                $query->whereHas('category', function ($categoryQuery) use ($categoryFilters) {
+                    $categoryQuery->where(function ($inner) use ($categoryFilters) {
+                        foreach ($categoryFilters as $filter) {
+                            $inner->orWhere('name', 'like', '%' . $filter . '%');
+                        }
+                    });
+                });
+            })
             ->when(! empty($tokens), function ($query) use ($tokens) {
                 $query->where(function ($inner) use ($tokens) {
                     foreach (array_slice($tokens, 0, 4) as $token) {
-                        $inner->orWhere('name', 'like', '%' . $token . '%');
+                        $inner->orWhere('name', 'like', '%' . $token . '%')
+                            ->orWhere('platform', 'like', '%' . $token . '%');
                     }
                 });
             })
@@ -245,6 +366,10 @@ class ChatbotController extends Controller
         $suggestions[] = ['label' => 'Browse all products', 'url' => '/pages/ShopAll.html'];
         $suggestions[] = ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'];
 
+        foreach ($this->buildCategorySuggestions($categoryFilters) as $categorySuggestion) {
+            $suggestions[] = $categorySuggestion;
+        }
+
         $suggestions = collect($suggestions)
             ->unique(fn ($item) => ($item['label'] ?? '') . '|' . ($item['url'] ?? '') . '|' . ($item['message'] ?? ''))
             ->take(4)
@@ -252,9 +377,12 @@ class ChatbotController extends Controller
             ->all();
 
         $reply = match ($intent) {
-            'orders' => "I couldn't find an exact FAQ answer, but I can still point you toward order-related pages that may help.",
-            'shipping' => "I couldn't find an exact shipping FAQ match, but here are the best places to continue.",
-            'returns' => "I couldn't find a precise returns answer, but these links should get you to the right place.",
+            'orders' => "I think you're asking about an order, but I couldn't find the exact FAQ answer. These next steps should still help.",
+            'shipping' => "This sounds like a shipping question. I couldn't find the exact FAQ match, but these options should help.",
+            'returns' => "This looks like a returns question. I couldn't find the exact FAQ match, but these links should get you there.",
+            'payment' => "This seems payment-related. I couldn't find the exact FAQ answer, but these options should help you continue.",
+            'stock' => "This sounds like an availability question. I couldn't find the exact FAQ answer, but you can keep going from here.",
+            'recommendations' => "It sounds like you want product suggestions. I couldn't match a specific FAQ, but these browsing links should help.",
             default => "I couldn't find an exact FAQ match, but these options should help you keep going.",
         };
 
@@ -282,14 +410,98 @@ class ChatbotController extends Controller
 
         return match ($intent) {
             'orders' => $reply . ' You can also open your Previous Orders page from the account menu.',
-            'account' => $reply . ' Your profile page is available from the account menu if you want to update details.',
+            'account', 'account_deletion' => $reply . ' Your profile page is available from the account menu if you want to manage account details.',
             default => $reply,
         };
     }
 
+    private function rememberRecentIntent(array $context, ?string $intent): array
+    {
+        $recent = collect($context['recent_intents'] ?? []);
+
+        if ($intent) {
+            $recent->prepend($intent);
+        }
+
+        return $recent
+            ->filter()
+            ->unique()
+            ->take(3)
+            ->values()
+            ->all();
+    }
+
+    private function guessRelevantProductCategories(array $tokens, ?string $intent, array $context): array
+    {
+        $filters = [];
+        $joined = implode(' ', $tokens);
+        $previousMessage = (string) ($context['normalized_message'] ?? '');
+
+        if (in_array($intent, ['recommendations', 'stock'], true)) {
+            $filters[] = 'Games';
+            $filters[] = 'Accessories';
+            $filters[] = 'Consoles';
+            $filters[] = 'PC';
+        }
+
+        if (str_contains($joined, 'game') || str_contains($joined, 'ps5') || str_contains($joined, 'xbox') || str_contains($joined, 'nintendo')) {
+            $filters[] = 'Games';
+        }
+
+        if (str_contains($joined, 'console') || str_contains($joined, 'pc') || str_contains($joined, 'playstation') || str_contains($joined, 'xbox')) {
+            $filters[] = 'Consoles';
+            $filters[] = 'PC';
+        }
+
+        if (str_contains($joined, 'chair') || str_contains($joined, 'desk') || str_contains($joined, 'monitor') || str_contains($joined, 'display')) {
+            $filters[] = 'Hardware';
+        }
+
+        if (str_contains($joined, 'controller') || str_contains($joined, 'headset') || str_contains($joined, 'accessory')) {
+            $filters[] = 'Accessories';
+        }
+
+        if ($previousMessage !== '' && $this->looksLikeFollowUp($this->normalize($joined))) {
+            if (str_contains($previousMessage, 'game')) {
+                $filters[] = 'Games';
+            }
+            if (str_contains($previousMessage, 'console') || str_contains($previousMessage, 'pc')) {
+                $filters[] = 'Consoles';
+                $filters[] = 'PC';
+            }
+        }
+
+        return array_values(array_unique($filters));
+    }
+
+    private function buildCategorySuggestions(array $categoryFilters): array
+    {
+        $categories = Category::query()
+            ->when(! empty($categoryFilters), function ($query) use ($categoryFilters) {
+                $query->where(function ($inner) use ($categoryFilters) {
+                    foreach ($categoryFilters as $filter) {
+                        $inner->orWhere('name', 'like', '%' . $filter . '%');
+                    }
+                });
+            })
+            ->orderBy('name')
+            ->limit(2)
+            ->get(['name']);
+
+        return $categories->map(function ($category) {
+            return [
+                'label' => Str::limit($category->name, 24),
+                'url' => '/pages/ShopAll.html?category=' . urlencode($category->name),
+            ];
+        })->all();
+    }
+
     private function looksLikeFollowUp(string $normalized): bool
     {
-        foreach (['that', 'this', 'it', 'they', 'them', 'those', 'more', 'what about', 'how long', 'and', 'also'] as $term) {
+        foreach ([
+            'that', 'this', 'it', 'they', 'them', 'those', 'more', 'what about', 'how long',
+            'and', 'also', 'what else', 'another one', 'can you explain', 'tell me more',
+        ] as $term) {
             if (str_contains($normalized, $term)) {
                 return true;
             }
@@ -311,6 +523,11 @@ class ChatbotController extends Controller
     private function normalize(string $text): string
     {
         $text = Str::lower($text);
+
+        foreach (self::SYNONYMS as $from => $to) {
+            $text = str_replace($from, $to, $text);
+        }
+
         $text = preg_replace('/[^a-z0-9\s]/', ' ', $text) ?? $text;
         $text = preg_replace('/\s+/', ' ', $text) ?? $text;
 

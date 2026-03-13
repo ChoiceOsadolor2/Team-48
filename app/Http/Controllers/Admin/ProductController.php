@@ -12,6 +12,40 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
+    public function updateStock(Request $request, Product $product)
+    {
+        $data = $request->validate([
+            'stock' => ['required', 'integer', 'min:0'],
+        ]);
+
+        $product->update([
+            'stock' => $data['stock'],
+        ]);
+
+        return redirect()->route('admin.products.index', array_filter([
+            'q' => $request->input('q'),
+            'stock' => $request->input('filter_stock'),
+            'category' => $request->input('category_filter'),
+        ], fn ($value) => $value !== null && $value !== ''))
+            ->with('status', 'Stock updated for ' . $product->name . '.');
+    }
+
+    public function bulkAction(Request $request)
+    {
+        $data = $request->validate([
+            'action' => ['required', 'in:delete'],
+            'selected' => ['required', 'array', 'min:1'],
+            'selected.*' => ['integer', 'exists:products,id'],
+        ]);
+
+        $selectedIds = array_unique($data['selected']);
+
+        Product::query()->whereIn('id', $selectedIds)->delete();
+
+        return redirect()->route('admin.products.index')
+            ->with('status', count($selectedIds) . ' products deleted successfully.');
+    }
+
     public function index(Request $request)
 {
     $categoryKey = $request->query('category');
@@ -60,7 +94,7 @@ class ProductController extends Controller
         $query->where('stock', '>', 0)->where('stock', '<=', 5);
     }
 
-    $products = $query->get();
+    $products = $query->paginate(15)->appends($request->query());
 
     return view('admin.products.index', [
         'products'    => $products,

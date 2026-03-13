@@ -7,6 +7,32 @@ use App\Models\ContactQuery;
 
 class ContactQueryController extends Controller
 {
+    public function bulkAction(\Illuminate\Http\Request $request)
+    {
+        $data = $request->validate([
+            'action' => ['required', 'in:resolve,unresolve,delete'],
+            'selected' => ['required', 'array', 'min:1'],
+            'selected.*' => ['integer', 'exists:contact_queries,id'],
+        ]);
+
+        $selectedIds = array_unique($data['selected']);
+        $query = ContactQuery::query()->whereIn('id', $selectedIds);
+
+        if ($data['action'] === 'resolve') {
+            $query->update(['resolved_at' => now()]);
+            $message = count($selectedIds) . ' contact queries marked as resolved.';
+        } elseif ($data['action'] === 'unresolve') {
+            $query->update(['resolved_at' => null]);
+            $message = count($selectedIds) . ' contact queries marked as unresolved.';
+        } else {
+            $query->delete();
+            $message = count($selectedIds) . ' contact queries deleted successfully.';
+        }
+
+        return redirect()->route('admin.contact-queries.index')
+            ->with('status', $message);
+    }
+
     public function index(\Illuminate\Http\Request $request)
     {
         $search = trim((string) $request->query('q', ''));
@@ -28,7 +54,8 @@ class ContactQueryController extends Controller
                 $query->whereNull('resolved_at');
             })
             ->latest()
-            ->get();
+            ->paginate(15)
+            ->appends($request->query());
 
         return view('admin.contact-queries.index', compact('contactQueries', 'search', 'status'));
     }

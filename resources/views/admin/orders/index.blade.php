@@ -66,7 +66,11 @@
                     <p class="text-sm text-gray-500 dark:text-gray-400">A cleaner table for fulfilment and customer review.</p>
                 </div>
                 <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                    {{ $orders->count() }} shown
+                    @if (($orders->firstItem() ?? 0) <= 1 && ($orders->lastItem() ?? 0) === $orders->total())
+                        Showing {{ $orders->count() }} of {{ $orders->total() }} orders
+                    @else
+                        Showing {{ $orders->firstItem() ?? 0 }}-{{ $orders->lastItem() ?? 0 }} of {{ $orders->total() }} orders
+                    @endif
                 </span>
             </div>
 
@@ -109,9 +113,27 @@
                                             default => 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
                                         };
                                     @endphp
-                                    <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses }}">
-                                        {{ ucfirst($order->status) }}
-                                    </span>
+                                    <div class="mb-3">
+                                        <span class="rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses }}">
+                                            {{ ucfirst($order->status) }}
+                                        </span>
+                                    </div>
+                                    <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" class="flex items-center gap-2">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="q" value="{{ request('q') }}">
+                                        <input type="hidden" name="current_status_filter" value="{{ request('status') }}">
+                                        <input type="hidden" name="from" value="{{ request('from') }}">
+                                        <input type="hidden" name="to" value="{{ request('to') }}">
+                                        <select name="status" class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
+                                            <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>Processing</option>
+                                            <option value="completed" {{ $order->status === 'completed' || $order->status === 'delivered' ? 'selected' : '' }}>Completed</option>
+                                            <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                                        </select>
+                                        <button type="submit" class="rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-gray-800 dark:bg-cyan-600 dark:hover:bg-cyan-500">
+                                            Save
+                                        </button>
+                                    </form>
                                 </td>
                                 <td class="px-5 py-4 text-gray-500 dark:text-gray-400">{{ $order->created_at->format('d M Y H:i') }}</td>
                                 <td class="px-5 py-4">

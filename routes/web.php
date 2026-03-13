@@ -156,6 +156,22 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->take(5)
             ->get();
 
+        $latestUsers = User::query()
+            ->latest()
+            ->take(3)
+            ->get(['id', 'name', 'email', 'created_at']);
+
+        $latestProducts = Product::query()
+            ->with('category')
+            ->latest()
+            ->take(3)
+            ->get(['id', 'category_id', 'name', 'stock', 'created_at']);
+
+        $latestQueries = ContactQuery::query()
+            ->latest()
+            ->take(3)
+            ->get(['id', 'name', 'subject', 'created_at', 'resolved_at']);
+
         $contactQueryCount = ContactQuery::count();
         $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
 
@@ -173,6 +189,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'averageOrderValue',
             'topCategories',
             'recentOrders',
+            'latestUsers',
+            'latestProducts',
+            'latestQueries',
             'faqCount',
             'contactQueryCount',
         ));
@@ -202,11 +221,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/products', [\App\Http\Controllers\Admin\ProductController::class, 'store'])
         ->name('admin.products.store');
 
+    Route::post('/admin/products/bulk', [\App\Http\Controllers\Admin\ProductController::class, 'bulkAction'])
+        ->name('admin.products.bulk');
+
     Route::get('/admin/products/{product}/edit', [\App\Http\Controllers\Admin\ProductController::class, 'edit'])
         ->name('admin.products.edit');
 
     Route::put('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'update'])
         ->name('admin.products.update');
+
+    Route::patch('/admin/products/{product}/stock', [\App\Http\Controllers\Admin\ProductController::class, 'updateStock'])
+        ->name('admin.products.update-stock');
 
     Route::delete('/admin/products/{product}', [\App\Http\Controllers\Admin\ProductController::class, 'destroy'])
         ->name('admin.products.destroy');
@@ -218,6 +243,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/orders/{order}', [AdminOrderController::class, 'show'])
         ->name('admin.orders.show');
 
+    Route::patch('/admin/orders/{order}/status', [AdminOrderController::class, 'updateStatus'])
+        ->name('admin.orders.update-status');
+
     Route::post('/admin/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])
         ->name('admin.orders.cancel');
 
@@ -226,6 +254,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/contact-queries', [AdminContactQueryController::class, 'index'])
         ->name('admin.contact-queries.index');
+
+    Route::post('/admin/contact-queries/bulk', [AdminContactQueryController::class, 'bulkAction'])
+        ->name('admin.contact-queries.bulk');
 
     Route::get('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'show'])
         ->name('admin.contact-queries.show');
@@ -241,6 +272,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/admin/faqs', [AdminFaqController::class, 'store'])
         ->name('admin.faqs.store');
+
+    Route::post('/admin/faqs/bulk', [AdminFaqController::class, 'bulkAction'])
+        ->name('admin.faqs.bulk');
 
     Route::get('/admin/faqs/{faq}/edit', [AdminFaqController::class, 'edit'])
         ->name('admin.faqs.edit');
