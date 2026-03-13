@@ -7,13 +7,30 @@ use App\Models\ContactQuery;
 
 class ContactQueryController extends Controller
 {
-    public function index()
+    public function index(\Illuminate\Http\Request $request)
     {
+        $search = trim((string) $request->query('q', ''));
+        $status = trim((string) $request->query('status', ''));
+
         $contactQueries = ContactQuery::query()
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                        ->orWhere('email', 'like', "%{$search}%")
+                        ->orWhere('subject', 'like', "%{$search}%")
+                        ->orWhere('message', 'like', "%{$search}%");
+                });
+            })
+            ->when($status === 'resolved', function ($query) {
+                $query->whereNotNull('resolved_at');
+            })
+            ->when($status === 'unresolved', function ($query) {
+                $query->whereNull('resolved_at');
+            })
             ->latest()
             ->get();
 
-        return view('admin.contact-queries.index', compact('contactQueries'));
+        return view('admin.contact-queries.index', compact('contactQueries', 'search', 'status'));
     }
 
     public function show(ContactQuery $contactQuery)

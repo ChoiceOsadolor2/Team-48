@@ -12,6 +12,35 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden rounded-3xl bg-white shadow-sm">
                 <div class="p-6">
+                    <form method="GET" action="{{ route('admin.contact-queries.index') }}" class="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700">Search</label>
+                                <input
+                                    type="text"
+                                    name="q"
+                                    value="{{ $search ?? request('q') }}"
+                                    class="w-full rounded border border-gray-300 px-3 py-2"
+                                    placeholder="Search name, email, subject..."
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-1 text-gray-700">Status</label>
+                                <select name="status" class="w-full rounded border border-gray-300 px-3 py-2">
+                                    <option value="">All queries</option>
+                                    <option value="resolved" {{ ($status ?? request('status')) === 'resolved' ? 'selected' : '' }}>Resolved</option>
+                                    <option value="unresolved" {{ ($status ?? request('status')) === 'unresolved' ? 'selected' : '' }}>Unresolved</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-end gap-2">
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Apply</button>
+                                <a href="{{ route('admin.contact-queries.index') }}" class="px-4 py-2 bg-gray-200 rounded">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+
                     @if ($contactQueries->isEmpty())
                         <p class="text-gray-600">No contact queries yet.</p>
                     @else

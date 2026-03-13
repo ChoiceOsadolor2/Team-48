@@ -15,6 +15,8 @@ class ProductController extends Controller
     public function index(Request $request)
 {
     $categoryKey = $request->query('category');
+    $search = trim((string) $request->query('q', ''));
+    $stock = trim((string) $request->query('stock', ''));
 
     $categoryNames = [
         'Games' => [
@@ -42,11 +44,29 @@ class ProductController extends Controller
         });
     }
 
+    if ($search !== '') {
+        $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+                ->orWhere('description', 'like', "%{$search}%")
+                ->orWhere('platform', 'like', "%{$search}%");
+        });
+    }
+
+    if ($stock === 'in_stock') {
+        $query->where('stock', '>', 0);
+    } elseif ($stock === 'out_of_stock') {
+        $query->where('stock', '<=', 0);
+    } elseif ($stock === 'low_stock') {
+        $query->where('stock', '>', 0)->where('stock', '<=', 5);
+    }
+
     $products = $query->get();
 
     return view('admin.products.index', [
         'products'    => $products,
         'categoryKey' => $categoryKey,
+        'search'      => $search,
+        'stockFilter' => $stock,
     ]);
 }
 

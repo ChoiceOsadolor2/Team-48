@@ -15,6 +15,25 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
             <div class="overflow-hidden rounded-3xl bg-white shadow-sm">
                 <div class="p-6">
+                    <form method="GET" action="{{ route('admin.faqs.index') }}" class="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4">
+                        <div class="flex flex-col gap-4 md:flex-row md:items-end">
+                            <div class="flex-1">
+                                <label class="block text-sm font-semibold mb-1 text-gray-700">Search FAQs</label>
+                                <input
+                                    type="text"
+                                    name="q"
+                                    value="{{ $search ?? request('q') }}"
+                                    class="w-full rounded border border-gray-300 px-3 py-2"
+                                    placeholder="Search keyword or answer..."
+                                />
+                            </div>
+                            <div class="flex gap-2">
+                                <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white">Apply</button>
+                                <a href="{{ route('admin.faqs.index') }}" class="rounded-lg bg-gray-200 px-4 py-2 text-sm font-semibold text-gray-800">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+
                     @if ($faqs->isEmpty())
                         <p class="text-gray-600">No FAQs yet.</p>
                     @else

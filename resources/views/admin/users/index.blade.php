@@ -9,6 +9,35 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900 dark:text-gray-100">
+                    <form method="GET" action="{{ route('admin.users.index') }}" class="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Search</label>
+                                <input
+                                    type="text"
+                                    name="q"
+                                    value="{{ $search ?? request('q') }}"
+                                    class="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                                    placeholder="Search name, email, or ID..."
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Role</label>
+                                <select name="role" class="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
+                                    <option value="">All roles</option>
+                                    <option value="admin" {{ ($role ?? request('role')) === 'admin' ? 'selected' : '' }}>Admin</option>
+                                    <option value="user" {{ ($role ?? request('role')) === 'user' ? 'selected' : '' }}>User</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-end gap-2">
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Apply</button>
+                                <a href="{{ route('admin.users.index') }}" class="px-4 py-2 bg-gray-200 rounded dark:bg-gray-700">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+
                     <table class="min-w-full text-left text-sm">
                         <thead class="border-b border-gray-700 text-white">
                             <tr>

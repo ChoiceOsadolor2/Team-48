@@ -9,13 +9,23 @@ use Illuminate\Support\Facades\Schema;
 
 class FaqController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $search = trim((string) $request->query('q', ''));
+
         $faqs = Schema::hasTable('faqs')
-            ? Faq::query()->orderBy('keyword')->get()
+            ? Faq::query()
+                ->when($search !== '', function ($query) use ($search) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where('keyword', 'like', "%{$search}%")
+                            ->orWhere('answer', 'like', "%{$search}%");
+                    });
+                })
+                ->orderBy('keyword')
+                ->get()
             : collect();
 
-        return view('admin.faqs.index', compact('faqs'));
+        return view('admin.faqs.index', compact('faqs', 'search'));
     }
 
     public function create()

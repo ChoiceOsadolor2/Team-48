@@ -17,6 +17,39 @@
                         </a>
                     </div>
 
+                    <form method="GET" action="{{ route('admin.products.index') }}" class="mb-6 rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Search</label>
+                                <input
+                                    type="text"
+                                    name="q"
+                                    value="{{ $search ?? request('q') }}"
+                                    class="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800"
+                                    placeholder="Search name, description, platform..."
+                                />
+                            </div>
+
+                            <div>
+                                <label class="block text-sm font-semibold mb-1">Stock</label>
+                                <select name="stock" class="w-full rounded border border-gray-300 px-3 py-2 dark:border-gray-700 dark:bg-gray-800">
+                                    <option value="">All stock levels</option>
+                                    <option value="in_stock" {{ ($stockFilter ?? request('stock')) === 'in_stock' ? 'selected' : '' }}>In stock</option>
+                                    <option value="low_stock" {{ ($stockFilter ?? request('stock')) === 'low_stock' ? 'selected' : '' }}>Low stock</option>
+                                    <option value="out_of_stock" {{ ($stockFilter ?? request('stock')) === 'out_of_stock' ? 'selected' : '' }}>Out of stock</option>
+                                </select>
+                            </div>
+
+                            <div class="flex items-end gap-2">
+                                @if($currentCategory)
+                                    <input type="hidden" name="category" value="{{ $currentCategory }}">
+                                @endif
+                                <button type="submit" class="px-4 py-2 bg-indigo-600 text-white rounded">Apply</button>
+                                <a href="{{ $currentCategory ? route('admin.products.index', ['category' => $currentCategory]) : route('admin.products.index') }}" class="px-4 py-2 bg-gray-200 rounded dark:bg-gray-700">Clear</a>
+                            </div>
+                        </div>
+                    </form>
+
                     @php
                         // Comes from controller: 'Games', 'Consoles and PCs', etc.
                         $currentCategory = $categoryKey ?? request('category');
