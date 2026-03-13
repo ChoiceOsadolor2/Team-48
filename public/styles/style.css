@@ -414,7 +414,7 @@ header.search-active #search {
   background-color: #000000;
   backdrop-filter: blur(25px);
   color: #ffffff;
-  border-left: 1px solid #333;
+  border-left: 1px solid #444;
   transition: 0.3s;
   /* top: 15vh; */
 
@@ -443,7 +443,7 @@ header.search-active #search {
   font-family: 'MiniPixel', sans-serif;
   letter-spacing: 2px;
   font-weight: 400;
-  font-size: 2rem;
+  font-size: 30px;
   margin: 0;
   position: absolute;
   left: 50%;
@@ -528,7 +528,7 @@ header.search-active #search {
 .basket_product_info .basket_quantity_text,
 .basket_product_info .remove_from_cart {
   margin: 0;
-  font-size: 1.35rem;
+  font-size: 20px;
   font-family: 'MiniPixel', sans-serif;
   font-weight: 400;
   letter-spacing: 1px;
@@ -545,6 +545,7 @@ header.search-active #search {
 .basket_product_info .basket_price::before,
 .basket_product_info .basket_quantity_text::before {
   color: #888;
+  font-size: 20px;
 }
 
 .basket_product_info .basket_name::before {
@@ -567,7 +568,7 @@ header.search-active #search {
 
 #basket_header .basket_count {
   margin-right: 20px;
-  font-size: 2rem;
+  font-size: 30px;
 }
 
 #basket #basket_checkout_btn {
@@ -580,9 +581,9 @@ header.search-active #search {
   border-radius: 10px;
   color: white;
   background-color: #000;
-  border: 1px solid #666;
+  border: 1px solid #444;
   font-family: 'MiniPixel', sans-serif;
-  font-size: 1.35rem;
+  font-size: 20px;
   letter-spacing: 1px;
   transition: background-color 0.3s ease, transform 0.25s ease;
   cursor: pointer;
@@ -613,12 +614,12 @@ header.search-active #search {
 }
 
 #basket #basket_checkout_btn:hover {
-  background-color: #2a2a2a;
+  background-color: #1d1d1d;
   transform: translateY(-2px);
 }
 
 #basket #basket_checkout_btn:focus-visible {
-  background-color: #2a2a2a;
+  background-color: #1d1d1d;
   transform: translateY(-2px);
   outline: none;
 }
@@ -648,7 +649,7 @@ header.search-active #search {
 }
 
 .basket_qty_btn:hover {
-  background: #2a2a2a;
+  background: #1d1d1d;
   transform: translateY(-2px);
 }
 
@@ -674,7 +675,7 @@ header.search-active #search {
 }
 
 .basket_qty_btn:focus-visible {
-  background: #2a2a2a;
+  background: #1d1d1d;
   transform: translateY(-2px);
   outline: none;
 }
@@ -703,7 +704,7 @@ header.search-active #search {
 
 .basket_product_info .remove_from_cart:hover,
 .basket_product_info .remove_from_cart:focus-visible {
-  background: #2a2a2a;
+  background: #1d1d1d;
   transform: translateY(-2px);
   outline: none;
 }
@@ -739,11 +740,13 @@ header.search-active #search {
   gap: 15px;
   font-weight: normal;
   color: #ffffff;
+  font-size: 30px;
 }
 
 #basket #total {
   color: #ffffff;
   margin: 0;
+  font-size: 30px;
 }
 
 #menu_main {
@@ -952,6 +955,15 @@ body:has(#basket.open) #theme-toggle-container {
   opacity: 0;
   visibility: hidden;
   transform: scale(0.8);
+  pointer-events: none;
+}
+
+html.cart-open #vx-scroll-top,
+body.cart-open #vx-scroll-top,
+html.cart-open #vx-chatbot-container,
+body.cart-open #vx-chatbot-container {
+  opacity: 0;
+  visibility: hidden;
   pointer-events: none;
 }
 

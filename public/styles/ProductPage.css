@@ -115,6 +115,12 @@ nav > a {
   opacity: 1;
 }
 
+html.cart-open #previous_page,
+body.cart-open #previous_page {
+  opacity: 0;
+  pointer-events: none;
+}
+
 #main_image{
   width: auto;
   height: auto;

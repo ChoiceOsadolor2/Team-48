@@ -1,6 +1,7 @@
 // moving background animation --> background is a section that repeats.
 const section = document.getElementById('wrapper_overlay');
 const section2 = document.querySelector('main');
+const animatedLoginBody = document.body.classList.contains('login-page');
 const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
 let x = 0;
@@ -47,7 +48,7 @@ function stopBackgroundAnimation() {
   animationFrameId = null;
 }
 
-if (section || section2) {
+if (section || section2 || animatedLoginBody) {
   updateBackgroundPositions();
   startBackgroundAnimation();
 
