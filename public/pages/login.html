@@ -29,6 +29,173 @@
         -webkit-text-security: disc;
         text-security: disc;
       }
+
+      .captcha-overlay {
+        position: fixed;
+        inset: 0;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        z-index: 2000;
+        padding: 24px;
+      }
+
+      .captcha-overlay.open {
+        display: flex;
+      }
+
+      .captcha-modal {
+        width: min(520px, 100%);
+        background: #1d1d1d;
+        border: 1px solid #444;
+        border-radius: 20px;
+        padding: 28px 28px 24px;
+        color: #fff;
+        font-family: 'MiniPixel', sans-serif;
+        text-align: center;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+      }
+
+      .captcha-title {
+        font-family: 'MiniPixel', sans-serif;
+        font-size: 30px;
+        font-weight: 400;
+        margin-bottom: 14px;
+      }
+
+      .captcha-copy {
+        font-family: 'MiniPixel', sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        color: #fff;
+        line-height: 1.5;
+        margin-bottom: 18px;
+      }
+
+      .captcha-code {
+        width: 100%;
+        padding: 18px 20px;
+        margin-bottom: 18px;
+        border-radius: 14px;
+        border: 1px solid #444;
+        background: #000;
+        color: #fff;
+        font-family: 'MiniPixel', sans-serif;
+        font-size: 30px;
+        font-weight: 400;
+        letter-spacing: 4px;
+        text-align: center;
+        user-select: none;
+      }
+
+      .captcha-input-wrap {
+        position: relative;
+        width: 100%;
+        margin: 0 0 18px;
+      }
+
+      .captcha-input-wrap::after {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: 12px;
+        border: 1px solid transparent;
+        animation: veltrixGlow 2s infinite alternate;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+      }
+
+      .captcha-input-wrap:hover::after,
+      .captcha-input-wrap:focus-within::after {
+        opacity: 1;
+      }
+
+      .captcha-input {
+        width: 100%;
+        height: 60px;
+        border-radius: 12px;
+        border: 1px solid #444;
+        background: #000;
+        color: #fff;
+        font-family: 'MiniPixel', sans-serif;
+        font-size: 20px;
+        outline: none;
+        padding: 0 18px;
+        text-align: center;
+        transition: background-color 0.2s ease, border-color 0.2s ease;
+      }
+
+      .captcha-input::placeholder {
+        color: #888;
+      }
+
+      .captcha-input:hover,
+      .captcha-input:focus {
+        background: #1d1d1d;
+        border-color: transparent;
+      }
+
+      .captcha-error {
+        display: none;
+        margin: 0 0 16px;
+        font-family: 'MiniPixel', sans-serif;
+        font-size: 16px;
+        color: #ffa825;
+        text-align: center;
+      }
+
+      .captcha-actions {
+        display: flex;
+        justify-content: center;
+        gap: 14px;
+        flex-wrap: wrap;
+      }
+
+      .captcha-btn {
+        min-width: 150px;
+        height: 52px;
+        border-radius: 14px;
+        border: 1px solid #444;
+        background: #000;
+        color: #fff;
+        font-family: 'MiniPixel', sans-serif;
+        font-size: 20px;
+        cursor: pointer;
+        position: relative;
+        transition: all 0.25s ease;
+        overflow: visible;
+        isolation: isolate;
+        z-index: 0;
+      }
+
+      .captcha-btn::after {
+        content: "";
+        position: absolute;
+        inset: -1px;
+        border-radius: 14px;
+        border: 1px solid transparent;
+        animation: veltrixGlow 2s infinite alternate;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease;
+        z-index: -1;
+      }
+
+      .captcha-btn:hover,
+      .captcha-btn:focus-visible {
+        background: #1d1d1d;
+        border-color: transparent;
+        transform: translateY(-2px);
+      }
+
+      .captcha-btn:hover::after,
+      .captcha-btn:focus-visible::after {
+        opacity: 1;
+      }
     </style>
 </head>
 
@@ -89,13 +256,41 @@
             <a href="/forgot-password">Forgot password?</a>
         </div>
 
-        <button type="submit" class="login-button">Login</button>
+        <button type="button" id="loginSubmitBtn" class="login-button">Login</button>
 
         <div class="register-link">
             <p>Don't have an account? <a href="/pages/register.html">Register</a></p>
         </div>
 
     </form>
+</div>
+
+<div id="captchaOverlay" class="captcha-overlay" aria-hidden="true">
+    <div class="captcha-modal" role="dialog" aria-modal="true" aria-labelledby="captchaTitle">
+        <h2 id="captchaTitle" class="captcha-title">Verification</h2>
+        <p class="captcha-copy">Type the code below to finish logging in.</p>
+        <div id="captchaCode" class="captcha-code"></div>
+
+        <div class="captcha-input-wrap">
+            <input
+              id="captchaInput"
+              class="captcha-input"
+              type="text"
+              placeholder="Enter code"
+              autocomplete="off"
+              autocapitalize="characters"
+              spellcheck="false"
+            >
+        </div>
+
+        <p id="captchaError" class="captcha-error"></p>
+
+        <div class="captcha-actions">
+            <button id="captchaCancel" type="button" class="captcha-btn">Cancel</button>
+            <button id="captchaRefresh" type="button" class="captcha-btn">Refresh</button>
+            <button id="captchaConfirm" type="button" class="captcha-btn">Verify</button>
+        </div>
+    </div>
 </div>
 
 
@@ -124,6 +319,56 @@ const passwordInput = document.getElementById("loginPassword");
 const togglePassword = document.getElementById("togglePassword");
 const emailError = document.getElementById("loginEmailError");
 const passwordError = document.getElementById("loginPasswordError");
+const captchaOverlay = document.getElementById("captchaOverlay");
+const captchaCodeEl = document.getElementById("captchaCode");
+const captchaInput = document.getElementById("captchaInput");
+const captchaError = document.getElementById("captchaError");
+const captchaCancel = document.getElementById("captchaCancel");
+const captchaRefresh = document.getElementById("captchaRefresh");
+const captchaConfirm = document.getElementById("captchaConfirm");
+
+let pendingLogin = null;
+let captchaCode = "";
+
+function generateCaptchaCode() {
+  const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+  let code = "";
+  for (let i = 0; i < 6; i += 1) {
+    code += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return code;
+}
+
+function showCaptchaError(message) {
+  captchaError.textContent = message || "";
+  captchaError.style.display = message ? "block" : "none";
+}
+
+function refreshCaptcha() {
+  captchaCode = generateCaptchaCode();
+  captchaCodeEl.textContent = captchaCode;
+  captchaInput.value = "";
+  showCaptchaError("");
+}
+
+function openCaptcha(payload) {
+  pendingLogin = payload;
+  refreshCaptcha();
+  captchaOverlay.classList.add("open");
+  captchaOverlay.style.display = "flex";
+  captchaOverlay.setAttribute("aria-hidden", "false");
+  document.body.style.overflow = "hidden";
+  requestAnimationFrame(() => captchaInput.focus());
+}
+
+function closeCaptcha() {
+  captchaOverlay.classList.remove("open");
+  captchaOverlay.style.display = "none";
+  captchaOverlay.setAttribute("aria-hidden", "true");
+  document.body.style.overflow = "";
+  pendingLogin = null;
+  showCaptchaError("");
+}
 
 function showFieldError(el, message) {
   if (!el) return;
@@ -168,9 +413,83 @@ if (togglePassword) {
   });
 }
 
-document.getElementById("loginForm").addEventListener("submit", async function (e) {
-  e.preventDefault();
+async function submitLogin(payload) {
+  try {
+    const params = new URLSearchParams({
+      email: payload.email,
+      password: payload.password,
+      remember: payload.remember
+    });
 
+    const res = await fetch(`/login-json?${params.toString()}`, {
+      method: "GET",
+      headers: { "Accept": "application/json" }
+    });
+
+    const dataText = await res.text();
+    let data = {};
+    try {
+      data = JSON.parse(dataText);
+    } catch (parseError) {
+      console.error("Non-JSON response from login-json:", dataText);
+    }
+
+    if (res.ok && data.success) {
+      if (payload.remember === "1") {
+        localStorage.setItem("rememberLogin", "1");
+        sessionStorage.removeItem("tempLoggedIn");
+      } else {
+        localStorage.removeItem("rememberLogin");
+        sessionStorage.setItem("tempLoggedIn", "1");
+      }
+
+      window.location.href = "/pages/index.html";
+    } else if (res.status === 401) {
+      showFieldError(passwordError, (data && data.message) || "Incorrect email or password.");
+    } else if (res.status === 422 && data.errors) {
+      if (data.errors.email?.[0]) showFieldError(emailError, data.errors.email[0]);
+      if (data.errors.password?.[0]) showFieldError(passwordError, data.errors.password[0]);
+    } else {
+      console.error("Login error:", res.status, dataText);
+      showFieldError(passwordError, "Something went wrong. Please try again.");
+    }
+  } catch (err) {
+    console.error("Login error:", err);
+    showFieldError(passwordError, "Unable to contact server. Please try again.");
+  }
+}
+
+captchaCancel.addEventListener("click", closeCaptcha);
+captchaRefresh.addEventListener("click", refreshCaptcha);
+captchaConfirm.addEventListener("click", async () => {
+  if (!pendingLogin) return;
+
+  if (captchaInput.value.trim().toUpperCase() !== captchaCode) {
+    showCaptchaError("Incorrect code");
+    captchaInput.focus();
+    return;
+  }
+
+  const payload = pendingLogin;
+  closeCaptcha();
+  await submitLogin(payload);
+});
+
+captchaInput.addEventListener("input", () => showCaptchaError(""));
+captchaInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    captchaConfirm.click();
+  }
+});
+
+captchaOverlay.addEventListener("click", (e) => {
+  if (e.target === captchaOverlay) {
+    closeCaptcha();
+  }
+});
+
+function handleLoginAttempt() {
   const email = emailInput ? emailInput.value.trim() : "";
   const password = passwordInput ? passwordInput.value.trim() : "";
   const remember = document.getElementById("rememberMe").checked ? "1" : "0";
@@ -189,46 +508,20 @@ document.getElementById("loginForm").addEventListener("submit", async function (
   }
   if (hasEmptyField) return;
 
-  try {
-    const params = new URLSearchParams({ email, password, remember });
+  openCaptcha({ email, password, remember });
+}
 
-    const res = await fetch(`/login-json?${params.toString()}`, {
-      method: "GET",
-      headers: { "Accept": "application/json" }
-    });
+document.getElementById("loginSubmitBtn").addEventListener("click", handleLoginAttempt);
 
-    const dataText = await res.text();
-    let data = {};
-    try {
-      data = JSON.parse(dataText);
-    } catch (parseError) {
-      console.error("Non-JSON response from login-json:", dataText);
-    }
+document.getElementById("loginForm").addEventListener("submit", function (e) {
+  e.preventDefault();
+  handleLoginAttempt();
+});
 
-    if (res.ok && data.success) {
-      if (document.getElementById("rememberMe").checked) {
-        localStorage.setItem("rememberLogin", "1");
-        sessionStorage.removeItem("tempLoggedIn");
-      } else {
-        localStorage.removeItem("rememberLogin");
-        sessionStorage.setItem("tempLoggedIn", "1");
-      }
-
-      const urlParams = new URLSearchParams(window.location.search);
-      const redirectTo = urlParams.get("redirect") || "/";
-      window.location.href = redirectTo;
-    } else if (res.status === 401) {
-      showFieldError(passwordError, (data && data.message) || "Incorrect email or password.");
-    } else if (res.status === 422 && data.errors) {
-      if (data.errors.email?.[0]) showFieldError(emailError, data.errors.email[0]);
-      if (data.errors.password?.[0]) showFieldError(passwordError, data.errors.password[0]);
-    } else {
-      console.error("Login error:", res.status, dataText);
-      showFieldError(passwordError, "Something went wrong. Please try again.");
-    }
-  } catch (err) {
-    console.error("Login error:", err);
-    showFieldError(passwordError, "Unable to contact server. Please try again.");
+document.getElementById("loginForm").addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    e.preventDefault();
+    handleLoginAttempt();
   }
 });
 </script>
