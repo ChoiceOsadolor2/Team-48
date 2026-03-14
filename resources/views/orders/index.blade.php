@@ -9,9 +9,9 @@
             </div>
 
             @if ($orders->count() === 0)
-                <div class="bg-white p-8 text-center rounded-xl shadow-sm border border-gray-100">
-                    <p class="text-xl text-gray-500 mb-4">You haven't placed any orders yet.</p>
-                    <a href="{{ url('/pages/ShopAll.html') }}" class="inline-block px-6 py-3 bg-black text-white font-bold rounded-lg hover:bg-gray-800 transition">Start Shopping</a>
+                <div class="orders-empty-state">
+                    <p class="orders-empty-copy">You haven't placed any orders yet.</p>
+                    <a href="{{ url('/pages/ShopAll.html') }}" class="btn-secondary orders-empty-action">Start Shopping</a>
                 </div>
             @else
                 <div class="orders-list">
