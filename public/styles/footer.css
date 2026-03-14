@@ -4,9 +4,9 @@
     font-size: 30px;
     font-weight: 400;
     color: white;
-    background: rgb(0, 0, 0);
-    padding-top: 30px;
-    
+    background: #1d1d1d;
+    padding-top: 0;
+    border-top: 1px solid #444;
 }
 
 .site-footer a {
@@ -20,17 +20,18 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    padding-top: 12px;
 }
 
 .footer-content {
     flex: 1;
     min-width: 250px;
-    padding: 20px;
+    padding: 10px 20px 0;
 }
 
 .site-footer h3 {
     color: #ffa825;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     font-size: 30px;
     text-align: center;
 }
@@ -109,38 +110,15 @@
 
 .footer-bottom-bar {
     text-align: center;
-    padding: 10px 0;
-    margin-top: 50px;
+    padding: 2px 0 0;
+    margin-top: 0;
+    background: #1d1d1d;
 }
 
 .footer-bottom-bar p {
-    color: rgb(229, 198, 198);
+    color: white;
     margin: 0;
     font-size: 20px;
     font-weight: 400;
-    padding: 7px;
-}
-
-.footer-bottom-bar {
-    background: linear-gradient(
-        90deg,
-        #ff00a8,
-        #ff5ebd,
-        #a800ff,
-        #0022ff,
-        #00eaff
-    );
-    background-size: 1500% 1400%; /*big gradient */
-    /* can change the speed of the rainbow based on its seconds */
-    animation: footer-bottom-bar-rainbow 17s linear infinite;
-    text-align: center;
-    padding: 10px 0;
-    margin-top: 50px;
-}
-
-/*animation for the footer itself */
-@keyframes footer-bottom-bar-rainbow {
-    0%{background-position: 0% 50%;} /*start from left */
-    50% {background-position:100% 50%; } /*right */
-    100%{background-position: 0% 50%; } /* back to start */
+    padding: 3px 7px 1px;
 }
