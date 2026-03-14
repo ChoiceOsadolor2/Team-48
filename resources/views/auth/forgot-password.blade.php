@@ -9,7 +9,9 @@
 
     <link rel="stylesheet" href="/styles/Login,SIgn-up.css">
     <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/footer.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
 
     <style>
       .field-error {
@@ -34,9 +36,10 @@
     </style>
 </head>
 
-<body class="login-page auth-login-page">
+<body class="login-page auth-login-page forgot-password-page">
 <header></header>
 
+<div class="auth-page-shell">
 <h1 class="login-page-title">Forgot Password</h1>
 <div class="login-box">
     <form id="forgotPasswordForm" method="POST" action="{{ route('password.email') }}" novalidate autocomplete="off">
@@ -72,8 +75,12 @@
         </div>
     </form>
 </div>
+</div>
+
+<div id="footer"></div>
 
 <script src="/scripts/header.js"></script>
+<script src="/scripts/footer.js"></script>
 <script src="/scripts/animations.js" defer></script>
 <script>
 const forgotEmailInput = document.getElementById("email");

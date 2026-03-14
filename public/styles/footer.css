@@ -1,12 +1,55 @@
+@font-face {
+    font-family: 'MiniPixel';
+    src: url('../fonts/mini-pixel-7.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+#footer {
+    width: 100%;
+    flex: 0 0 auto;
+}
+
 .site-footer {
     margin: 0;
     padding: 0;
     font-size: 30px;
     font-weight: 400;
+    font-family: 'MiniPixel', sans-serif;
     color: white;
     background: #1d1d1d;
     padding-top: 0;
     border-top: 1px solid #444;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+}
+
+.site-footer,
+.site-footer * {
+    box-sizing: border-box;
+}
+
+.site-footer,
+.site-footer h3,
+.site-footer p,
+.site-footer a,
+.site-footer li,
+.site-footer span {
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+.site-footer h3,
+.site-footer p,
+.site-footer ul,
+.site-footer li {
+    margin: 0;
+}
+
+.site-footer ul {
+    padding: 0;
+    list-style: none;
 }
 
 .site-footer a {
@@ -14,7 +57,7 @@
     color: white;
 }
 
-.main-container {
+.site-footer .main-container {
     width: 1140px;
     margin: auto;
     display: flex;

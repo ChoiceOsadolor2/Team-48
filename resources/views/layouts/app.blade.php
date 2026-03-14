@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 @php($isProfilePage = request()->routeIs('profile.*'))
 @php($isOrdersPage = request()->routeIs('orders.*'))
+@php($isOrderHistoryPage = request()->routeIs('orders.index'))
+@php($isInvoicePage = request()->routeIs('orders.show'))
 @php($isCheckoutPage = request()->routeIs('checkout.*'))
 @php($isAdminPage = request()->routeIs('admin.*'))
 @php($siteNotifications = collect([
@@ -37,6 +39,18 @@
         @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
             <link rel="stylesheet" href="/styles/style.css">
             <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+        @endif
+        @if ($isProfilePage)
+            <link rel="stylesheet" href="/styles/footer.css">
+        @endif
+        @if ($isOrderHistoryPage)
+            <link rel="stylesheet" href="/styles/footer.css">
+        @endif
+        @if ($isInvoicePage)
+            <link rel="stylesheet" href="/styles/footer.css">
+        @endif
+        @if ($isCheckoutPage)
+            <link rel="stylesheet" href="/styles/footer.css">
         @endif
         <style>
             body, h1, h2, h3, h4, h5, h6, .font-sans {
@@ -293,6 +307,22 @@
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
+                body.orders-page #footer,
+                body.orders-page #footer h3,
+                body.orders-page #footer p,
+                body.orders-page #footer a,
+                body.orders-page #footer li,
+                body.orders-page #footer span {
+                    font-family: 'MiniPixel', sans-serif !important;
+                    font-weight: 400 !important;
+                    line-height: normal !important;
+                    letter-spacing: normal !important;
+                }
+
+                body.orders-page.invoice-page #footer {
+                    margin-top: 24px;
+                }
+
                 body.checkout-page main.checkout-content {
                     background: transparent !important;
                     position: relative !important;
@@ -308,6 +338,22 @@
                 body.checkout-page main.checkout-content,
                 body.checkout-page main.checkout-content * {
                     font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.checkout-page #footer,
+                body.checkout-page #footer h3,
+                body.checkout-page #footer p,
+                body.checkout-page #footer a,
+                body.checkout-page #footer li,
+                body.checkout-page #footer span {
+                    font-family: 'MiniPixel', sans-serif !important;
+                    font-weight: 400 !important;
+                    line-height: normal !important;
+                    letter-spacing: normal !important;
+                }
+
+                body.checkout-page #footer {
+                    margin-top: -40px;
                 }
             @endif
             @if ($isAdminPage)
@@ -760,6 +806,18 @@
                 body.profile-page .profile-panel .profile-action-button:hover:active {
                     transform: none !important;
                 }
+
+                body.profile-page #footer,
+                body.profile-page #footer h3,
+                body.profile-page #footer p,
+                body.profile-page #footer a,
+                body.profile-page #footer li,
+                body.profile-page #footer span {
+                    font-family: 'MiniPixel', sans-serif !important;
+                    font-weight: 400 !important;
+                    line-height: normal !important;
+                    letter-spacing: normal !important;
+                }
             @endif
         </style>
 
@@ -774,7 +832,7 @@
         @endif
     </head>
 
-    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }} {{ $isCheckoutPage ? 'checkout-page' : '' }} {{ $isAdminPage ? 'admin-page' : '' }}" style="--bg-y-pos: center 0;">
+    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }} {{ $isInvoicePage ? 'invoice-page' : '' }} {{ $isCheckoutPage ? 'checkout-page' : '' }} {{ $isAdminPage ? 'admin-page' : '' }}" style="--bg-y-pos: center 0;">
         <div class="{{ $isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
             @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
                 <header></header>
@@ -811,7 +869,21 @@
                 @endif
                 {{ $slot }}
             </main>
+
         </div>
+
+        @if ($isProfilePage)
+            <div id="footer"></div>
+        @endif
+        @if ($isOrderHistoryPage)
+            <div id="footer"></div>
+        @endif
+        @if ($isInvoicePage)
+            <div id="footer"></div>
+        @endif
+        @if ($isCheckoutPage)
+            <div id="footer"></div>
+        @endif
 
         <div
             id="site-toast-region"
@@ -823,6 +895,7 @@
 
         @if ($isProfilePage)
             <script src="/scripts/header.js"></script>
+            <script src="/scripts/footer.js"></script>
             <script src="/scripts/products.js?v=8"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
@@ -843,6 +916,9 @@
             </script>
         @elseif ($isOrdersPage)
             <script src="/scripts/header.js"></script>
+            @if ($isOrderHistoryPage || $isInvoicePage)
+                <script src="/scripts/footer.js"></script>
+            @endif
             <script src="/scripts/products.js?v=8"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
@@ -853,6 +929,7 @@
             </script>
         @elseif ($isCheckoutPage)
             <script src="/scripts/header.js"></script>
+            <script src="/scripts/footer.js"></script>
             <script src="/scripts/products.js?v=8"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>

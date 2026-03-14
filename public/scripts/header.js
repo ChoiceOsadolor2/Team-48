@@ -143,7 +143,7 @@ function bindVeltrixHeader(headerEl) {
 
   fetchTextWithSessionCache(footerFile, 'veltrix:footer')
     .then(html => {
-      const footerEl = document.querySelector('footer');
+      const footerEl = document.getElementById('footer') || document.querySelector('footer');
       if (footerEl) footerEl.innerHTML = html;
     })
     .catch(err => console.error('Footer load error:', err));
