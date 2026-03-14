@@ -12,6 +12,45 @@ use App\Models\OrderItem;
 
 class CheckoutController extends Controller
 {
+    private function shippingOptions(): array
+    {
+        return [
+            'standard' => [
+                'label' => 'Standard Delivery',
+                'price' => 4.99,
+            ],
+            'express' => [
+                'label' => 'Express Delivery',
+                'price' => 9.99,
+            ],
+            'next_day' => [
+                'label' => 'Next Day Delivery',
+                'price' => 14.99,
+            ],
+        ];
+    }
+
+    private function resolveShippingOption(?string $requestedOption = null): array
+    {
+        $options = $this->shippingOptions();
+        $key = trim((string) $requestedOption);
+
+        if ($key !== '' && isset($options[$key])) {
+            return ['key' => $key] + $options[$key];
+        }
+
+        return ['key' => 'standard'] + $options['standard'];
+    }
+
+    private function emptyShippingSelection(): array
+    {
+        return [
+            'key' => '',
+            'label' => 'Select shipping',
+            'price' => 0,
+        ];
+    }
+
     private function normalizeCartEntry(mixed $entry): array
     {
         if (is_array($entry)) {
@@ -83,6 +122,7 @@ class CheckoutController extends Controller
 
         $items = [];
         $total = 0;
+        $selectedShipping = $this->emptyShippingSelection();
 
         foreach ($cart as $productId => $entryData) {
             if (!isset($products[$productId])) continue;
@@ -101,7 +141,10 @@ class CheckoutController extends Controller
             $total += $subtotal;
         }
 
-        return view('checkout.index', compact('items', 'total'));
+        $shippingOptions = $this->shippingOptions();
+        $shippingCost = $selectedShipping['price'];
+
+        return view('checkout.index', compact('items', 'total', 'shippingOptions', 'selectedShipping', 'shippingCost'));
     }
 
     // ✅ PLACE order only (create order, create items, decrement stock)
@@ -117,6 +160,16 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')
                 ->with('status', 'Your cart is empty.');
         }
+
+        $shippingKey = trim((string) $request->input('shipping_option'));
+        $shippingOptions = $this->shippingOptions();
+
+        if ($shippingKey === '' || !isset($shippingOptions[$shippingKey])) {
+            return redirect()->route('checkout.index')
+                ->with('status', 'Please select a shipping option.');
+        }
+
+        $selectedShipping = $this->resolveShippingOption($shippingKey);
 
         DB::beginTransaction();
 
@@ -159,6 +212,8 @@ class CheckoutController extends Controller
                 'user_id' => $user->id,
                 'total'   => 0,
                 'status'  => 'processing',
+                'shipping_method' => $selectedShipping['label'],
+                'shipping_cost' => $selectedShipping['price'],
             ]);
 
             $total = 0;
@@ -185,7 +240,9 @@ class CheckoutController extends Controller
                 $total += $subtotal;
             }
 
-            $order->update(['total' => $total]);
+            $order->update([
+                'total' => $total + $selectedShipping['price'],
+            ]);
 
             DB::commit();
 

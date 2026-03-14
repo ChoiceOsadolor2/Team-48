@@ -21,6 +21,17 @@
                             <span class="item-label">Status:</span>
                             <span class="invoice-summary-value">{{ ucfirst($order->status) }}</span>
                         </p>
+                        @if ($order->shipping_method || (float) $order->shipping_cost > 0)
+                            <p class="invoice-summary-line">
+                                <span class="item-label">Shipping:</span>
+                                <span class="invoice-summary-value">
+                                    {{ $order->shipping_method ?: 'Delivery' }}
+                                    @if ((float) $order->shipping_cost > 0)
+                                        ({{ number_format($order->shipping_cost, 2) }} GBP)
+                                    @endif
+                                </span>
+                            </p>
+                        @endif
                         <p class="invoice-summary-line">
                             <span class="item-label">Total:</span>
                             <span class="invoice-summary-value">{{ number_format($order->total, 2) }} GBP</span>

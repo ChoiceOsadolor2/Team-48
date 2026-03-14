@@ -71,7 +71,7 @@ class ProductController extends Controller
                     'rating' => (int) $review->rating,
                     'title' => $review->title,
                     'message' => $review->message,
-                    'created_at' => optional($review->created_at)->format('M d, Y'),
+                    'created_at' => optional($review->created_at)->format('M d Y'),
                 ];
             })->values(),
         ]);

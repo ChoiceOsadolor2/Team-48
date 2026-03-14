@@ -141,10 +141,26 @@
                         </div>
                     </div>
 
+                    <div class="form-section checkout-shipping-section">
+                        <h2>Shipping Options</h2>
+                        <div class="shipping-options">
+                            @foreach ($shippingOptions as $optionKey => $option)
+                                <label class="checkout-option-card shipping-option-label {{ $selectedShipping['key'] === $optionKey ? 'selected' : '' }}">
+                                    <input type="radio" name="shipping_option" value="{{ $optionKey }}" {{ $selectedShipping['key'] === $optionKey ? 'checked' : '' }}>
+                                    <span class="checkout-option-copy">
+                                        <span class="checkout-option-title">{{ $option['label'] }}</span>
+                                        <span class="checkout-option-meta">{{ number_format($option['price'], 2) }} GBP</span>
+                                    </span>
+                                </label>
+                            @endforeach
+                        </div>
+                        <p id="shipping-option-error" class="checkout-field-error"></p>
+                    </div>
+
                     <div class="form-section checkout-payment-section">
                         <h2>Payment Details</h2>
                         <div class="payment-methods">
-                            <label class="payment-method-label selected">
+                            <label class="checkout-option-card payment-method-label selected">
                                 <input type="radio" name="payment-type" value="card" checked>
                                 Credit / Debit Card
                             </label>
@@ -214,14 +230,14 @@
                         @endforeach
                     </div>
 
-                    <div class="summary-totals mt-6">
+                    <div class="summary-totals mt-6" data-subtotal="{{ number_format($total, 2, '.', '') }}">
                         <div class="summary-row">
                             <span>Subtotal</span>
-                            <span>{{ number_format($total, 2) }} GBP</span>
+                            <span id="checkout_subtotal_value">{{ number_format($total, 2) }} GBP</span>
                         </div>
                         <div class="summary-row">
-                            <span>Shipping</span>
-                            <span>4.99 GBP</span>
+                            <span id="checkout_shipping_label">Shipping ({{ $selectedShipping['label'] }})</span>
+                            <span id="checkout_shipping_value" class="{{ $selectedShipping['key'] ? '' : 'is-placeholder' }}">{{ number_format($shippingCost, 2) }} GBP</span>
                         </div>
                         <div class="summary-row">
                             <span>Tax</span>
@@ -229,7 +245,7 @@
                         </div>
                         <div class="summary-row grand-total">
                             <span>Total</span>
-                            <span>{{ number_format($total + 4.99, 2) }} GBP</span>
+                            <span id="checkout_total_value">{{ number_format($total + $shippingCost, 2) }} GBP</span>
                         </div>
                     </div>
                 </div>
@@ -243,6 +259,13 @@
             const checkoutContainer = document.querySelector('.checkout-container');
             const checkoutSummarySection = document.querySelector('.checkout-summary-section');
             const checkoutSummarySticky = document.querySelector('.checkout-summary-sticky');
+            const shippingOptionInputs = Array.from(document.querySelectorAll('input[name="shipping_option"]'));
+            const summaryTotals = document.querySelector('.summary-totals');
+            const shippingLabel = document.getElementById('checkout_shipping_label');
+            const shippingValue = document.getElementById('checkout_shipping_value');
+            const totalValue = document.getElementById('checkout_total_value');
+            const subtotalValue = document.getElementById('checkout_subtotal_value');
+            const subtotal = Number(summaryTotals?.dataset.subtotal ?? 0);
 
             document.querySelectorAll('.checkout-decoy-input[data-sync-target]').forEach(function (input) {
                 const syncTarget = document.getElementById(input.dataset.syncTarget);
@@ -307,6 +330,32 @@
                 }
             }
 
+            function updateOptionCardSelection(groupName) {
+                document.querySelectorAll(`input[name="${groupName}"]`).forEach(function (input) {
+                    const card = input.closest('.checkout-option-card');
+                    if (!card) return;
+                    card.classList.toggle('selected', input.checked);
+                });
+            }
+
+            function syncShippingSummary() {
+                const selectedInput = document.querySelector('input[name="shipping_option"]:checked');
+                if (!selectedInput || !shippingLabel || !shippingValue || !totalValue) return;
+
+                const card = selectedInput.closest('.shipping-option-label');
+                const title = card?.querySelector('.checkout-option-title')?.textContent?.trim() || 'Shipping';
+                const priceText = card?.querySelector('.checkout-option-meta')?.textContent?.trim() || '0.00 GBP';
+                const price = parseFloat(priceText) || 0;
+
+                shippingLabel.textContent = `Shipping (${title})`;
+                shippingValue.textContent = `${price.toFixed(2)} GBP`;
+                shippingValue.classList.remove('is-placeholder');
+                totalValue.textContent = `${(subtotal + price).toFixed(2)} GBP`;
+                if (subtotalValue) {
+                    subtotalValue.textContent = `${subtotal.toFixed(2)} GBP`;
+                }
+            }
+
             fieldConfigs.forEach(function (config) {
                 const el = document.getElementById(config.sourceId);
                 if (!el) return;
@@ -323,6 +372,24 @@
                     el.addEventListener('change', clearError);
                 }
             });
+
+            shippingOptionInputs.forEach(function (input) {
+                input.addEventListener('change', function () {
+                    updateOptionCardSelection('shipping_option');
+                    syncShippingSummary();
+                    showFieldError('shipping-option-error', '');
+                });
+            });
+
+            document.querySelectorAll('input[name="payment-type"]').forEach(function (input) {
+                input.addEventListener('change', function () {
+                    updateOptionCardSelection('payment-type');
+                });
+            });
+
+            updateOptionCardSelection('shipping_option');
+            updateOptionCardSelection('payment-type');
+            syncShippingSummary();
 
             if (form) {
                 form.addEventListener('submit', function (event) {
@@ -344,11 +411,24 @@
                         }
                     });
 
+                    const selectedShippingInput = document.querySelector('input[name="shipping_option"]:checked');
+                    if (!selectedShippingInput) {
+                        showFieldError('shipping-option-error', 'Empty Field');
+                        if (!firstInvalidField) {
+                            firstInvalidField = shippingOptionInputs[0] || null;
+                        }
+                        hasError = true;
+                    } else {
+                        showFieldError('shipping-option-error', '');
+                    }
+
                     if (hasError) {
                         event.preventDefault();
                         if (firstInvalidField) {
                             if (firstInvalidField.isContentEditable) {
                                 firstInvalidField.focus();
+                            } else if (firstInvalidField.type === 'radio') {
+                                firstInvalidField.closest('.shipping-option-label')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
                             } else {
                                 firstInvalidField.focus();
                             }
