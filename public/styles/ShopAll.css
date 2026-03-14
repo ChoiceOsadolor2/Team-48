@@ -806,6 +806,9 @@ svg:hover {
 
 .view_product {
     margin-top: auto;
+    margin-bottom: 10px;
+    position: relative;
+    top: 10px;
 }
 
 .add_to_basket {
@@ -814,8 +817,8 @@ svg:hover {
 
 .product_review_summary {
     width: 100%;
-    min-height: 56px;
-    margin-top: 10px;
+    min-height: 42px;
+    margin-top: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
