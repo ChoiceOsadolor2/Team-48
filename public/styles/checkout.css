@@ -361,6 +361,8 @@ textarea.checkout-decoy-input {
 
 .checkout-item img {
     padding: 6px;
+    border: none;
+    background: transparent;
 }
 
 .checkout-item-no-image {

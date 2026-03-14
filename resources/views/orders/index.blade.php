@@ -59,8 +59,8 @@
                                 <div class="order-items">
                                     @foreach($order->items as $item)
                                         <div class="order-item">
-                                            @if($item->product && $item->product->image)
-                                                <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product->name ?? 'Product' }}">
+                                            @if($item->product && $item->product->image_url)
+                                                <img src="{{ asset('storage/' . $item->product->image_url) }}" alt="{{ $item->product->name ?? 'Product' }}">
                                             @else
                                                 <div class="order-item-no-image">No image</div>
                                             @endif

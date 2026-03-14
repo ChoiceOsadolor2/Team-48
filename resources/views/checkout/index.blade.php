@@ -185,8 +185,8 @@
                     <div class="checkout-items">
                         @foreach ($items as $item)
                             <div class="checkout-item">
-                                @if ($item['product']->image)
-                                    <img src="{{ asset('storage/' . $item['product']->image) }}" alt="{{ $item['product']->name }}">
+                                @if ($item['product']->image_url)
+                                    <img src="{{ asset('storage/' . $item['product']->image_url) }}" alt="{{ $item['product']->name }}">
                                 @else
                                     <div class="checkout-item-no-image">No image</div>
                                 @endif
