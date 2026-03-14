@@ -195,10 +195,10 @@
                                         <span class="checkout-item-label">Product Name:</span>
                                         <span class="checkout-item-value">{{ $item['product']->name }}</span>
                                     </p>
-                                    @if ($item['product']->platform)
+                                    @if (!empty($item['platform']) || !empty($item['product']->platform))
                                         <p class="item-platform">
                                             <span class="checkout-item-label">Platform:</span>
-                                            <span class="checkout-item-value">{{ $item['product']->platform }}</span>
+                                            <span class="checkout-item-value">{{ $item['platform'] ?? $item['product']->platform }}</span>
                                         </p>
                                     @endif
                                     <p class="item-price">

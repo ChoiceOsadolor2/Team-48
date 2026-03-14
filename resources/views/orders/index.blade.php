@@ -67,8 +67,8 @@
                                             
                                             <div class="item-details">
                                                 <h4><span class="item-label">Product Name:</span> {{ $item->product->name ?? 'Unknown Product' }}</h4>
-                                                @if($item->product && $item->product->platform)
-                                                    <p class="item-meta"><span class="item-label">Platform:</span> <span class="item-meta-value">{{ $item->product->platform }}</span></p>
+                                                @if($item->platform || ($item->product && $item->product->platform))
+                                                    <p class="item-meta"><span class="item-label">Platform:</span> <span class="item-meta-value">{{ $item->platform ?: $item->product->platform }}</span></p>
                                                 @endif
                                                 <p class="item-price"><span class="item-label">Price:</span> <span class="price-value">{{ number_format($item->price, 2) }} GBP</span></p>
                                                 <p class="item-qty"><span class="item-label">Quantity:</span> {{ $item->quantity }}</p>

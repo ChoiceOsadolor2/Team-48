@@ -661,6 +661,7 @@ async function loadCartFromBackend() {
           name: it.product.name,
           price: it.product.price,
           image_url: it.product.image_url,
+          platform: it.platform || it.product.platform || 'Universal',
           quantity: it.quantity,
         };
       }
@@ -694,6 +695,7 @@ async function loadCartFromBackend() {
 
       const imgEl = clone.querySelector('img');
       const nameEl = clone.querySelector('.basket_name');
+      const platformEl = clone.querySelector('.basket_platform');
       const priceEl = clone.querySelector('.basket_price');
       const quantityTextEl = clone.querySelector('.basket_quantity_text');
 
@@ -708,6 +710,11 @@ async function loadCartFromBackend() {
         };
       }
       if (nameEl) nameEl.textContent = item.name;
+      if (platformEl) {
+        const platformText = (item.platform || '').trim();
+        platformEl.textContent = platformText;
+        platformEl.style.display = platformText ? '' : 'none';
+      }
       if (priceEl) priceEl.textContent = `${item.price} GBP`;
       if (quantityTextEl) quantityTextEl.textContent = `${item.quantity}`;
 
@@ -782,12 +789,18 @@ async function loadCartFromBackend() {
 // ===============================
 // Add to basket
 // ===============================
-window.AddToBasket = async function (id, qty = 1) {
+window.AddToBasket = async function (id, qty = 1, platform = '') {
   try {
     qty = parseInt(qty, 10);
     if (!Number.isFinite(qty) || qty < 1) qty = 1;
 
-    const url = `/cart/add-json/${id}?quantity=${qty}`;
+    const params = new URLSearchParams({ quantity: String(qty) });
+    const selectedPlatform = String(platform || '').trim();
+    if (selectedPlatform) {
+      params.set('platform', selectedPlatform);
+    }
+
+    const url = `/cart/add-json/${id}?${params.toString()}`;
     const res = await fetch(url, {
       method: 'GET',
       headers: { Accept: 'application/json' },
@@ -1040,6 +1053,126 @@ function initProductPageQty(product) {
   };
 }
 
+function parseProductPlatforms(product) {
+  const rawPlatform = String(product?.platform || '').trim();
+
+  if (!rawPlatform) {
+    return ['Universal'];
+  }
+
+  const platforms = rawPlatform
+    .split(',')
+    .map((platform) => platform.trim())
+    .filter(Boolean);
+
+  return platforms.length ? [...new Set(platforms)] : ['Universal'];
+}
+
+function initProductPagePlatformPicker(product) {
+  const select = document.getElementById('product_platform_select');
+  const picker = document.getElementById('product_platform_picker');
+  const selectedDiv = picker?.querySelector('.product-platform-selected');
+  const selectedValue = selectedDiv?.querySelector('.val');
+  const itemsDiv = picker?.querySelector('.product-platform-items');
+  if (!select || !picker || !selectedDiv || !selectedValue || !itemsDiv) return () => 'Universal';
+
+  const platforms = parseProductPlatforms(product);
+  select.innerHTML = '';
+  itemsDiv.innerHTML = '';
+  let glowSyncFrame = null;
+
+  const stopGlowSync = () => {
+    if (glowSyncFrame !== null) {
+      cancelAnimationFrame(glowSyncFrame);
+      glowSyncFrame = null;
+    }
+  };
+
+  const syncGlow = () => {
+    const glowStyles = window.getComputedStyle(selectedDiv, '::after');
+    const borderColor = glowStyles.borderTopColor || glowStyles.borderColor;
+    const boxShadow = glowStyles.boxShadow;
+
+    if (borderColor) {
+      picker.style.setProperty('--platform-glow-color', borderColor);
+    }
+
+    if (boxShadow && boxShadow !== 'none') {
+      picker.style.setProperty('--platform-glow-shadow', boxShadow);
+    }
+
+    if (picker.classList.contains('is-open')) {
+      glowSyncFrame = requestAnimationFrame(syncGlow);
+    } else {
+      glowSyncFrame = null;
+    }
+  };
+
+  const startGlowSync = () => {
+    if (glowSyncFrame === null) {
+      syncGlow();
+    }
+  };
+
+  const closePicker = () => {
+    picker.classList.remove('is-open');
+    itemsDiv.classList.add('product-platform-hide');
+    stopGlowSync();
+  };
+
+  platforms.forEach((platform) => {
+    const option = document.createElement('option');
+    option.value = platform;
+    option.textContent = platform;
+    select.appendChild(option);
+
+    const customOption = document.createElement('div');
+    customOption.className = 'product-platform-option';
+    customOption.textContent = platform;
+    if (platform === platforms[0]) {
+      customOption.classList.add('is-selected');
+    }
+    customOption.addEventListener('click', (event) => {
+      event.stopPropagation();
+      select.value = platform;
+      selectedValue.textContent = platform;
+      itemsDiv.querySelectorAll('.product-platform-option').forEach((item) => {
+        item.classList.toggle('is-selected', item.textContent === platform);
+      });
+      closePicker();
+    });
+    itemsDiv.appendChild(customOption);
+  });
+
+  select.value = platforms[0];
+  selectedValue.textContent = platforms[0];
+  select.disabled = platforms.length <= 1;
+  picker.classList.toggle('is-disabled', platforms.length <= 1);
+
+  if (picker.dataset.bound !== '1') {
+    picker.dataset.bound = '1';
+
+    selectedDiv.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (picker.classList.contains('is-disabled')) return;
+
+      const willOpen = itemsDiv.classList.contains('product-platform-hide');
+      closePicker();
+      if (willOpen) {
+        picker.classList.add('is-open');
+        itemsDiv.classList.remove('product-platform-hide');
+        startGlowSync();
+      }
+    });
+
+    document.addEventListener('click', () => {
+      closePicker();
+    });
+  }
+
+  return () => select.value || platforms[0] || 'Universal';
+}
+
 
 // Load Products
 
@@ -1083,6 +1216,7 @@ if (container || container2) {
 
           const button = container2.querySelector('.add_to_basket');
           const getQty = initProductPageQty(product);
+          const getPlatform = initProductPagePlatformPicker(product);
 
           if (button) {
             const stock = Number(product.stock ?? 0);
@@ -1100,7 +1234,8 @@ if (container || container2) {
 
               button.onclick = () => {
                 const qty = getQty();
-                window.AddToBasket(product.id, qty);
+                const platform = getPlatform();
+                window.AddToBasket(product.id, qty, platform);
               };
             }
           }

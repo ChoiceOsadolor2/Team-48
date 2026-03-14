@@ -547,6 +547,7 @@ header.search-active #search {
 }
 
 .basket_product_info .basket_name,
+.basket_product_info .basket_platform,
 .basket_product_info .basket_price,
 .basket_product_info .basket_quantity_text,
 .basket_product_info .remove_from_cart {
@@ -559,12 +560,14 @@ header.search-active #search {
 }
 
 .basket_product_info .basket_name,
+.basket_product_info .basket_platform,
 .basket_product_info .basket_price,
 .basket_product_info .basket_quantity_text {
   color: var(--text-light);
 }
 
 .basket_product_info .basket_name::before,
+.basket_product_info .basket_platform::before,
 .basket_product_info .basket_price::before,
 .basket_product_info .basket_quantity_text::before {
   color: #888;
@@ -577,6 +580,10 @@ header.search-active #search {
 
 .basket_product_info .basket_price::before {
   content: "Price: ";
+}
+
+.basket_product_info .basket_platform::before {
+  content: "Platform: ";
 }
 
 .basket_product_info .basket_quantity_text::before {

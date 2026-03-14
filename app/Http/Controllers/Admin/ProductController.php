@@ -8,10 +8,35 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 
 class ProductController extends Controller
 {
+    private function platformOptions(): array
+    {
+        return [
+            'Universal',
+            'Nintendo Switch 2',
+            'Nintendo Switch',
+            'PlayStation 5',
+            'PlayStation 4',
+            'Xbox Series X/S',
+            'Xbox One',
+        ];
+    }
+
+    private function normalizePlatforms(?array $platforms): ?string
+    {
+        $selected = collect($platforms ?? [])
+            ->map(fn ($platform) => trim((string) $platform))
+            ->filter()
+            ->unique()
+            ->values();
+
+        return $selected->isEmpty() ? null : $selected->implode(', ');
+    }
+
     private function homepageCategoryNames(): array
     {
         return [
@@ -150,8 +175,9 @@ class ProductController extends Controller
     public function create()
     {
         $categories = $this->adminFormCategories();
+        $platformOptions = $this->platformOptions();
 
-        return view('admin.products.create', compact('categories'));
+        return view('admin.products.create', compact('categories', 'platformOptions'));
     }
 
     public function store(Request $request)
@@ -162,11 +188,13 @@ class ProductController extends Controller
         'description' => ['required', 'string'],
         'price'       => ['required', 'numeric', 'min:0'],
         'stock'       => ['required', 'integer', 'min:0'],
-        'platform'    => ['nullable', 'string', 'max:255'],
+        'platform'    => ['nullable', 'array'],
+        'platform.*'  => ['string', Rule::in($this->platformOptions())],
         'image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
     ]);
 
     $data['slug'] = Str::slug($data['name']);
+    $data['platform'] = $this->normalizePlatforms($data['platform'] ?? null);
 
     if ($request->hasFile('image')) {
         $data['image_url'] = $request->file('image')->store('products', 'public');
@@ -184,8 +212,9 @@ class ProductController extends Controller
     public function edit(Product $product)
     {
         $categories = $this->adminFormCategories();
+        $platformOptions = $this->platformOptions();
 
-        return view('admin.products.edit', compact('product', 'categories'));
+        return view('admin.products.edit', compact('product', 'categories', 'platformOptions'));
     }
 
     public function update(Request $request, Product $product)
@@ -196,11 +225,13 @@ class ProductController extends Controller
         'description' => ['required', 'string'],
         'price'       => ['required', 'numeric', 'min:0'],
         'stock'       => ['required', 'integer', 'min:0'],
-        'platform'    => ['nullable', 'string', 'max:255'],
+        'platform'    => ['nullable', 'array'],
+        'platform.*'  => ['string', Rule::in($this->platformOptions())],
         'image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
     ]);
 
     $data['slug'] = Str::slug($data['name']);
+    $data['platform'] = $this->normalizePlatforms($data['platform'] ?? null);
 
     if ($request->hasFile('image')) {
         if ($product->image_url && !str_starts_with($product->image_url, 'http')) {

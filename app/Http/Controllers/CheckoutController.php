@@ -12,6 +12,50 @@ use App\Models\OrderItem;
 
 class CheckoutController extends Controller
 {
+    private function normalizeCartEntry(mixed $entry): array
+    {
+        if (is_array($entry)) {
+            return [
+                'quantity' => max(0, (int) ($entry['quantity'] ?? 1)),
+                'platform' => filled($entry['platform'] ?? null) ? trim((string) $entry['platform']) : null,
+            ];
+        }
+
+        return [
+            'quantity' => max(0, (int) $entry),
+            'platform' => null,
+        ];
+    }
+
+    private function platformOptionsForProduct(Product $product): array
+    {
+        $rawPlatform = trim((string) ($product->platform ?? ''));
+
+        if ($rawPlatform === '') {
+            return ['Universal'];
+        }
+
+        $platforms = collect(explode(',', $rawPlatform))
+            ->map(fn ($platform) => trim((string) $platform))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        return !empty($platforms) ? $platforms : ['Universal'];
+    }
+
+    private function resolvePlatformSelection(Product $product, ?string $requestedPlatform = null): string
+    {
+        $options = $this->platformOptionsForProduct($product);
+        $requestedPlatform = trim((string) $requestedPlatform);
+
+        if ($requestedPlatform !== '' && in_array($requestedPlatform, $options, true)) {
+            return $requestedPlatform;
+        }
+
+        return $options[0] ?? 'Universal';
+    }
     // ✅ SHOW checkout page only
     public function index()
     {
@@ -40,15 +84,17 @@ class CheckoutController extends Controller
         $items = [];
         $total = 0;
 
-        foreach ($cart as $productId => $qty) {
+        foreach ($cart as $productId => $entryData) {
             if (!isset($products[$productId])) continue;
 
+            $entry = $this->normalizeCartEntry($entryData);
             $product = $products[$productId];
-            $subtotal = $product->price * $qty;
+            $subtotal = $product->price * $entry['quantity'];
 
             $items[] = [
                 'product'  => $product,
-                'quantity' => $qty,
+                'quantity' => $entry['quantity'],
+                'platform' => $this->resolvePlatformSelection($product, $entry['platform']),
                 'subtotal' => $subtotal,
             ];
 
@@ -96,11 +142,12 @@ class CheckoutController extends Controller
             }
 
             // ✅ Validate stock before creating order
-            foreach ($cart as $productId => $qty) {
+            foreach ($cart as $productId => $entryData) {
                 if (!isset($products[$productId])) continue;
 
+                $entry = $this->normalizeCartEntry($entryData);
                 $product = $products[$productId];
-                if ($product->stock < $qty) {
+                if ($product->stock < $entry['quantity']) {
                     DB::rollBack();
                     return redirect()->route('cart.index')
                         ->with('stock_error', "Only {$product->stock} units of '{$product->name}' are available.");
@@ -116,21 +163,24 @@ class CheckoutController extends Controller
 
             $total = 0;
 
-            foreach ($cart as $productId => $qty) {
+            foreach ($cart as $productId => $entryData) {
                 if (!isset($products[$productId])) continue;
 
+                $entry = $this->normalizeCartEntry($entryData);
                 $product = $products[$productId];
-                $subtotal = $product->price * $qty;
+                $subtotal = $product->price * $entry['quantity'];
+                $platform = $this->resolvePlatformSelection($product, $entry['platform']);
 
                 OrderItem::create([
                     'order_id'   => $order->id,
                     'product_id' => $productId,
-                    'quantity'   => $qty,
+                    'quantity'   => $entry['quantity'],
                     'price'      => $product->price,
+                    'platform'   => $platform,
                 ]);
 
                 // ✅ decrement stock
-                $product->decrement('stock', $qty);
+                $product->decrement('stock', $entry['quantity']);
 
                 $total += $subtotal;
             }

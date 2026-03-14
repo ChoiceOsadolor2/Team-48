@@ -41,7 +41,7 @@
                                                         <a href="{{ route('products.show', $item['product']->slug ?? $item['product']->id) }}" class="hover:text-indigo-600 transistion-colors">{{ $item['product']->name }}</a>
                                                     </h3>
                                                 </div>
-                                                <p class="mt-1 text-sm text-gray-500">{{ $item['product']->platform ?? 'Unknown Platform' }}</p>
+                                                <p class="mt-1 text-sm text-gray-500">{{ $item['platform'] ?? $item['product']->platform ?? 'Unknown Platform' }}</p>
                                                 <p class="mt-1 text-base font-medium text-gray-900">£{{ number_format($item['product']->price, 2) }}</p>
                                             </div>
 

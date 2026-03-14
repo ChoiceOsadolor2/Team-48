@@ -35,21 +35,32 @@
       <span class="product_price"></span>
     </div>
 
+    <div class="product-purchase-row">
+      <div class="qty-input">
+        <button class="qty-count qty-count--minus" type="button">-</button>
 
-    <div class="qty-input">
-      <button class="qty-count qty-count--minus" type="button">-</button>
+        <input
+          class="quantity product-qty"
+          type="number"
+          min="1"
+          max="10"
+          value="1"
+          readonly
+          inputmode="none"
+        />
 
-      <input
-        class="quantity product-qty"
-        type="number"
-        min="1"
-        max="10"
-        value="1"
-        readonly
-        inputmode="none"
-      />
+        <button class="qty-count qty-count--add" type="button">+</button>
+      </div>
 
-      <button class="qty-count qty-count--add" type="button">+</button>
+      <div class="product-platform-picker">
+        <div class="product-platform-custom-select" id="product_platform_picker">
+          <select id="product_platform_select" class="product-platform-select" aria-label="Select platform"></select>
+          <div class="product-platform-selected" aria-hidden="true">
+            <span class="val">Universal</span>
+          </div>
+          <div class="product-platform-items product-platform-hide"></div>
+        </div>
+      </div>
     </div>
 
 

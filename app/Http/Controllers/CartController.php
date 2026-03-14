@@ -8,6 +8,52 @@ use App\Models\Product;
 
 class CartController extends Controller
 {
+    private function normalizeCartEntry(mixed $entry): array
+    {
+        if (is_array($entry)) {
+            return [
+                'quantity' => max(0, (int) ($entry['quantity'] ?? 1)),
+                'platform' => filled($entry['platform'] ?? null) ? trim((string) $entry['platform']) : null,
+            ];
+        }
+
+        return [
+            'quantity' => max(0, (int) $entry),
+            'platform' => null,
+        ];
+    }
+
+    private function platformOptionsForProduct(Product $product): array
+    {
+        $rawPlatform = trim((string) ($product->platform ?? ''));
+
+        if ($rawPlatform === '') {
+            return ['Universal'];
+        }
+
+        $platforms = collect(explode(',', $rawPlatform))
+            ->map(fn ($platform) => trim((string) $platform))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        return !empty($platforms) ? $platforms : ['Universal'];
+    }
+
+    private function resolvePlatformSelection(Product $product, ?string $requestedPlatform = null, ?string $currentPlatform = null): string
+    {
+        $options = $this->platformOptionsForProduct($product);
+
+        foreach ([$requestedPlatform, $currentPlatform] as $candidate) {
+            $candidate = trim((string) $candidate);
+            if ($candidate !== '' && in_array($candidate, $options, true)) {
+                return $candidate;
+            }
+        }
+
+        return $options[0] ?? 'Universal';
+    }
 
     public function index()
     {
@@ -35,17 +81,19 @@ class CartController extends Controller
         $items = [];
         $total = 0;
 
-        foreach ($cart as $productId => $qty) {
+        foreach ($cart as $productId => $entryData) {
             if (!isset($products[$productId])) {
                 continue;
             }
 
+            $entry = $this->normalizeCartEntry($entryData);
             $product  = $products[$productId];
-            $subtotal = $product->price * $qty;
+            $subtotal = $product->price * $entry['quantity'];
 
             $items[] = [
                 'product'  => $product,
-                'quantity' => $qty,
+                'quantity' => $entry['quantity'],
+                'platform' => $this->resolvePlatformSelection($product, $entry['platform']),
                 'subtotal' => $subtotal,
             ];
 
@@ -66,8 +114,13 @@ class CartController extends Controller
     }
 
     $cart = Session::get('cart', []);
-    $currentQty = (int) ($cart[$product->id] ?? 0);
-    $newQty = $currentQty + $qty;
+    $currentEntry = $this->normalizeCartEntry($cart[$product->id] ?? 0);
+    $selectedPlatform = $this->resolvePlatformSelection(
+        $product,
+        $request->input('platform'),
+        $currentEntry['platform']
+    );
+    $newQty = $currentEntry['quantity'] + $qty;
 
     if ((int) $product->stock <= 0) {
         $message = "'{$product->name}' is out of stock.";
@@ -97,7 +150,10 @@ class CartController extends Controller
         return back()->with('stock_error', $message);
     }
 
-    $cart[$product->id] = $newQty;
+    $cart[$product->id] = [
+        'quantity' => $newQty,
+        'platform' => $selectedPlatform,
+    ];
 
     Session::put('cart', $cart);
 
@@ -116,6 +172,12 @@ class CartController extends Controller
 {
     $qty = (int) $request->input('quantity', 1);
     $cart = Session::get('cart', []);
+    $currentEntry = $this->normalizeCartEntry($cart[$product->id] ?? 0);
+    $selectedPlatform = $this->resolvePlatformSelection(
+        $product,
+        $request->input('platform'),
+        $currentEntry['platform']
+    );
 
     if ($qty <= 0) {
         unset($cart[$product->id]);
@@ -142,7 +204,10 @@ class CartController extends Controller
         return back()->with('stock_error', $message);
     }
 
-    $cart[$product->id] = $qty;
+    $cart[$product->id] = [
+        'quantity' => $qty,
+        'platform' => $selectedPlatform,
+    ];
 
     Session::put('cart', $cart);
 
@@ -223,21 +288,24 @@ class CartController extends Controller
         $items = [];
         $total = 0;
 
-        foreach ($cart as $productId => $qty) {
+        foreach ($cart as $productId => $entryData) {
             if (!isset($products[$productId])) {
                 continue;
             }
 
+            $entry = $this->normalizeCartEntry($entryData);
             $product  = $products[$productId];
-            $subtotal = $product->price * $qty;
+            $platform = $this->resolvePlatformSelection($product, $entry['platform']);
+            $subtotal = $product->price * $entry['quantity'];
 
             $items[] = [
                 'id'       => $product->id,
                 'name'     => $product->name,
                 'price'    => $product->price,
-                'quantity' => $qty,
+                'quantity' => $entry['quantity'],
                 'stock'    => (int) $product->stock, 
                 'image_url'=> $product->image_url,
+                'platform' => $platform,
                 'subtotal' => $subtotal,
 ];
 

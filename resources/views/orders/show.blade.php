@@ -34,6 +34,7 @@
                             <thead>
                                 <tr>
                                     <th>Product</th>
+                                    <th>Platform</th>
                                     <th>Price</th>
                                     <th>Quantity</th>
                                 </tr>
@@ -43,6 +44,7 @@
                                 @foreach ($order->items as $item)
                                     <tr>
                                         <td>{{ optional($item->product)->name ?? 'Product Deleted' }}</td>
+                                        <td>{{ $item->platform ?: (optional($item->product)->platform ?? 'Universal') }}</td>
                                         <td>{{ number_format($item->price, 2) }} GBP</td>
                                         <td>{{ $item->quantity }}</td>
                                     </tr>

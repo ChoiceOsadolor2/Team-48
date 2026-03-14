@@ -68,6 +68,7 @@
                 <img alt="Product image">
                 <div class="basket_product_info">
                     <p class="basket_name"></p>
+                    <p class="basket_platform"></p>
                     <p class="basket_price"></p>
                     <div class="basket_quantity_row">
                         <p class="basket_quantity_text"></p>
