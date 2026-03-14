@@ -29,6 +29,24 @@
         -webkit-text-security: disc;
         text-security: disc;
       }
+
+      .password-hint {
+        margin: -8px 0 6px;
+        color: #fff;
+        font-size: 20px;
+        line-height: 1.5;
+        font-family: 'MiniPixel', sans-serif;
+        font-weight: 400;
+        text-align: center;
+      }
+
+      .password-hint + .input-box {
+        margin-top: 0;
+      }
+
+      .password-hint + .input-box + .login-button {
+        margin-top: 0;
+      }
     </style>
 </head>
 
@@ -86,6 +104,8 @@
             <i id="toggleRegisterPassword" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0" aria-label="Show password" aria-pressed="false"></i>
             <p id="registerPasswordError" class="field-error"></p>
         </div>
+
+        <p class="password-hint">Minimum 8 characters, 1 capital, and 1 symbol: ! ? / \ % &amp;</p>
 
         <div class="input-box">
             <input
@@ -229,6 +249,13 @@ document.getElementById("form").addEventListener("submit", async function (e) {
 
     if (password !== password2) {
         showFieldError(password2Error, "Passwords do not match.");
+        return;
+    }
+
+    const hasCapital = /[A-Z]/.test(password);
+    const hasRequiredSymbol = /[!\?\/\\%&]/.test(password);
+    if (password.length < 8 || !hasCapital || !hasRequiredSymbol) {
+        showFieldError(passwordError, "Use 8+ chars, 1 capital, and 1 symbol: ! ? / \\ % &.");
         return;
     }
 

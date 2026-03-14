@@ -21,6 +21,7 @@ use App\Models\Order;
 use App\Models\Product;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\ContactQueryController;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 
 
@@ -318,7 +319,7 @@ Route::get('/register-json', function (Request $request) {
     $data = $request->validate([
         'name'     => ['required', 'string', 'max:255'],
         'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
-        'password' => ['required', 'string', 'min:8'],
+        'password' => ['required', 'string', PasswordRule::defaults()],
     ]);
 
     $user = User::create([

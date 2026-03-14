@@ -101,7 +101,7 @@ html[data-theme="light"] .login-page-title {
     backdrop-filter: blur(15px);
     color: white;
     border-radius: 20px;
-    padding: 18px 40px 18px;
+    padding: 4px 40px 10px;
 }
 
 /* Login page card matches review/cart bubble style */
