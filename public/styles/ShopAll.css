@@ -812,6 +812,31 @@ svg:hover {
     margin-top: 10px;
 }
 
+.product_review_summary {
+    width: 100%;
+    min-height: 56px;
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.product_review_stars {
+    font-family: 'MiniPixel', sans-serif;
+    font-size: 20px;
+    line-height: 1.2;
+    color: #ffa825;
+    letter-spacing: 0.08em;
+}
+
+.product_review_stars.is-empty {
+    color: #888;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
 .view_product:hover,
 .add_to_basket:hover {
     background: #1d1d1d !important;

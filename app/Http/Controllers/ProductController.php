@@ -19,7 +19,9 @@ class ProductController extends Controller
     // GET products
     public function index(Request $request)
     {
-        $q = Product::with('category');
+        $q = Product::with('category')
+            ->withCount('reviews')
+            ->withAvg('reviews', 'rating');
 
         $this->applyFilters($q, $request);
 
@@ -48,6 +50,30 @@ class ProductController extends Controller
         return response()->json([
             'success' => true,
             'product' => $product,
+        ]);
+    }
+
+    public function reviews(Product $product)
+    {
+        $product->load([
+            'reviews' => function ($query) {
+                $query->with('user:id,name')->latest();
+            },
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'reviews' => $product->reviews->map(function ($review) {
+                return [
+                    'id' => $review->id,
+                    'user_name' => $review->user?->name ?? 'Veltrix customer',
+                    'platform' => $review->platform ?: 'Universal',
+                    'rating' => (int) $review->rating,
+                    'title' => $review->title,
+                    'message' => $review->message,
+                    'created_at' => optional($review->created_at)->format('M d, Y'),
+                ];
+            })->values(),
         ]);
     }
 

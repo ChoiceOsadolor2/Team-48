@@ -15,6 +15,9 @@ const searchQ = parameters.get('q');
 const container = document.getElementById('products_container');
 const ProductCard_template = container?.querySelector('template') || null;
 const container2 = document.getElementById('product_display');
+const productReviewsSection = document.getElementById('product_reviews_section');
+const productReviewsList = document.getElementById('product_reviews_list');
+const productReviewsEmpty = document.getElementById('product_reviews_empty');
 const minPriceInput = document.getElementById('filter_min_price');
 const maxPriceInput = document.getElementById('filter_max_price');
 const minPriceRange = document.getElementById('filter_min_price_range');
@@ -238,6 +241,96 @@ function renderRelatedProducts(currentProduct, products) {
   });
 
   relatedContainer.appendChild(fragment);
+}
+
+function renderProductReviews(reviews = []) {
+  if (!productReviewsSection || !productReviewsList || !productReviewsEmpty) return;
+
+  productReviewsSection.hidden = false;
+  productReviewsList.innerHTML = '';
+
+  if (!reviews.length) {
+    productReviewsEmpty.hidden = false;
+    productReviewsEmpty.textContent = 'No reviews yet';
+    return;
+  }
+
+  productReviewsEmpty.hidden = true;
+
+  const fragment = document.createDocumentFragment();
+
+  reviews.forEach((review) => {
+    const card = document.createElement('article');
+    card.className = 'product-review-card';
+
+    const top = document.createElement('div');
+    top.className = 'product-review-top';
+
+    const author = document.createElement('span');
+    author.className = 'product-review-author';
+    author.textContent = review.user_name || 'Veltrix customer';
+
+    const platform = document.createElement('span');
+    platform.className = 'product-review-platform';
+    platform.textContent = review.platform || 'Universal';
+
+    const date = document.createElement('span');
+    date.className = 'product-review-date';
+    date.textContent = review.created_at || '';
+
+    top.appendChild(author);
+    top.appendChild(platform);
+    if (date.textContent) top.appendChild(date);
+
+    const rating = document.createElement('div');
+    rating.className = 'product-review-rating';
+    const filledStars = '★'.repeat(Math.max(0, Math.min(5, Number(review.rating || 0))));
+    const emptyStars = '☆'.repeat(Math.max(0, 5 - Number(review.rating || 0)));
+    rating.textContent = `${filledStars}${emptyStars}`;
+
+    const title = document.createElement('h3');
+    title.className = 'product-review-title';
+    title.textContent = review.title || 'Review';
+
+    const message = document.createElement('p');
+    message.className = 'product-review-message';
+    message.textContent = review.message || '';
+
+    card.appendChild(top);
+    card.appendChild(rating);
+    card.appendChild(title);
+    card.appendChild(message);
+    fragment.appendChild(card);
+  });
+
+  productReviewsList.appendChild(fragment);
+}
+
+async function loadProductReviews(productId) {
+  if (!productReviewsSection || !productReviewsList || !productReviewsEmpty || !productId) return;
+
+  productReviewsSection.hidden = false;
+  productReviewsEmpty.hidden = false;
+  productReviewsEmpty.textContent = 'Loading reviews...';
+  productReviewsList.innerHTML = '';
+
+  try {
+    const response = await fetch(`/products/id/${encodeURIComponent(productId)}/reviews`, {
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load product reviews');
+    }
+
+    const data = await response.json();
+    renderProductReviews(Array.isArray(data?.reviews) ? data.reviews : []);
+  } catch (error) {
+    console.error('Error loading product reviews:', error);
+    productReviewsList.innerHTML = '';
+    productReviewsEmpty.hidden = false;
+    productReviewsEmpty.textContent = 'Unable to load reviews right now';
+  }
 }
 
 function isShopAllPage() {
@@ -872,6 +965,24 @@ window.UpdateCartQty = async function (productId, qty) {
 // - View Product button does navigation
 // - Image click DOES NOTHING
 
+function getProductReviewSummary(product) {
+  const reviewCount = Number(product.reviews_count ?? 0);
+  const averageRating = Number(product.reviews_avg_rating ?? 0);
+
+  if (!reviewCount || !Number.isFinite(averageRating)) {
+    return {
+      text: 'No reviews',
+      isEmpty: true,
+    };
+  }
+
+  const filledStars = Math.max(0, Math.min(5, Math.round(averageRating)));
+  return {
+    text: `${'★'.repeat(filledStars)}${'☆'.repeat(5 - filledStars)}`,
+    isEmpty: false,
+  };
+}
+
 function renderProducts(list) {
   if (!container || !ProductCard_template) return;
 
@@ -922,29 +1033,11 @@ function renderProducts(list) {
       });
     }
 
-    // Add to basket / Out of stock handling
-    const addBtn = clone.querySelector('.add_to_basket');
-    if (addBtn) {
-      const stock = Number(product.stock ?? 0);
-
-      if (stock <= 0) {
-        addBtn.textContent = 'Out of Stock';
-        addBtn.disabled = true;
-        addBtn.classList.add('out-of-stock');
-        addBtn.onclick = null;
-        addBtn.style.pointerEvents = 'none';
-        addBtn.style.opacity = '0.6';
-        addBtn.style.cursor = 'not-allowed';
-      } else {
-        addBtn.textContent = 'Add to Basket';
-        addBtn.disabled = false;
-        addBtn.classList.remove('out-of-stock');
-        addBtn.style.pointerEvents = '';
-        addBtn.style.opacity = '';
-        addBtn.style.cursor = '';
-
-        addBtn.addEventListener('click', () => window.AddToBasket(product.id));
-      }
+    const reviewSummaryEl = clone.querySelector('.product_review_stars');
+    if (reviewSummaryEl) {
+      const reviewSummary = getProductReviewSummary(product);
+      reviewSummaryEl.textContent = reviewSummary.text;
+      reviewSummaryEl.classList.toggle('is-empty', reviewSummary.isEmpty);
     }
 
     fragment.appendChild(clone);
@@ -1242,6 +1335,7 @@ if (container || container2) {
 
 
           document.title = product.name;
+          loadProductReviews(product.id);
         }
 
         loadCartFromBackend();

@@ -14,6 +14,7 @@
 <header></header>
 
     <main>
+<div class="product-page-inner">
 
 <button id="previous_page" type="button" aria-label="Go back" onclick="goBackToTop()">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
@@ -67,10 +68,18 @@
 
     <button class="add_to_basket"> Add to Basket</button>
   </div>
-
-  
 </section>
 
+<section id="product_reviews_section" class="product-reviews-section">
+  <div class="product-reviews-header">
+    <h2 class="product-reviews-title">Reviews</h2>
+  </div>
+
+  <div id="product_reviews_empty" class="product-reviews-empty">No reviews yet.</div>
+  <div id="product_reviews_list" class="product-reviews-list"></div>
+</section>
+
+</div>
 </main>
 
 <div id="footer"></div>

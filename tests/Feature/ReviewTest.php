@@ -179,4 +179,46 @@ class ReviewTest extends TestCase
             ])
             ->assertStatus(409);
     }
+
+    public function test_product_reviews_endpoint_returns_saved_reviews(): void
+    {
+        $user = User::factory()->create(['name' => 'Review User']);
+        $product = Product::factory()->create();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total' => 69.99,
+            'status' => 'processing',
+        ]);
+
+        $orderItem = OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'price' => 69.99,
+            'platform' => 'PlayStation 5',
+        ]);
+
+        Review::create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+            'order_item_id' => $orderItem->id,
+            'platform' => 'PlayStation 5',
+            'rating' => 5,
+            'title' => 'Excellent',
+            'message' => 'Worth every penny.',
+        ]);
+
+        $this->get(route('products.reviews', $product))
+            ->assertOk()
+            ->assertJson([
+                'success' => true,
+                'reviews' => [[
+                    'user_name' => 'Review User',
+                    'platform' => 'PlayStation 5',
+                    'rating' => 5,
+                    'title' => 'Excellent',
+                    'message' => 'Worth every penny.',
+                ]],
+            ]);
+    }
 }
