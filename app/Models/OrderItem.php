@@ -28,4 +28,9 @@ class OrderItem extends Model
             'name' => 'Product Deleted',
         ]);
     }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
 }

@@ -75,7 +75,9 @@
                                             </div>
                                             <div class="item-actions">
                                                 <a href="{{ $item->product ? url('/pages/ProductPage.html?id=' . $item->product->id) : url('/pages/ShopAll.html') }}" class="btn-ghost block w-full">Buy Again</a>
-                                                <a href="{{ url('/pages/index.html#contactus') }}" class="btn-ghost block w-full mt-2">Leave Review</a>
+                                                <a href="{{ url('/pages/review.html') . '?' . http_build_query([
+                                                    'order_item_id' => $item->id,
+                                                ]) }}" class="btn-ghost block w-full mt-2">Leave Review</a>
                                             </div>
                                         </div>
                                     @endforeach
