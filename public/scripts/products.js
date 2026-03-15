@@ -25,6 +25,7 @@ const maxPriceRange = document.getElementById('filter_max_price_range');
 const minPriceValue = document.getElementById('filter_min_price_value');
 const maxPriceValue = document.getElementById('filter_max_price_value');
 const priceRangeFill = document.getElementById('shop_price_range_fill');
+const categorySelect = document.getElementById('filter_category');
 const availabilitySelect = document.getElementById('filter_availability');
 const sortSelect = document.getElementById('sort_products');
 const applyFiltersButton = document.getElementById('apply_filters');
@@ -405,11 +406,18 @@ function syncShopControlsFromQuery() {
   if (maxPriceInput) maxPriceInput.value = parameters.get('max_price') || '';
   if (minPriceRange) minPriceRange.value = parameters.get('min_price') || String(PRICE_RANGE_MIN);
   if (maxPriceRange) maxPriceRange.value = parameters.get('max_price') || String(currentPriceRangeMax);
+  if (categorySelect) categorySelect.value = parameters.get('category') || '';
   if (availabilitySelect) availabilitySelect.value = parameters.get('availability') || '';
   if (sortSelect) sortSelect.value = parameters.get('sort') || 'default';
   syncPriceRangeUI();
 
-  const sortLabel = document.querySelector('.shop-toolbar__sort-row .custom-select .val');
+  const categoryLabel = document.querySelector('.custom-select--category .val');
+  const selectedCategoryOption = categorySelect?.selectedOptions?.[0];
+  if (categoryLabel && selectedCategoryOption) {
+    categoryLabel.textContent = selectedCategoryOption.textContent;
+  }
+
+  const sortLabel = document.querySelector('.shop-filter-field--sort .custom-select .val');
   const selectedSortOption = sortSelect?.selectedOptions?.[0];
   if (sortLabel && selectedSortOption) {
     sortLabel.textContent = selectedSortOption.textContent;
@@ -448,6 +456,7 @@ function applyShopFilters() {
     }
   };
 
+  setOrDelete('category', categorySelect?.value);
   setOrDelete('min_price', minPriceInput?.value);
   setOrDelete('max_price', maxPriceInput?.value);
   setOrDelete('availability', availabilitySelect?.value);
@@ -462,7 +471,7 @@ function clearShopFilters() {
   if (!isShopAllPage()) return;
 
   const nextParams = new URLSearchParams(window.location.search);
-  ['min_price', 'max_price', 'availability', 'sort'].forEach((key) => nextParams.delete(key));
+  ['category', 'min_price', 'max_price', 'availability', 'sort'].forEach((key) => nextParams.delete(key));
 
   const nextQuery = nextParams.toString();
   const nextUrl = `${window.location.pathname}${nextQuery ? `?${nextQuery}` : ''}`;
@@ -989,9 +998,6 @@ function renderProducts(list) {
   container.querySelectorAll('.product_card').forEach((card) => card.remove());
   toggleEmptyProductsState(list);
   updateResultsSummary(list);
-  if (resultsSummary) {
-    resultsSummary.textContent = `${list.length} product${list.length === 1 ? '' : 's'}`;
-  }
   const fragment = document.createDocumentFragment();
 
   list.forEach((product) => {

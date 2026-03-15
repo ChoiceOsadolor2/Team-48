@@ -46,6 +46,37 @@
         </label>
 
         <div class="shop-filter-field">
+          <span>Category</span>
+          <div class="custom-select custom-select--category" style="display:inline-block; position:relative; text-align:left;">
+            <select id="filter_category" style="display:none;">
+              <option value="">All</option>
+              <option value="Video Games">Video Games</option>
+              <option value="Consoles and PCs">Consoles and PCs</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Hardware">Hardware</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Merchandise">Merchandise</option>
+              <option value="Trading Cards">Trading Cards</option>
+            </select>
+
+            <div class="select-selected">
+              <span class="val">All</span>
+            </div>
+
+            <div class="select-items select-hide">
+              <div data-value="">All</div>
+              <div data-value="Video Games">Video Games</div>
+              <div data-value="Consoles and PCs">Consoles and PCs</div>
+              <div data-value="Accessories">Accessories</div>
+              <div data-value="Hardware">Hardware</div>
+              <div data-value="Furniture">Furniture</div>
+              <div data-value="Merchandise">Merchandise</div>
+              <div data-value="Trading Cards">Trading Cards</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-filter-field">
           <span>Availability</span>
           <div class="custom-select custom-select--availability" style="display:inline-block; position:relative; text-align:left;">
             <select id="filter_availability" style="display:none;">
@@ -65,9 +96,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <div class="shop-toolbar__sort-row">
         <div class="shop-filter-field shop-filter-field--sort">
           <span>Sort by</span>
           <div class="custom-select" style="display:inline-block; position:relative; text-align:left;">

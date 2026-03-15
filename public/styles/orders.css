@@ -164,12 +164,12 @@ body {
 .order-actions {
     width: 100%;
     margin-top: 10px;
-    min-width: 150px;
+    min-width: 190px;
 }
 
 @media (min-width: 600px) {
     .order-actions {
-        width: 150px;
+        width: 190px;
         margin-top: 0;
         margin-left: auto;
     }
@@ -338,6 +338,76 @@ body {
     font-size: 20px;
 }
 
+.return-container {
+    max-width: 980px;
+}
+
+.return-card {
+    overflow: visible;
+}
+
+.return-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.return-copy {
+    margin: 0;
+    font-size: 20px;
+    color: #888;
+}
+
+.return-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.return-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.return-field span {
+    font-size: 20px;
+    color: #fff;
+}
+
+.return-input {
+    min-height: 56px;
+    padding: 12px 16px;
+    border-radius: 12px;
+    border: 1px solid #444;
+    background: #000;
+    color: #fff;
+    font-family: 'MiniPixel', sans-serif;
+    font-size: 20px;
+}
+
+.return-textarea {
+    min-height: 180px;
+    resize: vertical;
+}
+
+.return-error {
+    margin: 0;
+    font-size: 16px;
+    color: #ffa825;
+}
+
+.return-actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.return-actions .btn-secondary,
+.return-actions .btn-ghost {
+    width: 200px;
+}
+
 .order-status-row {
     display: flex;
     align-items: center;
@@ -347,9 +417,17 @@ body {
 
 .order-status-actions {
     margin-left: auto;
-    width: 150px;
+    width: 190px;
     align-self: center;
     transform: translateY(14px);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.order-status-actions form,
+.order-status-actions .btn-ghost {
+    width: 100%;
 }
 
 .order-status {
@@ -373,6 +451,11 @@ body {
 }
 
 .order-status.delivered .status-indicator {
+    background-color: #10B981;
+    /* Emerald */
+}
+
+.order-status.completed .status-indicator {
     background-color: #10B981;
     /* Emerald */
 }
@@ -506,7 +589,7 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    min-width: 150px;
+    min-width: 190px;
 }
 
 .btn-ghost {
@@ -577,7 +660,8 @@ html[data-theme="light"] .order-info-block .label,
 html[data-theme="light"] .status-desc,
 html[data-theme="light"] .item-meta,
 html[data-theme="light"] .item-label,
-html[data-theme="light"] .order-item-no-image {
+html[data-theme="light"] .order-item-no-image,
+html[data-theme="light"] .return-copy {
     color: #666;
 }
 
@@ -613,6 +697,16 @@ html[data-theme="light"] .invoice-table tbody tr:first-child td {
 
 html[data-theme="light"] .btn-secondary,
 html[data-theme="light"] .btn-ghost {
+    background: #fff;
+    border-color: #111;
+    color: #111;
+}
+
+html[data-theme="light"] .return-field span {
+    color: #111;
+}
+
+html[data-theme="light"] .return-input {
     background: #fff;
     border-color: #111;
     color: #111;
@@ -685,4 +779,15 @@ html.dark-mode .btn-ghost {
 html.dark-mode .btn-ghost:hover {
     background-color: #fff;
     color: #000;
+}
+
+@media (max-width: 700px) {
+    .return-actions {
+        flex-direction: column;
+    }
+
+    .return-actions .btn-secondary,
+    .return-actions .btn-ghost {
+        width: 100%;
+    }
 }

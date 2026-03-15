@@ -41,11 +41,21 @@
                                         <div class="status-indicator"></div>
                                         <span>{{ ucfirst($order->status) }}</span>
                                     </div>
-                                    @if(strtolower($order->status) === 'processing')
-                                        <form method="POST" action="{{ route('orders.cancel', $order->id) }}" class="order-status-actions">
-                                            @csrf
-                                            <button type="submit" class="btn-ghost w-full">Cancel Order</button>
-                                        </form>
+                                    @if(strtolower($order->status) === 'processing' || in_array(strtolower((string) $order->status), ['completed', 'delivered']))
+                                        <div class="order-status-actions">
+                                            @if(strtolower($order->status) === 'processing')
+                                                <form method="POST" action="{{ route('orders.cancel', $order->id) }}">
+                                                    @csrf
+                                                    <button type="submit" class="btn-ghost w-full">Cancel Order</button>
+                                                </form>
+                                            @endif
+
+                                            @if(in_array(strtolower((string) $order->status), ['completed', 'delivered']))
+                                                @foreach($order->items as $item)
+                                                    <a href="{{ route('orders.return.form', $item->id) }}" class="btn-ghost block w-full">Request Refund</a>
+                                                @endforeach
+                                            @endif
+                                        </div>
                                     @endif
                                 </div>
                                 @if(strtolower($order->status) == 'processing')

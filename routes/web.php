@@ -117,6 +117,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order}/cancel', [OrdersController::class, 'cancel'])->name('orders.cancel');
+    Route::get('/orders/items/{orderItem}/return', [OrdersController::class, 'returnForm'])->name('orders.return.form');
+    Route::post('/orders/items/{orderItem}/return', [OrdersController::class, 'submitReturn'])->name('orders.return.submit');
     Route::get('/reviews/context/{orderItem}', [ReviewController::class, 'context'])->name('reviews.context');
     Route::post('/reviews', [ReviewController::class, 'store'])
         ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
