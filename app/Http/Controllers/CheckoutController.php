@@ -167,7 +167,18 @@ class CheckoutController extends Controller
         }
 
         $request->validate([
-            'email' => ['required', 'email'],
+            'email' => ['required', 'email', 'max:255'],
+            'first-name' => ['required', 'string', 'max:60', 'regex:/^[\pL\s\'-]+$/u'],
+            'last-name' => ['required', 'string', 'max:60', 'regex:/^[\pL\s\'-]+$/u'],
+            'address' => ['required', 'string', 'max:255'],
+            'city' => ['required', 'string', 'max:100', 'regex:/^[\pL\s\'-]+$/u'],
+            'country' => ['required', 'string', 'max:100', 'regex:/^[\pL\s\'-]+$/u'],
+            'postal-code' => ['required', 'string', 'max:20', 'regex:/^[A-Za-z0-9\s-]+$/'],
+            'shipping_option' => ['required', 'in:standard,express,next_day'],
+            'payment-type' => ['required', 'in:card'],
+            'card-number' => ['required', 'string', 'regex:/^[0-9 ]{13,23}$/'],
+            'expiry' => ['required', 'string', 'regex:/^(0[1-9]|1[0-2])\/\d{2}$/'],
+            'cvv' => ['required', 'string', 'regex:/^\d{3,4}$/'],
         ]);
 
         $shippingKey = trim((string) $request->input('shipping_option'));

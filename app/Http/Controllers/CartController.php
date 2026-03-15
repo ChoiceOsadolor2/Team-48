@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use App\Models\Product;
+use Illuminate\Validation\Rule;
 
 class CartController extends Controller
 {
@@ -113,7 +114,12 @@ class CartController extends Controller
 
     public function add(Request $request, Product $product)
 {
-    $qty = (int) $request->input('quantity', 1);
+    $validated = $request->validate([
+        'quantity' => ['nullable', 'integer', 'min:1', 'max:10'],
+        'platform' => ['nullable', 'string', Rule::in($this->platformOptionsForProduct($product))],
+    ]);
+
+    $qty = (int) ($validated['quantity'] ?? 1);
     if ($qty < 1) {
         $qty = 1;
     }
@@ -122,7 +128,7 @@ class CartController extends Controller
     $currentEntry = $this->normalizeCartEntry($cart[$product->id] ?? 0);
     $selectedPlatform = $this->resolvePlatformSelection(
         $product,
-        $request->input('platform'),
+        $validated['platform'] ?? null,
         $currentEntry['platform']
     );
     $newQty = $currentEntry['quantity'] + $qty;
@@ -177,12 +183,17 @@ class CartController extends Controller
 
    public function update(Request $request, Product $product)
 {
-    $qty = (int) $request->input('quantity', 1);
+    $validated = $request->validate([
+        'quantity' => ['nullable', 'integer', 'min:0', 'max:10'],
+        'platform' => ['nullable', 'string', Rule::in($this->platformOptionsForProduct($product))],
+    ]);
+
+    $qty = (int) ($validated['quantity'] ?? 1);
     $cart = Session::get('cart', []);
     $currentEntry = $this->normalizeCartEntry($cart[$product->id] ?? 0);
     $selectedPlatform = $this->resolvePlatformSelection(
         $product,
-        $request->input('platform'),
+        $validated['platform'] ?? null,
         $currentEntry['platform']
     );
 
@@ -240,12 +251,17 @@ class CartController extends Controller
 
     public function updateJson(Request $request, Product $product)
     {
-        $qty = (int) $request->query('quantity', 1);
+        $validated = $request->validate([
+            'quantity' => ['nullable', 'integer', 'min:0', 'max:10'],
+            'platform' => ['nullable', 'string', Rule::in($this->platformOptionsForProduct($product))],
+        ]);
+
+        $qty = (int) ($validated['quantity'] ?? 1);
         $cart = Session::get('cart', []);
         $currentEntry = $this->normalizeCartEntry($cart[$product->id] ?? 0);
         $selectedPlatform = $this->resolvePlatformSelection(
             $product,
-            $request->query('platform'),
+            $validated['platform'] ?? null,
             $currentEntry['platform']
         );
         $availableStock = $this->availableStockFor($product, $selectedPlatform);
