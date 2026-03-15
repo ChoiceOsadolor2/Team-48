@@ -98,6 +98,201 @@ html[data-theme="dark"] {
   content: "Enable Light Mode";
 }
 
+/* =========================
+   Home Page: Shared Light Theme
+   ========================= */
+html.home[data-theme="light"] #theme-toggle-button+label {
+  background: linear-gradient(180deg, rgba(252, 247, 240, 0.48) 0%, rgba(246, 237, 224, 0.4) 100%);
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.14);
+  backdrop-filter: blur(20px) saturate(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.08);
+  box-shadow: 0 12px 36px rgba(123, 99, 69, 0.06);
+}
+
+html.home[data-theme="light"] #theme-toggle-button+label:hover {
+  background: linear-gradient(180deg, rgba(252, 247, 240, 0.56) 0%, rgba(246, 237, 224, 0.48) 100%);
+}
+
+html.home[data-theme="light"] header {
+  border-bottom-color: rgba(74, 58, 39, 0.12);
+  z-index: 9999;
+}
+
+html.home[data-theme="light"] header::before {
+  background: linear-gradient(180deg, rgba(252, 247, 240, 0.82) 0%, rgba(246, 237, 224, 0.76) 100%);
+  backdrop-filter: blur(20px) saturate(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.08);
+  box-shadow: 0 12px 36px rgba(123, 99, 69, 0.06);
+}
+
+html.home[data-theme="light"] header * {
+  color: #1a1511;
+  fill: currentColor;
+}
+
+html.home[data-theme="light"] .user-menu-caret,
+html.home[data-theme="light"] .basket_count {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] #vx-search-input {
+  background: rgba(255, 252, 247, 0.95);
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] #vx-search-input::placeholder {
+  color: #8b7c70;
+}
+
+html.home[data-theme="light"] #vx-search-input:hover,
+html.home[data-theme="light"] #vx-search-input:focus {
+  background: #fffdf9;
+}
+
+html.home[data-theme="light"] #vx-search-submit {
+  background: rgba(255, 252, 247, 0.96);
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] #vx-search-submit:hover,
+html.home[data-theme="light"] #vx-search-submit:focus-visible {
+  background: #f7eee2;
+}
+
+html.home[data-theme="light"] .vx-search-dropdown {
+  background: rgba(255, 251, 245, 0.98);
+  border-color: rgba(74, 58, 39, 0.14);
+  box-shadow: 0 16px 36px rgba(123, 99, 69, 0.12);
+}
+
+html.home[data-theme="light"] .vx-search-dropdown li {
+  border-bottom-color: rgba(74, 58, 39, 0.12);
+}
+
+html.home[data-theme="light"] .vx-search-dropdown li:hover {
+  background-color: #f6ede1;
+}
+
+html.home[data-theme="light"] .vx-search-dropdown-title {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .vx-search-dropdown-empty,
+html.home[data-theme="light"] .vx-search-dropdown-no-image {
+  color: #8b7c70;
+}
+
+html.home[data-theme="light"] .user-menu-item {
+  background: linear-gradient(180deg, rgba(252, 247, 240, 0.48) 0%, rgba(246, 237, 224, 0.4) 100%);
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.14);
+  backdrop-filter: blur(20px) saturate(1.08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.08);
+  box-shadow: 0 12px 36px rgba(123, 99, 69, 0.06);
+}
+
+html.home[data-theme="light"] .user-menu-item:hover {
+  background: linear-gradient(180deg, rgba(252, 247, 240, 0.56) 0%, rgba(246, 237, 224, 0.48) 100%);
+}
+
+html.home[data-theme="light"] #basket_main {
+  background: rgba(251, 246, 238, 0.98);
+  color: #1a1511;
+  border-left-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] #basket_header h1,
+html.home[data-theme="light"] #basket #total,
+html.home[data-theme="light"] .basket_product_info .basket_name,
+html.home[data-theme="light"] .basket_product_info .basket_platform,
+html.home[data-theme="light"] .basket_product_info .basket_price,
+html.home[data-theme="light"] .basket_product_info .basket_quantity_text,
+html.home[data-theme="light"] #basket_header .basket_count {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .basket_product_info .basket_name::before,
+html.home[data-theme="light"] .basket_product_info .basket_platform::before,
+html.home[data-theme="light"] .basket_product_info .basket_price::before,
+html.home[data-theme="light"] .basket_product_info .basket_quantity_text::before {
+  color: #7a6c60;
+}
+
+html.home[data-theme="light"] .basket_product {
+  background: rgba(255, 255, 255, 0.72);
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] .basket_qty_btn,
+html.home[data-theme="light"] .basket_product_info .remove_from_cart,
+html.home[data-theme="light"] #basket #basket_checkout_btn {
+  background: #fffdf9;
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] .basket_qty_btn,
+html.home[data-theme="light"] #basket #basket_checkout_btn {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .basket_qty_btn:hover,
+html.home[data-theme="light"] .basket_product_info .remove_from_cart:hover,
+html.home[data-theme="light"] #basket #basket_checkout_btn:hover {
+  background: #f7eee2;
+}
+
+html.home[data-theme="light"] #vx-scroll-top,
+html.home[data-theme="light"] #vx-chatbot-toggle {
+  background: rgba(255, 251, 245, 0.86);
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.16);
+  box-shadow: 0 10px 24px rgba(123, 99, 69, 0.12);
+}
+
+html.home[data-theme="light"] #vx-chatbot-window {
+  background: rgba(255, 251, 245, 0.98);
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] .vx-chat-header {
+  background: transparent;
+  color: #1a1511;
+  border-bottom-color: rgba(74, 58, 39, 0.12);
+}
+
+html.home[data-theme="light"] .vx-message.ai-message {
+  background: #f4eadc;
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.12);
+}
+
+html.home[data-theme="light"] #vx-chat-form {
+  background: #f8f0e4;
+  border-top-color: rgba(74, 58, 39, 0.12);
+}
+
+html.home[data-theme="light"] #vx-chat-input {
+  background: #fffdf9;
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] #vx-chat-input::placeholder {
+  color: #8b7c70;
+}
+
+html.home[data-theme="light"] #vx-chat-submit {
+  background: #fffdf9;
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
+html.home[data-theme="light"] #vx-chat-submit:hover {
+  background: #f7eee2;
+}
+
 
 /* General Styles */
 header {
@@ -1604,6 +1799,16 @@ body.cart-open #vx-chatbot-container {
 
 .user-menu-item.danger:hover {
   color: white !important;
+}
+
+html[data-theme="light"] .user-menu-item.danger,
+html.home[data-theme="light"] .user-menu-item.danger {
+  color: #1a1511 !important;
+}
+
+html[data-theme="light"] .user-menu-item.danger:hover,
+html.home[data-theme="light"] .user-menu-item.danger:hover {
+  color: #1a1511 !important;
 }
 
 /* ===============================

@@ -39,14 +39,48 @@ body.login-page {
     background-position: var(--bg-y-pos, center 0);
     image-rendering: auto;
     overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
 }
 
 html[data-theme="light"] body.login-page {
-    background-color: #f6efe6;
-    color: #111;
+    background-color: #e7e3dc;
+    background-image: none;
+    color: #1a1511;
+}
+
+html[data-theme="light"] body.login-page::before,
+html[data-theme="light"] body.login-page::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url('../assets/Veltrix-homepage-background.png');
+    background-repeat: repeat-y;
+    background-size: contain;
+    background-position: var(--bg-y-pos, center 0);
+}
+
+html[data-theme="light"] body.login-page::before {
+    opacity: 0.08;
+}
+
+html[data-theme="light"] body.login-page::after {
+    opacity: 0.32;
+    filter: grayscale(1) contrast(2.8) brightness(0);
+    mix-blend-mode: multiply;
+}
+
+body.login-page > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* Match product page navbar exactly */
+body.login-page header {
+    z-index: 100;
+}
 body.login-page header,
 body.login-page header * {
     font-family: 'MiniPixel', sans-serif !important;
@@ -134,9 +168,10 @@ body.auth-login-page .login-box {
 }
 
 html[data-theme="light"] body.auth-login-page .login-box {
-    background-color: rgba(255, 255, 255, 0.92);
-    border-color: rgba(17, 17, 17, 0.12);
-    color: #111;
+    background-color: #ffffff;
+    border-color: rgba(74, 58, 39, 0.15);
+    color: #1a1511;
+    box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
 }
 
 html[data-theme="light"] body.auth-login-page .login-box *,
@@ -144,13 +179,14 @@ html[data-theme="light"] body.auth-login-page .login-box h1,
 html[data-theme="light"] body.auth-login-page .login-box p,
 html[data-theme="light"] body.auth-login-page .login-box a,
 html[data-theme="light"] body.auth-login-page .login-box label {
-    color: #111 !important;
+    color: #1a1511 !important;
 }
 
 html[data-theme="light"] .input-box input {
     background: #fff;
-    color: #111;
-    border-color: rgba(17, 17, 17, 0.12);
+    color: #1a1511;
+    border-color: rgba(74, 58, 39, 0.15);
+    box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
 }
 
 body.auth-login-page .login-box *,
@@ -254,6 +290,14 @@ body.auth-login-page .input-box input:not(.input-error):active {
     border-color: transparent;
 }
 
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):hover,
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):focus,
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):focus-visible,
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):active {
+    background: #ffffff;
+    border-color: transparent;
+}
+
 /* Keep browser autofill from turning fields white */
 body.auth-login-page .input-box input:-webkit-autofill,
 body.auth-login-page .input-box input:-webkit-autofill:visited {
@@ -297,6 +341,10 @@ body.auth-login-page .input-box input:autofill:active {
     /*colour change for placeholders (user&pass) */
     color: #888;
     font-size: 20px;
+}
+
+html[data-theme="light"] .input-box input::placeholder {
+    color: #8b7c70;
 }
 
 /*icons position */
@@ -400,6 +448,21 @@ body.auth-login-page .login-box .login-button:active::after {
     opacity: 1;
 }
 
+html[data-theme="light"] body.auth-login-page .login-box .login-button {
+    background: #ffffff;
+    color: #1a1511;
+    border-color: rgba(74, 58, 39, 0.15);
+    box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
+html[data-theme="light"] body.auth-login-page .login-box .login-button:hover,
+html[data-theme="light"] body.auth-login-page .login-box .login-button:focus,
+html[data-theme="light"] body.auth-login-page .login-box .login-button:focus-visible,
+html[data-theme="light"] body.auth-login-page .login-box .login-button:active {
+    background: #ffffff;
+    color: #1a1511;
+}
+
 
 
 
@@ -457,6 +520,12 @@ body.auth-login-page .remember-forgot input[type="checkbox"] {
     position: relative;
 }
 
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"] {
+    background: #ffffff;
+    border-color: rgba(74, 58, 39, 0.15);
+    box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
 body.auth-login-page .remember-forgot input[type="checkbox"]::before {
     content: "";
     position: absolute;
@@ -484,8 +553,17 @@ body.auth-login-page .remember-forgot input[type="checkbox"]::after {
     margin-top: -1px;
 }
 
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]::after {
+    border-right-color: #1a1511;
+    border-bottom-color: #1a1511;
+}
+
 body.auth-login-page .remember-forgot input[type="checkbox"]:checked {
     background: #1d1d1d;
+}
+
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]:checked {
+    background: #ffffff;
 }
 
 body.auth-login-page .remember-forgot input[type="checkbox"]:checked::after {
@@ -497,6 +575,12 @@ body.auth-login-page .remember-forgot input[type="checkbox"]:active {
     background: #1d1d1d;
     border-color: transparent;
     outline: none;
+}
+
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]:hover,
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]:active {
+    background: #ffffff;
+    border-color: transparent;
 }
 
 body.auth-login-page .remember-forgot input[type="checkbox"]:hover::before,

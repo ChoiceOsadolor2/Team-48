@@ -525,6 +525,10 @@
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
+                html[data-theme="light"] body.profile-page main.profile-content {
+                    padding-top: 90px !important; /* Allow the content to sit higher */
+                }
+
                 body.profile-page .profile-page-title {
                     position: absolute;
                     top: 90px;
@@ -537,6 +541,11 @@
                     font-weight: 700;
                     line-height: 1;
                     z-index: 2;
+                    transition: top 0.3s ease;
+                }
+
+                html[data-theme="light"] body.profile-page .profile-page-title {
+                    top: 5px; /* Aligned closer to header to match Shop All Products title */
                 }
 
                 /* The profile forms use semantic <header> tags; stop the global navbar styles from hijacking them. */
@@ -574,6 +583,12 @@
                     margin-left: auto !important;
                     margin-right: auto !important;
                 }
+
+                html[data-theme="light"] body.profile-page .profile-panel {
+                    position: relative;
+                    top: -90px;
+                }
+
 
                 body.profile-page .profile-panel > div {
                     width: 100% !important;

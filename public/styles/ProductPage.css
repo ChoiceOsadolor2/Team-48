@@ -682,3 +682,158 @@ html.home main {
   font-size: 20px;
   line-height: 1.45;
 }
+
+/* =============================
+   Product Page: Refined Light Mode
+   ============================= */
+html.home[data-theme="light"] body {
+  background-color: #e7e3dc;
+  background-image: none;
+  color: #1a1511;
+  position: relative;
+  isolation: isolate;
+}
+
+html.home[data-theme="light"] body::before,
+html.home[data-theme="light"] body::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image: url(../assets/Veltrix-homepage-background.png);
+  background-repeat: repeat-y;
+  background-size: contain;
+  background-position: var(--bg-y-pos, center 0);
+}
+
+html.home[data-theme="light"] body::before {
+  opacity: 0.08;
+}
+
+html.home[data-theme="light"] body::after {
+  opacity: 0.32;
+  filter: grayscale(1) contrast(2.8) brightness(0);
+  mix-blend-mode: multiply;
+}
+
+html.home[data-theme="light"] body>* {
+  position: relative;
+  z-index: 1;
+}
+
+html.home[data-theme="light"] main {
+  background: transparent;
+}
+
+html.home[data-theme="light"] #product_carousal,
+html.home[data-theme="light"] .product_meta_bubble,
+html.home[data-theme="light"] .product-review-card,
+html.home[data-theme="light"] .product-reviews-empty,
+html.home[data-theme="light"] #previous_page,
+html.home[data-theme="light"] #product_info .qty-input,
+html.home[data-theme="light"] #product_info>button,
+html.home[data-theme="light"] .product-platform-selected,
+html.home[data-theme="light"] .product-platform-items {
+  background: #ffffff;
+  color: #1a1511;
+  border-color: #000000;
+  box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+}
+
+html.home[data-theme="light"] #product_carousal,
+html.home[data-theme="light"] .product_meta_bubble {
+  margin-top: clamp(-40px, -2.5vh, -4px);
+}
+
+html.home[data-theme="light"] .product-reviews-section {
+  margin-top: -110px;
+}
+
+html.home[data-theme="light"] .product_name,
+html.home[data-theme="light"] .product_price,
+html.home[data-theme="light"] .product_description,
+html.home[data-theme="light"] .product-reviews-title,
+html.home[data-theme="light"] .product-review-author,
+html.home[data-theme="light"] .product-review-title,
+html.home[data-theme="light"] .product-review-message,
+html.home[data-theme="light"] .product-platform-selected,
+html.home[data-theme="light"] #product_info .qty-input .qty-count,
+html.home[data-theme="light"] #product_info .qty-input .product-qty,
+html.home[data-theme="light"] #product_info>button,
+html.home[data-theme="light"] #previous_page {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] #product_info sub,
+html.home[data-theme="light"] .product-review-date,
+html.home[data-theme="light"] .product-review-platform {
+  color: #888;
+}
+
+html.home[data-theme="light"] .product-review-rating {
+  color: #ffa825;
+}
+
+html.home[data-theme="light"] #product_info .qty-input {
+  background-image:
+    linear-gradient(to right, transparent 42px, #000000 42px, #000000 43px, transparent 43px),
+    linear-gradient(to right, transparent 100px, #000000 100px, #000000 101px, transparent 101px);
+}
+
+html.home[data-theme="light"] #product_info .qty-input:hover,
+html.home[data-theme="light"] #product_info .qty-input:focus-within,
+html.home[data-theme="light"] #product_info>button:hover,
+html.home[data-theme="light"] #product_info>button:focus-visible,
+html.home[data-theme="light"] #previous_page:hover,
+html.home[data-theme="light"] #previous_page:focus-visible,
+html.home[data-theme="light"] .product-platform-custom-select:hover .product-platform-selected,
+html.home[data-theme="light"] .product-platform-custom-select.is-open .product-platform-selected {
+  background: #ffffff;
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] #product_info .qty-input:hover,
+html.home[data-theme="light"] #product_info .qty-input:focus-within {
+  background-image:
+    linear-gradient(to right, transparent 42px, #000000 42px, #000000 43px, transparent 43px),
+    linear-gradient(to right, transparent 100px, #000000 100px, #000000 101px, transparent 101px);
+}
+
+html.home[data-theme="light"] #product_info .qty-input .qty-count,
+html.home[data-theme="light"] #product_info .qty-input .product-qty {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .product-platform-selected::before {
+  border-right-color: #1a1511;
+  border-bottom-color: #1a1511;
+}
+
+html.home[data-theme="light"] .product-platform-option {
+  background: #ffffff;
+  color: #1a1511;
+  border-bottom-color: #000000;
+}
+
+html.home[data-theme="light"] .product-platform-option:hover,
+html.home[data-theme="light"] .product-platform-option.is-selected {
+  background: #ffffff;
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .product-platform-items {
+  box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+}
+
+html.home[data-theme="light"] #previous_page:hover,
+html.home[data-theme="light"] #previous_page:focus-visible,
+html.home[data-theme="light"] #product_info>button:hover,
+html.home[data-theme="light"] #product_info>button:focus-visible {
+  border-color: transparent;
+}
+
+html.home[data-theme="light"] .product_image,
+html.home[data-theme="light"] #main_image {
+  background: transparent;
+}

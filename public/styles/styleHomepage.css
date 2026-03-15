@@ -824,3 +824,147 @@ html.home main {
   font-family: 'MiniPixel', sans-serif;
   font-size: 16px;
 }
+
+/* =============================
+   Homepage: Refined Light Mode
+   ============================= */
+html.home[data-theme="light"] body {
+  color: #1a1511;
+  background: #e7e3dc;
+}
+
+html.home[data-theme="light"] main {
+  position: relative;
+  isolation: isolate;
+  background: #e7e3dc;
+}
+
+html.home[data-theme="light"] main::before,
+html.home[data-theme="light"] main::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url(../assets/Veltrix-homepage-background.png);
+  background-repeat: repeat-y;
+  background-size: contain;
+  background-position: var(--bg-y-pos, center 0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.home[data-theme="light"] main::before {
+  opacity: 0.08;
+}
+
+html.home[data-theme="light"] main::after {
+  opacity: 0.32;
+  filter: grayscale(1) contrast(2.8) brightness(0);
+  mix-blend-mode: multiply;
+}
+
+html.home[data-theme="light"] main > * {
+  position: relative;
+  z-index: 1;
+}
+
+html.home[data-theme="light"] .main-logo {
+  filter: drop-shadow(0 18px 30px rgba(120, 94, 64, 0.12));
+}
+
+html.home[data-theme="light"] .main-desc,
+html.home[data-theme="light"] .reviews-inner p,
+html.home[data-theme="light"] .hp-about-text p,
+html.home[data-theme="light"] .contact-subtitle {
+  color: #5e5146;
+}
+
+html.home[data-theme="light"] .review-author,
+html.home[data-theme="light"] .hp-service-card p,
+html.home[data-theme="light"] .hp-value-card p,
+html.home[data-theme="light"] .swipe-indicator {
+  color: #7a6c60;
+}
+
+html.home[data-theme="light"] .swipe-indicator {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+html.home[data-theme="light"] .reviews-inner h2,
+html.home[data-theme="light"] .hp-about-heading,
+html.home[data-theme="light"] .hp-service-card h3,
+html.home[data-theme="light"] .hp-value-card h3,
+html.home[data-theme="light"] .form-group label,
+html.home[data-theme="light"] .cat-box span {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .hp-about-tagline,
+html.home[data-theme="light"] .hp-subsection-label,
+html.home[data-theme="light"] .main-subtitle {
+  color: #c67d0f;
+}
+
+html.home[data-theme="light"] .cat-box,
+html.home[data-theme="light"] .review-card,
+html.home[data-theme="light"] .hp-service-card,
+html.home[data-theme="light"] .hp-value-card {
+  background: #ffffff;
+  border-color: rgba(74, 58, 39, 0.08);
+  box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .review-card {
+  border-color: rgba(74, 58, 39, 0.06);
+}
+
+html.home[data-theme="light"] .cat-box:hover,
+html.home[data-theme="light"] .review-card:hover,
+html.home[data-theme="light"] .hp-service-card:hover,
+html.home[data-theme="light"] .hp-value-card:hover {
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .contact-form {
+  background: transparent;
+}
+
+html.home[data-theme="light"] .contact-field-wrap,
+html.home[data-theme="light"] .submit-wrap {
+  background: transparent;
+  border-color: transparent;
+}
+
+html.home[data-theme="light"] .contact-field {
+  background: #ffffff;
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.15);
+  box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
+html.home[data-theme="light"] .contact-field:hover,
+html.home[data-theme="light"] .contact-field:focus {
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .contact-field::placeholder {
+  color: #8b7c70;
+}
+
+html.home[data-theme="light"] .btn-submit {
+  background: #ffffff;
+  border-color: rgba(74, 58, 39, 0.15);
+  color: #1a1511;
+  box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
+html.home[data-theme="light"] .btn-submit:hover {
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .error-message,
+html.home[data-theme="light"] .success-message {
+  color: #c67d0f;
+}

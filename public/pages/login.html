@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="home">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +33,7 @@
       }
 
       .captcha-overlay {
-        position: fixed;
+        position: fixed !important;
         inset: 0;
         display: none;
         align-items: center;
@@ -41,7 +41,7 @@
         background: rgba(0, 0, 0, 0.4);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
-        z-index: 2000;
+        z-index: 2000 !important;
         padding: 24px;
       }
 
@@ -205,6 +205,40 @@
       .captcha-btn:hover::after,
       .captcha-btn:focus-visible::after {
         opacity: 1;
+      }
+
+      html[data-theme="light"] .captcha-modal {
+        background: #ffffff;
+        border-color: rgba(74, 58, 39, 0.15);
+        color: #1a1511;
+        box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+      }
+
+      html[data-theme="light"] .captcha-title,
+      html[data-theme="light"] .captcha-copy,
+      html[data-theme="light"] .captcha-btn,
+      html[data-theme="light"] .captcha-code,
+      html[data-theme="light"] .captcha-input {
+        color: #1a1511;
+      }
+
+      html[data-theme="light"] .captcha-code,
+      html[data-theme="light"] .captcha-input,
+      html[data-theme="light"] .captcha-btn {
+        background: #ffffff;
+        border-color: rgba(74, 58, 39, 0.15);
+        box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+      }
+
+      html[data-theme="light"] .captcha-input::placeholder {
+        color: #8b7c70;
+      }
+
+      html[data-theme="light"] .captcha-input:hover,
+      html[data-theme="light"] .captcha-input:focus,
+      html[data-theme="light"] .captcha-btn:hover,
+      html[data-theme="light"] .captcha-btn:focus-visible {
+        background: #ffffff;
       }
     </style>
 </head>
