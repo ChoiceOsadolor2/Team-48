@@ -121,6 +121,60 @@
     .unavailable-home-link:focus-visible::after {
       opacity: 1;
     }
+
+    html.home[data-theme="light"] main.unavailable-main {
+      background: #e7e3dc;
+    }
+
+    html.home[data-theme="light"] main.unavailable-main::before,
+    html.home[data-theme="light"] main.unavailable-main::after {
+      top: 0;
+      bottom: 0;
+      left: 50%;
+      width: 100vw;
+      transform: translateX(-50%);
+      display: block;
+      background-repeat: repeat-y;
+      background-size: 100vw auto;
+      background-position: var(--bg-y-pos, center 0);
+    }
+
+    html.home[data-theme="light"] main.unavailable-main::before {
+      opacity: 0.08;
+    }
+
+    html.home[data-theme="light"] main.unavailable-main::after {
+      opacity: 0.32;
+      filter: grayscale(1) contrast(2.8) brightness(0);
+      mix-blend-mode: multiply;
+    }
+
+    html.home[data-theme="light"] .unavailable-title {
+      color: #111;
+    }
+
+    html.home[data-theme="light"] .unavailable-card {
+      background: #fff;
+      border-color: #111;
+      box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+    }
+
+    html.home[data-theme="light"] .unavailable-card p {
+      color: #111;
+    }
+
+    html.home[data-theme="light"] .unavailable-home-link {
+      background: #fff;
+      border-color: #111;
+      color: #111;
+      box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+    }
+
+    html.home[data-theme="light"] .unavailable-home-link:hover,
+    html.home[data-theme="light"] .unavailable-home-link:focus-visible {
+      background: #fff;
+      color: #111;
+    }
   </style>
 </head>
 <body>
