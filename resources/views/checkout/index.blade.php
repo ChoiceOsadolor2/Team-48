@@ -259,6 +259,7 @@
             const checkoutContainer = document.querySelector('.checkout-container');
             const checkoutSummarySection = document.querySelector('.checkout-summary-section');
             const checkoutSummarySticky = document.querySelector('.checkout-summary-sticky');
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             const shippingOptionInputs = Array.from(document.querySelectorAll('input[name="shipping_option"]'));
             const summaryTotals = document.querySelector('.summary-totals');
             const shippingLabel = document.getElementById('checkout_shipping_label');
@@ -402,6 +403,12 @@
 
                         if (!value) {
                             showFieldError(config.errorId, 'Empty Field');
+                            if (!firstInvalidField) {
+                                firstInvalidField = sourceEl;
+                            }
+                            hasError = true;
+                        } else if (config.sourceId === 'email-display' && !emailPattern.test(value)) {
+                            showFieldError(config.errorId, 'Please enter a valid email format');
                             if (!firstInvalidField) {
                                 firstInvalidField = sourceEl;
                             }

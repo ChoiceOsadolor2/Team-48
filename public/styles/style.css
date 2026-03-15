@@ -257,6 +257,12 @@ html.home[data-theme="light"] #basket #basket_checkout_btn:focus-visible {
   background: #ffffff;
 }
 
+html.home[data-theme="light"] #basket #basket_checkout_btn:disabled {
+  background: #f3f3f3;
+  color: #8a8a8a;
+  border-color: #c8c8c8;
+}
+
 html.home[data-theme="light"] #vx-scroll-top,
 html.home[data-theme="light"] #vx-chatbot-toggle {
   background: rgba(255, 251, 245, 0.86);
@@ -859,6 +865,26 @@ header.search-active #search {
 #basket #basket_checkout_btn:focus-visible {
   background-color: #1d1d1d;
   transform: translateY(-2px);
+  outline: none;
+}
+
+#basket #basket_checkout_btn:disabled {
+  background-color: #141414;
+  color: #6f6f6f;
+  border-color: #2d2d2d;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+#basket #basket_checkout_btn:disabled::after {
+  opacity: 0;
+}
+
+#basket #basket_checkout_btn:disabled:hover,
+#basket #basket_checkout_btn:disabled:focus-visible {
+  background-color: #141414;
+  transform: none;
   outline: none;
 }
 

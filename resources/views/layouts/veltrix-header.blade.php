@@ -82,7 +82,7 @@
             </span>
         </template>
         <h1 style="margin-bottom: 5px;">Total: <p id="total"></p></h1>
-        <button id="basket_checkout_btn" onclick="window.location.href='/checkout'">Checkout</button>
+        <button id="basket_checkout_btn" onclick="window.location.href='/checkout'" disabled aria-disabled="true">Checkout</button>
     </div>
 </section>
 

@@ -753,6 +753,14 @@ function setProductImage(imgEl, product) {
 // ===============================
 document.body.classList.remove('cart-ready');
 
+function setBasketCheckoutState(hasItems) {
+  const checkoutBtn = document.getElementById('basket_checkout_btn');
+  if (!checkoutBtn) return;
+
+  checkoutBtn.disabled = !hasItems;
+  checkoutBtn.setAttribute('aria-disabled', hasItems ? 'false' : 'true');
+}
+
 async function loadCartFromBackend() {
   try {
     const res = await fetch('/cart/json', {
@@ -900,6 +908,8 @@ async function loadCartFromBackend() {
       basketCountEls[i].textContent = `(${count})`;
     }
 
+    setBasketCheckoutState(count > 0);
+
     const totalEl = document.getElementById('total');
     if (totalEl) {
       totalEl.textContent = `${Number(total || 0).toFixed(2)} GBP`;
@@ -909,6 +919,7 @@ async function loadCartFromBackend() {
   } catch (err) {
     console.error('Error loading cart:', err);
     showBasketError('We could not load your cart right now.');
+    setBasketCheckoutState(false);
   }
 }
 

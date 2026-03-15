@@ -166,6 +166,10 @@ class CheckoutController extends Controller
                 ->with('status', 'Your cart is empty.');
         }
 
+        $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
         $shippingKey = trim((string) $request->input('shipping_option'));
         $shippingOptions = $this->shippingOptions();
 

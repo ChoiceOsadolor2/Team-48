@@ -111,10 +111,14 @@ if (forgotEmailInput) {
 if (forgotForm) {
     forgotForm.addEventListener("submit", function (e) {
         const email = forgotEmailInput ? forgotEmailInput.value.trim() : "";
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         showFieldError(forgotEmailError, "");
         if (!email) {
             e.preventDefault();
             showFieldError(forgotEmailError, "Empty Field");
+        } else if (!emailPattern.test(email)) {
+            e.preventDefault();
+            showFieldError(forgotEmailError, "Please enter a valid email format");
         }
     });
 }
