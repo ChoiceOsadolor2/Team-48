@@ -235,18 +235,23 @@
 
                     <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
                         <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">New products</h4>
-                            <a href="{{ route('admin.products.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Latest return requests</h4>
+                            <a href="{{ route('admin.return-requests.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
                         </div>
                         <div class="space-y-3">
-                            @forelse ($latestProducts as $product)
+                            @forelse ($latestReturnRequests as $request)
                                 <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
-                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $product->name }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->category->name ?? 'No category' }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->stock }} in stock • {{ $product->created_at->diffForHumans() }}</p>
+                                    <div class="flex items-center justify-between gap-3">
+                                        <p class="font-semibold text-gray-900 dark:text-white">{{ $request->product?->name ?? 'Product removed' }}</p>
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $request->status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : ($request->status === 'declined' ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200') }}">
+                                            {{ ucfirst($request->status) }}
+                                        </span>
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $request->user?->name ?? 'Unknown customer' }} • {{ ucfirst($request->type) }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $request->created_at->diffForHumans() }}</p>
                                 </div>
                             @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No recently added products yet.</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No return requests yet.</p>
                             @endforelse
                         </div>
                     </div>

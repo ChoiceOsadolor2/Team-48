@@ -173,11 +173,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->take(3)
             ->get(['id', 'name', 'email', 'created_at']);
 
-        $latestProducts = Product::query()
-            ->with('category')
-            ->latest()
-            ->take(3)
-            ->get(['id', 'category_id', 'name', 'stock', 'created_at']);
+        $latestReturnRequests = Schema::hasTable('return_requests')
+            ? ReturnRequest::query()
+                ->with(['user', 'product'])
+                ->latest()
+                ->take(3)
+                ->get()
+            : collect();
 
         $latestQueries = Schema::hasTable('contact_queries')
             ? ContactQuery::query()
@@ -208,7 +210,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'topCategories',
             'recentOrders',
             'latestUsers',
-            'latestProducts',
+            'latestReturnRequests',
             'latestQueries',
             'faqCount',
             'contactQueryCount',
