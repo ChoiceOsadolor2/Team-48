@@ -359,6 +359,13 @@
       const subjectDisplay = document.getElementById('subject_display');
       const subjectInput = document.getElementById('subject');
       const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const getCsrfToken = () => {
+        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (metaToken) return metaToken;
+
+        const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
+      };
 
       if (nameDisplay && nameInput) {
         const syncName = () => {
@@ -460,6 +467,7 @@
           });
 
             if (isValid) {
+              const csrfToken = getCsrfToken();
               const payload = {
                 name: nameInput?.value?.trim() || "",
                 email: emailInput?.value?.trim() || "",
@@ -472,7 +480,8 @@
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
-                    'Accept': 'application/json'
+                    'Accept': 'application/json',
+                    ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
                   },
                   body: JSON.stringify(payload)
                 });

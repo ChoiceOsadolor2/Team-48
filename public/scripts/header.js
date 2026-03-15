@@ -487,11 +487,20 @@ function initChatbot() {
     const typingIndicator = appendMessage('ai', '...');
 
     try {
+      const csrfToken = (() => {
+        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (metaToken) return metaToken;
+
+        const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
+      })();
+
       const response = await fetch('/chatbot/ask', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json'
+          'Accept': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
         },
         body: JSON.stringify({ message: userMessage })
       });

@@ -2,6 +2,14 @@
   const form = document.getElementById('service_review_form');
   if (!form) return;
 
+  const getCsrfToken = () => {
+    const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (metaToken) return metaToken;
+
+    const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+    return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
+  };
+
   const fields = {
     name: document.getElementById('service_review_name'),
     rating: document.getElementById('service_review_rating'),
@@ -227,10 +235,12 @@
     if (hasError) return;
 
     try {
+      const csrfToken = getCsrfToken();
       const response = await fetch('/service-reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
         },
         credentials: 'include',
         body: JSON.stringify({

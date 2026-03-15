@@ -100,6 +100,13 @@
                 const payload = Object.fromEntries(formData.entries());
                 const statusMsg = document.getElementById("statusMsg");
                 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const getCsrfToken = () => {
+                    const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+                    if (metaToken) return metaToken;
+
+                    const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+                    return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
+                };
 
                 if (!emailPattern.test((payload.email || '').trim())) {
                     statusMsg.innerHTML = "Please enter a valid email format.";
@@ -111,7 +118,8 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'Accept': 'application/json'
+                            'Accept': 'application/json',
+                            ...(getCsrfToken() ? { 'X-CSRF-TOKEN': getCsrfToken() } : {})
                         },
                         body: JSON.stringify(payload)
                     });

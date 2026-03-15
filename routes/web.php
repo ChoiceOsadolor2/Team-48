@@ -84,7 +84,6 @@ Route::get('/products/search-json', [ProductController::class, 'search'])->name(
 
 Route::post('/chatbot/ask', [App\Http\Controllers\ChatbotController::class, 'ask']);
 Route::post('/contact-queries', [ContactQueryController::class, 'store'])
-    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
     ->name('contact-queries.store');
 Route::get('/service-reviews', [ServiceReviewController::class, 'index'])
     ->name('service-reviews.index');
@@ -109,13 +108,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/cart/json', [CartController::class, 'json'])
         ->name('cart.json');
 
-    Route::get('/cart/add-json/{product}', [CartController::class, 'add'])
+    Route::post('/cart/add-json/{product}', [CartController::class, 'add'])
         ->name('cart.add.json');
 
-    Route::get('/cart/remove-json/{product}', [CartController::class, 'removeJson'])
+    Route::delete('/cart/remove-json/{product}', [CartController::class, 'removeJson'])
         ->name('cart.remove.json');
 
-    Route::get('/cart/update-json/{product}', [CartController::class, 'update'])
+    Route::patch('/cart/update-json/{product}', [CartController::class, 'updateJson'])
         ->name('cart.update.json');
 
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
@@ -130,10 +129,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/reviews/context/{orderItem}', [ReviewController::class, 'context'])->name('reviews.context');
     Route::get('/service-reviews/context/{orderItem}', [ServiceReviewController::class, 'context'])->name('service-reviews.context');
     Route::post('/reviews', [ReviewController::class, 'store'])
-        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
         ->name('reviews.store');
     Route::post('/service-reviews', [ServiceReviewController::class, 'store'])
-        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
         ->name('service-reviews.store');
 
     Route::get('/test-add/{id}', function ($id) {
@@ -350,7 +347,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
 
 
-Route::get('/login-json', function (Request $request) {
+Route::post('/login-json', function (Request $request) {
     $credentials = $request->validate([
         'email'    => ['required', 'email'],
         'password' => ['required'],
@@ -374,7 +371,7 @@ Route::get('/login-json', function (Request $request) {
 
 
 
-Route::get('/register-json', function (Request $request) {
+Route::post('/register-json', function (Request $request) {
     $data = $request->validate([
         'name'     => ['required', 'string', 'max:255'],
         'email'    => ['required', 'email', 'max:255', 'unique:users,email'],

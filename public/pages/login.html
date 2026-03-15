@@ -466,15 +466,28 @@ if (togglePassword) {
 
 async function submitLogin(payload) {
   try {
-    const params = new URLSearchParams({
-      email: payload.email,
-      password: payload.password,
-      remember: payload.remember
-    });
+    const getCsrfToken = () => {
+      const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      if (metaToken) return metaToken;
 
-    const res = await fetch(`/login-json?${params.toString()}`, {
-      method: "GET",
-      headers: { "Accept": "application/json" }
+      const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+      return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
+    };
+
+    const csrfToken = getCsrfToken();
+
+    const res = await fetch('/login-json', {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {})
+      },
+      body: JSON.stringify({
+        email: payload.email,
+        password: payload.password,
+        remember: payload.remember
+      })
     });
 
     const dataText = await res.text();

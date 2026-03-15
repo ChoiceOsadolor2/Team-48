@@ -2,6 +2,14 @@
   const form = document.getElementById('review_form');
   if (!form) return;
 
+  const getCsrfToken = () => {
+    const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (metaToken) return metaToken;
+
+    const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+    return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
+  };
+
   const fields = {
     product: document.getElementById('review_product'),
     platform: document.getElementById('review_platform'),
@@ -234,10 +242,12 @@
     if (hasError) return;
 
     try {
+      const csrfToken = getCsrfToken();
       const response = await fetch('/reviews', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
         },
         credentials: 'include',
         body: JSON.stringify({

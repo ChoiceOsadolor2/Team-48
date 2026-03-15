@@ -753,6 +753,14 @@ function setProductImage(imgEl, product) {
 // ===============================
 document.body.classList.remove('cart-ready');
 
+function getCsrfToken() {
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (metaToken) return metaToken;
+
+  const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+  return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
+}
+
 function setBasketCheckoutState(hasItems) {
   const checkoutBtn = document.getElementById('basket_checkout_btn');
   if (!checkoutBtn) return;
@@ -938,11 +946,20 @@ window.AddToBasket = async function (id, qty = 1, platform = '') {
       params.set('platform', selectedPlatform);
     }
 
-    const url = `/cart/add-json/${id}?${params.toString()}`;
+    const url = `/cart/add-json/${id}`;
+    const csrfToken = getCsrfToken();
     const res = await fetch(url, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+      },
       credentials: 'include',
+      body: JSON.stringify({
+        quantity: qty,
+        ...(selectedPlatform ? { platform: selectedPlatform } : {}),
+      }),
     });
 
     if (!res.ok) {
@@ -971,10 +988,16 @@ window.AddToBasket = async function (id, qty = 1, platform = '') {
 
 window.UpdateCartQty = async function (productId, qty) {
   try {
-    const res = await fetch(`/cart/update-json/${productId}?quantity=${qty}`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
+    const csrfToken = getCsrfToken();
+    const res = await fetch(`/cart/update-json/${productId}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+      },
       credentials: 'include',
+      body: JSON.stringify({ quantity: qty }),
     });
 
     if (!res.ok) {
@@ -1468,10 +1491,16 @@ initCartUI();
 
 window.UpdateCartQty = async function (productId, qty) {
   try {
-    const res = await fetch(`/cart/update-json/${productId}?quantity=${qty}`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
+    const csrfToken = getCsrfToken();
+    const res = await fetch(`/cart/update-json/${productId}`, {
+      method: 'PATCH',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+      },
       credentials: 'include',
+      body: JSON.stringify({ quantity: qty }),
     });
 
     if (!res.ok) {
@@ -1494,9 +1523,13 @@ window.UpdateCartQty = async function (productId, qty) {
 
 window.RemoveFromCart = async function (productId) {
   try {
+    const csrfToken = getCsrfToken();
     const res = await fetch(`/cart/remove-json/${productId}`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
+      method: 'DELETE',
+      headers: {
+        Accept: 'application/json',
+        ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {}),
+      },
       credentials: 'include',
     });
 

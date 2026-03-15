@@ -413,15 +413,28 @@
     }
 
     async function submitRegistration(payload) {
-      const params = new URLSearchParams({
-        name: payload.username,
-        email: payload.email,
-        password: payload.password
-      });
+      const getCsrfToken = () => {
+        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (metaToken) return metaToken;
 
-      const res = await fetch(`/register-json?${params.toString()}`, {
-        method: "GET",
-        headers: { "Accept": "application/json" }
+        const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
+      };
+
+      const csrfToken = getCsrfToken();
+
+      const res = await fetch('/register-json', {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {})
+        },
+        body: JSON.stringify({
+          name: payload.username,
+          email: payload.email,
+          password: payload.password
+        })
       });
 
       const rawText = await res.text();
