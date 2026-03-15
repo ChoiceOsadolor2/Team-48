@@ -135,22 +135,10 @@
                                 <span class="text-xl font-bold text-rose-900">{{ $cancelledOrders }}</span>
                             </div>
                         </div>
-                        <div class="rounded-2xl bg-cyan-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-cyan-900">Chatbot FAQs</span>
-                                <span class="text-xl font-bold text-cyan-900">{{ $faqCount }}</span>
-                            </div>
-                        </div>
                         <div class="rounded-2xl bg-sky-50 p-3.5">
                             <div class="flex items-center justify-between">
                                 <span class="font-semibold text-sky-900">Contact queries</span>
                                 <span class="text-xl font-bold text-sky-900">{{ $contactQueryCount }}</span>
-                            </div>
-                        </div>
-                        <div class="rounded-2xl bg-violet-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-violet-900">Return requests</span>
-                                <span class="text-xl font-bold text-violet-900">{{ $returnRequestCount }}</span>
                             </div>
                         </div>
                     </div>
@@ -309,17 +297,6 @@
                     </div>
                     <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Inventory</h4>
                     <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Manage stock levels, easily add new products, and update pricing.</p>
-                </a>
-
-                <a href="{{ route('admin.products.stock') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-amber-100 dark:bg-amber-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2h-3V4a2 2 0 10-4 0v1H8a2 2 0 00-2 2v6m14 0v5a2 2 0 01-2 2H8a2 2 0 01-2-2v-5m14 0H6"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Stock Status</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">See which products are available now and which ones need restocking.</p>
                 </a>
 
                 <a href="{{ route('admin.orders.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
