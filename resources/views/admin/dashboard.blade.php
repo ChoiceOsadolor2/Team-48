@@ -146,18 +146,13 @@
                                 <span class="text-xl font-bold text-rose-900">{{ $cancelledOrders }}</span>
                             </div>
                         </div>
-                        <div class="rounded-2xl bg-cyan-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-cyan-900">Chatbot FAQs</span>
-                                <span class="text-xl font-bold text-cyan-900">{{ $faqCount }}</span>
-                            </div>
-                        </div>
                         <div class="rounded-2xl bg-sky-50 p-3.5">
                             <div class="flex items-center justify-between">
                                 <span class="font-semibold text-sky-900">Contact queries</span>
                                 <span class="text-xl font-bold text-sky-900">{{ $contactQueryCount }}</span>
                             </div>
                         </div>
+<<<<<<< HEAD
                         <div class="rounded-2xl bg-orange-50 p-3.5">
                             <div class="flex items-center justify-between">
                                 <span class="font-semibold text-orange-900">Refund requests</span>
@@ -171,6 +166,8 @@
                                 <span class="text-xl font-bold text-violet-900">{{ $returnRequestCount }}</span>
                             </div>
                         </div>
+=======
+>>>>>>> 6fdeb59a720493029dc586c2e27e7b6303b96791
                     </div>
                 </section>
 
@@ -269,18 +266,23 @@
 
                     <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
                         <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">New products</h4>
-                            <a href="{{ route('admin.products.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Latest return requests</h4>
+                            <a href="{{ route('admin.return-requests.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
                         </div>
                         <div class="space-y-3">
-                            @forelse ($latestProducts as $product)
+                            @forelse ($latestReturnRequests as $request)
                                 <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
-                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $product->name }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->category->name ?? 'No category' }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $product->stock }} in stock • {{ $product->created_at->diffForHumans() }}</p>
+                                    <div class="flex items-center justify-between gap-3">
+                                        <p class="font-semibold text-gray-900 dark:text-white">{{ $request->product?->name ?? 'Product removed' }}</p>
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $request->status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : ($request->status === 'declined' ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200') }}">
+                                            {{ ucfirst($request->status) }}
+                                        </span>
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $request->user?->name ?? 'Unknown customer' }} • {{ ucfirst($request->type) }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $request->created_at->diffForHumans() }}</p>
                                 </div>
                             @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No recently added products yet.</p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No return requests yet.</p>
                             @endforelse
                         </div>
                     </div>
@@ -386,17 +388,6 @@
                     </div>
                     <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Inventory</h4>
                     <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Manage stock levels, easily add new products, and update pricing.</p>
-                </a>
-
-                <a href="{{ route('admin.products.stock') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-amber-100 dark:bg-amber-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V7a2 2 0 00-2-2h-3V4a2 2 0 10-4 0v1H8a2 2 0 00-2 2v6m14 0v5a2 2 0 01-2 2H8a2 2 0 01-2-2v-5m14 0H6"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Stock Status</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">See which products are available now and which ones need restocking.</p>
                 </a>
 
                 <a href="{{ route('admin.orders.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
