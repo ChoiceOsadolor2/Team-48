@@ -490,6 +490,11 @@
                     min-height: 100vh;
                     z-index: 1;
                 }
+
+                body.admin-page main.admin-content,
+                body.admin-page main.admin-content * {
+                    font-family: 'MiniPixel', sans-serif !important;
+                }
             @endif
             @if ($isProfilePage)
                 @font-face {

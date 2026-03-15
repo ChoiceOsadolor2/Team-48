@@ -5,7 +5,33 @@
         </h2>
     </x-slot>
 
-    <div class="py-12 min-h-screen">
+    <style>
+        .admin-dashboard-page,
+        .admin-dashboard-page * {
+            font-weight: 400 !important;
+        }
+
+        .admin-dashboard-page .text-xs,
+        .admin-dashboard-page .text-sm {
+            font-size: 20px !important;
+            line-height: 1.2 !important;
+        }
+
+        .admin-dashboard-page .text-lg {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-dashboard-page .text-xl,
+        .admin-dashboard-page .text-2xl,
+        .admin-dashboard-page .text-3xl,
+        .admin-dashboard-page .text-4xl {
+            font-size: 30px !important;
+            line-height: 1.2 !important;
+        }
+    </style>
+
+    <div class="admin-dashboard-page py-12 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="mb-10 flex items-center justify-between bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 rounded-3xl p-10 shadow-2xl text-white transform transition-all hover:scale-[1.01] duration-300">
                 <div class="max-w-2xl">
@@ -43,8 +69,8 @@
                 </div>
                 <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
                     <p class="text-sm uppercase tracking-[0.2em] text-pink-300">Revenue</p>
-                    <p class="mt-2 text-3xl font-bold">£{{ number_format($totalRevenue, 2) }}</p>
-                    <p class="mt-2 text-sm text-gray-300">Average order value £{{ number_format($averageOrderValue, 2) }}.</p>
+                    <p class="mt-2 text-3xl font-bold">{{ number_format($totalRevenue, 2) }} GBP</p>
+                    <p class="mt-2 text-sm text-gray-300">Average order value {{ number_format($averageOrderValue, 2) }} GBP.</p>
                 </div>
             </div>
 
