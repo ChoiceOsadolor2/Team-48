@@ -290,7 +290,9 @@ window.initReviewsSlider = function initReviewsSlider() {
 
   const cardWidth = getCardWidth();
   if (totalCards > 1 && cardWidth > 0) {
-    reviewsSlider.scrollLeft = cardWidth * totalCards;
+    const cloneSetWidth = cardWidth * totalCards;
+    const centeredStart = cloneSetWidth + Math.max(0, (cloneSetWidth - reviewsSlider.clientWidth) / 2);
+    reviewsSlider.scrollLeft = centeredStart;
   } else {
     reviewsSlider.scrollLeft = 0;
   }

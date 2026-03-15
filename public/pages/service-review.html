@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" class="home">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veltrix</title>
+    <link rel="icon" href="../assets/MainLogo.png" type="image/png">
+    <link rel="stylesheet" href="../styles/styleHomepage.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/footer.css">
+    <link rel="stylesheet" href="../styles/ReviewPage.css">
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header></header>
+
+    <main class="review-page-shell">
+        <div class="review-page-inner">
+            <h1 class="review-page-title">Add Service Review</h1>
+
+            <section class="review-card">
+                <form id="service_review_form" class="review-form" novalidate>
+                    <div class="review-field">
+                        <label for="service_review_name">Your Name</label>
+                        <div class="review-field-wrap review-field-wrap--static">
+                            <input id="service_review_name" name="name" type="text" placeholder="Your name" readonly>
+                        </div>
+                        <div class="review-error" data-error-for="name"></div>
+                    </div>
+
+                    <div class="review-field">
+                        <label for="service_review_rating">Rating</label>
+                        <div class="review-rating-custom-select" id="service_review_rating_picker">
+                            <select id="service_review_rating" name="rating" aria-label="Select rating">
+                                <option value="">Select rating</option>
+                                <option value="5">5 Stars</option>
+                                <option value="4">4 Stars</option>
+                                <option value="3">3 Stars</option>
+                                <option value="2">2 Stars</option>
+                                <option value="1">1 Star</option>
+                            </select>
+                            <div class="review-rating-selected"><span class="val">Select rating</span></div>
+                            <div class="review-rating-items review-rating-hide"></div>
+                        </div>
+                        <div class="review-error" data-error-for="rating"></div>
+                    </div>
+
+                    <div class="review-field">
+                        <label for="service_review_message">Your Review</label>
+                        <div class="review-field-wrap review-field-wrap--textarea">
+                            <textarea id="service_review_message" name="message" rows="7" placeholder="Tell us about your overall Veltrix experience"></textarea>
+                        </div>
+                        <div class="review-error" data-error-for="message"></div>
+                    </div>
+
+                    <div class="review-actions">
+                        <button type="submit" class="review-submit-button">Submit Review</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="../scripts/header.js"></script>
+    <script src="../scripts/footer.js"></script>
+    <script src="../scripts/animations.js" defer></script>
+    <script src="../scripts/products.js?v=9"></script>
+    <script src="../scripts/service-review.js"></script>
+</body>
+</html>

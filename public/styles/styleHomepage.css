@@ -404,6 +404,7 @@ html[data-theme="light"] .success-message {
   padding: 2rem;
   width: 300px;
   min-width: 300px;
+  height: 480px;
   flex-shrink: 0;
   scroll-snap-align: center;
   text-align: left;
@@ -413,10 +414,17 @@ html[data-theme="light"] .success-message {
   cursor: default;
 }
 
+.review-card--placeholder {
+  opacity: 1;
+  background: #1d1d1d;
+}
+
 .review-stars {
   color: #ffa825;
   font-size: 1.8rem;
   letter-spacing: 2px;
+  align-self: center;
+  text-align: center;
 }
 
 .review-text {
@@ -445,31 +453,6 @@ html[data-theme="light"] .success-message {
   max-width: 800px;
   margin: 1rem auto 0;
   font-size: 20px;
-}
-
-.service-review-form {
-  max-width: 800px;
-  margin: 3rem auto 0;
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-}
-
-.service-review-form-title {
-  font-size: 30px;
-  color: #fff;
-}
-
-.service-review-meta {
-  color: #888;
-  margin: 0;
-  font-size: 20px;
-}
-
-.service-review-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 25px;
 }
 
 .cat-box span {
@@ -552,12 +535,6 @@ html[data-theme="light"] .success-message {
 
 .swipe-arrow {
   display: inline-block;
-}
-
-@media (max-width: 900px) {
-  .service-review-grid {
-    grid-template-columns: 1fr;
-  }
 }
 
 /* =============================
@@ -964,7 +941,6 @@ html.home[data-theme="light"] .contact-subtitle {
 
 html.home[data-theme="light"] .review-author,
 html.home[data-theme="light"] .reviews-empty,
-html.home[data-theme="light"] .service-review-meta,
 html.home[data-theme="light"] .hp-service-card p,
 html.home[data-theme="light"] .hp-value-card p,
 html.home[data-theme="light"] .swipe-indicator {
@@ -979,7 +955,6 @@ html.home[data-theme="light"] .swipe-indicator {
 
 html.home[data-theme="light"] .reviews-inner h2,
 html.home[data-theme="light"] .review-card-title,
-html.home[data-theme="light"] .service-review-form-title,
 html.home[data-theme="light"] .hp-about-heading,
 html.home[data-theme="light"] .hp-service-card h3,
 html.home[data-theme="light"] .hp-value-card h3,
@@ -1016,10 +991,6 @@ html.home[data-theme="light"] .hp-value-card:hover {
 }
 
 html.home[data-theme="light"] .contact-form {
-  background: transparent;
-}
-
-html.home[data-theme="light"] .service-review-form {
   background: transparent;
 }
 

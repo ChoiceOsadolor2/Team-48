@@ -31,4 +31,9 @@ class Order extends Model
     {
         return $this->hasMany(ReturnRequest::class);
     }
+
+    public function serviceReviews()
+    {
+        return $this->hasMany(ServiceReview::class);
+    }
 }

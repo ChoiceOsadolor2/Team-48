@@ -55,4 +55,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\RefundRequest::class);
     }
+
+    public function serviceReviews()
+    {
+        return $this->hasMany(\App\Models\ServiceReview::class);
+    }
 }

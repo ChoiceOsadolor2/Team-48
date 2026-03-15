@@ -44,10 +44,12 @@ main.review-page-shell {
   color: #f5eded;
 }
 
-.review-card {
+.review-page-shell .review-card {
   width: 100%;
   max-width: 100%;
   margin: 0 auto;
+  height: auto;
+  min-height: 0;
   background: #1d1d1d;
   border: 1px solid #444;
   border-radius: 18px;
@@ -363,7 +365,7 @@ html.home[data-theme="light"] .review-page-title {
   color: #111;
 }
 
-html.home[data-theme="light"] .review-card {
+html.home[data-theme="light"] .review-page-shell .review-card {
   background: #fff;
   border-color: #111;
 }
@@ -445,7 +447,7 @@ html.home[data-theme="light"] .review-rating-option.is-selected {
     margin-top: 0 !important;
   }
 
-  .review-card {
+  .review-page-shell .review-card {
     padding: 24px 20px 28px;
   }
 

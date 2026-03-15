@@ -16,6 +16,7 @@
                 <div class="orders-list">
                     @foreach ($orders as $order)
                         @php($orderRefundStatus = $order->items->pluck('refundRequest.status')->filter()->contains('pending') ? 'pending' : ($order->items->pluck('refundRequest.status')->filter()->contains('approved') ? 'approved' : ($order->items->pluck('refundRequest.status')->filter()->contains('denied') ? 'denied' : null)))
+                        @php($orderServiceReview = $order->serviceReviews->first())
                         <article class="order-card">
                             <div class="order-header">
                                 <div class="order-info-block">
@@ -120,9 +121,20 @@
                                             <div class="item-actions">
                                                 <a href="{{ $item->product ? url('/pages/ProductPage.html?id=' . $item->product->id) : url('/pages/ShopAll.html') }}" class="btn-ghost block w-full">Buy Again</a>
                                                 @if(in_array(strtolower((string) $order->status), ['completed', 'delivered']))
-                                                    <a href="{{ url('/pages/review.html') . '?' . http_build_query([
-                                                        'order_item_id' => $item->id,
-                                                    ]) }}" class="btn-ghost block w-full mt-2">Leave Review</a>
+                                                    @if($item->review)
+                                                        <span class="btn-ghost btn-ghost-disabled block w-full mt-2" aria-disabled="true">Product Review Added</span>
+                                                    @else
+                                                        <a href="{{ url('/pages/review.html') . '?' . http_build_query([
+                                                            'order_item_id' => $item->id,
+                                                        ]) }}" class="btn-ghost block w-full mt-2">Add Product Review</a>
+                                                    @endif
+                                                    @if($orderServiceReview)
+                                                        <span class="btn-ghost btn-ghost-disabled block w-full mt-2" aria-disabled="true">Service Review Added</span>
+                                                    @else
+                                                        <a href="{{ url('/pages/service-review.html') . '?' . http_build_query([
+                                                            'order_item_id' => $item->id,
+                                                        ]) }}" class="btn-ghost block w-full mt-2">Add Service Review</a>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </div>

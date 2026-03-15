@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderItem;
 use App\Models\ServiceReview;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -40,6 +41,28 @@ class ServiceReviewController extends Controller
         ]);
     }
 
+    public function context(OrderItem $orderItem): JsonResponse
+    {
+        $orderItem->loadMissing(['order', 'product']);
+
+        if (! $orderItem->order || $orderItem->order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (! $this->canReviewOrderItem($orderItem)) {
+            abort(403);
+        }
+
+        return response()->json([
+            'order_item_id' => $orderItem->id,
+            'user_name' => Auth::user()?->name ?? 'Veltrix customer',
+            'already_reviewed' => ServiceReview::query()
+                ->where('user_id', Auth::id())
+                ->where('order_id', $orderItem->order_id)
+                ->exists(),
+        ]);
+    }
+
     public function store(Request $request): JsonResponse
     {
         if (! Auth::check()) {
@@ -49,27 +72,43 @@ class ServiceReviewController extends Controller
         }
 
         $data = $request->validate([
+            'order_item_id' => ['required', 'integer', 'exists:order_items,id'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
-            'title' => ['required', 'string', 'max:255'],
             'message' => ['required', 'string', 'max:3000'],
         ]);
 
-        $review = ServiceReview::updateOrCreate(
-            ['user_id' => Auth::id()],
-            [
-                'rating' => (int) $data['rating'],
-                'title' => trim($data['title']),
-                'message' => trim($data['message']),
-            ]
-        );
+        $orderItem = OrderItem::with(['order', 'product'])->findOrFail($data['order_item_id']);
+
+        if (! $orderItem->order || $orderItem->order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (! $this->canReviewOrderItem($orderItem)) {
+            abort(403);
+        }
+
+        if (ServiceReview::query()
+            ->where('user_id', Auth::id())
+            ->where('order_id', $orderItem->order_id)
+            ->exists()) {
+            return response()->json([
+                'message' => 'You have already submitted a service review for this order.',
+            ], 409);
+        }
+
+        $review = ServiceReview::create([
+            'user_id' => Auth::id(),
+            'order_id' => $orderItem->order_id,
+            'rating' => (int) $data['rating'],
+            'title' => 'Service Review',
+            'message' => trim($data['message']),
+        ]);
 
         $review->loadMissing('user:id,name');
 
         return response()->json([
             'success' => true,
-            'message' => $review->wasRecentlyCreated
-                ? 'Service review submitted.'
-                : 'Service review updated.',
+            'message' => 'Service review submitted.',
             'review' => [
                 'id' => $review->id,
                 'user_name' => $review->user?->name ?? 'Veltrix customer',
@@ -79,5 +118,12 @@ class ServiceReviewController extends Controller
                 'created_at' => optional($review->created_at)->format('M d Y'),
             ],
         ]);
+    }
+
+    private function canReviewOrderItem(OrderItem $orderItem): bool
+    {
+        $status = strtolower((string) optional($orderItem->order)->status);
+
+        return in_array($status, ['completed', 'delivered'], true);
     }
 }

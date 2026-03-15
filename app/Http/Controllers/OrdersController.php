@@ -16,7 +16,7 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['items.product', 'items.refundRequest', 'items.latestReturnRequest'])
+        $orders = Order::with(['items.product', 'items.review', 'items.refundRequest', 'items.latestReturnRequest', 'serviceReviews'])
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();

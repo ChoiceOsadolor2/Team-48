@@ -88,9 +88,6 @@ Route::post('/contact-queries', [ContactQueryController::class, 'store'])
     ->name('contact-queries.store');
 Route::get('/service-reviews', [ServiceReviewController::class, 'index'])
     ->name('service-reviews.index');
-Route::post('/service-reviews', [ServiceReviewController::class, 'store'])
-    ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
-    ->name('service-reviews.store');
 
 Route::get('/product', function () {
     return redirect('/products');
@@ -131,9 +128,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders/items/{orderItem}/return', [OrdersController::class, 'returnForm'])->name('orders.return.form');
     Route::post('/orders/items/{orderItem}/return', [OrdersController::class, 'submitReturn'])->name('orders.return.submit');
     Route::get('/reviews/context/{orderItem}', [ReviewController::class, 'context'])->name('reviews.context');
+    Route::get('/service-reviews/context/{orderItem}', [ServiceReviewController::class, 'context'])->name('service-reviews.context');
     Route::post('/reviews', [ReviewController::class, 'store'])
         ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
         ->name('reviews.store');
+    Route::post('/service-reviews', [ServiceReviewController::class, 'store'])
+        ->withoutMiddleware([\Illuminate\Foundation\Http\Middleware\VerifyCsrfToken::class])
+        ->name('service-reviews.store');
 
     Route::get('/test-add/{id}', function ($id) {
         \Illuminate\Support\Facades\Session::put('cart', [$id => 1]);
