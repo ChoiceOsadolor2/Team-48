@@ -3,6 +3,7 @@
 @php($isOrdersPage = request()->routeIs('orders.*'))
 @php($isOrderHistoryPage = request()->routeIs('orders.index'))
 @php($isInvoicePage = request()->routeIs('orders.show'))
+@php($isOrderReturnPage = request()->routeIs('orders.return.*'))
 @php($isCheckoutPage = request()->routeIs('checkout.*'))
 @php($isAdminPage = request()->routeIs('admin.*'))
 @php($siteNotifications = collect([
@@ -47,6 +48,9 @@
             <link rel="stylesheet" href="/styles/footer.css">
         @endif
         @if ($isInvoicePage)
+            <link rel="stylesheet" href="/styles/footer.css">
+        @endif
+        @if ($isOrderReturnPage)
             <link rel="stylesheet" href="/styles/footer.css">
         @endif
         @if ($isCheckoutPage)
@@ -1007,6 +1011,9 @@
         @if ($isInvoicePage)
             <div id="footer"></div>
         @endif
+        @if ($isOrderReturnPage)
+            <div id="footer"></div>
+        @endif
         @if ($isCheckoutPage)
             <div id="footer"></div>
         @endif
@@ -1042,7 +1049,7 @@
             </script>
         @elseif ($isOrdersPage)
             <script src="/scripts/header.js"></script>
-            @if ($isOrderHistoryPage || $isInvoicePage)
+            @if ($isOrderHistoryPage || $isInvoicePage || $isOrderReturnPage)
                 <script src="/scripts/footer.js"></script>
             @endif
             <script src="/scripts/products.js?v=8"></script>

@@ -75,7 +75,6 @@ class OrdersController extends Controller
         $this->authorizeReturnItem($orderItem);
 
         $validated = $request->validate([
-            'request_type' => ['required', 'string', 'in:return,refund,exchange'],
             'reason' => ['required', 'string', 'max:1000'],
         ]);
 
@@ -88,8 +87,8 @@ class OrdersController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'subject' => sprintf(
-                '%s request - Order VX-%d - %s',
-                ucfirst($validated['request_type']),
+                '%s - Order VX-%d - %s',
+                'Refund request',
                 $order->id,
                 $productName
             ),
@@ -100,7 +99,6 @@ class OrdersController extends Controller
                 'Product: ' . $productName,
                 'Platform: ' . $platform,
                 'Quantity: ' . $orderItem->quantity,
-                'Request type: ' . ucfirst($validated['request_type']),
                 'Reason: ' . trim($validated['reason']),
             ]),
         ]);

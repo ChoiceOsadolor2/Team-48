@@ -343,13 +343,14 @@ body {
 }
 
 .return-card {
-    overflow: visible;
+    overflow: hidden;
 }
 
 .return-card-body {
     display: flex;
     flex-direction: column;
     gap: 22px;
+    font-size: 20px;
 }
 
 .return-copy {
@@ -375,7 +376,32 @@ body {
     color: #fff;
 }
 
+.return-input-shell {
+    position: relative;
+    border-radius: 12px;
+}
+
+.return-input-shell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    animation: veltrixGlow 2s infinite alternate;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.return-input-shell:hover::after,
+.return-input-shell:focus-within::after {
+    opacity: 1;
+}
+
 .return-input {
+    position: relative;
+    display: block;
+    width: 100%;
     min-height: 56px;
     padding: 12px 16px;
     border-radius: 12px;
@@ -384,16 +410,40 @@ body {
     color: #fff;
     font-family: 'MiniPixel', sans-serif;
     font-size: 20px;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.return-input::placeholder {
+    color: #888;
+    opacity: 1;
 }
 
 .return-textarea {
-    min-height: 180px;
-    resize: vertical;
+    min-height: 96px;
+    height: 96px;
+    resize: none;
+}
+
+.return-input:hover,
+.return-input:focus {
+    background: #1d1d1d;
+    border-color: #444;
+    outline: none;
+    transform: none;
+}
+
+.return-textarea {
+    position: relative;
+    box-shadow: none;
+}
+
+.return-field {
+    position: relative;
 }
 
 .return-error {
     margin: 0;
-    font-size: 16px;
+    font-size: 20px;
     color: #ffa825;
 }
 
@@ -660,9 +710,13 @@ html[data-theme="light"] .order-info-block .label,
 html[data-theme="light"] .status-desc,
 html[data-theme="light"] .item-meta,
 html[data-theme="light"] .item-label,
-html[data-theme="light"] .order-item-no-image,
-html[data-theme="light"] .return-copy {
+html[data-theme="light"] .order-item-no-image {
     color: #666;
+}
+
+html[data-theme="light"] .return-copy,
+html[data-theme="light"] .return-card .label {
+    color: #888;
 }
 
 html[data-theme="light"] .order-item-no-image {
@@ -710,6 +764,12 @@ html[data-theme="light"] .return-input {
     background: #fff;
     border-color: #111;
     color: #111;
+}
+
+html[data-theme="light"] .return-input:hover,
+html[data-theme="light"] .return-input:focus {
+    background: #fff;
+    border-color: #111;
 }
 
 html[data-theme="light"] .btn-secondary:hover,

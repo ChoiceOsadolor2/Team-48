@@ -28,28 +28,14 @@
                 </div>
 
                 <div class="order-body return-card-body">
-                    <p class="return-copy">
-                        Tell us what you need and we'll send your request to support for review.
-                    </p>
-
                     <form method="POST" action="{{ route('orders.return.submit', $orderItem->id) }}" class="return-form">
                         @csrf
 
                         <label class="return-field">
-                            <span>Request type</span>
-                            <select name="request_type" class="return-input">
-                                <option value="return" {{ old('request_type') === 'return' ? 'selected' : '' }}>Return</option>
-                                <option value="refund" {{ old('request_type') === 'refund' ? 'selected' : '' }}>Refund</option>
-                                <option value="exchange" {{ old('request_type') === 'exchange' ? 'selected' : '' }}>Exchange</option>
-                            </select>
-                            @error('request_type')
-                                <p class="return-error">{{ $message }}</p>
-                            @enderror
-                        </label>
-
-                        <label class="return-field">
-                            <span>Reason</span>
-                            <textarea name="reason" rows="6" class="return-input return-textarea" placeholder="Tell us why you'd like to return or refund this product.">{{ old('reason') }}</textarea>
+                            <span>Reason for requesting refund</span>
+                            <div class="return-input-shell">
+                                <textarea name="reason" rows="3" class="return-input return-textarea" placeholder="Tell us why you'd like to request a refund for this product.">{{ old('reason') }}</textarea>
+                            </div>
                             @error('reason')
                                 <p class="return-error">{{ $message }}</p>
                             @enderror
