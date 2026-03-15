@@ -1,15 +1,45 @@
 <!DOCTYPE html>
-@php($isProfilePage = request()->routeIs('profile.*'))
-@php($isOrdersPage = request()->routeIs('orders.*'))
-@php($isOrderHistoryPage = request()->routeIs('orders.index'))
-@php($isInvoicePage = request()->routeIs('orders.show'))
-@php($isOrderReturnPage = request()->routeIs('orders.return.*'))
-@php($isCheckoutPage = request()->routeIs('checkout.*'))
-@php($isAdminPage = request()->routeIs('admin.*'))
-@php($siteNotifications = collect([
-    session('stock_error') ? ['type' => 'error', 'message' => session('stock_error')] : null,
-    session('status') ? ['type' => 'success', 'message' => session('status')] : null,
-])->filter()->values())
+@php
+    $isProfilePage = request()->routeIs('profile.*');
+    $isOrdersPage = request()->routeIs('orders.*');
+    $isOrderHistoryPage = request()->routeIs('orders.index');
+    $isInvoicePage = request()->routeIs('orders.show');
+    $isOrderReturnPage = request()->routeIs('orders.return.*');
+    $isCheckoutPage = request()->routeIs('checkout.*');
+    $isAdminPage = request()->routeIs('admin.*');
+
+    $adminBackTarget = null;
+    $adminBackLabel = 'Dashboard';
+
+    if ($isAdminPage && ! request()->routeIs('admin.dashboard')) {
+        $adminBackTarget = route('admin.dashboard');
+
+        if (request()->routeIs('admin.orders.show')) {
+            $adminBackTarget = route('admin.orders.index');
+            $adminBackLabel = 'Back to Orders';
+        } elseif (request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit') || request()->routeIs('admin.products.stock')) {
+            $adminBackTarget = route('admin.products.index');
+            $adminBackLabel = 'Back to Inventory';
+        } elseif (request()->routeIs('admin.users.edit')) {
+            $adminBackTarget = route('admin.users.index');
+            $adminBackLabel = 'Back to Users';
+        } elseif (request()->routeIs('admin.faqs.create') || request()->routeIs('admin.faqs.edit')) {
+            $adminBackTarget = route('admin.faqs.index');
+            $adminBackLabel = 'Back to FAQs';
+        } elseif (request()->routeIs('admin.contact-queries.show')) {
+            $adminBackTarget = route('admin.contact-queries.index');
+            $adminBackLabel = 'Back to Queries';
+        } elseif (request()->routeIs('admin.return-requests.show')) {
+            $adminBackTarget = route('admin.return-requests.index');
+            $adminBackLabel = 'Back to Returns';
+        }
+    }
+
+    $siteNotifications = collect([
+        session('stock_error') ? ['type' => 'error', 'message' => session('stock_error')] : null,
+        session('status') ? ['type' => 'success', 'message' => session('status')] : null,
+    ])->filter()->values();
+@endphp
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) class="home" @endif>
     <head>
         <meta charset="utf-8">
@@ -988,12 +1018,12 @@
             @endif
 
             <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }} {{ $isCheckoutPage ? 'checkout-content' : '' }} {{ $isAdminPage ? 'admin-content' : '' }}">
-                @if ($isAdminPage && ! request()->routeIs('admin.dashboard'))
+                @if ($isAdminPage && $adminBackTarget)
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
-                        <a href="{{ route('admin.dashboard') }}"
+                        <a href="{{ $adminBackTarget }}"
                            class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-black/85">
                             <span aria-hidden="true">←</span>
-                            <span>Dashboard</span>
+                            <span>{{ $adminBackLabel }}</span>
                         </a>
                     </div>
                 @endif
