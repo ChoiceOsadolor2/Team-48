@@ -3,7 +3,6 @@
 
     <div class="orders-main w-full max-w-5xl mx-auto">
         <div class="orders-container">
-            
             <div class="orders-header mb-8">
                 <h1 class="orders-title text-3xl font-bold">Order History</h1>
             </div>
@@ -34,7 +33,7 @@
                                     <a href="{{ route('orders.show', $order->id) }}" class="btn-secondary">View Invoice</a>
                                 </div>
                             </div>
-                            
+
                             <div class="order-body">
                                 <div class="order-status-row">
                                     <div class="order-status {{ strtolower($order->status) }}">
@@ -51,9 +50,7 @@
                                             @endif
 
                                             @if(in_array(strtolower((string) $order->status), ['completed', 'delivered']))
-                                                @foreach($order->items as $item)
-                                                    <a href="{{ route('orders.return.form', $item->id) }}" class="btn-ghost block w-full">Request Refund</a>
-                                                @endforeach
+                                                <a href="{{ route('orders.returns.index', $order->id) }}" class="btn-ghost block w-full text-center">Returns / Refunds</a>
                                             @endif
                                         </div>
                                     @endif
@@ -65,7 +62,7 @@
                                 @else
                                     <p class="status-desc">Order status updated.</p>
                                 @endif
-                                
+
                                 <div class="order-items">
                                     @foreach($order->items as $item)
                                         <div class="order-item">
@@ -74,11 +71,23 @@
                                             @else
                                                 <div class="order-item-no-image">No image</div>
                                             @endif
-                                            
+
                                             <div class="item-details">
                                                 <h4><span class="item-label">Product Name:</span> {{ $item->product->name ?? 'Unknown Product' }}</h4>
                                                 @if($item->platform || ($item->product && $item->product->platform))
                                                     <p class="item-meta"><span class="item-label">Platform:</span> <span class="item-meta-value">{{ $item->platform ?: $item->product->platform }}</span></p>
+                                                @endif
+                                                @if($item->latestReturnRequest)
+                                                    <p class="item-meta">
+                                                        <span class="item-label">Return request:</span>
+                                                        <span class="item-meta-value">{{ ucfirst($item->latestReturnRequest->status) }}</span>
+                                                    </p>
+                                                    @if($item->latestReturnRequest->admin_notes)
+                                                        <p class="item-meta">
+                                                            <span class="item-label">Support update:</span>
+                                                            <span class="item-meta-value">{{ \Illuminate\Support\Str::limit($item->latestReturnRequest->admin_notes, 110) }}</span>
+                                                        </p>
+                                                    @endif
                                                 @endif
                                                 <p class="item-price"><span class="item-label">Price:</span> <span class="price-value">{{ number_format($item->price, 2) }} GBP</span></p>
                                                 <p class="item-qty"><span class="item-label">Quantity:</span> {{ $item->quantity }}</p>

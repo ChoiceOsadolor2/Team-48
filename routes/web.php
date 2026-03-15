@@ -14,11 +14,13 @@ use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ContactQueryController as AdminContactQueryController;
+use App\Http\Controllers\Admin\ReturnRequestController as AdminReturnRequestController;
 use App\Models\Category;
 use App\Models\ContactQuery;
 use App\Models\Faq;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ReturnRequest;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\ContactQueryController;
 use App\Http\Controllers\ReviewController;
@@ -116,6 +118,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/returns', [OrdersController::class, 'returnsIndex'])->name('orders.returns.index');
     Route::post('/orders/{order}/cancel', [OrdersController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/items/{orderItem}/return', [OrdersController::class, 'returnForm'])->name('orders.return.form');
     Route::post('/orders/items/{orderItem}/return', [OrdersController::class, 'submitReturn'])->name('orders.return.submit');
@@ -184,6 +187,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
             : collect();
 
         $contactQueryCount = Schema::hasTable('contact_queries') ? ContactQuery::count() : 0;
+        $returnRequestCount = Schema::hasTable('return_requests') ? ReturnRequest::count() : 0;
+        $pendingReturnRequestCount = Schema::hasTable('return_requests')
+            ? ReturnRequest::where('status', 'pending')->count()
+            : 0;
         $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
 
         return view('admin.dashboard', compact(
@@ -205,6 +212,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'latestQueries',
             'faqCount',
             'contactQueryCount',
+            'returnRequestCount',
+            'pendingReturnRequestCount',
         ));
     })->name('admin.dashboard');
 
@@ -277,6 +286,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::delete('/admin/contact-queries/{contactQuery}', [AdminContactQueryController::class, 'destroy'])
         ->name('admin.contact-queries.destroy');
+
+    Route::get('/admin/return-requests', [AdminReturnRequestController::class, 'index'])
+        ->name('admin.return-requests.index');
+
+    Route::get('/admin/return-requests/{returnRequest}', [AdminReturnRequestController::class, 'show'])
+        ->name('admin.return-requests.show');
+
+    Route::patch('/admin/return-requests/{returnRequest}/status', [AdminReturnRequestController::class, 'updateStatus'])
+        ->name('admin.return-requests.update-status');
 
     Route::get('/admin/faqs/create', [AdminFaqController::class, 'create'])
         ->name('admin.faqs.create');
