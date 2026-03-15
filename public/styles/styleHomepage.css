@@ -911,13 +911,13 @@ html.home[data-theme="light"] .review-card,
 html.home[data-theme="light"] .hp-service-card,
 html.home[data-theme="light"] .hp-value-card {
   background: #ffffff;
-  border-color: rgba(74, 58, 39, 0.08);
+  border-color: #111;
   box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
   color: #1a1511;
 }
 
 html.home[data-theme="light"] .review-card {
-  border-color: rgba(74, 58, 39, 0.06);
+  border-color: #111;
 }
 
 html.home[data-theme="light"] .cat-box:hover,
@@ -940,7 +940,7 @@ html.home[data-theme="light"] .submit-wrap {
 html.home[data-theme="light"] .contact-field {
   background: #ffffff;
   color: #1a1511;
-  border-color: rgba(74, 58, 39, 0.15);
+  border-color: #111;
   box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
 }
 
@@ -955,7 +955,7 @@ html.home[data-theme="light"] .contact-field::placeholder {
 
 html.home[data-theme="light"] .btn-submit {
   background: #ffffff;
-  border-color: rgba(74, 58, 39, 0.15);
+  border-color: #111;
   color: #1a1511;
   box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
 }
