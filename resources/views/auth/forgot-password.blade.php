@@ -44,6 +44,9 @@
 <div class="login-box">
     <form id="forgotPasswordForm" method="POST" action="{{ route('password.email') }}" novalidate autocomplete="off">
         @csrf
+        <p class="field-success" style="margin-top: 0; margin-bottom: 18px; color: #ffffff;">
+            Enter your email and we'll send you a temporary password.
+        </p>
         <div class="input-box">
             <input
                 type="email"
@@ -68,7 +71,7 @@
             <p class="field-success">{{ session('status') }}</p>
         @endif
 
-        <button type="submit" class="login-button">Reset Password</button>
+        <button type="submit" class="login-button">Email Temporary Password</button>
 
         <div class="register-link">
             <p><a href="/pages/login.html">Back to Login</a></p>
