@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class ProductController extends Controller
 {
@@ -22,9 +23,12 @@ class ProductController extends Controller
     // GET products
     public function index(Request $request)
     {
-        $q = Product::with('category')
-            ->withCount('reviews')
-            ->withAvg('reviews', 'rating');
+        $q = Product::with(['category', 'platformStocks']);
+
+        if (Schema::hasTable('reviews')) {
+            $q->withCount('reviews')
+                ->withAvg('reviews', 'rating');
+        }
 
         $this->applyFilters($q, $request);
 
@@ -46,7 +50,7 @@ class ProductController extends Controller
     // GET products or slug
     public function show($slug)
     {
-        $product = Product::with('category')
+        $product = Product::with(['category', 'platformStocks'])
             ->where('slug', $slug)
             ->firstOrFail();
 
@@ -58,6 +62,13 @@ class ProductController extends Controller
 
     public function reviews(Product $product)
     {
+        if (! Schema::hasTable('reviews')) {
+            return response()->json([
+                'success' => true,
+                'reviews' => [],
+            ]);
+        }
+
         $product->load([
             'reviews' => function ($query) {
                 $query->with('user:id,name')->latest();

@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
 use App\Models\Category;
+use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-
 
 class ProductController extends Controller
 {
@@ -35,6 +34,39 @@ class ProductController extends Controller
             ->values();
 
         return $selected->isEmpty() ? null : $selected->implode(', ');
+    }
+
+    private function normalizePlatformStockMap(?array $platforms, ?array $stockByPlatform): array
+    {
+        $selectedPlatforms = collect($platforms ?? [])
+            ->map(fn ($platform) => trim((string) $platform))
+            ->filter()
+            ->unique()
+            ->values();
+
+        if ($selectedPlatforms->isEmpty()) {
+            return [];
+        }
+
+        $rawStockMap = collect($stockByPlatform ?? []);
+
+        return $selectedPlatforms
+            ->mapWithKeys(function (string $platform) use ($rawStockMap) {
+                return [$platform => max(0, (int) $rawStockMap->get($platform, 0))];
+            })
+            ->all();
+    }
+
+    private function syncPlatformStocks(Product $product, array $platformStockMap): void
+    {
+        $product->platformStocks()->delete();
+
+        foreach ($platformStockMap as $platform => $stock) {
+            $product->platformStocks()->create([
+                'platform' => $platform,
+                'stock' => $stock,
+            ]);
+        }
     }
 
     private function homepageCategoryNames(): array
@@ -70,6 +102,11 @@ class ProductController extends Controller
 
     public function updateStock(Request $request, Product $product)
     {
+        if ($product->hasPlatformSpecificStock()) {
+            return redirect()->route('admin.products.edit', $product)
+                ->with('status', 'This product uses platform-specific stock. Update it from the edit page.');
+        }
+
         $data = $request->validate([
             'stock' => ['required', 'integer', 'min:0'],
         ]);
@@ -103,76 +140,60 @@ class ProductController extends Controller
     }
 
     public function index(Request $request)
-{
-    $categoryKey = $request->query('category');
-    $search = trim((string) $request->query('q', ''));
-    $stock = trim((string) $request->query('stock', ''));
+    {
+        $categoryKey = $request->query('category');
+        $search = trim((string) $request->query('q', ''));
+        $stock = trim((string) $request->query('stock', ''));
 
-    $categoryNames = [
-        'Games' => [
-            'Video Games',
-        ],
-        'Consoles and PCs' => [
-            'Consoles and PCs',
-        ],
-        'Accessories' => [
-            'Accessories',
-        ],
-        'Hardware' => [
-            'Hardware',
-            'Monitors and Displays',
-        ],
-        'Furniture' => [
-            'Furniture',
-            'Gaming Chairs and Desks',
-        ],
-        'Merchandise' => [
-            'Merchandise',
-        ],
-        'Trading Cards' => [
-            'Trading Cards',
-        ],
-    ];
+        $categoryNames = [
+            'Games' => ['Video Games'],
+            'Consoles and PCs' => ['Consoles and PCs'],
+            'Accessories' => ['Accessories'],
+            'Hardware' => ['Hardware', 'Monitors and Displays'],
+            'Furniture' => ['Furniture', 'Gaming Chairs and Desks'],
+            'Merchandise' => ['Merchandise'],
+            'Trading Cards' => ['Trading Cards'],
+        ];
 
-    $query = Product::with('category')->orderBy('created_at', 'desc');
+        $query = Product::with(['category', 'platformStocks'])->orderByDesc('created_at');
 
-    if ($categoryKey && isset($categoryNames[$categoryKey])) {
-        $names = $categoryNames[$categoryKey];
+        if ($categoryKey && isset($categoryNames[$categoryKey])) {
+            $names = $categoryNames[$categoryKey];
 
-        $query->whereHas('category', function ($q) use ($names) {
-            $q->whereIn('name', $names);
-        });
+            $query->whereHas('category', function ($q) use ($names) {
+                $q->whereIn('name', $names);
+            });
+        }
+
+        if ($search !== '') {
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhere('platform', 'like', "%{$search}%");
+            });
+        }
+
+        if ($stock === 'in_stock') {
+            $query->where('stock', '>', 0);
+        } elseif ($stock === 'out_of_stock') {
+            $query->where('stock', '<=', 0);
+        } elseif ($stock === 'low_stock') {
+            $query->where('stock', '>', 0)->where('stock', '<=', 5);
+        }
+
+        $products = $query->paginate(15)->appends($request->query());
+
+        return view('admin.products.index', [
+            'products' => $products,
+            'categoryKey' => $categoryKey,
+            'search' => $search,
+            'stockFilter' => $stock,
+        ]);
     }
-
-    if ($search !== '') {
-        $query->where(function ($q) use ($search) {
-            $q->where('name', 'like', "%{$search}%")
-                ->orWhere('description', 'like', "%{$search}%")
-                ->orWhere('platform', 'like', "%{$search}%");
-        });
-    }
-
-    if ($stock === 'in_stock') {
-        $query->where('stock', '>', 0);
-    } elseif ($stock === 'out_of_stock') {
-        $query->where('stock', '<=', 0);
-    } elseif ($stock === 'low_stock') {
-        $query->where('stock', '>', 0)->where('stock', '<=', 5);
-    }
-
-    $products = $query->paginate(15)->appends($request->query());
-
-    return view('admin.products.index', [
-        'products'    => $products,
-        'categoryKey' => $categoryKey,
-        'search'      => $search,
-        'stockFilter' => $stock,
-    ]);
-}
 
     public function stock()
     {
-        $products = Product::with('category')
+        $products = Product::with(['category', 'platformStocks'])
             ->orderByRaw('CASE WHEN stock = 0 THEN 0 ELSE 1 END')
             ->orderBy('stock')
             ->orderBy('name')
@@ -185,7 +206,6 @@ class ProductController extends Controller
         ]);
     }
 
-
     public function create()
     {
         $categories = $this->adminFormCategories();
@@ -196,35 +216,44 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-    $data = $request->validate([
-        'category_id' => ['required', 'exists:categories,id'],
-        'name'        => ['required', 'string', 'max:255'],
-        'description' => ['required', 'string'],
-        'price'       => ['required', 'numeric', 'min:0'],
-        'stock'       => ['required', 'integer', 'min:0'],
-        'platform'    => ['nullable', 'array'],
-        'platform.*'  => ['string', Rule::in($this->platformOptions())],
-        'image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
-    ]);
+        $data = $request->validate([
+            'category_id' => ['required', 'exists:categories,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'platform' => ['nullable', 'array'],
+            'platform.*' => ['string', Rule::in($this->platformOptions())],
+            'platform_stock' => ['nullable', 'array'],
+            'platform_stock.*' => ['nullable', 'integer', 'min:0'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+        ]);
 
-    $data['slug'] = Str::slug($data['name']);
-    $data['platform'] = $this->normalizePlatforms($data['platform'] ?? null);
+        $platforms = $data['platform'] ?? null;
+        $data['slug'] = Str::slug($data['name']);
+        $data['platform'] = $this->normalizePlatforms($platforms);
 
-    if ($request->hasFile('image')) {
-        $data['image_url'] = $request->file('image')->store('products', 'public');
-    } else {
-        $data['image_url'] = null;
+        $platformStockMap = $this->normalizePlatformStockMap($platforms, $request->input('platform_stock', []));
+        if (!empty($platformStockMap)) {
+            $data['stock'] = array_sum($platformStockMap);
+        }
+
+        if ($request->hasFile('image')) {
+            $data['image_url'] = $request->file('image')->store('products', 'public');
+        } else {
+            $data['image_url'] = null;
+        }
+
+        $product = Product::create($data);
+        $this->syncPlatformStocks($product, $platformStockMap);
+
+        return redirect()->route('admin.products.index')
+            ->with('status', 'Product created successfully.');
     }
-
-    Product::create($data);
-
-    return redirect()->route('admin.products.index')
-        ->with('status', 'Product created successfully.');
-}
-
 
     public function edit(Product $product)
     {
+        $product->load('platformStocks');
         $categories = $this->adminFormCategories();
         $platformOptions = $this->platformOptions();
 
@@ -232,37 +261,45 @@ class ProductController extends Controller
     }
 
     public function update(Request $request, Product $product)
-{
-    $data = $request->validate([
-        'category_id' => ['required', 'exists:categories,id'],
-        'name'        => ['required', 'string', 'max:255'],
-        'description' => ['required', 'string'],
-        'price'       => ['required', 'numeric', 'min:0'],
-        'stock'       => ['required', 'integer', 'min:0'],
-        'platform'    => ['nullable', 'array'],
-        'platform.*'  => ['string', Rule::in($this->platformOptions())],
-        'image'       => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
-    ]);
+    {
+        $data = $request->validate([
+            'category_id' => ['required', 'exists:categories,id'],
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'price' => ['required', 'numeric', 'min:0'],
+            'stock' => ['required', 'integer', 'min:0'],
+            'platform' => ['nullable', 'array'],
+            'platform.*' => ['string', Rule::in($this->platformOptions())],
+            'platform_stock' => ['nullable', 'array'],
+            'platform_stock.*' => ['nullable', 'integer', 'min:0'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
+        ]);
 
-    $data['slug'] = Str::slug($data['name']);
-    $data['platform'] = $this->normalizePlatforms($data['platform'] ?? null);
+        $platforms = $data['platform'] ?? null;
+        $data['slug'] = Str::slug($data['name']);
+        $data['platform'] = $this->normalizePlatforms($platforms);
 
-    if ($request->hasFile('image')) {
-        if ($product->image_url && !str_starts_with($product->image_url, 'http')) {
-            Storage::disk('public')->delete($product->image_url);
+        $platformStockMap = $this->normalizePlatformStockMap($platforms, $request->input('platform_stock', []));
+        if (!empty($platformStockMap)) {
+            $data['stock'] = array_sum($platformStockMap);
         }
 
-        $data['image_url'] = $request->file('image')->store('products', 'public');
-    } else {
-        unset($data['image_url']);
+        if ($request->hasFile('image')) {
+            if ($product->image_url && ! str_starts_with($product->image_url, 'http')) {
+                Storage::disk('public')->delete($product->image_url);
+            }
+
+            $data['image_url'] = $request->file('image')->store('products', 'public');
+        } else {
+            unset($data['image_url']);
+        }
+
+        $product->update($data);
+        $this->syncPlatformStocks($product, $platformStockMap);
+
+        return redirect()->route('admin.products.index')
+            ->with('status', 'Product updated successfully.');
     }
-
-    $product->update($data);
-
-    return redirect()->route('admin.products.index')
-        ->with('status', 'Product updated successfully.');
-}
-
 
     public function destroy(Product $product)
     {
