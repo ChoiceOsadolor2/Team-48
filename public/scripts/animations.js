@@ -256,92 +256,108 @@ systemSettingDark.addEventListener("change", (event) => {
 // Reviews: Infinite Loop + Drag to Scroll
 // ============================================
 
-const reviewsSlider = document.querySelector('.reviews-scroll-container');
+window.initReviewsSlider = function initReviewsSlider() {
+  const reviewsSlider = document.querySelector('.reviews-scroll-container');
+  if (!reviewsSlider) return;
 
-if (reviewsSlider) {
+  Array.from(reviewsSlider.querySelectorAll('[data-review-clone="1"]')).forEach((clone) => clone.remove());
 
-  // --- Infinite Loop Setup ---
   const originalCards = Array.from(reviewsSlider.children);
   const totalCards = originalCards.length;
+  if (!totalCards) return;
 
-  // Clone all cards and append a copy at the end and prepend at the start
-  originalCards.forEach(card => {
-    const cloneEnd = card.cloneNode(true);
-    cloneEnd.setAttribute('aria-hidden', 'true');
-    reviewsSlider.appendChild(cloneEnd);
-  });
+  if (totalCards > 1) {
+    originalCards.forEach(card => {
+      const cloneEnd = card.cloneNode(true);
+      cloneEnd.setAttribute('aria-hidden', 'true');
+      cloneEnd.dataset.reviewClone = '1';
+      reviewsSlider.appendChild(cloneEnd);
+    });
 
-  originalCards.forEach(card => {
-    const cloneStart = card.cloneNode(true);
-    cloneStart.setAttribute('aria-hidden', 'true');
-    reviewsSlider.prepend(cloneStart);
-  });
+    originalCards.slice().reverse().forEach(card => {
+      const cloneStart = card.cloneNode(true);
+      cloneStart.setAttribute('aria-hidden', 'true');
+      cloneStart.dataset.reviewClone = '1';
+      reviewsSlider.prepend(cloneStart);
+    });
+  }
 
-  // Calculate card width (including gap)
   function getCardWidth() {
     const card = reviewsSlider.querySelector('.review-card');
-    const gap = parseInt(getComputedStyle(reviewsSlider).gap) || 32;
-    return card.offsetWidth + gap;
+    const gap = parseInt(getComputedStyle(reviewsSlider).gap, 10) || 32;
+    return card ? card.offsetWidth + gap : 0;
   }
 
-  // Start scroll position = width of one full set of clones (at the start)
-  function initScroll() {
-    reviewsSlider.scrollLeft = getCardWidth() * totalCards;
+  const cardWidth = getCardWidth();
+  if (totalCards > 1 && cardWidth > 0) {
+    reviewsSlider.scrollLeft = cardWidth * totalCards;
+  } else {
+    reviewsSlider.scrollLeft = 0;
   }
 
-  initScroll();
+  if (reviewsSlider.dataset.loopBound !== '1') {
+    let isJumping = false;
 
-  // On scroll: silently jump when entering the clone zones
-  let isJumping = false;
-  reviewsSlider.addEventListener('scroll', () => {
-    if (isJumping) return;
-    const cardW = getCardWidth();
-    const cloneSetWidth = cardW * totalCards;
-    const sl = reviewsSlider.scrollLeft;
-    const maxScroll = reviewsSlider.scrollWidth - reviewsSlider.clientWidth;
+    reviewsSlider.addEventListener('scroll', () => {
+      if (isJumping) return;
 
-    // If scrolled into the leading clone zone, jump to same position in real cards
-    if (sl < cloneSetWidth - cardW) {
-      isJumping = true;
-      reviewsSlider.scrollLeft = sl + cloneSetWidth;
-      requestAnimationFrame(() => { isJumping = false; });
-    }
+      const currentOriginalCards = Array.from(reviewsSlider.children).filter(card => card.dataset.reviewClone !== '1');
+      if (currentOriginalCards.length <= 1) return;
 
-    // If scrolled into the trailing clone zone, jump back
-    if (sl > cloneSetWidth * 2 - cardW) {
-      isJumping = true;
-      reviewsSlider.scrollLeft = sl - cloneSetWidth;
-      requestAnimationFrame(() => { isJumping = false; });
-    }
-  });
+      const currentCardWidth = getCardWidth();
+      if (!currentCardWidth) return;
 
-  // --- Drag to Scroll ---
-  let isDown = false;
-  let startX;
-  let scrollStart;
+      const cloneSetWidth = currentCardWidth * currentOriginalCards.length;
+      const sl = reviewsSlider.scrollLeft;
 
-  reviewsSlider.addEventListener('mousedown', (e) => {
-    isDown = true;
-    reviewsSlider.classList.add('active');
-    startX = e.pageX - reviewsSlider.offsetLeft;
-    scrollStart = reviewsSlider.scrollLeft;
-  });
+      if (sl < cloneSetWidth - currentCardWidth) {
+        isJumping = true;
+        reviewsSlider.scrollLeft = sl + cloneSetWidth;
+        requestAnimationFrame(() => { isJumping = false; });
+      }
 
-  reviewsSlider.addEventListener('mouseleave', () => {
-    isDown = false;
-    reviewsSlider.classList.remove('active');
-  });
+      if (sl > cloneSetWidth * 2 - currentCardWidth) {
+        isJumping = true;
+        reviewsSlider.scrollLeft = sl - cloneSetWidth;
+        requestAnimationFrame(() => { isJumping = false; });
+      }
+    });
 
-  reviewsSlider.addEventListener('mouseup', () => {
-    isDown = false;
-    reviewsSlider.classList.remove('active');
-  });
+    reviewsSlider.dataset.loopBound = '1';
+  }
 
-  reviewsSlider.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - reviewsSlider.offsetLeft;
-    const walk = (x - startX) * 1.5;
-    reviewsSlider.scrollLeft = scrollStart - walk;
-  });
-}
+  if (reviewsSlider.dataset.dragBound !== '1') {
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
+
+    reviewsSlider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      reviewsSlider.classList.add('active');
+      startX = e.pageX - reviewsSlider.offsetLeft;
+      scrollStart = reviewsSlider.scrollLeft;
+    });
+
+    reviewsSlider.addEventListener('mouseleave', () => {
+      isDown = false;
+      reviewsSlider.classList.remove('active');
+    });
+
+    reviewsSlider.addEventListener('mouseup', () => {
+      isDown = false;
+      reviewsSlider.classList.remove('active');
+    });
+
+    reviewsSlider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - reviewsSlider.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      reviewsSlider.scrollLeft = scrollStart - walk;
+    });
+
+    reviewsSlider.dataset.dragBound = '1';
+  }
+};
+
+window.initReviewsSlider();
