@@ -454,11 +454,29 @@ class ChatbotController extends Controller
         }
 
         if (str_contains($joined, 'chair') || str_contains($joined, 'desk') || str_contains($joined, 'monitor') || str_contains($joined, 'display')) {
-            $filters[] = 'Hardware';
+            if (str_contains($joined, 'chair') || str_contains($joined, 'desk')) {
+                $filters[] = 'Furniture';
+            }
+
+            if (str_contains($joined, 'monitor') || str_contains($joined, 'display')) {
+                $filters[] = 'Hardware';
+            }
         }
 
         if (str_contains($joined, 'controller') || str_contains($joined, 'headset') || str_contains($joined, 'accessory')) {
             $filters[] = 'Accessories';
+        }
+
+        if (str_contains($joined, 'furniture')) {
+            $filters[] = 'Furniture';
+        }
+
+        if (str_contains($joined, 'merch') || str_contains($joined, 'hoodie') || str_contains($joined, 'shirt') || str_contains($joined, 'poster')) {
+            $filters[] = 'Merchandise';
+        }
+
+        if (str_contains($joined, 'card') || str_contains($joined, 'cards') || str_contains($joined, 'trading card')) {
+            $filters[] = 'Trading Cards';
         }
 
         if ($previousMessage !== '' && $this->looksLikeFollowUp($this->normalize($joined))) {

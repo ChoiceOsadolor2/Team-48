@@ -451,6 +451,46 @@ html[data-theme="light"] .success-message {
   margin-top: 2rem;
 }
 
+@media (min-width: 1200px) {
+  .categories-all .cat-box {
+    width: calc((min(1600px, calc(100vw - 48px)) - 6rem) / 7);
+    min-width: 0;
+    height: 160px;
+    padding: 14px 10px;
+  }
+
+  .categories-all .cat-box svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .categories-all .cat-box span {
+    font-size: 18px;
+  }
+
+  .categories {
+    width: min(1600px, calc(100vw - 48px));
+    flex-wrap: nowrap;
+    gap: 1rem;
+  }
+
+  .categories .cat-box {
+    width: calc((100% - 6rem) / 7);
+    min-width: 0;
+    height: 160px;
+    padding: 14px 10px;
+  }
+
+  .categories .cat-box svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .categories .cat-box span {
+    font-size: 18px;
+  }
+}
+
 .swipe-indicator {
   margin-top: -0.5rem;
   font-size: var(--page-text-size);

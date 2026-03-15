@@ -44,17 +44,22 @@ class ProductController extends Controller
             'Consoles and PCs',
             'Accessories',
             'Hardware',
+            'Furniture',
+            'Merchandise',
+            'Trading Cards',
         ];
     }
 
     private function adminFormCategories()
     {
-        Category::firstOrCreate(
-            ['slug' => 'hardware'],
-            ['name' => 'Hardware']
-        );
-
         $orderedNames = $this->homepageCategoryNames();
+
+        foreach ($orderedNames as $name) {
+            Category::firstOrCreate(
+                ['slug' => Str::slug($name)],
+                ['name' => $name]
+            );
+        }
 
         return Category::query()
             ->whereIn('name', $orderedNames)
@@ -115,8 +120,17 @@ class ProductController extends Controller
         ],
         'Hardware' => [
             'Hardware',
-            'Gaming Chairs and Desks',
             'Monitors and Displays',
+        ],
+        'Furniture' => [
+            'Furniture',
+            'Gaming Chairs and Desks',
+        ],
+        'Merchandise' => [
+            'Merchandise',
+        ],
+        'Trading Cards' => [
+            'Trading Cards',
         ],
     ];
 

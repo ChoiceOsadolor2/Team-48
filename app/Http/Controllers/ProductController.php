@@ -11,9 +11,12 @@ class ProductController extends Controller
         'Video Games' => ['Video Games'],
         'Consoles and PCs' => ['Consoles and PCs'],
         'Accessories' => ['Accessories'],
+        'Furniture' => ['Furniture', 'Gaming Chairs and Desks'],
+        'Merchandise' => ['Merchandise'],
+        'Trading Cards' => ['Trading Cards'],
         'Gaming Chairs and Desks' => ['Gaming Chairs and Desks'],
         'Monitors and Displays' => ['Monitors and Displays'],
-        'Hardware' => ['Hardware', 'Gaming Chairs and Desks', 'Monitors and Displays'],
+        'Hardware' => ['Hardware', 'Monitors and Displays'],
     ];
 
     // GET products

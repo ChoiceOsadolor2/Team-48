@@ -75,6 +75,18 @@
                        class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Hardware' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
                         Hardware
                     </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Furniture']) }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Furniture' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        Furniture
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Merchandise']) }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Merchandise' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        Merchandise
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Trading Cards']) }}"
+                       class="rounded-full border px-3 py-1.5 transition {{ $currentCategory === 'Trading Cards' ? 'border-cyan-500 bg-cyan-50 font-semibold text-cyan-700 dark:border-cyan-400 dark:bg-cyan-900/30 dark:text-cyan-200' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300' }}">
+                        Trading Cards
+                    </a>
                 </div>
             </div>
 
