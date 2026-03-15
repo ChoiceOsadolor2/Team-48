@@ -118,6 +118,30 @@ function getDeliveryEstimate(product) {
   return 'Dispatches within 24 hours';
 }
 
+function getPlatformStockMap(product) {
+  const rawMap = product?.platform_stock_map;
+  if (!rawMap || typeof rawMap !== 'object') return {};
+
+  return Object.fromEntries(
+    Object.entries(rawMap).map(([platform, stock]) => [String(platform), Number(stock ?? 0)])
+  );
+}
+
+function getProductStockForPlatform(product, platform = '') {
+  const stockMap = getPlatformStockMap(product);
+  const selectedPlatform = String(platform || '').trim();
+
+  if (selectedPlatform && Object.prototype.hasOwnProperty.call(stockMap, selectedPlatform)) {
+    return Number(stockMap[selectedPlatform] ?? 0);
+  }
+
+  if (selectedPlatform && Object.keys(stockMap).length) {
+    return 0;
+  }
+
+  return Number(product?.stock ?? 0);
+}
+
 function getPriceTier(product) {
   const price = Number(product?.price ?? 0);
   if (price >= 500) return 'Premium';
@@ -125,7 +149,7 @@ function getPriceTier(product) {
   return 'Everyday pick';
 }
 
-function updateProductDetailView(product, allProducts) {
+function updateProductDetailView(product, allProducts, selectedPlatform = '') {
   if (!container2 || !product) return;
 
   const img = container2.querySelector('.product_image');
@@ -168,7 +192,8 @@ function updateProductDetailView(product, allProducts) {
     }
   }
 
-  const stock = Number(product.stock ?? 0);
+  const resolvedPlatform = selectedPlatform || parseProductPlatforms(product)[0] || 'Universal';
+  const stock = getProductStockForPlatform(product, resolvedPlatform);
   const stockMessage = stock <= 0 ? 'Out of stock' : stock <= 3 ? `Low stock: ${stock} left` : `In stock: ${stock} left`;
   if (stockBadge) {
     stockBadge.textContent = stockMessage;
@@ -180,10 +205,10 @@ function updateProductDetailView(product, allProducts) {
     availabilityText.textContent = stock <= 0 ? 'Currently unavailable' : `${stock} ready to order`;
   }
 
-  const deliveryEstimate = getDeliveryEstimate(product);
+  const deliveryEstimate = getDeliveryEstimate({ ...product, stock });
   if (deliveryText) deliveryText.textContent = deliveryEstimate;
   if (detailCategory) detailCategory.textContent = product.category?.name || 'General';
-  if (detailPlatform) detailPlatform.textContent = product.platform || 'Universal';
+  if (detailPlatform) detailPlatform.textContent = resolvedPlatform;
   if (detailStock) detailStock.textContent = stock <= 0 ? 'Unavailable' : `${stock} units`;
   if (detailDispatch) detailDispatch.textContent = deliveryEstimate;
   if (detailSupport) detailSupport.textContent = 'Help available 7 days a week';
@@ -1084,7 +1109,7 @@ function initShopSearch() {
   console.log(' Shop search initialised');
 }
 
-function initProductPageQty(product) {
+function initProductPageQty(initialStock = 0) {
   const scope = document.querySelector('#product_display');
   if (!scope) return () => 1;
 
@@ -1102,10 +1127,10 @@ function initProductPageQty(product) {
   input.addEventListener('keydown', (e) => e.preventDefault());
   input.addEventListener('paste', (e) => e.preventDefault());
 
-  const stock = Number(product?.stock ?? 0);
-  const outOfStock = stock <= 0;
-  const min = outOfStock ? 0 : 1;
-  const max = outOfStock ? 0 : Math.min(stock, 10);
+  let currentStock = Number(initialStock ?? 0);
+  let outOfStock = currentStock <= 0;
+  let min = outOfStock ? 0 : 1;
+  let max = outOfStock ? 0 : Math.min(currentStock, 10);
 
   function setQty(next) {
     let qty = parseInt(next, 10);
@@ -1136,13 +1161,23 @@ function initProductPageQty(product) {
     setQty(parseInt(input.value, 10) + 1);
   };
 
-  setQty(outOfStock ? 0 : 1);
+  function setAvailableStock(nextStock) {
+    currentStock = Number(nextStock ?? 0);
+    outOfStock = currentStock <= 0;
+    min = outOfStock ? 0 : 1;
+    max = outOfStock ? 0 : Math.min(currentStock, 10);
+    setQty(outOfStock ? 0 : parseInt(input.value, 10) || 1);
+  }
 
-  // return a getter for the current qty
-  return () => {
-    const qty = parseInt(input.value, 10);
-    if (!Number.isFinite(qty)) return min;
-    return Math.max(min, Math.min(max, qty));
+  setAvailableStock(currentStock);
+
+  return {
+    getQty() {
+      const qty = parseInt(input.value, 10);
+      if (!Number.isFinite(qty)) return min;
+      return Math.max(min, Math.min(max, qty));
+    },
+    setAvailableStock,
   };
 }
 
@@ -1161,7 +1196,7 @@ function parseProductPlatforms(product) {
   return platforms.length ? [...new Set(platforms)] : ['Universal'];
 }
 
-function initProductPagePlatformPicker(product) {
+function initProductPagePlatformPicker(product, onChange) {
   const select = document.getElementById('product_platform_select');
   const picker = document.getElementById('product_platform_picker');
   const selectedDiv = picker?.querySelector('.product-platform-selected');
@@ -1232,6 +1267,7 @@ function initProductPagePlatformPicker(product) {
       itemsDiv.querySelectorAll('.product-platform-option').forEach((item) => {
         item.classList.toggle('is-selected', item.textContent === platform);
       });
+      if (typeof onChange === 'function') onChange(platform);
       closePicker();
     });
     itemsDiv.appendChild(customOption);
@@ -1262,6 +1298,8 @@ function initProductPagePlatformPicker(product) {
       closePicker();
     });
   }
+
+  if (typeof onChange === 'function') onChange(platforms[0]);
 
   return () => select.value || platforms[0] || 'Universal';
 }
@@ -1295,43 +1333,43 @@ if (container || container2) {
         console.log('Selected product:', product);
 
         if (product) {
-          const img = container2.querySelector('.product_image');
-          const nameEl = container2.querySelector('.product_name');
-          const brandEl = container2.querySelector('#product_brand');
-          const descEl = container2.querySelector('.product_description');
-          const priceEl = container2.querySelector('.product_price');
-
-          setProductImage(img, product);
-          if (nameEl) nameEl.textContent = product.name;
-          if (brandEl) brandEl.textContent = product.brand || '';
-          if (descEl) descEl.textContent = product.description || '';
-          if (priceEl) priceEl.textContent = `${product.price} GBP`;
-
           const button = container2.querySelector('.add_to_basket');
-          const getQty = initProductPageQty(product);
-          const getPlatform = initProductPagePlatformPicker(product);
+          const initialPlatform = parseProductPlatforms(product)[0] || 'Universal';
+          const qtyController = initProductPageQty(getProductStockForPlatform(product, initialPlatform));
+
+          const syncSelectedPlatform = (platform) => {
+            const selectedPlatform = platform || initialPlatform;
+            const stock = getProductStockForPlatform(product, selectedPlatform);
+
+            updateProductDetailView(product, products, selectedPlatform);
+            qtyController.setAvailableStock(stock);
+
+            if (button) {
+              if (stock <= 0) {
+                button.textContent = 'Out of Stock';
+                button.disabled = true;
+                button.style.cursor = 'not-allowed';
+                button.style.opacity = '0.6';
+              } else {
+                button.textContent = 'Add to Basket';
+                button.disabled = false;
+                button.style.cursor = 'pointer';
+                button.style.opacity = '1';
+              }
+            }
+          };
+
+          const getPlatform = initProductPagePlatformPicker(product, syncSelectedPlatform);
 
           if (button) {
-            const stock = Number(product.stock ?? 0);
-
-            if (stock <= 0) {
-              button.textContent = 'Out of Stock';
-              button.disabled = true;
-              button.style.cursor = 'not-allowed';
-              button.style.opacity = '0.6';
-            } else {
-              button.textContent = 'Add to Basket';
-              button.disabled = false;
-              button.style.cursor = 'pointer';
-              button.style.opacity = '1';
-
-              button.onclick = () => {
-                const qty = getQty();
-                const platform = getPlatform();
-                window.AddToBasket(product.id, qty, platform);
-              };
-            }
+            button.onclick = () => {
+              const qty = qtyController.getQty();
+              const platform = getPlatform();
+              window.AddToBasket(product.id, qty, platform);
+            };
           }
+
+          syncSelectedPlatform(initialPlatform);
 
 
           document.title = product.name;

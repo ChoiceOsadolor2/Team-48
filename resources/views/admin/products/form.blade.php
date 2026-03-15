@@ -1,3 +1,19 @@
+@php
+    $selectedPlatforms = old('platform');
+    if (!is_array($selectedPlatforms)) {
+        $selectedPlatforms = !empty(optional($product)->platform)
+            ? array_map('trim', explode(',', optional($product)->platform))
+            : [];
+    }
+
+    $existingPlatformStocks = old('platform_stock');
+    if (!is_array($existingPlatformStocks)) {
+        $existingPlatformStocks = optional($product)->relationLoaded('platformStocks')
+            ? optional($product)->platformStocks->mapWithKeys(fn ($stock) => [$stock->platform => (int) $stock->stock])->all()
+            : [];
+    }
+@endphp
+
 <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
     <div>
         <label class="mb-2 block text-sm font-semibold text-gray-200">Category</label>
@@ -15,14 +31,6 @@
 
     <div>
         <label class="mb-2 block text-sm font-semibold text-gray-200">Platform</label>
-        @php
-            $selectedPlatforms = old('platform');
-            if (!is_array($selectedPlatforms)) {
-                $selectedPlatforms = !empty(optional($product)->platform)
-                    ? array_map('trim', explode(',', optional($product)->platform))
-                    : [];
-            }
-        @endphp
         <div class="platform-multiselect relative" data-platform-multiselect>
             <button
                 type="button"
@@ -99,15 +107,33 @@
     </div>
 
     <div>
-        <label class="mb-2 block text-sm font-semibold text-gray-200">Stock</label>
+        <label class="mb-2 block text-sm font-semibold text-gray-200">Total stock</label>
         <input
             type="number"
             name="stock"
+            id="product_total_stock"
             class="min-h-[46px] w-full rounded-xl border border-white/10 bg-[#050505] px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-cyan-400"
             placeholder="0"
             value="{{ old('stock', optional($product)->stock ?? 0) }}"
         >
+        <p class="mt-2 text-xs text-gray-400" id="product_total_stock_help">Use this for products without platform-specific stock. If platform stock is set below, this total updates automatically.</p>
         @error('stock') <p class="mt-2 text-sm text-red-400">{{ $message }}</p> @enderror
+    </div>
+
+    <div class="md:col-span-2 rounded-2xl border border-white/10 bg-[#050505] p-4" data-platform-stock-card data-existing-platform-stock='@json($existingPlatformStocks)'>
+        <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
+            <div>
+                <p class="text-sm font-semibold text-white">Stock by platform</p>
+                <p class="text-xs text-gray-400">Set exact quantities for PS5, Xbox, Switch, and any other selected platform.</p>
+            </div>
+            <span class="rounded-full border border-cyan-500/40 bg-cyan-500/10 px-3 py-1 text-xs font-semibold text-cyan-200">Optional but recommended for multi-platform products</span>
+        </div>
+
+        <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2" data-platform-stock-fields></div>
+        <p class="mt-3 text-xs text-gray-500" data-platform-stock-empty>No platform-specific stock fields yet. Select one or more platforms above to set quantities.</p>
+
+        @error('platform_stock') <p class="mt-2 text-sm text-red-400">{{ $message }}</p> @enderror
+        @error('platform_stock.*') <p class="mt-2 text-sm text-red-400">{{ $message }}</p> @enderror
     </div>
 
     <div class="md:col-span-2">
@@ -149,15 +175,26 @@ document.addEventListener('DOMContentLoaded', function () {
         const label = dropdown.querySelector('[data-platform-label]');
         const checkboxes = Array.from(dropdown.querySelectorAll('[data-platform-checkbox]'));
         const placeholder = label?.dataset.placeholder || 'Select platform(s)';
+        const stockCard = document.querySelector('[data-platform-stock-card]');
+        const stockFields = stockCard?.querySelector('[data-platform-stock-fields]');
+        const stockEmpty = stockCard?.querySelector('[data-platform-stock-empty]');
+        const totalStockInput = document.getElementById('product_total_stock');
+        const totalStockHelp = document.getElementById('product_total_stock_help');
+        const existingPlatformStock = stockCard ? JSON.parse(stockCard.dataset.existingPlatformStock || '{}') : {};
+        const currentPlatformValues = Object.assign({}, existingPlatformStock);
 
         if (!trigger || !panel || !label) {
             return;
         }
 
-        const updateLabel = function () {
-            const selected = checkboxes
+        const selectedPlatforms = function () {
+            return checkboxes
                 .filter(function (checkbox) { return checkbox.checked; })
                 .map(function (checkbox) { return checkbox.value; });
+        };
+
+        const updateLabel = function () {
+            const selected = selectedPlatforms();
 
             if (selected.length) {
                 label.textContent = selected.join(', ');
@@ -168,6 +205,76 @@ document.addEventListener('DOMContentLoaded', function () {
                 label.classList.remove('text-white');
                 label.classList.add('text-gray-500');
             }
+        };
+
+        const updateTotalStockFromPlatformFields = function () {
+            if (!totalStockInput || !stockFields) return;
+
+            const inputs = Array.from(stockFields.querySelectorAll('input[type="number"]'));
+            const hasPlatformFields = inputs.length > 0;
+            const total = inputs.reduce(function (sum, input) {
+                return sum + Math.max(0, parseInt(input.value || '0', 10) || 0);
+            }, 0);
+
+            totalStockInput.readOnly = hasPlatformFields;
+            totalStockInput.classList.toggle('opacity-70', hasPlatformFields);
+            totalStockInput.classList.toggle('cursor-not-allowed', hasPlatformFields);
+
+            if (hasPlatformFields) {
+                totalStockInput.value = String(total);
+                if (totalStockHelp) {
+                    totalStockHelp.textContent = 'Total stock is currently being calculated from the platform quantities below.';
+                }
+            } else if (totalStockHelp) {
+                totalStockHelp.textContent = 'Use this for products without platform-specific stock. If platform stock is set below, this total updates automatically.';
+            }
+        };
+
+        const renderPlatformStockFields = function () {
+            if (!stockFields || !stockEmpty) return;
+
+            const selected = selectedPlatforms();
+            stockFields.innerHTML = '';
+
+            if (!selected.length) {
+                stockEmpty.style.display = 'block';
+                updateTotalStockFromPlatformFields();
+                return;
+            }
+
+            stockEmpty.style.display = 'none';
+
+            selected.forEach(function (platform) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'rounded-xl border border-white/10 bg-black/30 p-4';
+
+                const labelEl = document.createElement('label');
+                labelEl.className = 'mb-2 block text-sm font-semibold text-gray-200';
+                labelEl.textContent = platform + ' stock';
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.name = 'platform_stock[' + platform + ']';
+                input.min = '0';
+                input.value = String(currentPlatformValues[platform] ?? 0);
+                input.className = 'min-h-[46px] w-full rounded-xl border border-white/10 bg-[#050505] px-4 py-3 text-sm text-white outline-none transition placeholder:text-gray-500 focus:border-cyan-400';
+                input.placeholder = '0';
+                input.addEventListener('input', function () {
+                    currentPlatformValues[platform] = input.value;
+                    updateTotalStockFromPlatformFields();
+                });
+
+                const hint = document.createElement('p');
+                hint.className = 'mt-2 text-xs text-gray-500';
+                hint.textContent = 'How many units are available for ' + platform + '.';
+
+                wrapper.appendChild(labelEl);
+                wrapper.appendChild(input);
+                wrapper.appendChild(hint);
+                stockFields.appendChild(wrapper);
+            });
+
+            updateTotalStockFromPlatformFields();
         };
 
         trigger.addEventListener('click', function (event) {
@@ -184,7 +291,16 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         checkboxes.forEach(function (checkbox) {
-            checkbox.addEventListener('change', updateLabel);
+            checkbox.addEventListener('change', function () {
+                Array.from(stockFields?.querySelectorAll('input[type="number"]') || []).forEach(function (input) {
+                    const match = input.name.match(/^platform_stock\[(.*)\]$/);
+                    if (match) {
+                        currentPlatformValues[match[1]] = input.value;
+                    }
+                });
+                updateLabel();
+                renderPlatformStockFields();
+            });
         });
 
         document.addEventListener('click', function (event) {
@@ -194,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         updateLabel();
+        renderPlatformStockFields();
     });
 });
 </script>

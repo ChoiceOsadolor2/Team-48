@@ -95,6 +95,11 @@ class CheckoutController extends Controller
 
         return $options[0] ?? 'Universal';
     }
+
+    private function availableStockFor(Product $product, ?string $platform = null): int
+    {
+        return $product->stockForPlatform($platform);
+    }
     // ✅ SHOW checkout page only
     public function index()
     {
@@ -106,7 +111,7 @@ class CheckoutController extends Controller
         }
 
         $productIds = array_keys($cart);
-        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $products = Product::with('platformStocks')->whereIn('id', $productIds)->get()->keyBy('id');
         $missingProductIds = array_diff($productIds, $products->keys()->all());
 
         if (!empty($missingProductIds)) {
@@ -176,7 +181,7 @@ class CheckoutController extends Controller
         try {
             // Lock products so stock can't be oversold in race conditions
             $productIds = array_keys($cart);
-            $products = Product::whereIn('id', $productIds)
+            $products = Product::with('platformStocks')->whereIn('id', $productIds)
                 ->lockForUpdate()
                 ->get()
                 ->keyBy('id');
@@ -200,10 +205,13 @@ class CheckoutController extends Controller
 
                 $entry = $this->normalizeCartEntry($entryData);
                 $product = $products[$productId];
-                if ($product->stock < $entry['quantity']) {
+                $platform = $this->resolvePlatformSelection($product, $entry['platform']);
+                $availableStock = $this->availableStockFor($product, $platform);
+
+                if ($availableStock < $entry['quantity']) {
                     DB::rollBack();
                     return redirect()->route('cart.index')
-                        ->with('stock_error', "Only {$product->stock} units of '{$product->name}' are available.");
+                        ->with('stock_error', "Only {$availableStock} units of '{$product->name}' are available for {$platform}.");
                 }
             }
 
@@ -236,6 +244,12 @@ class CheckoutController extends Controller
 
                 // ✅ decrement stock
                 $product->decrement('stock', $entry['quantity']);
+
+                if ($product->hasPlatformSpecificStock()) {
+                    $product->platformStocks()
+                        ->where('platform', $platform)
+                        ->decrement('stock', $entry['quantity']);
+                }
 
                 $total += $subtotal;
             }

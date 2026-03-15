@@ -55,6 +55,11 @@ class CartController extends Controller
         return $options[0] ?? 'Universal';
     }
 
+    private function availableStockFor(Product $product, ?string $platform = null): int
+    {
+        return $product->stockForPlatform($platform);
+    }
+
     public function index()
     {
         $cart = Session::get('cart', []);
@@ -67,7 +72,7 @@ class CartController extends Controller
         }
 
         $productIds = array_keys($cart);
-        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $products = Product::with('platformStocks')->whereIn('id', $productIds)->get()->keyBy('id');
         $missingProductIds = array_diff($productIds, $products->keys()->all());
 
         if (!empty($missingProductIds)) {
@@ -122,8 +127,10 @@ class CartController extends Controller
     );
     $newQty = $currentEntry['quantity'] + $qty;
 
-    if ((int) $product->stock <= 0) {
-        $message = "'{$product->name}' is out of stock.";
+        $availableStock = $this->availableStockFor($product, $selectedPlatform);
+
+        if ($availableStock <= 0) {
+            $message = "'{$product->name}' is out of stock.";
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -136,8 +143,8 @@ class CartController extends Controller
         return back()->with('stock_error', $message);
     }
 
-    if ($newQty > (int) $product->stock) {
-        $message = "You can only add up to {$product->stock} unit(s) of '{$product->name}'.";
+    if ($newQty > $availableStock) {
+        $message = "You can only add up to {$availableStock} unit(s) of '{$product->name}' for {$selectedPlatform}.";
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -190,8 +197,10 @@ class CartController extends Controller
         return back()->with('status', 'Item removed.');
     }
 
-    if ($qty > (int) $product->stock) {
-        $message = "Only {$product->stock} unit(s) of '{$product->name}' are available.";
+    $availableStock = $this->availableStockFor($product, $selectedPlatform);
+
+    if ($qty > $availableStock) {
+        $message = "Only {$availableStock} unit(s) of '{$product->name}' are available for {$selectedPlatform}.";
 
         if ($request->wantsJson()) {
             return response()->json([
@@ -232,13 +241,28 @@ class CartController extends Controller
     public function updateJson(Request $request, Product $product)
     {
         $qty = (int) $request->query('quantity', 1);
-
         $cart = Session::get('cart', []);
+        $currentEntry = $this->normalizeCartEntry($cart[$product->id] ?? 0);
+        $selectedPlatform = $this->resolvePlatformSelection(
+            $product,
+            $request->query('platform'),
+            $currentEntry['platform']
+        );
+        $availableStock = $this->availableStockFor($product, $selectedPlatform);
 
         if ($qty <= 0) {
             unset($cart[$product->id]);
+        } elseif ($qty > $availableStock) {
+            return response()->json([
+                'success' => false,
+                'message' => "Only {$availableStock} unit(s) of '{$product->name}' are available for {$selectedPlatform}.",
+                'cart' => $cart,
+            ], 422);
         } else {
-            $cart[$product->id] = $qty;
+            $cart[$product->id] = [
+                'quantity' => $qty,
+                'platform' => $selectedPlatform,
+            ];
         }
 
         Session::put('cart', $cart);
@@ -274,7 +298,7 @@ class CartController extends Controller
         }
 
         $productIds = array_keys($cart);
-        $products = Product::whereIn('id', $productIds)->get()->keyBy('id');
+        $products = Product::with('platformStocks')->whereIn('id', $productIds)->get()->keyBy('id');
         $missingProductIds = array_diff($productIds, $products->keys()->all());
 
         if (!empty($missingProductIds)) {
@@ -296,6 +320,7 @@ class CartController extends Controller
             $entry = $this->normalizeCartEntry($entryData);
             $product  = $products[$productId];
             $platform = $this->resolvePlatformSelection($product, $entry['platform']);
+            $availableStock = $this->availableStockFor($product, $platform);
             $subtotal = $product->price * $entry['quantity'];
 
             $items[] = [
@@ -303,7 +328,7 @@ class CartController extends Controller
                 'name'     => $product->name,
                 'price'    => $product->price,
                 'quantity' => $entry['quantity'],
-                'stock'    => (int) $product->stock, 
+                'stock'    => $availableStock,
                 'image_url'=> $product->image_url,
                 'platform' => $platform,
                 'subtotal' => $subtotal,

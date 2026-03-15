@@ -34,6 +34,11 @@ class OrderController extends Controller
                 foreach ($order->items as $item) {
                     if ($item->product) {
                         $item->product->increment('stock', $item->quantity);
+                        if ($item->product->hasPlatformSpecificStock() && $item->platform) {
+                            $item->product->platformStocks()
+                                ->where('platform', $item->platform)
+                                ->increment('stock', $item->quantity);
+                        }
                     }
                 }
 
@@ -117,6 +122,11 @@ class OrderController extends Controller
             foreach ($order->items as $item) {
                 if ($item->product) {
                     $item->product->increment('stock', $item->quantity);
+                    if ($item->product->hasPlatformSpecificStock() && $item->platform) {
+                        $item->product->platformStocks()
+                            ->where('platform', $item->platform)
+                            ->increment('stock', $item->quantity);
+                    }
                 }
             }
 

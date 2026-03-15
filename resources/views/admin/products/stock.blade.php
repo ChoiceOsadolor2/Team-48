@@ -59,7 +59,18 @@
                                 <tr class="{{ $isAvailable ? '' : 'bg-rose-50/60' }}">
                                     <td class="px-6 py-4 font-semibold text-gray-900">{{ $product->name }}</td>
                                     <td class="px-6 py-4 text-gray-600">{{ $product->category->name ?? '-' }}</td>
-                                    <td class="px-6 py-4 text-gray-900">{{ $product->stock }}</td>
+                                    <td class="px-6 py-4 text-gray-900">
+                                        <div class="font-semibold">{{ $product->stock }}</div>
+                                        @if ($product->platformStocks->isNotEmpty())
+                                            <div class="mt-2 flex flex-wrap gap-2">
+                                                @foreach ($product->platformStocks as $platformStock)
+                                                    <span class="rounded-full border border-gray-200 px-2 py-1 text-[11px] text-gray-600">
+                                                        {{ $platformStock->platform }}: {{ $platformStock->stock }}
+                                                    </span>
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </td>
                                     <td class="px-6 py-4">
                                         <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $isAvailable ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' }}">
                                             {{ $isAvailable ? 'Available' : 'Out of stock' }}
