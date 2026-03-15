@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\RefundRequest;
-use Illuminate\Http\Request;
+use App\Models\ReturnRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -15,7 +16,7 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        $orders = Order::with(['items.product', 'items.refundRequest'])
+        $orders = Order::with(['items.product', 'items.refundRequest', 'items.latestReturnRequest'])
             ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
@@ -25,12 +26,26 @@ class OrdersController extends Controller
 
     public function show(Order $order)
     {
-        // Prevent users seeing other users' orders
         if ($order->user_id !== Auth::id()) {
             abort(403);
         }
 
         return view('orders.show', compact('order'));
+    }
+
+    public function returnsIndex(Order $order): View
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        if (! in_array(strtolower((string) $order->status), ['completed', 'delivered'], true)) {
+            abort(404);
+        }
+
+        $order->load(['items.product', 'items.latestReturnRequest']);
+
+        return view('orders.returns', compact('order'));
     }
 
     public function cancel(Order $order): RedirectResponse
@@ -62,7 +77,7 @@ class OrdersController extends Controller
 
     public function returnForm(OrderItem $orderItem): View
     {
-        $orderItem->loadMissing(['order', 'product']);
+        $orderItem->loadMissing(['order', 'product', 'refundRequest', 'latestReturnRequest']);
 
         $this->authorizeReturnItem($orderItem);
 
@@ -77,7 +92,7 @@ class OrdersController extends Controller
 
     public function submitReturn(Request $request, OrderItem $orderItem): RedirectResponse
     {
-        $orderItem->loadMissing(['order', 'product']);
+        $orderItem->loadMissing(['order', 'product', 'refundRequest', 'latestReturnRequest']);
 
         $this->authorizeReturnItem($orderItem);
 
@@ -93,12 +108,23 @@ class OrdersController extends Controller
 
         $order = $orderItem->order;
         $productName = $orderItem->product?->name ?? 'Unknown Product';
-        $refundRequest = RefundRequest::create([
+        RefundRequest::create([
             'user_id' => $request->user()->id,
             'order_id' => $order->id,
             'order_item_id' => $orderItem->id,
             'status' => 'pending',
             'reason' => trim($validated['reason']),
+        ]);
+
+        ReturnRequest::updateOrCreate([
+            'order_item_id' => $orderItem->id,
+        ], [
+            'user_id' => $request->user()->id,
+            'order_id' => $order->id,
+            'product_id' => $orderItem->product_id,
+            'request_type' => 'refund',
+            'reason' => trim($validated['reason']),
+            'status' => 'pending',
         ]);
 
         return redirect()

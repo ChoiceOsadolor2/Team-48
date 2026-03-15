@@ -38,4 +38,14 @@ class OrderItem extends Model
     {
         return $this->hasOne(RefundRequest::class);
     }
+
+    public function returnRequests()
+    {
+        return $this->hasMany(ReturnRequest::class);
+    }
+
+    public function latestReturnRequest()
+    {
+        return $this->hasOne(ReturnRequest::class)->latestOfMany();
+    }
 }

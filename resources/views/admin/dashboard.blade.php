@@ -165,6 +165,12 @@
                             </div>
                             <p class="mt-2 text-sm text-orange-700">{{ $refundRequestCount }} total submitted.</p>
                         </div>
+                        <div class="rounded-2xl bg-violet-50 p-3.5">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-violet-900">Return requests</span>
+                                <span class="text-xl font-bold text-violet-900">{{ $returnRequestCount }}</span>
+                            </div>
+                        </div>
                     </div>
                 </section>
 
@@ -200,6 +206,10 @@
                         <a href="{{ route('admin.refunds.index', ['status' => 'pending']) }}" class="rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-orange-800/60 dark:bg-orange-900/20">
                             <p class="text-xs uppercase tracking-[0.18em] text-orange-700 dark:text-orange-300">Pending refunds</p>
                             <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Review {{ $pendingRefundCount }} refund request{{ $pendingRefundCount === 1 ? '' : 's' }} waiting for a decision</p>
+                        </a>
+                        <a href="{{ route('admin.return-requests.index', ['status' => 'pending']) }}" class="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-violet-800/60 dark:bg-violet-900/20">
+                            <p class="text-xs uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">Pending returns</p>
+                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">{{ $pendingReturnRequestCount }} waiting for review</p>
                         </a>
 
                     </div>
@@ -431,6 +441,17 @@
                     </div>
                     <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Contact Queries</h4>
                     <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review messages submitted through the Contact Us forms and keep support requests organised.</p>
+                </a>
+
+                <a href="{{ route('admin.return-requests.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-violet-900/10 dark:to-fuchsia-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="z-10 bg-violet-100 dark:bg-violet-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
+                        <svg class="w-8 h-8 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h3m5 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V18a2 2 0 01-2 2z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Returns & Refunds</h4>
+                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review after-sales requests, approve or decline them, and keep an audit trail with support notes.</p>
                 </a>
             </div>
         </div>
