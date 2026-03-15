@@ -5,6 +5,10 @@
             'completed', 'delivered' => 'bg-emerald-100 text-emerald-800',
             default => 'bg-amber-100 text-amber-800',
         };
+        $itemsSubtotal = $order->items->sum(fn ($item) => $item->price * $item->quantity);
+        $shippingMethod = $order->shipping_method ?: 'Not recorded';
+        $shippingCost = (float) ($order->shipping_cost ?? 0);
+        $customerAddress = trim((string) ($order->user?->address ?? ''));
     @endphp
 
     <div class="py-10">
@@ -62,6 +66,12 @@
                             <p class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Email</p>
                             <p class="mt-1 text-base text-black">{{ $order->user?->email ?? '-' }}</p>
                         </div>
+                        <div>
+                            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">Address</p>
+                            <p class="mt-1 text-base leading-relaxed text-black">
+                                {{ $customerAddress !== '' ? $customerAddress : 'No saved address on profile' }}
+                            </p>
+                        </div>
                     </div>
                 </div>
 
@@ -75,6 +85,18 @@
                         <div class="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
                             <span class="text-sm font-semibold text-black">Items</span>
                             <span class="text-sm text-black">{{ $order->items->sum('quantity') }}</span>
+                        </div>
+                        <div class="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
+                            <span class="text-sm font-semibold text-black">Items subtotal</span>
+                            <span class="text-sm text-black">£{{ number_format($itemsSubtotal, 2) }}</span>
+                        </div>
+                        <div class="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
+                            <span class="text-sm font-semibold text-black">Shipping method</span>
+                            <span class="text-sm text-black">{{ $shippingMethod }}</span>
+                        </div>
+                        <div class="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
+                            <span class="text-sm font-semibold text-black">Shipping cost</span>
+                            <span class="text-sm text-black">£{{ number_format($shippingCost, 2) }}</span>
                         </div>
                         <div class="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3">
                             <span class="text-sm font-semibold text-black">Total</span>
@@ -106,8 +128,10 @@
                         <thead class="bg-gray-50 text-left">
                             <tr class="text-xs uppercase tracking-[0.18em] text-gray-500">
                                 <th class="px-5 py-4 font-semibold">Product</th>
+                                <th class="px-5 py-4 font-semibold">Platform</th>
                                 <th class="px-5 py-4 font-semibold">Quantity</th>
                                 <th class="px-5 py-4 font-semibold">Unit price</th>
+                                <th class="px-5 py-4 font-semibold">Shipping</th>
                                 <th class="px-5 py-4 font-semibold text-right">Line total</th>
                             </tr>
                         </thead>
@@ -117,17 +141,26 @@
                                     <td class="px-5 py-4">
                                         <p class="font-semibold text-black">{{ $it->product?->name ?? 'Deleted product' }}</p>
                                     </td>
+                                    <td class="px-5 py-4 text-black">{{ $it->platform ?: ($it->product?->platform ?? 'Universal') }}</td>
                                     <td class="px-5 py-4 text-black">x{{ $it->quantity }}</td>
                                     <td class="px-5 py-4 text-black">£{{ number_format($it->price, 2) }}</td>
+                                    <td class="px-5 py-4 text-black">
+                                        @if($loop->first)
+                                            <div class="font-semibold">{{ $shippingMethod }}</div>
+                                            <div class="text-xs text-gray-500">£{{ number_format($shippingCost, 2) }}</div>
+                                        @else
+                                            <span class="text-gray-400">-</span>
+                                        @endif
+                                    </td>
                                     <td class="px-5 py-4 text-right font-semibold text-black">
-                                        £{{ number_format($it->price * $it->quantity, 2) }}
+                                        £{{ number_format(($it->price * $it->quantity) + ($loop->first ? $shippingCost : 0), 2) }}
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
                             <tr class="border-t bg-gray-50">
-                                <td class="px-5 py-4 font-semibold text-black" colspan="3">Grand total</td>
+                                <td class="px-5 py-4 font-semibold text-black" colspan="5">Grand total</td>
                                 <td class="px-5 py-4 text-right font-semibold text-black">£{{ number_format($order->total, 2) }}</td>
                             </tr>
                         </tfoot>
