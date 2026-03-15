@@ -549,6 +549,83 @@ body {
     opacity: 1;
 }
 
+html[data-theme="light"] .orders-title {
+    color: #111;
+}
+
+html[data-theme="light"] .orders-empty-state,
+html[data-theme="light"] .order-card,
+html[data-theme="light"] .order-header,
+html[data-theme="light"] .order-body {
+    background: #fff;
+    border-color: #111;
+}
+
+html[data-theme="light"] .orders-empty-copy,
+html[data-theme="light"] .order-info-block .value,
+html[data-theme="light"] .order-status,
+html[data-theme="light"] .item-details h4,
+html[data-theme="light"] .item-meta-value,
+html[data-theme="light"] .item-price,
+html[data-theme="light"] .item-qty,
+html[data-theme="light"] .price-value {
+    color: #111;
+}
+
+html[data-theme="light"] .orders-subtitle,
+html[data-theme="light"] .order-info-block .label,
+html[data-theme="light"] .status-desc,
+html[data-theme="light"] .item-meta,
+html[data-theme="light"] .item-label,
+html[data-theme="light"] .order-item-no-image {
+    color: #666;
+}
+
+html[data-theme="light"] .order-item-no-image {
+    background: #f5f5f5;
+    border-color: #111;
+}
+
+html[data-theme="light"] .invoice-card,
+html[data-theme="light"] .invoice-body,
+html[data-theme="light"] .invoice-table,
+html[data-theme="light"] .invoice-table thead tr,
+html[data-theme="light"] .invoice-flash {
+    background: #fff;
+    border-color: #111;
+}
+
+html[data-theme="light"] .invoice-order-number,
+html[data-theme="light"] .invoice-summary-line,
+html[data-theme="light"] .invoice-summary-value,
+html[data-theme="light"] .invoice-section-title,
+html[data-theme="light"] .invoice-table td {
+    color: #111;
+}
+
+html[data-theme="light"] .invoice-table td {
+    border-top-color: #d1d5db;
+}
+
+html[data-theme="light"] .invoice-table tbody tr:first-child td {
+    border-top-color: #111;
+}
+
+html[data-theme="light"] .btn-secondary,
+html[data-theme="light"] .btn-ghost {
+    background: #fff;
+    border-color: #111;
+    color: #111;
+}
+
+html[data-theme="light"] .btn-secondary:hover,
+html[data-theme="light"] .btn-secondary:focus-visible,
+html[data-theme="light"] .btn-ghost:hover,
+html[data-theme="light"] .btn-ghost:focus-visible {
+    background: #fff;
+    color: #111;
+}
+
 /* Dark Mode Support */
 html.dark-mode body {
     background-color: #111;

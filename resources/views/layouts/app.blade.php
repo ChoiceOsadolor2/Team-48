@@ -211,6 +211,10 @@
                     color: #111 !important;
                 }
 
+                html[data-theme="light"] body.orders-page {
+                    background-image: none !important;
+                }
+
                 body.orders-page header,
                 body.orders-page header *,
                 body.checkout-page header,
@@ -302,6 +306,43 @@
                     z-index: 1;
                 }
 
+                html[data-theme="light"] body.orders-page main.orders-content {
+                    isolation: isolate;
+                    background: #f6efe6 !important;
+                }
+
+                html[data-theme="light"] body.orders-page main.orders-content::before,
+                html[data-theme="light"] body.orders-page main.orders-content::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    left: 50%;
+                    width: 100vw;
+                    transform: translateX(-50%);
+                    background-image: url('{{ asset('assets/Veltrix-homepage-background.png') }}');
+                    background-repeat: repeat-y;
+                    background-size: contain;
+                    background-position: var(--bg-y-pos, center 0);
+                    pointer-events: none;
+                    z-index: 0;
+                }
+
+                html[data-theme="light"] body.orders-page main.orders-content::before {
+                    opacity: 0.08;
+                }
+
+                html[data-theme="light"] body.orders-page main.orders-content::after {
+                    opacity: 0.32;
+                    filter: grayscale(1) contrast(2.8) brightness(0);
+                    mix-blend-mode: multiply;
+                }
+
+                html[data-theme="light"] body.orders-page main.orders-content > * {
+                    position: relative;
+                    z-index: 1;
+                }
+
                 body.orders-page main.orders-content,
                 body.orders-page main.orders-content * {
                     font-family: 'MiniPixel', sans-serif !important;
@@ -321,6 +362,15 @@
 
                 body.orders-page.invoice-page #footer {
                     margin-top: 24px;
+                }
+
+                html[data-theme="light"] body.orders-page #footer,
+                html[data-theme="light"] body.checkout-page #footer {
+                    background: #ffffff !important;
+                }
+
+                html[data-theme="light"] body.orders-page.invoice-page #footer {
+                    margin-top: 0 !important;
                 }
 
                 body.checkout-page main.checkout-content {
@@ -354,6 +404,10 @@
 
                 body.checkout-page #footer {
                     margin-top: -40px;
+                }
+
+                html[data-theme="light"] body.checkout-page #footer {
+                    margin-top: 0 !important;
                 }
             @endif
             @if ($isAdminPage)
@@ -585,6 +639,8 @@
                 }
 
                 html[data-theme="light"] body.profile-page .profile-panel {
+                    background: #fff !important;
+                    border-color: #d9d9d9 !important;
                     position: relative;
                     top: -90px;
                 }
@@ -615,6 +671,26 @@
                 body.profile-page .profile-panel input::placeholder,
                 body.profile-page .profile-panel textarea::placeholder {
                     color: #888 !important;
+                }
+
+                html[data-theme="light"] body.profile-page .profile-panel,
+                html[data-theme="light"] body.profile-page .profile-panel h1,
+                html[data-theme="light"] body.profile-page .profile-panel h2,
+                html[data-theme="light"] body.profile-page .profile-panel h3,
+                html[data-theme="light"] body.profile-page .profile-panel p,
+                html[data-theme="light"] body.profile-page .profile-panel label,
+                html[data-theme="light"] body.profile-page .profile-panel span,
+                html[data-theme="light"] body.profile-page .profile-panel a,
+                html[data-theme="light"] body.profile-page .profile-panel button,
+                html[data-theme="light"] body.profile-page .profile-panel input,
+                html[data-theme="light"] body.profile-page .profile-panel textarea,
+                html[data-theme="light"] body.profile-page .profile-panel select {
+                    color: #111 !important;
+                }
+
+                html[data-theme="light"] body.profile-page .profile-panel input::placeholder,
+                html[data-theme="light"] body.profile-page .profile-panel textarea::placeholder {
+                    color: #6b7280 !important;
                 }
 
                 @keyframes profileBorderGlow {
@@ -650,6 +726,11 @@
                     font-weight: 400 !important;
                     transition: background-color 0.15s ease, border-color 0.15s ease !important;
                     filter: none !important;
+                }
+
+                html[data-theme="light"] body.profile-page .profile-panel .profile-textbox {
+                    background: #fff !important;
+                    border-color: #d1d5db !important;
                 }
 
                 body.profile-page .profile-panel .profile-textarea-singleline {
@@ -709,6 +790,17 @@
                     --tw-ring-shadow: 0 0 #0000 !important;
                     --tw-ring-offset-shadow: 0 0 #0000 !important;
                     --tw-shadow: 0 0 #0000 !important;
+                }
+
+                html[data-theme="light"] body.profile-page .profile-panel .contact-field:hover,
+                html[data-theme="light"] body.profile-page .profile-panel .contact-field:focus,
+                html[data-theme="light"] body.profile-page .profile-panel .contact-field:focus-visible,
+                html[data-theme="light"] body.profile-page .profile-panel .contact-field:active {
+                    background: #fff !important;
+                }
+
+                html[data-theme="light"] body.profile-page .profile-panel input[type="date"]::-webkit-calendar-picker-indicator {
+                    filter: none;
                 }
 
                 body.profile-page .profile-panel input[type="date"]::-webkit-calendar-picker-indicator {
@@ -771,6 +863,12 @@
                     cursor: pointer !important;
                 }
 
+                html[data-theme="light"] body.profile-page .profile-panel .profile-action-button {
+                    background: #fff !important;
+                    border-color: #d1d5db !important;
+                    color: #111 !important;
+                }
+
                 body.profile-page .profile-panel .profile-action-button::after {
                     content: '' !important;
                     position: absolute !important;
@@ -807,6 +905,10 @@
                     box-shadow: none !important;
                 }
 
+                html[data-theme="light"] body.profile-page .profile-panel .profile-action-button:hover {
+                    background-color: #fff !important;
+                }
+
                 body.profile-page .profile-panel .profile-action-button:focus-visible {
                     background-color: #1d1d1d !important;
                     border-color: transparent !important;
@@ -815,6 +917,10 @@
                     box-shadow: none !important;
                     --tw-ring-shadow: 0 0 #0000 !important;
                     --tw-ring-offset-shadow: 0 0 #0000 !important;
+                }
+
+                html[data-theme="light"] body.profile-page .profile-panel .profile-action-button:focus-visible {
+                    background-color: #fff !important;
                 }
 
                 body.profile-page .profile-panel .profile-action-button:active,

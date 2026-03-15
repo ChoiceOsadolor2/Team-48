@@ -199,19 +199,25 @@ html.home[data-theme="light"] .user-menu-item:hover {
 }
 
 html.home[data-theme="light"] #basket_main {
-  background: rgba(251, 246, 238, 0.98);
-  color: #1a1511;
-  border-left-color: rgba(74, 58, 39, 0.14);
+  background: #ffffff;
+  color: #111111;
+  border: 1px solid #111111;
 }
 
 html.home[data-theme="light"] #basket_header h1,
+html.home[data-theme="light"] #basket h1,
 html.home[data-theme="light"] #basket #total,
 html.home[data-theme="light"] .basket_product_info .basket_name,
 html.home[data-theme="light"] .basket_product_info .basket_platform,
 html.home[data-theme="light"] .basket_product_info .basket_price,
 html.home[data-theme="light"] .basket_product_info .basket_quantity_text,
 html.home[data-theme="light"] #basket_header .basket_count {
-  color: #1a1511;
+  color: #111111;
+}
+
+html.home[data-theme="light"] #basket_header > svg,
+html.home[data-theme="light"] #basket_header > svg path {
+  fill: #111111 !important;
 }
 
 html.home[data-theme="light"] .basket_product_info .basket_name::before,
@@ -222,26 +228,33 @@ html.home[data-theme="light"] .basket_product_info .basket_quantity_text::before
 }
 
 html.home[data-theme="light"] .basket_product {
-  background: rgba(255, 255, 255, 0.72);
-  border-color: rgba(74, 58, 39, 0.14);
+  background: #ffffff;
+  border-color: #111111;
 }
 
 html.home[data-theme="light"] .basket_qty_btn,
 html.home[data-theme="light"] .basket_product_info .remove_from_cart,
 html.home[data-theme="light"] #basket #basket_checkout_btn {
-  background: #fffdf9;
-  border-color: rgba(74, 58, 39, 0.14);
+  background: #ffffff;
+  border-color: #111111;
 }
 
 html.home[data-theme="light"] .basket_qty_btn,
-html.home[data-theme="light"] #basket #basket_checkout_btn {
-  color: #1a1511;
+html.home[data-theme="light"] #basket #basket_checkout_btn,
+html.home[data-theme="light"] .basket_product_info .remove_from_cart {
+  color: #111111;
 }
 
 html.home[data-theme="light"] .basket_qty_btn:hover,
 html.home[data-theme="light"] .basket_product_info .remove_from_cart:hover,
 html.home[data-theme="light"] #basket #basket_checkout_btn:hover {
-  background: #f7eee2;
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .basket_qty_btn:focus-visible,
+html.home[data-theme="light"] .basket_product_info .remove_from_cart:focus-visible,
+html.home[data-theme="light"] #basket #basket_checkout_btn:focus-visible {
+  background: #ffffff;
 }
 
 html.home[data-theme="light"] #vx-scroll-top,
@@ -614,8 +627,8 @@ header.search-active #search {
   width: 100vw;
   visibility: hidden;
   /* display: block; */
-  position: absolute;
-  z-index: 100;
+  position: fixed;
+  z-index: 10050;
   inset: 0;
   transition: 0.3s ease-in-out;
 
@@ -1098,6 +1111,7 @@ nav.close {
 #basket.open {
   visibility: visible;
   backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
   background-color: rgba(0, 0, 0, 0.6);
   transition: width 0.5s ease-in-out;
 }
@@ -1119,6 +1133,12 @@ body:has(#basket.open) #theme-toggle-container {
   background-color: #000000;
   color: #ffffff;
   transition: width 0.5s ease-in-out;
+}
+
+html.home[data-theme="light"] #basket.open #basket_main {
+  background-color: #ffffff;
+  color: #111111;
+  border: 1px solid #111111;
 }
 
 

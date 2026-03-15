@@ -359,6 +359,78 @@ main.review-page-shell {
   opacity: 1;
 }
 
+html.home[data-theme="light"] .review-page-title {
+  color: #111;
+}
+
+html.home[data-theme="light"] .review-card {
+  background: #fff;
+  border-color: #111;
+}
+
+html.home[data-theme="light"] .review-field label {
+  color: #111;
+}
+
+html.home[data-theme="light"] .review-field-wrap,
+html.home[data-theme="light"] .review-rating-custom-select,
+html.home[data-theme="light"] .review-rating-selected,
+html.home[data-theme="light"] .review-rating-items,
+html.home[data-theme="light"] .review-submit-button {
+  background: #fff;
+  border-color: #111;
+  color: #111;
+}
+
+html.home[data-theme="light"] .review-field-wrap input,
+html.home[data-theme="light"] .review-field-wrap textarea,
+html.home[data-theme="light"] .review-rating-custom-select select,
+html.home[data-theme="light"] .review-rating-option {
+  color: #111;
+}
+
+html.home[data-theme="light"] .review-field-wrap--static,
+html.home[data-theme="light"] .review-field-wrap--static input {
+  background: #fff;
+}
+
+html.home[data-theme="light"] .review-field-wrap input::placeholder,
+html.home[data-theme="light"] .review-field-wrap textarea::placeholder,
+html.home[data-theme="light"] .review-rating-selected.is-placeholder {
+  color: #888;
+}
+
+html.home[data-theme="light"] .review-field-wrap:hover,
+html.home[data-theme="light"] .review-field-wrap:focus-within,
+html.home[data-theme="light"] .review-rating-custom-select:hover .review-rating-selected,
+html.home[data-theme="light"] .review-rating-custom-select.is-open .review-rating-selected,
+html.home[data-theme="light"] .review-submit-button:hover,
+html.home[data-theme="light"] .review-submit-button:focus-visible {
+  background: #fff;
+  color: #111;
+}
+
+html.home[data-theme="light"] .review-field-wrap--static:hover,
+html.home[data-theme="light"] .review-field-wrap--static:focus-within {
+  background: #fff;
+  border-color: #111;
+}
+
+html.home[data-theme="light"] .review-rating-selected::before {
+  border-right-color: #111;
+  border-bottom-color: #111;
+}
+
+html.home[data-theme="light"] .review-rating-option {
+  background: #fff;
+  border-bottom-color: #d1d5db;
+}
+
+html.home[data-theme="light"] .review-rating-option:hover,
+html.home[data-theme="light"] .review-rating-option.is-selected {
+  background: #fff;
+}
+
 @media (max-width: 900px) {
   main.review-page-shell {
     padding-bottom: 50px;
