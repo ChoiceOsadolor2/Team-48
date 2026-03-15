@@ -17,7 +17,9 @@ class ContactQueryController extends Controller
         ]);
 
         $selectedIds = array_unique($data['selected']);
-        $query = ContactQuery::query()->whereIn('id', $selectedIds);
+        $query = ContactQuery::query()
+            ->contactFormOnly()
+            ->whereIn('id', $selectedIds);
 
         if ($data['action'] === 'resolve') {
             $query->update(['resolved_at' => now()]);
@@ -45,6 +47,7 @@ class ContactQueryController extends Controller
         }
 
         $contactQueries = ContactQuery::query()
+            ->contactFormOnly()
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
                     $q->where('name', 'like', "%{$search}%")

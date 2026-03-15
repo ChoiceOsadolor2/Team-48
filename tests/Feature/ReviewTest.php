@@ -21,7 +21,7 @@ class ReviewTest extends TestCase
         $order = Order::create([
             'user_id' => $user->id,
             'total' => 69.99,
-            'status' => 'processing',
+            'status' => 'completed',
         ]);
 
         $orderItem = OrderItem::create([
@@ -54,7 +54,7 @@ class ReviewTest extends TestCase
         $order = Order::create([
             'user_id' => $owner->id,
             'total' => 69.99,
-            'status' => 'processing',
+            'status' => 'completed',
         ]);
 
         $orderItem = OrderItem::create([
@@ -77,7 +77,7 @@ class ReviewTest extends TestCase
         $order = Order::create([
             'user_id' => $user->id,
             'total' => 69.99,
-            'status' => 'processing',
+            'status' => 'completed',
         ]);
 
         $orderItem = OrderItem::create([
@@ -119,7 +119,7 @@ class ReviewTest extends TestCase
         $order = Order::create([
             'user_id' => $owner->id,
             'total' => 69.99,
-            'status' => 'processing',
+            'status' => 'completed',
         ]);
 
         $orderItem = OrderItem::create([
@@ -149,7 +149,7 @@ class ReviewTest extends TestCase
         $order = Order::create([
             'user_id' => $user->id,
             'total' => 69.99,
-            'status' => 'processing',
+            'status' => 'completed',
         ]);
 
         $orderItem = OrderItem::create([
@@ -187,7 +187,7 @@ class ReviewTest extends TestCase
         $order = Order::create([
             'user_id' => $user->id,
             'total' => 69.99,
-            'status' => 'processing',
+            'status' => 'completed',
         ]);
 
         $orderItem = OrderItem::create([
@@ -220,5 +220,58 @@ class ReviewTest extends TestCase
                     'message' => 'Worth every penny.',
                 ]],
             ]);
+    }
+
+    public function test_user_cannot_fetch_review_context_for_processing_order(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total' => 69.99,
+            'status' => 'processing',
+        ]);
+
+        $orderItem = OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'price' => 69.99,
+            'platform' => 'Universal',
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('reviews.context', $orderItem))
+            ->assertForbidden();
+    }
+
+    public function test_user_cannot_store_review_for_cancelled_order(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create();
+        $order = Order::create([
+            'user_id' => $user->id,
+            'total' => 69.99,
+            'status' => 'cancelled',
+        ]);
+
+        $orderItem = OrderItem::create([
+            'order_id' => $order->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
+            'price' => 69.99,
+            'platform' => 'Universal',
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('reviews.store'), [
+                'order_item_id' => $orderItem->id,
+                'rating' => 5,
+                'title' => 'Blocked',
+                'message' => 'This should not save.',
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('reviews', 0);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ContactQuery;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\RefundRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
@@ -15,7 +15,8 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        $orders = Order::where('user_id', Auth::id())
+        $orders = Order::with(['items.product', 'items.refundRequest'])
+            ->where('user_id', Auth::id())
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -65,6 +66,12 @@ class OrdersController extends Controller
 
         $this->authorizeReturnItem($orderItem);
 
+        if ($orderItem->refundRequest()->exists()) {
+            return redirect()
+                ->route('orders.index')
+                ->with('status', 'Refund request already sent for this item.');
+        }
+
         return view('orders.return', compact('orderItem'));
     }
 
@@ -74,38 +81,29 @@ class OrdersController extends Controller
 
         $this->authorizeReturnItem($orderItem);
 
+        if ($orderItem->refundRequest()->exists()) {
+            return redirect()
+                ->route('orders.index')
+                ->with('status', 'Refund request already sent for this item.');
+        }
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:1000'],
         ]);
 
-        $user = $request->user();
         $order = $orderItem->order;
         $productName = $orderItem->product?->name ?? 'Unknown Product';
-        $platform = $orderItem->platform ?: ($orderItem->product?->platform ?: 'Universal');
-
-        ContactQuery::create([
-            'name' => $user->name,
-            'email' => $user->email,
-            'subject' => sprintf(
-                '%s - Order VX-%d - %s',
-                'Refund request',
-                $order->id,
-                $productName
-            ),
-            'message' => implode("\n", [
-                'Return/refund request submitted from order history.',
-                'Order: VX-' . $order->id,
-                'Order item: #' . $orderItem->id,
-                'Product: ' . $productName,
-                'Platform: ' . $platform,
-                'Quantity: ' . $orderItem->quantity,
-                'Reason: ' . trim($validated['reason']),
-            ]),
+        $refundRequest = RefundRequest::create([
+            'user_id' => $request->user()->id,
+            'order_id' => $order->id,
+            'order_item_id' => $orderItem->id,
+            'status' => 'pending',
+            'reason' => trim($validated['reason']),
         ]);
 
         return redirect()
             ->route('orders.index')
-            ->with('status', 'Your return request has been sent to support.');
+            ->with('status', 'Refund request sent for ' . $productName . '.');
     }
 
     protected function authorizeReturnItem(OrderItem $orderItem): void

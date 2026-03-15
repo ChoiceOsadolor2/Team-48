@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
+use App\Http\Controllers\Admin\RefundRequestController as AdminRefundRequestController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ContactQueryController as AdminContactQueryController;
 use App\Models\Category;
@@ -19,6 +20,7 @@ use App\Models\ContactQuery;
 use App\Models\Faq;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\RefundRequest;
 use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\ContactQueryController;
 use App\Http\Controllers\ReviewController;
@@ -178,12 +180,25 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         $latestQueries = Schema::hasTable('contact_queries')
             ? ContactQuery::query()
+                ->contactFormOnly()
                 ->latest()
                 ->take(3)
                 ->get(['id', 'name', 'subject', 'created_at', 'resolved_at'])
             : collect();
 
-        $contactQueryCount = Schema::hasTable('contact_queries') ? ContactQuery::count() : 0;
+        $refundRequestCount = Schema::hasTable('refund_requests') ? RefundRequest::count() : 0;
+        $pendingRefundCount = Schema::hasTable('refund_requests') ? RefundRequest::where('status', 'pending')->count() : 0;
+        $latestRefundRequests = Schema::hasTable('refund_requests')
+            ? RefundRequest::query()
+                ->with(['user', 'orderItem.product'])
+                ->latest()
+                ->take(3)
+                ->get()
+            : collect();
+
+        $contactQueryCount = Schema::hasTable('contact_queries')
+            ? ContactQuery::query()->contactFormOnly()->count()
+            : 0;
         $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
 
         return view('admin.dashboard', compact(
@@ -203,8 +218,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'latestUsers',
             'latestProducts',
             'latestQueries',
+            'latestRefundRequests',
             'faqCount',
             'contactQueryCount',
+            'refundRequestCount',
+            'pendingRefundCount',
         ));
     })->name('admin.dashboard');
 
@@ -259,6 +277,12 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::post('/admin/orders/{order}/cancel', [AdminOrderController::class, 'cancel'])
         ->name('admin.orders.cancel');
+
+    Route::get('/admin/refunds', [AdminRefundRequestController::class, 'index'])
+        ->name('admin.refunds.index');
+
+    Route::patch('/admin/refunds/{refundRequest}/status', [AdminRefundRequestController::class, 'updateStatus'])
+        ->name('admin.refunds.update-status');
 
     Route::get('/admin/faqs', [AdminFaqController::class, 'index'])
         ->name('admin.faqs.index');

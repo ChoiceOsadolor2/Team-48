@@ -18,6 +18,10 @@ class ReviewController extends Controller
             abort(403);
         }
 
+        if (! $this->canReviewOrderItem($orderItem)) {
+            abort(403);
+        }
+
         return response()->json([
             'order_item_id' => $orderItem->id,
             'product_name' => $orderItem->product->name ?? 'Unknown Product',
@@ -41,6 +45,10 @@ class ReviewController extends Controller
             abort(403);
         }
 
+        if (! $this->canReviewOrderItem($orderItem)) {
+            abort(403);
+        }
+
         if ($orderItem->review) {
             return response()->json([
                 'message' => 'You have already reviewed this item.',
@@ -61,5 +69,12 @@ class ReviewController extends Controller
             'success' => true,
             'review_id' => $review->id,
         ]);
+    }
+
+    private function canReviewOrderItem(OrderItem $orderItem): bool
+    {
+        $status = strtolower((string) optional($orderItem->order)->status);
+
+        return in_array($status, ['completed', 'delivered'], true);
     }
 }

@@ -33,6 +33,12 @@
 
     <div class="admin-dashboard-page py-12 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            @if (session('status'))
+                <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800 dark:border-emerald-800/70 dark:bg-emerald-900/20 dark:text-emerald-200">
+                    {{ session('status') }}
+                </div>
+            @endif
+
             <div class="mb-10 flex items-center justify-between bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 rounded-3xl p-10 shadow-2xl text-white transform transition-all hover:scale-[1.01] duration-300">
                 <div class="max-w-2xl">
                     <h3 class="text-4xl font-extrabold tracking-tight mb-4 drop-shadow-md">
@@ -51,7 +57,7 @@
                 </div>
             </div>
 
-            <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5">
                 <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
                     <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalUsers) }}</p>
@@ -71,6 +77,11 @@
                     <p class="text-sm uppercase tracking-[0.2em] text-pink-300">Revenue</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalRevenue, 2) }} GBP</p>
                     <p class="mt-2 text-sm text-gray-300">Average order value {{ number_format($averageOrderValue, 2) }} GBP.</p>
+                </div>
+                <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
+                    <p class="text-sm uppercase tracking-[0.2em] text-orange-300">Refunds</p>
+                    <p class="mt-2 text-3xl font-bold">{{ number_format($refundRequestCount) }}</p>
+                    <p class="mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} pending decisions in the queue.</p>
                 </div>
             </div>
 
@@ -147,6 +158,13 @@
                                 <span class="text-xl font-bold text-sky-900">{{ $contactQueryCount }}</span>
                             </div>
                         </div>
+                        <div class="rounded-2xl bg-orange-50 p-3.5">
+                            <div class="flex items-center justify-between">
+                                <span class="font-semibold text-orange-900">Refund requests</span>
+                                <span class="text-xl font-bold text-orange-900">{{ $pendingRefundCount }}</span>
+                            </div>
+                            <p class="mt-2 text-sm text-orange-700">{{ $refundRequestCount }} total submitted.</p>
+                        </div>
                     </div>
                 </section>
 
@@ -179,6 +197,11 @@
                             <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Open the orders still being fulfilled</p>
                         </a>
 
+                        <a href="{{ route('admin.refunds.index', ['status' => 'pending']) }}" class="rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-orange-800/60 dark:bg-orange-900/20">
+                            <p class="text-xs uppercase tracking-[0.18em] text-orange-700 dark:text-orange-300">Pending refunds</p>
+                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Review {{ $pendingRefundCount }} refund request{{ $pendingRefundCount === 1 ? '' : 's' }} waiting for a decision</p>
+                        </a>
+
                     </div>
                 </section>
             </div>
@@ -192,7 +215,7 @@
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-200">Live snapshot</span>
                 </div>
 
-                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-4">
+                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-5">
                     <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
                         <div class="mb-3 flex items-center justify-between">
                             <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Recent orders</h4>
@@ -274,10 +297,65 @@
                             @endforelse
                         </div>
                     </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                        <div class="mb-3 flex items-center justify-between">
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Refund requests</h4>
+                            <a href="{{ route('admin.refunds.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                        </div>
+                        <div class="space-y-3">
+                            @forelse ($latestRefundRequests as $refundRequest)
+                                @php
+                                    $refundBadgeClasses = match($refundRequest->status) {
+                                        'approved' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
+                                        'denied' => 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200',
+                                        default => 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
+                                    };
+                                @endphp
+                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <p class="font-semibold text-gray-900 dark:text-white">{{ $refundRequest->user?->name ?? 'Unknown customer' }}</p>
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $refundBadgeClasses }}">
+                                            {{ ucfirst($refundRequest->status) }}
+                                        </span>
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($refundRequest->orderItem?->product?->name ?? 'Deleted product', 30) }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ \Illuminate\Support\Str::limit($refundRequest->reason, 56) }}</p>
+
+                                    @if ($refundRequest->status === 'pending')
+                                        <div class="mt-3 flex gap-2">
+                                            <form method="POST" action="{{ route('admin.refunds.update-status', $refundRequest) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="approved">
+                                                <button type="submit" class="rounded-lg border border-emerald-200 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-300 dark:hover:bg-emerald-900/20">
+                                                    Accept
+                                                </button>
+                                            </form>
+                                            <form method="POST" action="{{ route('admin.refunds.update-status', $refundRequest) }}">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="status" value="denied">
+                                                <button type="submit" class="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/20">
+                                                    Deny
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @else
+                                        <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+                                            Reviewed {{ $refundRequest->reviewed_at?->diffForHumans() ?? 'just now' }}
+                                        </p>
+                                    @endif
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No refund requests have been submitted yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6">
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="z-10 bg-blue-100 dark:bg-blue-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
@@ -320,6 +398,17 @@
                     </div>
                     <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">View Orders</h4>
                     <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Process customer orders, view full details, and track order fulfilments.</p>
+                </a>
+
+                <a href="{{ route('admin.refunds.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/10 dark:to-amber-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="z-10 bg-orange-100 dark:bg-orange-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
+                        <svg class="w-8 h-8 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h4m-7 4h10a2 2 0 002-2V8.828a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0011.172 2H6a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Refunds</h4>
+                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review refund requests and approve or deny each case from the admin queue.</p>
                 </a>
 
                 <a href="{{ route('admin.faqs.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">

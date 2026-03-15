@@ -33,4 +33,9 @@ class OrderItem extends Model
     {
         return $this->hasOne(Review::class);
     }
+
+    public function refundRequest()
+    {
+        return $this->hasOne(RefundRequest::class);
+    }
 }
