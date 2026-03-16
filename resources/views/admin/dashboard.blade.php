@@ -265,32 +265,32 @@
             @endif
 
             <div class="mb-8 flex flex-wrap justify-center gap-4">
-                <a href="{{ route('admin.users.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.users.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalUsers) }}</p>
                     <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">Registered accounts on the platform.</p>
                 </a>
-                <a href="{{ route('admin.products.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.products.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-emerald-300">Products</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalProducts) }}</p>
                     <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $inStockProducts }} in stock, {{ $outOfStockProducts }} out of stock, {{ $lowStockProductCount }} low stock.</p>
                 </a>
-                <a href="{{ route('admin.orders.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.orders.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-amber-300">Orders</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalOrders) }}</p>
                     <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $processingOrders }} processing, {{ $completedOrders }} completed, {{ $cancelledOrders }} cancelled.</p>
                 </a>
-                <a href="{{ route('admin.revenue.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.revenue.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-pink-300">Revenue</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalRevenue, 2) }} GBP</p>
                     <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">Average order value {{ number_format($averageOrderValue, 2) }} GBP.</p>
                 </a>
-                <a href="{{ route('admin.refunds.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.refunds.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-orange-300">Refunds</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($refundRequestCount) }}</p>
                     <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} pending decisions in the queue.</p>
                 </a>
-                <a href="{{ route('admin.contact-queries.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.contact-queries.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-sky-300">Contact queries</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($contactQueryCount) }}</p>
                     <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">Open customer messages in the support inbox.</p>
@@ -483,103 +483,19 @@
             </details>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-blue-100 dark:bg-blue-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Manage Users</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">View, edit, or safely remove user accounts from the platform.</p>
+                <a href="{{ route('admin.faqs.index') }}" class="dashboard-stat-card group relative rounded-3xl border border-[#444] bg-black p-6 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#444] overflow-visible flex flex-col items-center text-center">
+                    <h4 class="z-10 text-xl font-bold text-white mb-2">Chatbot FAQs</h4>
+                    <p class="dashboard-stat-copy z-10 text-sm leading-relaxed">Add and update FAQ answers that power the smarter chatbot.</p>
                 </a>
 
-                <a href="{{ route('admin.products.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-emerald-100 dark:bg-emerald-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Inventory</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Manage stock levels, easily add new products, and update pricing.</p>
+                <a href="{{ route('admin.discount-codes.index') }}" class="dashboard-stat-card group relative rounded-3xl border border-[#444] bg-black p-6 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#444] overflow-visible flex flex-col items-center text-center">
+                    <h4 class="z-10 text-xl font-bold text-white mb-2">Discount Codes</h4>
+                    <p class="dashboard-stat-copy z-10 text-sm leading-relaxed">Create and manage percentage or fixed-amount promotions for checkout.</p>
                 </a>
 
-                <a href="{{ route('admin.orders.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/10 dark:to-pink-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-purple-100 dark:bg-purple-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-purple-600 dark:text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">View Orders</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Process customer orders, view full details, and track order fulfilments.</p>
-                </a>
-
-                <a href="{{ route('admin.refunds.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-900/10 dark:to-amber-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-orange-100 dark:bg-orange-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-orange-600 dark:text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h4m-7 4h10a2 2 0 002-2V8.828a2 2 0 00-.586-1.414l-4.828-4.828A2 2 0 0011.172 2H6a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Refunds</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review refund requests and approve or deny each case from the admin queue.</p>
-                </a>
-
-                <a href="{{ route('admin.faqs.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-cyan-50 to-sky-50 dark:from-cyan-900/10 dark:to-sky-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-cyan-100 dark:bg-cyan-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-cyan-600 dark:text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16h6M7 4h10a2 2 0 012 2v12l-4-3H7a2 2 0 01-2-2V6a2 2 0 012-2z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Chatbot FAQs</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Add and update FAQ answers that power the smarter chatbot.</p>
-                </a>
-
-                <a href="{{ route('admin.contact-queries.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-sky-50 to-blue-50 dark:from-sky-900/10 dark:to-blue-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-sky-100 dark:bg-sky-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-sky-600 dark:text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4-.8L3 20l1.195-3.586C3.44 15.166 3 13.635 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Contact Queries</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review messages submitted through the Contact Us forms and keep support requests organised.</p>
-                </a>
-
-                <a href="{{ route('admin.return-requests.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-violet-50 to-fuchsia-50 dark:from-violet-900/10 dark:to-fuchsia-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-violet-100 dark:bg-violet-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-violet-600 dark:text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h3m5 4H7a2 2 0 01-2-2V6a2 2 0 012-2h5.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V18a2 2 0 01-2 2z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Returns & Refunds</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review after-sales requests, approve or decline them, and keep an audit trail with support notes.</p>
-                </a>
-
-                <a href="{{ route('admin.discount-codes.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-lime-50 to-emerald-50 dark:from-lime-900/10 dark:to-emerald-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-lime-100 dark:bg-lime-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-lime-600 dark:text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-10V6m0 12v-2m9-4a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Discount Codes</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Create and manage percentage or fixed-amount promotions for checkout.</p>
-                </a>
-
-                <a href="{{ route('admin.audit-logs.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
-                    <div class="absolute inset-0 bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900/10 dark:to-gray-800/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                    <div class="z-10 bg-slate-100 dark:bg-slate-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
-                        <svg class="w-8 h-8 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Audit Trail</h4>
-                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review a running history of important admin actions across the store.</p>
+                <a href="{{ route('admin.audit-logs.index') }}" class="dashboard-stat-card group relative rounded-3xl border border-[#444] bg-black p-6 text-white shadow-xl transition-all duration-300 hover:-translate-y-1 hover:border-[#444] overflow-visible flex flex-col items-center text-center">
+                    <h4 class="z-10 text-xl font-bold text-white mb-2">Audit Trail</h4>
+                    <p class="dashboard-stat-copy z-10 text-sm leading-relaxed">Review a running history of important admin actions across the store.</p>
                 </a>
             </div>
         </div>
