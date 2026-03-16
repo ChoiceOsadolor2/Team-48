@@ -119,7 +119,7 @@
         </div>
 
         @if ($isForgotPassword)
-            <script src="/scripts/header.js"></script>
+            <script src="/scripts/header.js?v=2"></script>
             <script src="/scripts/animations.js" defer></script>
         @endif
 

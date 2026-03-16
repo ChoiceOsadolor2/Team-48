@@ -2,6 +2,7 @@
 @php
     $isProfilePage = request()->routeIs('profile.*');
     $isOrdersPage = request()->routeIs('orders.*');
+    $isWishlistPage = request()->routeIs('wishlist.*');
     $isOrderHistoryPage = request()->routeIs('orders.index');
     $isInvoicePage = request()->routeIs('orders.show');
     $isOrderReturnPage = request()->routeIs('orders.return.*');
@@ -46,7 +47,7 @@
         session('status') ? ['type' => 'success', 'message' => session('status')] : null,
     ])->filter()->values();
 @endphp
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage) class="home" @endif>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @if($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage) class="home" @endif>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -70,10 +71,10 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
+        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage)
             <link rel="stylesheet" href="/styles/styleHomepage.css">
         @endif
-        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
+        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage)
             <link rel="stylesheet" href="/styles/style.css">
             <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
         @endif
@@ -90,6 +91,9 @@
             <link rel="stylesheet" href="/styles/footer.css">
         @endif
         @if ($isCheckoutPage)
+            <link rel="stylesheet" href="/styles/footer.css">
+        @endif
+        @if ($isWishlistPage)
             <link rel="stylesheet" href="/styles/footer.css">
         @endif
         <style>
@@ -226,7 +230,7 @@
                     width: auto;
                 }
             }
-            @if ($isOrdersPage || $isCheckoutPage)
+            @if ($isOrdersPage || $isCheckoutPage || $isWishlistPage)
                 @font-face {
                     font-family: 'MiniPixel';
                     src: url('/fonts/mini-pixel-7.ttf') format('truetype');
@@ -266,6 +270,16 @@
                 body.checkout-page nav > a {
                     font-size: 30px !important;
                     white-space: nowrap !important;
+                }
+
+                body.wishlist-page {
+                    background-size: 100vw auto !important;
+                    background-position: var(--bg-y-pos, center 0) !important;
+                }
+
+                body.wishlist-page main.orders-content {
+                    background-size: 100vw auto !important;
+                    background-position: var(--bg-y-pos, center 0) !important;
                 }
 
                 body.orders-page #theme-toggle-button + label,
@@ -334,8 +348,13 @@
                     display: none !important;
                 }
 
-                body.orders-page main.orders-content {
+                body.orders-page main.orders-content,
+                body.wishlist-page main.orders-content {
                     background: transparent !important;
+                    background-image: url('{{ asset('assets/Veltrix-homepage-background.png') }}');
+                    background-repeat: repeat-y;
+                    background-size: 100vw auto;
+                    background-position: var(--bg-y-pos, center 0);
                     position: relative !important;
                     top: 0 !important;
                     width: 100% !important;
@@ -346,13 +365,16 @@
                     z-index: 1;
                 }
 
-                html[data-theme="light"] body.orders-page main.orders-content {
+                html[data-theme="light"] body.orders-page main.orders-content,
+                html[data-theme="light"] body.wishlist-page main.orders-content {
                     isolation: isolate;
                     background: #f6efe6 !important;
                 }
 
                 html[data-theme="light"] body.orders-page main.orders-content::before,
-                html[data-theme="light"] body.orders-page main.orders-content::after {
+                html[data-theme="light"] body.orders-page main.orders-content::after,
+                html[data-theme="light"] body.wishlist-page main.orders-content::before,
+                html[data-theme="light"] body.wishlist-page main.orders-content::after {
                     content: '';
                     position: absolute;
                     top: 0;
@@ -368,23 +390,28 @@
                     z-index: 0;
                 }
 
-                html[data-theme="light"] body.orders-page main.orders-content::before {
+                html[data-theme="light"] body.orders-page main.orders-content::before,
+                html[data-theme="light"] body.wishlist-page main.orders-content::before {
                     opacity: 0.08;
                 }
 
-                html[data-theme="light"] body.orders-page main.orders-content::after {
+                html[data-theme="light"] body.orders-page main.orders-content::after,
+                html[data-theme="light"] body.wishlist-page main.orders-content::after {
                     opacity: 0.32;
                     filter: grayscale(1) contrast(2.8) brightness(0);
                     mix-blend-mode: multiply;
                 }
 
-                html[data-theme="light"] body.orders-page main.orders-content > * {
+                html[data-theme="light"] body.orders-page main.orders-content > *,
+                html[data-theme="light"] body.wishlist-page main.orders-content > * {
                     position: relative;
                     z-index: 1;
                 }
 
                 body.orders-page main.orders-content,
-                body.orders-page main.orders-content * {
+                body.orders-page main.orders-content *,
+                body.wishlist-page main.orders-content,
+                body.wishlist-page main.orders-content * {
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
@@ -998,22 +1025,22 @@
         @endif
     </head>
 
-    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ $isOrdersPage ? 'orders-page' : '' }} {{ $isInvoicePage ? 'invoice-page' : '' }} {{ $isCheckoutPage ? 'checkout-page' : '' }} {{ $isAdminPage ? 'admin-page' : '' }}" style="--bg-y-pos: center 0;">
-        <div class="{{ $isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
-            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
+    <body class="font-sans antialiased {{ $isProfilePage ? 'profile-page' : '' }} {{ ($isOrdersPage || $isWishlistPage) ? 'orders-page' : '' }} {{ $isWishlistPage ? 'wishlist-page' : '' }} {{ $isInvoicePage ? 'invoice-page' : '' }} {{ $isCheckoutPage ? 'checkout-page' : '' }} {{ $isAdminPage ? 'admin-page' : '' }}" style="--bg-y-pos: center 0;">
+        <div class="{{ $isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage ? '' : 'min-h-screen bg-[#FAF0F0] dark:bg-[#050036]' }}">
+            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage)
                 <header></header>
             @else
                 @include('layouts.navigation')
             @endif
 
-            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage)
+            @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage)
                 <div class="search-container">
                     <input type="text" placeholder="Search..." class="search-bar" id="Search_Input">
                     <button class="search-close">&times;</button>
                 </div>
             @endif
 
-            @if (! $isProfilePage && ! $isOrdersPage && ! $isCheckoutPage && ! $isAdminPage)
+            @if (! $isProfilePage && ! $isOrdersPage && ! $isCheckoutPage && ! $isAdminPage && ! $isWishlistPage)
                 @isset($header)
                     <header class="bg-white dark:bg-[#0A004A] shadow">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-gray-800 dark:text-gray-100">
@@ -1023,7 +1050,7 @@
                 @endisset
             @endif
 
-            <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }} {{ $isCheckoutPage ? 'checkout-content' : '' }} {{ $isAdminPage ? 'admin-content' : '' }}">
+            <main class="{{ $isProfilePage ? 'profile-content' : '' }} {{ $isOrdersPage ? 'orders-content' : '' }} {{ $isWishlistPage ? 'orders-content' : '' }} {{ $isCheckoutPage ? 'checkout-content' : '' }} {{ $isAdminPage ? 'admin-content' : '' }}">
                 @if ($isAdminPage && $adminBackTarget)
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
                         <a href="{{ $adminBackTarget }}"
@@ -1053,6 +1080,9 @@
         @if ($isCheckoutPage)
             <div id="footer"></div>
         @endif
+        @if ($isWishlistPage)
+            <div id="footer"></div>
+        @endif
 
         <div
             id="site-toast-region"
@@ -1063,7 +1093,7 @@
         ></div>
 
         @if ($isProfilePage)
-            <script src="/scripts/header.js"></script>
+            <script src="/scripts/header.js?v=2"></script>
             <script src="/scripts/footer.js"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
@@ -1084,7 +1114,7 @@
                 })();
             </script>
         @elseif ($isOrdersPage)
-            <script src="/scripts/header.js"></script>
+            <script src="/scripts/header.js?v=2"></script>
             @if ($isOrderHistoryPage || $isInvoicePage || $isOrderReturnPage)
                 <script src="/scripts/footer.js"></script>
             @endif
@@ -1096,8 +1126,29 @@
                     document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
                 })();
             </script>
+        @elseif ($isWishlistPage)
+            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/products.js?v=9"></script>
+            <script src="/scripts/animations.js" defer></script>
+            <script>
+                (function () {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
+                })();
+            </script>
+        @elseif ($isWishlistPage)
+            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/footer.js"></script>
+            <script src="/scripts/products.js?v=9"></script>
+            <script src="/scripts/animations.js" defer></script>
+            <script>
+                (function () {
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    document.documentElement.setAttribute('data-theme', localStorage.getItem('theme') || (prefersDark ? 'dark' : 'light'));
+                })();
+            </script>
         @elseif ($isCheckoutPage)
-            <script src="/scripts/header.js"></script>
+            <script src="/scripts/header.js?v=2"></script>
             <script src="/scripts/footer.js"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
@@ -1108,7 +1159,7 @@
                 })();
             </script>
         @elseif ($isAdminPage)
-            <script src="/scripts/header.js"></script>
+            <script src="/scripts/header.js?v=2"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>

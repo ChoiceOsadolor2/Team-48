@@ -60,4 +60,15 @@ class User extends Authenticatable
     {
         return $this->hasMany(\App\Models\ServiceReview::class);
     }
+
+    public function wishlistItems()
+    {
+        return $this->hasMany(\App\Models\WishlistItem::class);
+    }
+
+    public function wishlistProducts()
+    {
+        return $this->belongsToMany(\App\Models\Product::class, 'wishlist_items')
+            ->withTimestamps();
+    }
 }

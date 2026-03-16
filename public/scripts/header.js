@@ -377,6 +377,7 @@ function bindVeltrixHeader(headerEl) {
         if (data?.logged_in) {
           userMenuDropdown.innerHTML = `
             <a href="/orders" class="user-menu-item">Order History</a>
+            <a href="/wishlist" class="user-menu-item">Wishlist</a>
             <a href="/profile" class="user-menu-item">Profile</a>
             <button type="button" class="user-menu-item danger" id="logoutBtn">
               Logout

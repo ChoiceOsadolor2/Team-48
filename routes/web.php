@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\Schema;
 use App\Http\Controllers\ContactQueryController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceReviewController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 
 
@@ -99,6 +100,8 @@ Route::post('/contact-queries', [ContactQueryController::class, 'store'])
     ->name('contact-queries.store');
 Route::get('/service-reviews', [ServiceReviewController::class, 'index'])
     ->name('service-reviews.index');
+Route::get('/wishlist/json', [WishlistController::class, 'index'])
+    ->name('wishlist.json');
 
 Route::get('/product', function () {
     return redirect('/products');
@@ -106,6 +109,7 @@ Route::get('/product', function () {
 
 
 Route::middleware('auth')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'view'])->name('wishlist.index');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -147,6 +151,12 @@ Route::middleware('auth')->group(function () {
         ->name('reviews.store');
     Route::post('/service-reviews', [ServiceReviewController::class, 'store'])
         ->name('service-reviews.store');
+    Route::get('/wishlist/products', [WishlistController::class, 'products'])
+        ->name('wishlist.products');
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store'])
+        ->name('wishlist.store');
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])
+        ->name('wishlist.destroy');
 
     Route::get('/test-add/{id}', function ($id) {
         \Illuminate\Support\Facades\Session::put('cart', [$id => 1]);

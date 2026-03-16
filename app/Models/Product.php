@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Category;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Product extends Model
 {
@@ -34,6 +35,12 @@ class Product extends Model
     public function reviews()
     {
         return $this->hasMany(Review::class);
+    }
+
+    public function wishlistedByUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'wishlist_items')
+            ->withTimestamps();
     }
 
     public function platformStocks(): HasMany
