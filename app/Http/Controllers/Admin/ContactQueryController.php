@@ -42,7 +42,7 @@ class ContactQueryController extends Controller
         $status = trim((string) $request->query('status', ''));
 
         if (!Schema::hasTable('contact_queries')) {
-            $contactQueries = ContactQuery::query()->whereRaw('1 = 0')->paginate(15);
+            $contactQueries = ContactQuery::query()->whereIn('id', [])->paginate(15);
             return view('admin.contact-queries.index', compact('contactQueries', 'search', 'status'));
         }
 

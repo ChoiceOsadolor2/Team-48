@@ -195,10 +195,13 @@ class ProductController extends Controller
     public function stock()
     {
         $products = Product::with(['category', 'platformStocks'])
-            ->orderByRaw('CASE WHEN stock = 0 THEN 0 ELSE 1 END')
-            ->orderBy('stock')
-            ->orderBy('name')
-            ->get();
+            ->get()
+            ->sortBy([
+                fn ($product) => (int) ($product->stock !== 0),
+                fn ($product) => (int) $product->stock,
+                fn ($product) => mb_strtolower((string) $product->name),
+            ])
+            ->values();
 
         return view('admin.products.stock', [
             'products' => $products,
