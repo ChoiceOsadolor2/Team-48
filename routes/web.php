@@ -173,6 +173,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
         $totalProducts = Product::count();
         $inStockProducts = Product::where('stock', '>', 0)->count();
         $outOfStockProducts = Product::where('stock', '<=', 0)->count();
+        $lowStockProductCount = Product::where('stock', '>', 0)
+            ->where('stock', '<=', 5)
+            ->count();
         $lowStockProducts = Product::where('stock', '>', 0)
             ->where('stock', '<=', 5)
             ->orderBy('stock')
@@ -201,7 +204,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
         $recentOrders = Order::with('user')
             ->latest()
-            ->take(5)
+            ->take(3)
             ->get();
 
         $latestUsers = User::query()
@@ -253,6 +256,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'totalProducts',
             'inStockProducts',
             'outOfStockProducts',
+            'lowStockProductCount',
             'lowStockProducts',
             'outOfStockProductAlerts',
             'totalOrders',

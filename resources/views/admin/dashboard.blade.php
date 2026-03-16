@@ -80,6 +80,180 @@
             opacity: 1;
         }
 
+        .admin-dashboard-page .dashboard-stat-card {
+            position: relative;
+        }
+
+        .admin-dashboard-page .dashboard-stat-card::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: inherit;
+            border: 1px solid transparent;
+            opacity: 0;
+            animation: veltrixGlow 2s infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .admin-dashboard-page .dashboard-stat-card:hover,
+        .admin-dashboard-page .dashboard-stat-card:focus-visible {
+            background: #1d1d1d !important;
+            border-color: transparent !important;
+            outline: none;
+        }
+
+        .admin-dashboard-page .dashboard-stat-card:hover::after,
+        .admin-dashboard-page .dashboard-stat-card:focus-visible::after {
+            opacity: 1;
+        }
+
+        .admin-dashboard-page .dashboard-stat-card .dashboard-stat-copy {
+            color: #888 !important;
+        }
+
+        .admin-dashboard-page .activity-summary-shell {
+            overflow: visible;
+        }
+
+        .admin-dashboard-page .activity-summary-toggle {
+            list-style: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            width: 100%;
+            padding: 18px 22px;
+            background: #000;
+            color: #fff;
+            border: 1px solid #444;
+            border-radius: 18px;
+            font-family: 'MiniPixel', sans-serif !important;
+            font-size: 30px !important;
+            line-height: 1.2 !important;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .admin-dashboard-page .activity-summary-toggle::-webkit-details-marker {
+            display: none;
+        }
+
+        .admin-dashboard-page .activity-summary-toggle::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: inherit;
+            border: 1px solid transparent;
+            opacity: 0;
+            animation: veltrixGlow 2s infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .admin-dashboard-page .activity-summary-toggle:hover,
+        .admin-dashboard-page .activity-summary-toggle:focus-visible {
+            background: #1d1d1d;
+            transform: translateY(-2px);
+            border-color: transparent;
+            outline: none;
+        }
+
+        .admin-dashboard-page .activity-summary-toggle:hover::after,
+        .admin-dashboard-page .activity-summary-toggle:focus-visible::after {
+            opacity: 1;
+        }
+
+        .admin-dashboard-page .activity-summary-chevron {
+            position: absolute;
+            right: 22px;
+            font-size: 24px !important;
+            line-height: 1 !important;
+            color: #fff;
+            transition: transform 0.2s ease;
+        }
+
+        .admin-dashboard-page .activity-summary-shell[open] .activity-summary-chevron {
+            transform: rotate(180deg);
+        }
+
+        .admin-dashboard-page .activity-summary-content {
+            margin-top: 16px;
+        }
+
+        .admin-dashboard-page .activity-summary-link-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            padding: 10px 14px;
+            background: #000 !important;
+            color: #fff !important;
+            border: 1px solid #444 !important;
+            border-radius: 14px;
+            font-family: 'MiniPixel', sans-serif !important;
+            font-size: 16px !important;
+            line-height: 1.2 !important;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.25s ease;
+        }
+
+        .admin-dashboard-page .activity-summary-link-btn::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: inherit;
+            border: 1px solid transparent;
+            opacity: 0;
+            animation: veltrixGlow 2s infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .admin-dashboard-page .activity-summary-link-btn:hover,
+        .admin-dashboard-page .activity-summary-link-btn:focus-visible {
+            background: #1d1d1d !important;
+            transform: translateY(-2px);
+            border-color: transparent !important;
+            outline: none;
+        }
+
+        .admin-dashboard-page .activity-summary-link-btn:hover::after,
+        .admin-dashboard-page .activity-summary-link-btn:focus-visible::after {
+            opacity: 1;
+        }
+
+        .admin-dashboard-page .activity-summary-content .rounded-2xl {
+            padding: 14px !important;
+        }
+
+        .admin-dashboard-page .activity-summary-content .rounded-xl {
+            padding: 10px 12px !important;
+        }
+
+        .admin-dashboard-page .activity-summary-content .text-sm,
+        .admin-dashboard-page .activity-summary-content .text-xs {
+            font-size: 16px !important;
+            line-height: 1.25 !important;
+        }
+
+        .admin-dashboard-page .activity-summary-content h4,
+        .admin-dashboard-page .activity-summary-content .font-semibold {
+            font-size: 16px !important;
+            line-height: 1.2 !important;
+        }
+
     </style>
 
     <div class="admin-dashboard-page py-12 min-h-screen">
@@ -91,45 +265,45 @@
             @endif
 
             <div class="mb-8 flex flex-wrap justify-center gap-4">
-                <a href="{{ route('admin.users.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.users.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalUsers) }}</p>
-                    <p class="mt-2 text-sm text-gray-300">Registered accounts on the platform.</p>
+                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">Registered accounts on the platform.</p>
                 </a>
-                <a href="{{ route('admin.products.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.products.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-emerald-300">Products</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalProducts) }}</p>
-                    <p class="mt-2 text-sm text-gray-300">{{ $inStockProducts }} in stock, {{ $outOfStockProducts }} out of stock.</p>
+                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $inStockProducts }} in stock, {{ $outOfStockProducts }} out of stock, {{ $lowStockProductCount }} low stock.</p>
                 </a>
-                <a href="{{ route('admin.orders.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.orders.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-amber-300">Orders</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalOrders) }}</p>
-                    <p class="mt-2 text-sm text-gray-300">{{ $processingOrders }} processing, {{ $completedOrders }} completed.</p>
+                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $processingOrders }} processing, {{ $completedOrders }} completed, {{ $cancelledOrders }} cancelled.</p>
                 </a>
-                <a href="{{ route('admin.revenue.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.revenue.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-pink-300">Revenue</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalRevenue, 2) }} GBP</p>
-                    <p class="mt-2 text-sm text-gray-300">Average order value {{ number_format($averageOrderValue, 2) }} GBP.</p>
+                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">Average order value {{ number_format($averageOrderValue, 2) }} GBP.</p>
                 </a>
-                <a href="{{ route('admin.refunds.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.refunds.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-orange-300">Refunds</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($refundRequestCount) }}</p>
-                    <p class="mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} pending decisions in the queue.</p>
+                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} pending decisions in the queue.</p>
                 </a>
-                <a href="{{ route('admin.contact-queries.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
+                <a href="{{ route('admin.contact-queries.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-sky-300">Contact queries</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($contactQueryCount) }}</p>
-                    <p class="mt-2 text-sm text-gray-300">Open customer messages in the support inbox.</p>
+                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">Open customer messages in the support inbox.</p>
                 </a>
             </div>
 
-            <div class="mb-8 grid grid-cols-1 xl:grid-cols-3 gap-5">
-                <section class="rounded-3xl border border-white/10 bg-black p-5 shadow-xl xl:col-span-1">
+            <div class="mb-8 grid grid-cols-1 xl:grid-cols-2 gap-5">
+                <section class="rounded-3xl border border-[#444] bg-[#1d1d1f] p-5 shadow-xl xl:col-span-1">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-xl font-bold text-white">Inventory Overview</h3>
                         </div>
-                        <a href="{{ route('admin.products.stock') }}" class="stock-health-link text-sm font-semibold">View stock</a>
+                        <a href="{{ route('admin.products.create') }}" class="stock-health-link text-sm font-semibold">Add New Product</a>
                     </div>
                     <div class="mt-5 grid grid-cols-4 gap-3">
                         <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-3.5 text-white">
@@ -200,150 +374,60 @@
                     </div>
                 </section>
 
-                <section class="rounded-3xl border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800 xl:col-span-1">
-                    <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Order mix</p>
-                    <h3 class="mt-2 text-xl font-bold text-gray-900 dark:text-white">Current fulfilment status</h3>
-                    <div class="mt-5 space-y-3">
-                        <div class="rounded-2xl bg-amber-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-amber-900">Processing</span>
-                                <span class="text-xl font-bold text-amber-900">{{ $processingOrders }}</span>
-                            </div>
-                        </div>
-                        <div class="rounded-2xl bg-emerald-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-emerald-900">Completed</span>
-                                <span class="text-xl font-bold text-emerald-900">{{ $completedOrders }}</span>
-                            </div>
-                        </div>
-                        <div class="rounded-2xl bg-rose-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-rose-900">Cancelled</span>
-                                <span class="text-xl font-bold text-rose-900">{{ $cancelledOrders }}</span>
-                            </div>
-                        </div>
-                        <div class="rounded-2xl bg-sky-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-sky-900">Contact queries</span>
-                                <span class="text-xl font-bold text-sky-900">{{ $contactQueryCount }}</span>
-                            </div>
-                        </div>
-                        <div class="rounded-2xl bg-orange-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-orange-900">Refund requests</span>
-                                <span class="text-xl font-bold text-orange-900">{{ $pendingRefundCount }}</span>
-                            </div>
-                            <p class="mt-2 text-sm text-orange-700">{{ $refundRequestCount }} total submitted.</p>
-                        </div>
-                        <div class="rounded-2xl bg-violet-50 p-3.5">
-                            <div class="flex items-center justify-between">
-                                <span class="font-semibold text-violet-900">Return requests</span>
-                                <span class="text-xl font-bold text-violet-900">{{ $returnRequestCount }}</span>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="rounded-3xl border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800 xl:col-span-1">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Quick actions</p>
-                            <h3 class="mt-2 text-xl font-bold text-gray-900 dark:text-white">Jump straight into key admin work</h3>
-                        </div>
-                        <a href="{{ route('admin.products.index') }}" class="text-sm font-semibold text-cyan-600 hover:text-cyan-500">Open inventory</a>
-                    </div>
-                    <div class="mt-5 grid grid-cols-1 gap-2.5">
-                        <a href="{{ route('admin.products.create') }}" class="rounded-2xl border border-cyan-200 bg-cyan-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-cyan-800/60 dark:bg-cyan-900/20">
-                            <p class="text-xs uppercase tracking-[0.18em] text-cyan-700 dark:text-cyan-300">Add product</p>
-                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Create a new catalogue item</p>
-                        </a>
-
-                        <a href="{{ route('admin.products.index', ['stock' => 'low_stock']) }}" class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-amber-800/60 dark:bg-amber-900/20">
-                            <p class="text-xs uppercase tracking-[0.18em] text-amber-700 dark:text-amber-300">Low stock</p>
-                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Review products that need restocking</p>
-                        </a>
-
-                        <a href="{{ route('admin.contact-queries.index', ['status' => 'unresolved']) }}" class="rounded-2xl border border-sky-200 bg-sky-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-sky-800/60 dark:bg-sky-900/20">
-                            <p class="text-xs uppercase tracking-[0.18em] text-sky-700 dark:text-sky-300">Open queries</p>
-                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">View unresolved customer messages</p>
-                        </a>
-
-                        <a href="{{ route('admin.orders.index', ['status' => 'processing']) }}" class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-emerald-800/60 dark:bg-emerald-900/20">
-                            <p class="text-xs uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Processing orders</p>
-                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Open the orders still being fulfilled</p>
-                        </a>
-
-                        <a href="{{ route('admin.refunds.index', ['status' => 'pending']) }}" class="rounded-2xl border border-orange-200 bg-orange-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-orange-800/60 dark:bg-orange-900/20">
-                            <p class="text-xs uppercase tracking-[0.18em] text-orange-700 dark:text-orange-300">Pending refunds</p>
-                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">Review {{ $pendingRefundCount }} refund request{{ $pendingRefundCount === 1 ? '' : 's' }} waiting for a decision</p>
-                        </a>
-                        <a href="{{ route('admin.return-requests.index', ['status' => 'pending']) }}" class="rounded-2xl border border-violet-200 bg-violet-50 px-4 py-3 transition hover:-translate-y-0.5 hover:shadow-md dark:border-violet-800/60 dark:bg-violet-900/20">
-                            <p class="text-xs uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">Pending returns</p>
-                            <p class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">{{ $pendingReturnRequestCount }} waiting for review</p>
-                        </a>
-
-                    </div>
-                </section>
             </div>
 
-            <section class="mb-8 rounded-3xl border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800">
-                <div class="flex items-center justify-between gap-4">
-                    <div>
-                        <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Activity summary</p>
-                        <h3 class="mt-2 text-xl font-bold text-gray-900 dark:text-white">Latest movement across the store</h3>
-                    </div>
-                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-200">Live snapshot</span>
-                </div>
+            <details class="activity-summary-shell mb-8">
+                <summary class="activity-summary-toggle">
+                    <span>Activity Summary</span>
+                    <span class="activity-summary-chevron">v</span>
+                </summary>
 
-                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-4">
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                <div class="activity-summary-content grid grid-cols-1 gap-5 xl:grid-cols-4">
+                    <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-4 text-white">
                         <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Recent orders</h4>
-                            <a href="{{ route('admin.orders.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-white">Recent orders</h4>
+                            <a href="{{ route('admin.orders.index') }}" class="activity-summary-link-btn">View all</a>
                         </div>
                         <div class="space-y-3">
                             @forelse ($recentOrders as $order)
-                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                <div class="rounded-xl border border-[#444] bg-[#1d1d1f] px-3 py-3 shadow-sm">
                                     <div class="flex items-center justify-between gap-3">
-                                        <span class="font-semibold text-gray-900 dark:text-white">#{{ $order->id }}</span>
+                                        <span class="font-semibold text-white">#{{ $order->id }}</span>
                                         <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $order->status === 'cancelled' ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' : ($order->status === 'completed' || $order->status === 'delivered' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200') }}">
                                             {{ ucfirst($order->status) }}
                                         </span>
                                     </div>
-                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $order->user?->name ?? 'Unknown customer' }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $order->created_at->diffForHumans() }}</p>
+                                    <p class="mt-1 text-sm text-[#888]">{{ $order->user?->name ?? 'Unknown customer' }}</p>
+                                    <p class="mt-1 text-xs text-[#888]">{{ $order->created_at->diffForHumans() }}</p>
                                 </div>
                             @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No recent orders yet.</p>
+                                <p class="text-sm text-[#888]">No recent orders yet.</p>
                             @endforelse
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                    <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-4 text-white">
                         <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">New users</h4>
-                            <a href="{{ route('admin.users.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-white">New users</h4>
+                            <a href="{{ route('admin.users.index') }}" class="activity-summary-link-btn">View all</a>
                         </div>
                         <div class="space-y-3">
                             @forelse ($latestUsers as $user)
-                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
-                                    <p class="font-semibold text-gray-900 dark:text-white">{{ $user->name }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $user->created_at->diffForHumans() }}</p>
+                                <div class="rounded-xl border border-[#444] bg-[#1d1d1f] px-3 py-3 shadow-sm">
+                                    <p class="font-semibold text-white">{{ $user->name }}</p>
+                                    <p class="mt-1 text-xs text-[#888]">{{ $user->email }}</p>
+                                    <p class="mt-1 text-xs text-[#888]">{{ $user->created_at->diffForHumans() }}</p>
                                 </div>
                             @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No recent user signups yet.</p>
+                                <p class="text-sm text-[#888]">No recent user signups yet.</p>
                             @endforelse
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                    <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-4 text-white">
                         <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Latest refund / return requests</h4>
-                            <div class="flex items-center gap-3">
-                                <a href="{{ route('admin.refunds.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">Refunds</a>
-                                <a href="{{ route('admin.return-requests.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">Returns</a>
-                            </div>
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-white">Latest refund requests</h4>
+                            <a href="{{ route('admin.refunds.index') }}" class="activity-summary-link-btn">View all</a>
                         </div>
                         <div class="space-y-3">
                             @foreach ($latestRefundRequests as $refundRequest)
@@ -354,62 +438,49 @@
                                         default => 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
                                     };
                                 @endphp
-                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                <div class="rounded-xl border border-[#444] bg-[#1d1d1f] px-3 py-3 shadow-sm">
                                     <div class="flex items-center justify-between gap-3">
-                                        <p class="font-semibold text-gray-900 dark:text-white">Refund: {{ $refundRequest->user?->name ?? 'Unknown customer' }}</p>
+                                        <p class="font-semibold text-white">Refund: {{ $refundRequest->user?->name ?? 'Unknown customer' }}</p>
                                         <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $refundBadgeClasses }}">
                                             {{ ucfirst($refundRequest->status) }}
                                         </span>
                                     </div>
-                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($refundRequest->orderItem?->product?->name ?? 'Deleted product', 30) }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $refundRequest->created_at->diffForHumans() }}</p>
+                                    <p class="mt-1 text-sm text-[#888]">{{ \Illuminate\Support\Str::limit($refundRequest->orderItem?->product?->name ?? 'Deleted product', 30) }}</p>
+                                    <p class="mt-1 text-xs text-[#888]">{{ $refundRequest->created_at->diffForHumans() }}</p>
                                 </div>
                             @endforeach
 
-                            @foreach ($latestReturnRequests as $request)
-                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
-                                    <div class="flex items-center justify-between gap-3">
-                                        <p class="font-semibold text-gray-900 dark:text-white">{{ $request->product?->name ?? 'Product removed' }}</p>
-                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $request->status === 'approved' ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : ($request->status === 'declined' ? 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200') }}">
-                                            {{ ucfirst($request->status) }}
-                                        </span>
-                                    </div>
-                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $request->user?->name ?? 'Unknown customer' }} • {{ ucfirst($request->type) }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $request->created_at->diffForHumans() }}</p>
-                                </div>
-                            @endforeach
-
-                            @if ($latestRefundRequests->isEmpty() && $latestReturnRequests->isEmpty())
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No refund or return requests yet.</p>
+                            @if ($latestRefundRequests->isEmpty())
+                                <p class="text-sm text-[#888]">No refund requests yet.</p>
                             @endif
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
+                    <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-4 text-white">
                         <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Latest queries</h4>
-                            <a href="{{ route('admin.contact-queries.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-white">Latest contact queries</h4>
+                            <a href="{{ route('admin.contact-queries.index') }}" class="activity-summary-link-btn">View all</a>
                         </div>
                         <div class="space-y-3">
                             @forelse ($latestQueries as $query)
-                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                <div class="rounded-xl border border-[#444] bg-[#1d1d1f] px-3 py-3 shadow-sm">
                                     <div class="flex items-center justify-between gap-3">
-                                        <p class="font-semibold text-gray-900 dark:text-white">{{ $query->name }}</p>
+                                        <p class="font-semibold text-white">{{ $query->name }}</p>
                                         <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $query->resolved_at ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200' }}">
                                             {{ $query->resolved_at ? 'Resolved' : 'Open' }}
                                         </span>
                                     </div>
-                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($query->subject, 34) }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $query->created_at->diffForHumans() }}</p>
+                                    <p class="mt-1 text-sm text-[#888]">{{ \Illuminate\Support\Str::limit($query->subject, 34) }}</p>
+                                    <p class="mt-1 text-xs text-[#888]">{{ $query->created_at->diffForHumans() }}</p>
                                 </div>
                             @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No recent customer queries yet.</p>
+                                <p class="text-sm text-[#888]">No recent customer queries yet.</p>
                             @endforelse
                         </div>
                     </div>
 
                 </div>
-            </section>
+            </details>
 
             <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
