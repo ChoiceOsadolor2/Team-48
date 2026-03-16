@@ -26,6 +26,12 @@
         } elseif (request()->routeIs('admin.faqs.create') || request()->routeIs('admin.faqs.edit')) {
             $adminBackTarget = route('admin.faqs.index');
             $adminBackLabel = 'Back to FAQs';
+        } elseif (request()->routeIs('admin.discount-codes.create') || request()->routeIs('admin.discount-codes.edit')) {
+            $adminBackTarget = route('admin.discount-codes.index');
+            $adminBackLabel = 'Back to Discount Codes';
+        } elseif (request()->routeIs('admin.audit-logs.index')) {
+            $adminBackTarget = route('admin.dashboard');
+            $adminBackLabel = 'Back to Dashboard';
         } elseif (request()->routeIs('admin.contact-queries.show')) {
             $adminBackTarget = route('admin.contact-queries.index');
             $adminBackLabel = 'Back to Queries';

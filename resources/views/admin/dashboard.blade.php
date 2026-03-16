@@ -152,7 +152,6 @@
                                 <span class="text-xl font-bold text-sky-900">{{ $contactQueryCount }}</span>
                             </div>
                         </div>
-<<<<<<< HEAD
                         <div class="rounded-2xl bg-orange-50 p-3.5">
                             <div class="flex items-center justify-between">
                                 <span class="font-semibold text-orange-900">Refund requests</span>
@@ -166,8 +165,6 @@
                                 <span class="text-xl font-bold text-violet-900">{{ $returnRequestCount }}</span>
                             </div>
                         </div>
-=======
->>>>>>> 6fdeb59a720493029dc586c2e27e7b6303b96791
                     </div>
                 </section>
 
@@ -368,6 +365,7 @@
             </section>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6">
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="z-10 bg-blue-100 dark:bg-blue-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
@@ -443,6 +441,28 @@
                     </div>
                     <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Returns & Refunds</h4>
                     <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review after-sales requests, approve or decline them, and keep an audit trail with support notes.</p>
+                </a>
+
+                <a href="{{ route('admin.discount-codes.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-lime-50 to-emerald-50 dark:from-lime-900/10 dark:to-emerald-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="z-10 bg-lime-100 dark:bg-lime-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
+                        <svg class="w-8 h-8 text-lime-600 dark:text-lime-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-10V6m0 12v-2m9-4a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Discount Codes</h4>
+                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Create and manage percentage or fixed-amount promotions for checkout.</p>
+                </a>
+
+                <a href="{{ route('admin.audit-logs.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
+                    <div class="absolute inset-0 bg-gradient-to-br from-slate-50 to-gray-100 dark:from-slate-900/10 dark:to-gray-800/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                    <div class="z-10 bg-slate-100 dark:bg-slate-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-inner">
+                        <svg class="w-8 h-8 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-6m4 6V7m4 10v-3M5 21h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                    <h4 class="z-10 text-xl font-bold text-gray-900 dark:text-white mb-2">Audit Trail</h4>
+                    <p class="z-10 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">Review a running history of important admin actions across the store.</p>
                 </a>
             </div>
         </div>
