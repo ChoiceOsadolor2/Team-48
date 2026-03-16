@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\RefundRequest;
@@ -32,6 +33,19 @@ class OrdersController extends Controller
         }
 
         return view('orders.show', compact('order'));
+    }
+
+    public function downloadInvoice(Order $order)
+    {
+        if ($order->user_id !== Auth::id()) {
+            abort(403);
+        }
+
+        $order->loadMissing(['items.product']);
+
+        return Pdf::loadView('orders.download', compact('order'))
+            ->setPaper('a4')
+            ->download('veltrix-invoice-vx-' . $order->id . '.pdf');
     }
 
     public function returnsIndex(Order $order): View

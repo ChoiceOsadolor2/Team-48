@@ -14,6 +14,9 @@
                             <span class="invoice-order-label">Order #:</span>
                             <span class="invoice-order-number">VX-{{ $order->id }}</span>
                         </h1>
+                        <div class="invoice-header-actions">
+                            <a href="{{ route('orders.download', $order->id) }}" class="btn-secondary">Download Invoice</a>
+                        </div>
                     </div>
 
                     <div class="invoice-summary">

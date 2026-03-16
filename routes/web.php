@@ -130,6 +130,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [OrdersController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/download', [OrdersController::class, 'downloadInvoice'])->name('orders.download');
     Route::get('/orders/{order}/returns', [OrdersController::class, 'returnsIndex'])->name('orders.returns.index');
     Route::post('/orders/{order}/cancel', [OrdersController::class, 'cancel'])->name('orders.cancel');
     Route::get('/orders/items/{orderItem}/return', [OrdersController::class, 'returnForm'])->name('orders.return.form');
