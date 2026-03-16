@@ -410,6 +410,99 @@ textarea.checkout-decoy-input {
     margin-bottom: 24px;
 }
 
+.checkout-discount-panel {
+    margin-bottom: 24px;
+    padding: 18px;
+    border: 1px solid #444;
+    border-radius: 14px;
+    background: #121212;
+}
+
+.checkout-discount-copy h3 {
+    margin: 0 0 6px;
+    color: #fff;
+    font-size: 22px;
+    font-weight: 400;
+}
+
+.checkout-discount-copy p {
+    margin: 0 0 14px;
+    color: #888;
+    font-size: 16px;
+}
+
+.checkout-discount-form {
+    margin: 0;
+}
+
+.checkout-discount-input-row {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.checkout-discount-input-row .checkout-field-wrap {
+    flex: 1;
+}
+
+.checkout-discount-btn,
+.checkout-discount-remove {
+    position: relative;
+    padding: 12px 16px;
+    border: 1px solid #444;
+    border-radius: 12px;
+    background: #000;
+    color: #fff;
+    font-size: 16px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.checkout-discount-btn:hover,
+.checkout-discount-remove:hover,
+.checkout-discount-btn:focus-visible,
+.checkout-discount-remove:focus-visible {
+    background: #1d1d1f;
+    transform: translateY(-1px);
+    outline: none;
+}
+
+.checkout-discount-applied {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding-top: 14px;
+    border-top: 1px solid #2a2a2a;
+}
+
+.checkout-discount-badge {
+    margin: 0 0 4px;
+    color: #fff;
+    font-size: 16px;
+}
+
+.checkout-discount-meta {
+    margin: 0;
+    color: #888;
+    font-size: 15px;
+}
+
+.checkout-discount-message {
+    margin: 14px 0 0;
+    font-size: 15px;
+}
+
+.checkout-discount-message.is-error {
+    color: #ffa825;
+}
+
+.checkout-discount-message.is-success {
+    color: #77dd77;
+}
+
 .checkout-item {
     display: flex;
     align-items: flex-start;
@@ -629,7 +722,8 @@ html[data-theme="light"] .checkout-page-title {
 }
 
 html[data-theme="light"] .checkout-form-section,
-html[data-theme="light"] .checkout-summary-sticky {
+html[data-theme="light"] .checkout-summary-sticky,
+html[data-theme="light"] .checkout-discount-panel {
     background: #fff;
     border-color: #111;
 }
@@ -637,6 +731,8 @@ html[data-theme="light"] .checkout-summary-sticky {
 html[data-theme="light"] .form-section h2,
 html[data-theme="light"] .form-group > label,
 html[data-theme="light"] .checkout-summary-title,
+html[data-theme="light"] .checkout-discount-copy h3,
+html[data-theme="light"] .checkout-discount-badge,
 html[data-theme="light"] .item-name,
 html[data-theme="light"] .item-price,
 html[data-theme="light"] .item-platform,
@@ -656,7 +752,9 @@ html[data-theme="light"] textarea.checkout-decoy-input,
 html[data-theme="light"] .checkout-option-card,
 html[data-theme="light"] .payment-method-label,
 html[data-theme="light"] .submit-checkout-btn,
-html[data-theme="light"] .view-orders-btn {
+html[data-theme="light"] .view-orders-btn,
+html[data-theme="light"] .checkout-discount-btn,
+html[data-theme="light"] .checkout-discount-remove {
     background: #fff;
     border-color: #111;
     color: #111;
@@ -673,7 +771,9 @@ html[data-theme="light"] .summary-row.grand-total,
 html[data-theme="light"] .summary-row span.is-placeholder,
 html[data-theme="light"] .checkout-success p,
 html[data-theme="light"] .checkout-subtitle,
-html[data-theme="light"] .checkout-item-no-image {
+html[data-theme="light"] .checkout-item-no-image,
+html[data-theme="light"] .checkout-discount-copy p,
+html[data-theme="light"] .checkout-discount-meta {
     color: #888;
 }
 
@@ -754,6 +854,10 @@ html[data-theme="light"] .checkout-item-no-image {
 
     .checkout-page-title {
         font-size: 24px;
+    }
+
+    .checkout-discount-input-row {
+        flex-direction: column;
     }
 
     .checkout-subtitle,

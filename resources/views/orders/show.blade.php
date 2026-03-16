@@ -35,6 +35,17 @@
                                 </span>
                             </p>
                         @endif
+                        @if ($order->discount_code || (float) $order->discount_amount > 0)
+                            <p class="invoice-summary-line">
+                                <span class="item-label">Discount:</span>
+                                <span class="invoice-summary-value">
+                                    {{ $order->discount_code ?: 'Promo code' }}
+                                    @if ((float) $order->discount_amount > 0)
+                                        (-{{ number_format($order->discount_amount, 2) }} GBP)
+                                    @endif
+                                </span>
+                            </p>
+                        @endif
                         <p class="invoice-summary-line">
                             <span class="item-label">Total:</span>
                             <span class="invoice-summary-value">{{ number_format($order->total, 2) }} GBP</span>

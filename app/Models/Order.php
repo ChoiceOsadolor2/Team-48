@@ -15,6 +15,8 @@ class Order extends Model
         'status',
         'shipping_method',
         'shipping_cost',
+        'discount_code',
+        'discount_amount',
     ];
 
     public function items()

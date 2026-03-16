@@ -16,8 +16,12 @@ use App\Http\Controllers\Admin\RefundRequestController as AdminRefundRequestCont
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ContactQueryController as AdminContactQueryController;
 use App\Http\Controllers\Admin\ReturnRequestController as AdminReturnRequestController;
+use App\Http\Controllers\Admin\AuditLogController as AdminAuditLogController;
+use App\Http\Controllers\Admin\DiscountCodeController as AdminDiscountCodeController;
+use App\Models\AdminAuditLog;
 use App\Models\Category;
 use App\Models\ContactQuery;
+use App\Models\DiscountCode;
 use App\Models\Faq;
 use App\Models\Order;
 use App\Models\Product;
@@ -126,6 +130,8 @@ Route::middleware('auth')->group(function () {
         ->name('cart.update.json');
 
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/discount', [CheckoutController::class, 'applyDiscount'])->name('checkout.discount.apply');
+    Route::delete('/checkout/discount', [CheckoutController::class, 'removeDiscount'])->name('checkout.discount.remove');
     Route::post('/checkout/place', [CheckoutController::class, 'place'])->name('checkout.place');
 
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
@@ -222,6 +228,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ? ReturnRequest::where('status', 'pending')->count()
             : 0;
         $faqCount = Schema::hasTable('faqs') ? Faq::count() : 0;
+        $auditLogCount = Schema::hasTable('admin_audit_logs') ? AdminAuditLog::count() : 0;
+        $activeDiscountCodeCount = Schema::hasTable('discount_codes')
+            ? DiscountCode::where('is_active', true)->count()
+            : 0;
 
         return view('admin.dashboard', compact(
             'totalUsers',
@@ -247,8 +257,13 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'pendingRefundCount',
             'returnRequestCount',
             'pendingReturnRequestCount',
+            'auditLogCount',
+            'activeDiscountCodeCount',
         ));
     })->name('admin.dashboard');
+
+    Route::get('/admin/audit-log', [AdminAuditLogController::class, 'index'])
+        ->name('admin.audit-logs.index');
 
     Route::get('/admin/users', [UserController::class, 'index'])
         ->name('admin.users.index');
@@ -267,6 +282,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/stock', [\App\Http\Controllers\Admin\ProductController::class, 'stock'])
         ->name('admin.products.stock');
+
+    Route::get('/admin/low-stock-center', [\App\Http\Controllers\Admin\ProductController::class, 'lowStockCenter'])
+        ->name('admin.products.low-stock-center');
 
     Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])
         ->name('admin.products.create');
@@ -334,6 +352,24 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::patch('/admin/return-requests/{returnRequest}/status', [AdminReturnRequestController::class, 'updateStatus'])
         ->name('admin.return-requests.update-status');
+
+    Route::get('/admin/discount-codes', [AdminDiscountCodeController::class, 'index'])
+        ->name('admin.discount-codes.index');
+
+    Route::get('/admin/discount-codes/create', [AdminDiscountCodeController::class, 'create'])
+        ->name('admin.discount-codes.create');
+
+    Route::post('/admin/discount-codes', [AdminDiscountCodeController::class, 'store'])
+        ->name('admin.discount-codes.store');
+
+    Route::get('/admin/discount-codes/{discountCode}/edit', [AdminDiscountCodeController::class, 'edit'])
+        ->name('admin.discount-codes.edit');
+
+    Route::put('/admin/discount-codes/{discountCode}', [AdminDiscountCodeController::class, 'update'])
+        ->name('admin.discount-codes.update');
+
+    Route::delete('/admin/discount-codes/{discountCode}', [AdminDiscountCodeController::class, 'destroy'])
+        ->name('admin.discount-codes.destroy');
 
     Route::get('/admin/faqs/create', [AdminFaqController::class, 'create'])
         ->name('admin.faqs.create');

@@ -230,7 +230,53 @@
                         @endforeach
                     </div>
 
-                    <div class="summary-totals mt-6" data-subtotal="{{ number_format($total, 2, '.', '') }}">
+                    <div class="checkout-discount-panel">
+                        <div class="checkout-discount-copy">
+                            <h3>Discount Code</h3>
+                            <p>Add a promo code to update your order total before payment.</p>
+                        </div>
+
+                        <form action="{{ route('checkout.discount.apply') }}" method="POST" class="checkout-discount-form">
+                            @csrf
+                            <div class="checkout-discount-input-row">
+                                <div class="checkout-field-wrap">
+                                    <input
+                                        type="text"
+                                        name="discount_code"
+                                        value="{{ old('discount_code', $appliedDiscount['code'] ?? '') }}"
+                                        placeholder="Enter discount code"
+                                        autocomplete="off"
+                                    >
+                                </div>
+                                <button type="submit" class="checkout-discount-btn">Apply</button>
+                            </div>
+                        </form>
+
+                        @if ($appliedDiscount)
+                            <div class="checkout-discount-applied">
+                                <div>
+                                    <p class="checkout-discount-badge">Applied: {{ $appliedDiscount['code'] }}</p>
+                                    <p class="checkout-discount-meta">{{ $appliedDiscount['label'] }}</p>
+                                </div>
+
+                                <form action="{{ route('checkout.discount.remove') }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="checkout-discount-remove">Remove</button>
+                                </form>
+                            </div>
+                        @endif
+
+                        @if (session('discount_error'))
+                            <p class="checkout-discount-message is-error">{{ session('discount_error') }}</p>
+                        @endif
+
+                        @if (session('discount_success'))
+                            <p class="checkout-discount-message is-success">{{ session('discount_success') }}</p>
+                        @endif
+                    </div>
+
+                    <div class="summary-totals mt-6" data-subtotal="{{ number_format($total, 2, '.', '') }}" data-discount="{{ number_format($appliedDiscount['amount'] ?? 0, 2, '.', '') }}">
                         <div class="summary-row">
                             <span>Subtotal</span>
                             <span id="checkout_subtotal_value">{{ number_format($total, 2) }} GBP</span>
@@ -238,6 +284,10 @@
                         <div class="summary-row">
                             <span id="checkout_shipping_label">Shipping ({{ $selectedShipping['label'] }})</span>
                             <span id="checkout_shipping_value" class="{{ $selectedShipping['key'] ? '' : 'is-placeholder' }}">{{ number_format($shippingCost, 2) }} GBP</span>
+                        </div>
+                        <div class="summary-row {{ $appliedDiscount ? '' : 'hidden' }}" id="checkout_discount_row">
+                            <span id="checkout_discount_label">Discount{{ !empty($appliedDiscount['code']) ? ' (' . $appliedDiscount['code'] . ')' : '' }}</span>
+                            <span id="checkout_discount_value">-{{ number_format($appliedDiscount['amount'] ?? 0, 2) }} GBP</span>
                         </div>
                         <div class="summary-row">
                             <span>Tax</span>
@@ -266,7 +316,10 @@
             const shippingValue = document.getElementById('checkout_shipping_value');
             const totalValue = document.getElementById('checkout_total_value');
             const subtotalValue = document.getElementById('checkout_subtotal_value');
+            const discountRow = document.getElementById('checkout_discount_row');
+            const discountValue = document.getElementById('checkout_discount_value');
             const subtotal = Number(summaryTotals?.dataset.subtotal ?? 0);
+            const discountAmount = Number(summaryTotals?.dataset.discount ?? 0);
 
             document.querySelectorAll('.checkout-decoy-input[data-sync-target]').forEach(function (input) {
                 const syncTarget = document.getElementById(input.dataset.syncTarget);
@@ -351,7 +404,11 @@
                 shippingLabel.textContent = `Shipping (${title})`;
                 shippingValue.textContent = `${price.toFixed(2)} GBP`;
                 shippingValue.classList.remove('is-placeholder');
-                totalValue.textContent = `${(subtotal + price).toFixed(2)} GBP`;
+                if (discountRow && discountValue) {
+                    discountRow.classList.toggle('hidden', discountAmount <= 0);
+                    discountValue.textContent = `-${discountAmount.toFixed(2)} GBP`;
+                }
+                totalValue.textContent = `${Math.max(0, (subtotal + price) - discountAmount).toFixed(2)} GBP`;
                 if (subtotalValue) {
                     subtotalValue.textContent = `${subtotal.toFixed(2)} GBP`;
                 }
