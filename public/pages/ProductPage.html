@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/ProductPage.css">
+    <link rel="stylesheet" href="../styles/ProductPage.css?v=3">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/footer.css">
     <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
@@ -81,6 +81,15 @@
   <div id="product_reviews_list" class="product-reviews-list"></div>
 </section>
 
+<section id="product_extra_panels" class="product-related-section">
+  <div class="product-reviews-header">
+    <h2 class="product-reviews-title">Related Products</h2>
+  </div>
+
+  <div id="related_products_empty" class="product-reviews-empty" hidden>No related products found.</div>
+  <div id="related_products" class="related-products-grid"></div>
+</section>
+
 </div>
 </main>
 
@@ -105,6 +114,6 @@
 <script src="../scripts/header.js?v=2"></script>
 <script src="../scripts/footer.js"></script>
 <script src="../scripts/animations.js" defer></script>
-<script src="../scripts/products.js?v=9"></script>
+<script src="../scripts/products.js?v=12"></script>
 </body>
 </html>

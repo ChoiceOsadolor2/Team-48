@@ -740,6 +740,165 @@ html.home main {
   line-height: 1.45;
 }
 
+.product-related-section {
+  width: min(1080px, calc(100vw - 220px));
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 40px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.related-products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, 300px);
+  justify-content: center;
+  gap: 20px;
+}
+
+.related-products-grid .product_card {
+  position: relative;
+  width: 300px;
+  height: 450px;
+  padding: 20px;
+  border-radius: 14px;
+  background: #000000;
+  border: 1px solid #444;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.related-products-grid .product_card::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  animation: veltrixGlow 2s infinite alternate;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.related-products-grid .product_card:hover {
+  background: #1a1a1a;
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(255, 0, 168, 0.15);
+}
+
+.related-products-grid .product_card:hover::after {
+  opacity: 1;
+}
+
+.related-products-grid .product_image {
+  width: 100%;
+  height: 200px;
+  object-fit: contain;
+  border-radius: 10px;
+  display: block;
+}
+
+.related-products-grid .product_price {
+  font-family: 'MiniPixel', 'Segoe UI', Arial, sans-serif !important;
+  font-size: 30px;
+  margin-top: 5px;
+  display: block;
+}
+
+.related-products-grid .product_name {
+  font-size: 30px;
+  font-weight: normal;
+  margin-top: auto;
+}
+
+.related-products-grid .view_product {
+  display: block;
+  width: 100%;
+  padding: 12px 18px;
+  background: #000000 !important;
+  background-image: none !important;
+  color: white;
+  border: 1px solid #444 !important;
+  border-radius: 14px;
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 20px;
+  font-weight: 100 !important;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  transition: all 0.25s ease;
+  position: relative;
+  box-sizing: border-box;
+  margin-top: auto;
+  margin-bottom: 10px;
+  top: 10px;
+}
+
+.related-products-grid .view_product:hover,
+.related-products-grid .view_product:focus-visible {
+  background: #1d1d1d !important;
+  transform: translateY(-2px);
+  border-color: transparent !important;
+  outline: none;
+}
+
+.related-products-grid .view_product::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  animation: veltrixGlow 2s infinite alternate;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.related-products-grid .view_product:hover::after,
+.related-products-grid .view_product:focus-visible::after {
+  opacity: 1;
+}
+
+.related-products-grid .product_review_summary {
+  width: 100%;
+  min-height: 42px;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.related-products-grid .product_review_stars {
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 20px;
+  line-height: 1.2;
+  color: #ffa825;
+  letter-spacing: 0.08em;
+}
+
+.related-products-grid .product_review_stars.is-empty {
+  color: #888;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
 /* =============================
    Product Page: Refined Light Mode
    ============================= */
@@ -786,6 +945,7 @@ html.home[data-theme="light"] main {
 html.home[data-theme="light"] #product_carousal,
 html.home[data-theme="light"] .product_meta_bubble,
 html.home[data-theme="light"] .product-review-card,
+html.home[data-theme="light"] .related-products-grid .product_card,
 html.home[data-theme="light"] .product-reviews-empty,
 html.home[data-theme="light"] #previous_page,
 html.home[data-theme="light"] #product_info .qty-input,
@@ -814,6 +974,9 @@ html.home[data-theme="light"] .product-reviews-title,
 html.home[data-theme="light"] .product-review-author,
 html.home[data-theme="light"] .product-review-title,
 html.home[data-theme="light"] .product-review-message,
+html.home[data-theme="light"] .related-products-grid .product_name,
+html.home[data-theme="light"] .related-products-grid .product_price,
+html.home[data-theme="light"] .related-products-grid .view_product,
 html.home[data-theme="light"] .product-platform-selected,
 html.home[data-theme="light"] #product_info .qty-input .qty-count,
 html.home[data-theme="light"] #product_info .qty-input .product-qty,
@@ -830,6 +993,21 @@ html.home[data-theme="light"] .product-review-platform {
 
 html.home[data-theme="light"] .product-review-rating {
   color: #ffa825;
+}
+
+html.home[data-theme="light"] .related-products-grid .view_product {
+  background: #ffffff;
+  border-color: #000000;
+  box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+}
+
+html.home[data-theme="light"] .related-products-grid .view_product:hover,
+html.home[data-theme="light"] .related-products-grid .view_product:focus-visible {
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .related-products-grid .product_review_stars.is-empty {
+  color: #888;
 }
 
 html.home[data-theme="light"] #product_info .qty-input {

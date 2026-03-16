@@ -304,7 +304,7 @@ function renderRelatedProducts(currentProduct, products) {
   const related = products
     .filter((item) => String(item.id) !== String(currentProduct.id))
     .filter((item) => item.category?.name === currentCategoryName)
-    .slice(0, 4);
+    .slice(0, 3);
 
   if (!related.length) {
     if (emptyState) emptyState.hidden = false;
@@ -314,27 +314,45 @@ function renderRelatedProducts(currentProduct, products) {
   if (emptyState) emptyState.hidden = true;
 
   related.forEach((product) => {
+    const reviewSummary = getProductReviewSummary(product);
     const card = document.createElement('article');
-    card.className = 'related-product-card';
+    card.className = 'product_card related-product-card';
 
     const image = document.createElement('img');
+    image.className = 'product_image';
     setProductImage(image, product);
     image.alt = `${product.name} image`;
 
     const title = document.createElement('h3');
+    title.className = 'product_name';
     title.textContent = product.name;
 
     const price = document.createElement('p');
+    price.className = 'product_price';
     price.textContent = `${product.price} GBP`;
 
     const link = document.createElement('a');
+    link.className = 'view_product';
     link.href = `ProductPage.html?id=${product.id}`;
-    link.textContent = 'View product';
+    link.textContent = 'View Product';
+
+    const reviewWrap = document.createElement('div');
+    reviewWrap.className = 'product_review_summary';
+
+    const reviewStars = document.createElement('span');
+    reviewStars.className = 'product_review_stars';
+    if (reviewSummary.isEmpty) {
+      reviewStars.classList.add('is-empty');
+    }
+    reviewStars.textContent = reviewSummary.text;
+
+    reviewWrap.appendChild(reviewStars);
 
     card.appendChild(image);
     card.appendChild(title);
     card.appendChild(price);
     card.appendChild(link);
+    card.appendChild(reviewWrap);
     fragment.appendChild(card);
   });
 
