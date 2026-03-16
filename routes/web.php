@@ -178,6 +178,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
             ->orderBy('name')
             ->take(5)
             ->get(['id', 'name', 'stock']);
+        $outOfStockProductAlerts = Product::where('stock', '<=', 0)
+            ->orderBy('name')
+            ->take(5)
+            ->get(['id', 'name', 'stock']);
 
         $totalOrders = Order::count();
         $processingOrders = Order::where('status', 'processing')->count();
@@ -249,6 +253,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
             'inStockProducts',
             'outOfStockProducts',
             'lowStockProducts',
+            'outOfStockProductAlerts',
             'totalOrders',
             'processingOrders',
             'cancelledOrders',

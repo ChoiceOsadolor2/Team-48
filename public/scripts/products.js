@@ -327,6 +327,10 @@ function renderRelatedProducts(currentProduct, products) {
     title.className = 'product_name';
     title.textContent = product.name;
 
+    const category = document.createElement('span');
+    category.className = 'product_category';
+    category.textContent = product.category?.name || '';
+
     const price = document.createElement('p');
     price.className = 'product_price';
     price.textContent = `${product.price} GBP`;
@@ -350,6 +354,7 @@ function renderRelatedProducts(currentProduct, products) {
 
     card.appendChild(image);
     card.appendChild(title);
+    card.appendChild(category);
     card.appendChild(price);
     card.appendChild(link);
     card.appendChild(reviewWrap);
@@ -1252,11 +1257,13 @@ function renderProducts(list) {
 
     const priceEl = clone.querySelector('.product_price');
     const nameEl = clone.querySelector('.product_name');
+    const categoryEl = clone.querySelector('.product_category');
     const img = clone.querySelector('.product_image');
     const descEl = clone.querySelector('.product_description'); // in case template still has it
 
     if (priceEl) priceEl.textContent = `${product.price} GBP`;
     if (nameEl) nameEl.textContent = product.name;
+    if (categoryEl) categoryEl.textContent = product.category?.name || '';
     if (clone.firstElementChild) {
       clone.firstElementChild.dataset.name = product.name || '';
       clone.firstElementChild.dataset.price = product.price || '';

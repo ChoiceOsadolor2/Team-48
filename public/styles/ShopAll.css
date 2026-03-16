@@ -150,6 +150,7 @@ html[data-theme="light"] .shop-filter-field,
 html[data-theme="light"] .shop-category-tabs h2,
 html[data-theme="light"] .shop-empty-state,
 html[data-theme="light"] .product_name,
+html[data-theme="light"] .product_category,
 html[data-theme="light"] .product_price {
     color: #111;
 }
@@ -766,7 +767,7 @@ svg:hover {
 .product_price {
     font-family: 'MiniPixel', 'Segoe UI', Arial, sans-serif !important;
     font-size: 30px;
-    margin-top: 5px;
+    margin-top: 16px;
     display: block;
 }
 
@@ -774,6 +775,15 @@ svg:hover {
     font-size: 30px;
     font-weight: normal;
     margin-top: auto;
+}
+
+.product_category {
+    display: block;
+    margin-top: 12px;
+    color: #888;
+    font-family: 'MiniPixel', sans-serif !important;
+    font-size: 20px;
+    line-height: 1.2;
 }
 
 /* Product card buttons */
@@ -1038,6 +1048,7 @@ html.home[data-theme="light"] .shop-price-range__values,
 html.home[data-theme="light"] .shop-price-range__values strong,
 html.home[data-theme="light"] .shop-empty-state h3,
 html.home[data-theme="light"] .product_name,
+html.home[data-theme="light"] .product_category,
 html.home[data-theme="light"] .product_price,
 html.home[data-theme="light"] .select-items div,
 html.home[data-theme="light"] .select-selected,

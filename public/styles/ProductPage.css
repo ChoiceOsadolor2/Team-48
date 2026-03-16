@@ -823,6 +823,15 @@ html.home main {
   margin-top: auto;
 }
 
+.related-products-grid .product_category {
+  display: block;
+  margin-top: 12px;
+  color: #888;
+  font-family: 'MiniPixel', sans-serif !important;
+  font-size: 20px;
+  line-height: 1.2;
+}
+
 .related-products-grid .view_product {
   display: block;
   width: 100%;
@@ -975,6 +984,7 @@ html.home[data-theme="light"] .product-review-author,
 html.home[data-theme="light"] .product-review-title,
 html.home[data-theme="light"] .product-review-message,
 html.home[data-theme="light"] .related-products-grid .product_name,
+html.home[data-theme="light"] .related-products-grid .product_category,
 html.home[data-theme="light"] .related-products-grid .product_price,
 html.home[data-theme="light"] .related-products-grid .view_product,
 html.home[data-theme="light"] .product-platform-selected,

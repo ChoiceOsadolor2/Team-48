@@ -29,6 +29,57 @@
             font-size: 30px !important;
             line-height: 1.2 !important;
         }
+
+        .admin-dashboard-page .stock-health-link {
+            display: block;
+            width: 180px;
+            padding: 12px 18px;
+            background: #000 !important;
+            background-image: none !important;
+            color: white !important;
+            border: 1px solid #444 !important;
+            border-radius: 14px;
+            font-family: 'MiniPixel', sans-serif !important;
+            font-size: 20px !important;
+            font-weight: 100 !important;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            position: relative;
+            box-sizing: border-box;
+            line-height: 1.2;
+        }
+
+        .admin-dashboard-page .stock-health-link::after {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: -1px;
+            right: -1px;
+            bottom: -1px;
+            border-radius: inherit;
+            border: 1px solid transparent;
+            opacity: 0;
+            animation: veltrixGlow 2s infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .admin-dashboard-page .stock-health-link:hover,
+        .admin-dashboard-page .stock-health-link:focus-visible {
+            background: #1d1d1d !important;
+            transform: translateY(-2px);
+            border-color: transparent !important;
+            color: #fff !important;
+            outline: none;
+        }
+
+        .admin-dashboard-page .stock-health-link:hover::after,
+        .admin-dashboard-page .stock-health-link:focus-visible::after {
+            opacity: 1;
+        }
+
     </style>
 
     <div class="admin-dashboard-page py-12 min-h-screen">
@@ -39,84 +90,109 @@
                 </div>
             @endif
 
-            <div class="mb-10 flex items-center justify-between bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 rounded-3xl p-10 shadow-2xl text-white transform transition-all hover:scale-[1.01] duration-300">
-                <div class="max-w-2xl">
-                    <h3 class="text-4xl font-extrabold tracking-tight mb-4 drop-shadow-md">
-                        Welcome back, {{ auth()->user()->name }}!
-                    </h3>
-                    <p class="text-indigo-100 text-lg opacity-90 leading-relaxed">
-                        Here's your command center. Manage your users, keep track of inventory, and process orders all in one place.
-                    </p>
-                </div>
-                <div class="hidden md:block">
-                    <div class="bg-white/20 p-5 rounded-full backdrop-blur-sm">
-                        <svg class="w-20 h-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                        </svg>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mb-8 grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-5">
-                <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
+            <div class="mb-8 flex flex-wrap justify-center gap-4">
+                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
                     <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalUsers) }}</p>
                     <p class="mt-2 text-sm text-gray-300">Registered accounts on the platform.</p>
                 </div>
-                <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
+                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
                     <p class="text-sm uppercase tracking-[0.2em] text-emerald-300">Products</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalProducts) }}</p>
                     <p class="mt-2 text-sm text-gray-300">{{ $inStockProducts }} in stock, {{ $outOfStockProducts }} out of stock.</p>
                 </div>
-                <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
+                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
                     <p class="text-sm uppercase tracking-[0.2em] text-amber-300">Orders</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalOrders) }}</p>
                     <p class="mt-2 text-sm text-gray-300">{{ $processingOrders }} processing, {{ $completedOrders }} completed.</p>
                 </div>
-                <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
+                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
                     <p class="text-sm uppercase tracking-[0.2em] text-pink-300">Revenue</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalRevenue, 2) }} GBP</p>
                     <p class="mt-2 text-sm text-gray-300">Average order value {{ number_format($averageOrderValue, 2) }} GBP.</p>
                 </div>
-                <div class="rounded-3xl border border-white/10 bg-black/70 p-5 text-white shadow-xl">
+                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
                     <p class="text-sm uppercase tracking-[0.2em] text-orange-300">Refunds</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($refundRequestCount) }}</p>
                     <p class="mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} pending decisions in the queue.</p>
                 </div>
+                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
+                    <p class="text-sm uppercase tracking-[0.2em] text-sky-300">Contact queries</p>
+                    <p class="mt-2 text-3xl font-bold">{{ number_format($contactQueryCount) }}</p>
+                    <p class="mt-2 text-sm text-gray-300">Open customer messages in the support inbox.</p>
+                </div>
             </div>
 
             <div class="mb-8 grid grid-cols-1 xl:grid-cols-3 gap-5">
-                <section class="rounded-3xl border border-gray-200 bg-white p-5 shadow-lg dark:border-gray-700 dark:bg-gray-800 xl:col-span-1">
+                <section class="rounded-3xl border border-white/10 bg-black p-5 shadow-xl xl:col-span-1">
                     <div class="flex items-center justify-between">
                         <div>
-                            <p class="text-sm uppercase tracking-[0.2em] text-gray-400">Stock health</p>
-                            <h3 class="mt-2 text-xl font-bold text-gray-900 dark:text-white">Inventory snapshot</h3>
+                            <h3 class="text-xl font-bold text-white">Inventory Overview</h3>
                         </div>
-                        <a href="{{ route('admin.products.stock') }}" class="text-sm font-semibold text-cyan-600 hover:text-cyan-500">View stock</a>
+                        <a href="{{ route('admin.products.stock') }}" class="stock-health-link text-sm font-semibold">View stock</a>
                     </div>
-                    <div class="mt-5 grid grid-cols-2 gap-3">
-                        <div class="rounded-2xl bg-emerald-50 p-3.5 text-emerald-900">
+                    <div class="mt-5 grid grid-cols-4 gap-3">
+                        <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-3.5 text-white">
+                            <p class="text-sm font-semibold">All stock</p>
+                            <p class="mt-1.5 text-2xl font-bold">{{ $totalProducts }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-3.5 text-emerald-300">
                             <p class="text-sm font-semibold">Available</p>
                             <p class="mt-1.5 text-2xl font-bold">{{ $inStockProducts }}</p>
                         </div>
-                        <div class="rounded-2xl bg-rose-50 p-3.5 text-rose-900">
+                        <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-3.5 text-rose-300">
                             <p class="text-sm font-semibold">Out of stock</p>
                             <p class="mt-1.5 text-2xl font-bold">{{ $outOfStockProducts }}</p>
+                        </div>
+                        <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-3.5 text-yellow-300">
+                            <p class="text-sm font-semibold">Low stock</p>
+                            <p class="mt-1.5 text-2xl font-bold">{{ $lowStockProducts->count() }}</p>
                         </div>
                     </div>
                     <div class="mt-5">
                         <div class="mb-3 flex items-center justify-between">
-                            <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">Low stock alerts</p>
-                            <span class="text-xs text-gray-400">5 units or fewer</span>
+                            <p class="text-sm font-semibold text-white">Low stock alerts</p>
+                            <span class="text-xs" style="color: #888 !important;">5 units or fewer</span>
                         </div>
                         @if ($lowStockProducts->isEmpty())
-                            <p class="rounded-2xl bg-gray-50 px-4 py-3 text-sm text-gray-500 dark:bg-gray-900 dark:text-gray-400">No products currently need urgent restocking.</p>
+                            <p class="rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm text-gray-400">No products currently need urgent restocking.</p>
                         @else
                             <div class="space-y-3">
                                 @foreach ($lowStockProducts as $product)
-                                    <div class="flex items-center justify-between rounded-2xl bg-gray-50 px-4 py-3 dark:bg-gray-900">
-                                        <span class="font-semibold text-gray-800 dark:text-gray-100">{{ $product->name }}</span>
-                                        <span class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">{{ $product->stock }} left</span>
+                                    <div class="flex items-center justify-between rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3">
+                                        <span class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</span>
+                                        <div class="flex items-center gap-3">
+                                            <span class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">{{ $product->stock }} left</span>
+                                            <a
+                                                href="{{ route('admin.products.edit', $product) }}"
+                                                class="stock-health-link"
+                                            >
+                                                Restock
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                    <div class="mt-5">
+                        <div class="mb-3 flex items-center justify-between">
+                            <p class="text-sm font-semibold text-white">Out of stock alerts</p>
+                            <span class="text-xs" style="color: #888 !important;">0 units remaining</span>
+                        </div>
+                        @if ($outOfStockProductAlerts->isEmpty())
+                            <p class="rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm text-gray-400">No products are currently out of stock.</p>
+                        @else
+                            <div class="space-y-3">
+                                @foreach ($outOfStockProductAlerts as $product)
+                                    <div class="flex items-center justify-between rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3">
+                                        <span class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</span>
+                                        <a
+                                            href="{{ route('admin.products.edit', $product) }}"
+                                            class="stock-health-link"
+                                        >
+                                            Restock
+                                        </a>
                                     </div>
                                 @endforeach
                             </div>
