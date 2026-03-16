@@ -219,7 +219,7 @@
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600 dark:bg-gray-700 dark:text-gray-200">Live snapshot</span>
                 </div>
 
-                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-5">
+                <div class="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-4">
                     <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
                         <div class="mb-3 flex items-center justify-between">
                             <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Recent orders</h4>
@@ -263,11 +263,34 @@
 
                     <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
                         <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Latest return requests</h4>
-                            <a href="{{ route('admin.return-requests.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
+                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Latest refund / return requests</h4>
+                            <div class="flex items-center gap-3">
+                                <a href="{{ route('admin.refunds.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">Refunds</a>
+                                <a href="{{ route('admin.return-requests.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">Returns</a>
+                            </div>
                         </div>
                         <div class="space-y-3">
-                            @forelse ($latestReturnRequests as $request)
+                            @foreach ($latestRefundRequests as $refundRequest)
+                                @php
+                                    $refundBadgeClasses = match($refundRequest->status) {
+                                        'approved' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
+                                        'denied' => 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200',
+                                        default => 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
+                                    };
+                                @endphp
+                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
+                                    <div class="flex items-center justify-between gap-3">
+                                        <p class="font-semibold text-gray-900 dark:text-white">Refund: {{ $refundRequest->user?->name ?? 'Unknown customer' }}</p>
+                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $refundBadgeClasses }}">
+                                            {{ ucfirst($refundRequest->status) }}
+                                        </span>
+                                    </div>
+                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($refundRequest->orderItem?->product?->name ?? 'Deleted product', 30) }}</p>
+                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $refundRequest->created_at->diffForHumans() }}</p>
+                                </div>
+                            @endforeach
+
+                            @foreach ($latestReturnRequests as $request)
                                 <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
                                     <div class="flex items-center justify-between gap-3">
                                         <p class="font-semibold text-gray-900 dark:text-white">{{ $request->product?->name ?? 'Product removed' }}</p>
@@ -278,9 +301,11 @@
                                     <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ $request->user?->name ?? 'Unknown customer' }} • {{ ucfirst($request->type) }}</p>
                                     <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ $request->created_at->diffForHumans() }}</p>
                                 </div>
-                            @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No return requests yet.</p>
-                            @endforelse
+                            @endforeach
+
+                            @if ($latestRefundRequests->isEmpty() && $latestReturnRequests->isEmpty())
+                                <p class="text-sm text-gray-500 dark:text-gray-400">No refund or return requests yet.</p>
+                            @endif
                         </div>
                     </div>
 
@@ -307,65 +332,10 @@
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/60">
-                        <div class="mb-3 flex items-center justify-between">
-                            <h4 class="text-sm font-semibold uppercase tracking-[0.16em] text-gray-500 dark:text-gray-400">Refund requests</h4>
-                            <a href="{{ route('admin.refunds.index') }}" class="text-xs font-semibold text-cyan-600 hover:text-cyan-500">View all</a>
-                        </div>
-                        <div class="space-y-3">
-                            @forelse ($latestRefundRequests as $refundRequest)
-                                @php
-                                    $refundBadgeClasses = match($refundRequest->status) {
-                                        'approved' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200',
-                                        'denied' => 'bg-rose-100 text-rose-800 dark:bg-rose-900/40 dark:text-rose-200',
-                                        default => 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200',
-                                    };
-                                @endphp
-                                <div class="rounded-xl bg-white px-3 py-3 shadow-sm dark:bg-gray-800">
-                                    <div class="flex items-center justify-between gap-3">
-                                        <p class="font-semibold text-gray-900 dark:text-white">{{ $refundRequest->user?->name ?? 'Unknown customer' }}</p>
-                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $refundBadgeClasses }}">
-                                            {{ ucfirst($refundRequest->status) }}
-                                        </span>
-                                    </div>
-                                    <p class="mt-1 text-sm text-gray-600 dark:text-gray-300">{{ \Illuminate\Support\Str::limit($refundRequest->orderItem?->product?->name ?? 'Deleted product', 30) }}</p>
-                                    <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{{ \Illuminate\Support\Str::limit($refundRequest->reason, 56) }}</p>
-
-                                    @if ($refundRequest->status === 'pending')
-                                        <div class="mt-3 flex gap-2">
-                                            <form method="POST" action="{{ route('admin.refunds.update-status', $refundRequest) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="approved">
-                                                <button type="submit" class="rounded-lg border border-emerald-200 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-300 dark:hover:bg-emerald-900/20">
-                                                    Accept
-                                                </button>
-                                            </form>
-                                            <form method="POST" action="{{ route('admin.refunds.update-status', $refundRequest) }}">
-                                                @csrf
-                                                @method('PATCH')
-                                                <input type="hidden" name="status" value="denied">
-                                                <button type="submit" class="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 dark:border-rose-800 dark:text-rose-300 dark:hover:bg-rose-900/20">
-                                                    Deny
-                                                </button>
-                                            </form>
-                                        </div>
-                                    @else
-                                        <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
-                                            Reviewed {{ $refundRequest->reviewed_at?->diffForHumans() ?? 'just now' }}
-                                        </p>
-                                    @endif
-                                </div>
-                            @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">No refund requests have been submitted yet.</p>
-                            @endforelse
-                        </div>
-                    </div>
                 </div>
             </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-7 gap-6">
+            <div class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                 <a href="{{ route('admin.users.index') }}" class="group relative bg-white dark:bg-gray-800 rounded-3xl p-6 shadow-lg hover:shadow-2xl transition-all duration-300 border border-gray-100 dark:border-gray-700 overflow-hidden flex flex-col items-center text-center translate-y-0 hover:-translate-y-2">
                     <div class="absolute inset-0 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/10 dark:to-indigo-900/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                     <div class="z-10 bg-blue-100 dark:bg-blue-900/40 p-4 rounded-2xl mb-5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-inner">
