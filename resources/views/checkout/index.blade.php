@@ -27,7 +27,7 @@
                                     data-sync-target="email"
                                 >{{ auth()->check() ? auth()->user()->email : '' }}</div>
                             </div>
-                            <p id="email-error" class="checkout-field-error"></p>
+                            <p id="email-error" class="checkout-field-error" @if($errors->has('email')) style="display:block;" @endif>{{ $errors->first('email') }}</p>
                         </div>
                     </div>
 
@@ -49,7 +49,7 @@
                                         data-sync-target="first-name"
                                     >{{ auth()->check() ? explode(' ', auth()->user()->name)[0] : '' }}</div>
                                 </div>
-                                <p id="first-name-error" class="checkout-field-error"></p>
+                                <p id="first-name-error" class="checkout-field-error" @if($errors->has('first-name')) style="display:block;" @endif>{{ $errors->first('first-name') }}</p>
                             </div>
                             <div class="form-group half">
                                 <label for="last-name-display">Last Name</label>
@@ -66,7 +66,7 @@
                                         data-sync-target="last-name"
                                     >{{ auth()->check() && count(explode(' ', auth()->user()->name)) > 1 ? explode(' ', auth()->user()->name)[1] : '' }}</div>
                                 </div>
-                                <p id="last-name-error" class="checkout-field-error"></p>
+                                <p id="last-name-error" class="checkout-field-error" @if($errors->has('last-name')) style="display:block;" @endif>{{ $errors->first('last-name') }}</p>
                             </div>
                         </div>
                         <div class="form-group">
@@ -84,7 +84,7 @@
                                     data-sync-target="address"
                                 ></div>
                             </div>
-                            <p id="address-error" class="checkout-field-error"></p>
+                            <p id="address-error" class="checkout-field-error" @if($errors->has('address')) style="display:block;" @endif>{{ $errors->first('address') }}</p>
                         </div>
                         <div class="form-row">
                             <div class="form-group third">
@@ -102,7 +102,7 @@
                                         data-sync-target="city"
                                     ></div>
                                 </div>
-                                <p id="city-error" class="checkout-field-error"></p>
+                                <p id="city-error" class="checkout-field-error" @if($errors->has('city')) style="display:block;" @endif>{{ $errors->first('city') }}</p>
                             </div>
                             <div class="form-group third">
                                 <label for="country-display">Country</label>
@@ -119,7 +119,7 @@
                                         data-sync-target="country"
                                     ></div>
                                 </div>
-                                <p id="country-error" class="checkout-field-error"></p>
+                                <p id="country-error" class="checkout-field-error" @if($errors->has('country')) style="display:block;" @endif>{{ $errors->first('country') }}</p>
                             </div>
                             <div class="form-group third">
                                 <label for="postal-code-display">Postal Code</label>
@@ -136,7 +136,7 @@
                                         data-sync-target="postal-code"
                                     ></div>
                                 </div>
-                                <p id="postal-code-error" class="checkout-field-error"></p>
+                                <p id="postal-code-error" class="checkout-field-error" @if($errors->has('postal-code')) style="display:block;" @endif>{{ $errors->first('postal-code') }}</p>
                             </div>
                         </div>
                     </div>
@@ -154,7 +154,7 @@
                                 </label>
                             @endforeach
                         </div>
-                        <p id="shipping-option-error" class="checkout-field-error"></p>
+                        <p id="shipping-option-error" class="checkout-field-error" @if($errors->has('shipping_option')) style="display:block;" @endif>{{ $errors->first('shipping_option') }}</p>
                     </div>
 
                     <div class="form-section checkout-payment-section">
@@ -171,7 +171,7 @@
                             <div class="checkout-field-wrap">
                                 <input type="text" id="card-number" name="card-number" placeholder="0000 0000 0000 0000" maxlength="19" required>
                             </div>
-                            <p id="card-number-error" class="checkout-field-error"></p>
+                            <p id="card-number-error" class="checkout-field-error" @if($errors->has('card-number')) style="display:block;" @endif>{{ $errors->first('card-number') }}</p>
                         </div>
                         <div class="form-row">
                             <div class="form-group half">
@@ -179,14 +179,14 @@
                                 <div class="checkout-field-wrap">
                                     <input type="text" id="expiry" name="expiry" placeholder="12/25" maxlength="5" required>
                                 </div>
-                                <p id="expiry-error" class="checkout-field-error"></p>
+                                <p id="expiry-error" class="checkout-field-error" @if($errors->has('expiry')) style="display:block;" @endif>{{ $errors->first('expiry') }}</p>
                             </div>
                             <div class="form-group half">
                                 <label for="cvv">CVV</label>
                                 <div class="checkout-field-wrap">
                                     <input type="text" id="cvv" name="cvv" placeholder="123" maxlength="3" required>
                                 </div>
-                                <p id="cvv-error" class="checkout-field-error"></p>
+                                <p id="cvv-error" class="checkout-field-error" @if($errors->has('cvv')) style="display:block;" @endif>{{ $errors->first('cvv') }}</p>
                             </div>
                         </div>
                     </div>
