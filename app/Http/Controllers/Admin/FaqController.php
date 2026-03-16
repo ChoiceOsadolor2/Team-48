@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Faq;
+use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -59,6 +60,11 @@ class FaqController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'keyword' => InputSanitizer::singleLine($request->input('keyword')),
+            'answer' => InputSanitizer::multiLine($request->input('answer')),
+        ]);
+
         $data = $request->validate([
             'keyword' => ['required', 'string', 'max:255', 'unique:faqs,keyword'],
             'category' => ['required', 'string', 'in:' . implode(',', array_keys(Faq::CATEGORIES))],
@@ -80,6 +86,11 @@ class FaqController extends Controller
 
     public function update(Request $request, Faq $faq)
     {
+        $request->merge([
+            'keyword' => InputSanitizer::singleLine($request->input('keyword')),
+            'answer' => InputSanitizer::multiLine($request->input('answer')),
+        ]);
+
         $data = $request->validate([
             'keyword' => ['required', 'string', 'max:255', 'unique:faqs,keyword,' . $faq->id],
             'category' => ['required', 'string', 'in:' . implode(',', array_keys(Faq::CATEGORIES))],

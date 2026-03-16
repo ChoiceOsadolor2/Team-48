@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
 use App\Models\Review;
+use App\Support\InputSanitizer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,6 +33,11 @@ class ReviewController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $request->merge([
+            'title' => InputSanitizer::singleLine($request->input('title')),
+            'message' => InputSanitizer::multiLine($request->input('message')),
+        ]);
+
         $data = $request->validate([
             'order_item_id' => ['required', 'integer', 'exists:order_items,id'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
@@ -61,8 +67,8 @@ class ReviewController extends Controller
             'order_item_id' => $orderItem->id,
             'platform' => $orderItem->platform ?: ($orderItem->product->platform ?? 'Universal'),
             'rating' => (int) $data['rating'],
-            'title' => trim($data['title']),
-            'message' => trim($data['message']),
+            'title' => $data['title'],
+            'message' => $data['message'],
         ]);
 
         return response()->json([

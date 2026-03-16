@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Support\InputSanitizer;
 
 class CheckoutController extends Controller
 {
@@ -165,6 +166,19 @@ class CheckoutController extends Controller
             return redirect()->route('cart.index')
                 ->with('status', 'Your cart is empty.');
         }
+
+        $request->merge([
+            'email' => InputSanitizer::email($request->input('email')),
+            'first-name' => InputSanitizer::singleLine($request->input('first-name')),
+            'last-name' => InputSanitizer::singleLine($request->input('last-name')),
+            'address' => InputSanitizer::singleLine($request->input('address')),
+            'city' => InputSanitizer::singleLine($request->input('city')),
+            'country' => InputSanitizer::singleLine($request->input('country')),
+            'postal-code' => InputSanitizer::singleLine($request->input('postal-code')),
+            'card-number' => InputSanitizer::singleLine($request->input('card-number')),
+            'expiry' => InputSanitizer::singleLine($request->input('expiry')),
+            'cvv' => InputSanitizer::singleLine($request->input('cvv')),
+        ]);
 
         $request->validate([
             'email' => ['required', 'email', 'max:255'],

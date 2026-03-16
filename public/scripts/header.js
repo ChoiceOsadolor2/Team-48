@@ -3,6 +3,47 @@ const footerFile = '/pages/footer.html';
 const PAGE_CHROME_CACHE_TTL = 5 * 60 * 1000;
 let userStatusPromise = null;
 
+function getCsrfToken() {
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (metaToken) return metaToken;
+
+  const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+  return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
+}
+
+async function ensureCsrfToken() {
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (metaToken) return metaToken;
+
+  try {
+    const response = await fetch('/csrf-token', {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    });
+
+    if (!response.ok) return getCsrfToken() || '';
+
+    const data = await response.json().catch(() => ({}));
+    const refreshedToken = data?.token || getCsrfToken();
+
+    if (refreshedToken) {
+      let metaTag = document.querySelector('meta[name="csrf-token"]');
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('name', 'csrf-token');
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', refreshedToken);
+    }
+
+    return refreshedToken || getCsrfToken() || '';
+  } catch (error) {
+    console.error('Failed to refresh CSRF token:', error);
+    return getCsrfToken() || '';
+  }
+}
+
 function readCachedPageChrome(cacheKey) {
   try {
     const raw = sessionStorage.getItem(cacheKey);
@@ -350,7 +391,15 @@ function bindVeltrixHeader(headerEl) {
           if (logoutBtn) {
             logoutBtn.onclick = async () => {
               try {
-                await fetch('/logout-json', { credentials: 'include' });
+                const csrfToken = await ensureCsrfToken();
+                await fetch('/logout-json', {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+                  },
+                  credentials: 'include'
+                });
               } catch (_) {}
               window.location.href = '/pages/login.html';
             };
@@ -399,9 +448,14 @@ if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
     const temp = sessionStorage.getItem('tempLoggedIn') === '1';
 
     if (data.logged_in && !remember && !temp) {
+      const csrfToken = await ensureCsrfToken();
       await fetch('/logout-json', {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+        },
+        credentials: 'include'
       });
 
       window.location.reload();
@@ -487,13 +541,7 @@ function initChatbot() {
     const typingIndicator = appendMessage('ai', '...');
 
     try {
-      const csrfToken = (() => {
-        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-        if (metaToken) return metaToken;
-
-        const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
-        return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
-      })();
+      const csrfToken = await ensureCsrfToken();
 
       const response = await fetch('/chatbot/ask', {
         method: 'POST',
@@ -502,6 +550,7 @@ function initChatbot() {
           'Accept': 'application/json',
           ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
         },
+        credentials: 'include',
         body: JSON.stringify({ message: userMessage })
       });
 

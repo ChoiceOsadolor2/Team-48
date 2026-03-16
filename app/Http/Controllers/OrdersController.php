@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\RefundRequest;
 use App\Models\ReturnRequest;
+use App\Support\InputSanitizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -102,6 +103,10 @@ class OrdersController extends Controller
                 ->with('status', 'Refund request already sent for this item.');
         }
 
+        $request->merge([
+            'reason' => InputSanitizer::multiLine($request->input('reason')),
+        ]);
+
         $validated = $request->validate([
             'reason' => ['required', 'string', 'max:1000'],
         ]);
@@ -113,7 +118,7 @@ class OrdersController extends Controller
             'order_id' => $order->id,
             'order_item_id' => $orderItem->id,
             'status' => 'pending',
-            'reason' => trim($validated['reason']),
+            'reason' => $validated['reason'],
         ]);
 
         ReturnRequest::updateOrCreate([
@@ -123,7 +128,7 @@ class OrdersController extends Controller
             'order_id' => $order->id,
             'product_id' => $orderItem->product_id,
             'request_type' => 'refund',
-            'reason' => trim($validated['reason']),
+            'reason' => $validated['reason'],
             'status' => 'pending',
         ]);
 

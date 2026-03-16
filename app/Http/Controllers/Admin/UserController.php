@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -41,6 +42,11 @@ class UserController extends Controller
 
     public function update(\Illuminate\Http\Request $request, User $user)
     {
+        $request->merge([
+            'name' => InputSanitizer::singleLine($request->input('name')),
+            'email' => InputSanitizer::email($request->input('email')),
+        ]);
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,

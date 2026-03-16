@@ -474,7 +474,35 @@ async function submitLogin(payload) {
       return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
     };
 
-    const csrfToken = getCsrfToken();
+    const ensureCsrfToken = async () => {
+      const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+      if (metaToken) return metaToken;
+
+      const response = await fetch('/csrf-token', {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        credentials: 'include'
+      });
+
+      if (!response.ok) return "";
+
+      const data = await response.json().catch(() => ({}));
+      const refreshedToken = data?.token || getCsrfToken();
+
+      if (refreshedToken) {
+        let metaTag = document.querySelector('meta[name="csrf-token"]');
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('name', 'csrf-token');
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', refreshedToken);
+      }
+
+      return refreshedToken || getCsrfToken() || "";
+    };
+
+    const csrfToken = await ensureCsrfToken();
 
     const res = await fetch('/login-json', {
       method: "POST",
@@ -483,6 +511,7 @@ async function submitLogin(payload) {
         "Content-Type": "application/json",
         ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {})
       },
+      credentials: "include",
       body: JSON.stringify({
         email: payload.email,
         password: payload.password,

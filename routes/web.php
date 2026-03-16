@@ -31,7 +31,7 @@ use Illuminate\Validation\Rules\Password as PasswordRule;
 
 
 
-Route::get('/logout-json', function (Request $request) {
+Route::post('/logout-json', function (Request $request) {
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();
@@ -62,6 +62,14 @@ Route::get('/user-status', function () {
         ] : null,
     ]);
 });
+
+Route::get('/csrf-token', function (Request $request) {
+    $request->session()->regenerateToken();
+
+    return response()->json([
+        'token' => csrf_token(),
+    ]);
+})->name('csrf.token');
 
 Route::get('/', function () {
     return redirect('/pages/ShopAll.html');

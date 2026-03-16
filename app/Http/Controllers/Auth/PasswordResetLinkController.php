@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Mail\TemporaryPasswordMail;
 use App\Models\User;
+use App\Support\InputSanitizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,11 +31,15 @@ class PasswordResetLinkController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+        $request->merge([
+            'email' => InputSanitizer::email($request->input('email')),
+        ]);
+
         $request->validate([
             'email' => ['required', 'email'],
         ]);
 
-        $email = mb_strtolower(trim($request->string('email')->toString()));
+        $email = $request->string('email')->toString();
         $user = User::where('email', $email)->first();
 
         if (! $user) {

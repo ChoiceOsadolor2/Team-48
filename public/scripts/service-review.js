@@ -10,6 +10,39 @@
     return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
   };
 
+  const ensureCsrfToken = async () => {
+    const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+    if (metaToken) return metaToken;
+
+    try {
+      const response = await fetch('/csrf-token', {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        credentials: 'include',
+      });
+
+      if (!response.ok) return '';
+
+      const data = await response.json().catch(() => ({}));
+      const refreshedToken = data?.token || getCsrfToken();
+
+      if (refreshedToken) {
+        let metaTag = document.querySelector('meta[name="csrf-token"]');
+        if (!metaTag) {
+          metaTag = document.createElement('meta');
+          metaTag.setAttribute('name', 'csrf-token');
+          document.head.appendChild(metaTag);
+        }
+        metaTag.setAttribute('content', refreshedToken);
+      }
+
+      return refreshedToken || getCsrfToken() || '';
+    } catch (error) {
+      console.error('Failed to refresh CSRF token:', error);
+      return getCsrfToken() || '';
+    }
+  };
+
   const fields = {
     name: document.getElementById('service_review_name'),
     rating: document.getElementById('service_review_rating'),
@@ -235,7 +268,7 @@
     if (hasError) return;
 
     try {
-      const csrfToken = getCsrfToken();
+      const csrfToken = await ensureCsrfToken();
       const response = await fetch('/service-reviews', {
         method: 'POST',
         headers: {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -216,6 +217,11 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'name' => InputSanitizer::singleLine($request->input('name')),
+            'description' => InputSanitizer::multiLine($request->input('description')),
+        ]);
+
         $data = $request->validate([
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],
@@ -262,6 +268,11 @@ class ProductController extends Controller
 
     public function update(Request $request, Product $product)
     {
+        $request->merge([
+            'name' => InputSanitizer::singleLine($request->input('name')),
+            'description' => InputSanitizer::multiLine($request->input('description')),
+        ]);
+
         $data = $request->validate([
             'category_id' => ['required', 'exists:categories,id'],
             'name' => ['required', 'string', 'max:255'],

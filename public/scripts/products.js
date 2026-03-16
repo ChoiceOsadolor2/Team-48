@@ -761,6 +761,43 @@ function getCsrfToken() {
   return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
 }
 
+async function ensureCsrfToken() {
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (metaToken) return metaToken;
+
+  try {
+    const response = await fetch('/csrf-token', {
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      return '';
+    }
+
+    const data = await response.json().catch(() => ({}));
+    const refreshedToken = data?.token || getCsrfToken();
+
+    if (refreshedToken) {
+      let metaTag = document.querySelector('meta[name="csrf-token"]');
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('name', 'csrf-token');
+        document.head.appendChild(metaTag);
+      }
+      metaTag.setAttribute('content', refreshedToken);
+    }
+
+    return refreshedToken || getCsrfToken() || '';
+  } catch (error) {
+    console.error('Failed to refresh CSRF token:', error);
+    return getCsrfToken() || '';
+  }
+}
+
 function setBasketCheckoutState(hasItems) {
   const checkoutBtn = document.getElementById('basket_checkout_btn');
   if (!checkoutBtn) return;
@@ -947,7 +984,7 @@ window.AddToBasket = async function (id, qty = 1, platform = '') {
     }
 
     const url = `/cart/add-json/${id}`;
-    const csrfToken = getCsrfToken();
+    const csrfToken = await ensureCsrfToken();
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -988,7 +1025,7 @@ window.AddToBasket = async function (id, qty = 1, platform = '') {
 
 window.UpdateCartQty = async function (productId, qty) {
   try {
-    const csrfToken = getCsrfToken();
+    const csrfToken = await ensureCsrfToken();
     const res = await fetch(`/cart/update-json/${productId}`, {
       method: 'PATCH',
       headers: {
@@ -1491,7 +1528,7 @@ initCartUI();
 
 window.UpdateCartQty = async function (productId, qty) {
   try {
-    const csrfToken = getCsrfToken();
+    const csrfToken = await ensureCsrfToken();
     const res = await fetch(`/cart/update-json/${productId}`, {
       method: 'PATCH',
       headers: {
@@ -1523,7 +1560,7 @@ window.UpdateCartQty = async function (productId, qty) {
 
 window.RemoveFromCart = async function (productId) {
   try {
-    const csrfToken = getCsrfToken();
+    const csrfToken = await ensureCsrfToken();
     const res = await fetch(`/cart/remove-json/${productId}`, {
       method: 'DELETE',
       headers: {

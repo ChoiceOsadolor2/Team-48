@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ReturnRequest;
+use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
 
 class ReturnRequestController extends Controller
@@ -47,6 +48,10 @@ class ReturnRequestController extends Controller
 
     public function updateStatus(Request $request, ReturnRequest $returnRequest)
     {
+        $request->merge([
+            'admin_notes' => InputSanitizer::nullableMultiLine($request->input('admin_notes')),
+        ]);
+
         $data = $request->validate([
             'status' => ['required', 'in:pending,approved,declined'],
             'admin_notes' => ['nullable', 'string', 'max:1500'],
@@ -54,7 +59,7 @@ class ReturnRequestController extends Controller
 
         $returnRequest->update([
             'status' => $data['status'],
-            'admin_notes' => trim((string) ($data['admin_notes'] ?? '')) ?: null,
+            'admin_notes' => $data['admin_notes'] ?? null,
             'reviewed_at' => $data['status'] === 'pending' ? null : now(),
             'reviewed_by' => $data['status'] === 'pending' ? null : $request->user()->id,
         ]);

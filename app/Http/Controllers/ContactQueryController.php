@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ContactQuery;
+use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 
@@ -16,6 +17,13 @@ class ContactQueryController extends Controller
                 'message' => 'Contact messages are unavailable right now.',
             ], 503);
         }
+
+        $request->merge([
+            'name' => InputSanitizer::singleLine($request->input('name')),
+            'email' => InputSanitizer::email($request->input('email')),
+            'subject' => InputSanitizer::singleLine($request->input('subject')),
+            'message' => InputSanitizer::multiLine($request->input('message')),
+        ]);
 
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\OrderItem;
 use App\Models\ServiceReview;
+use App\Support\InputSanitizer;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -71,6 +72,10 @@ class ServiceReviewController extends Controller
             ], 401);
         }
 
+        $request->merge([
+            'message' => InputSanitizer::multiLine($request->input('message')),
+        ]);
+
         $data = $request->validate([
             'order_item_id' => ['required', 'integer', 'exists:order_items,id'],
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
@@ -101,7 +106,7 @@ class ServiceReviewController extends Controller
             'order_id' => $orderItem->order_id,
             'rating' => (int) $data['rating'],
             'title' => 'Service Review',
-            'message' => trim($data['message']),
+            'message' => $data['message'],
         ]);
 
         $review->loadMissing('user:id,name');

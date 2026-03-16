@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Faq;
 use App\Models\Category;
 use App\Models\Product;
+use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
@@ -150,11 +151,15 @@ class ChatbotController extends Controller
 
     public function ask(Request $request)
     {
+        $request->merge([
+            'message' => InputSanitizer::singleLine($request->input('message')),
+        ]);
+
         $request->validate([
             'message' => 'required|string|max:500',
         ]);
 
-        $message = trim($request->input('message'));
+        $message = $request->input('message');
         $faqs = Schema::hasTable('faqs') ? Faq::query()->get() : collect();
         $context = $request->session()->get('chatbot_context', []);
 

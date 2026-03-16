@@ -346,7 +346,7 @@
 
   <script src="../scripts/header.js"></script>
   <script src="../scripts/animations.js" defer></script>
-  <script src="../scripts/products.js?v=8"></script>
+  <script src="../scripts/products.js?v=9"></script>
   <script src="../scripts/homepage-reviews.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -365,6 +365,34 @@
 
         const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
         return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
+      };
+
+      const ensureCsrfToken = async () => {
+        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (metaToken) return metaToken;
+
+        const response = await fetch('/csrf-token', {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          credentials: 'include'
+        });
+
+        if (!response.ok) return "";
+
+        const data = await response.json().catch(() => ({}));
+        const refreshedToken = data?.token || getCsrfToken();
+
+        if (refreshedToken) {
+          let metaTag = document.querySelector('meta[name="csrf-token"]');
+          if (!metaTag) {
+            metaTag = document.createElement('meta');
+            metaTag.setAttribute('name', 'csrf-token');
+            document.head.appendChild(metaTag);
+          }
+          metaTag.setAttribute('content', refreshedToken);
+        }
+
+        return refreshedToken || getCsrfToken() || "";
       };
 
       if (nameDisplay && nameInput) {
@@ -467,7 +495,7 @@
           });
 
             if (isValid) {
-              const csrfToken = getCsrfToken();
+              const csrfToken = await ensureCsrfToken();
               const payload = {
                 name: nameInput?.value?.trim() || "",
                 email: emailInput?.value?.trim() || "",
@@ -483,6 +511,7 @@
                     'Accept': 'application/json',
                     ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
                   },
+                  credentials: 'include',
                   body: JSON.stringify(payload)
                 });
 

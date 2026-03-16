@@ -1029,7 +1029,7 @@
         @if ($isProfilePage)
             <script src="/scripts/header.js"></script>
             <script src="/scripts/footer.js"></script>
-            <script src="/scripts/products.js?v=8"></script>
+            <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
@@ -1052,7 +1052,7 @@
             @if ($isOrderHistoryPage || $isInvoicePage || $isOrderReturnPage)
                 <script src="/scripts/footer.js"></script>
             @endif
-            <script src="/scripts/products.js?v=8"></script>
+            <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
@@ -1063,7 +1063,7 @@
         @elseif ($isCheckoutPage)
             <script src="/scripts/header.js"></script>
             <script src="/scripts/footer.js"></script>
-            <script src="/scripts/products.js?v=8"></script>
+            <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
@@ -1073,7 +1073,7 @@
             </script>
         @elseif ($isAdminPage)
             <script src="/scripts/header.js"></script>
-            <script src="/scripts/products.js?v=8"></script>
+            <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
                 (function () {
