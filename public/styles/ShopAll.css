@@ -767,19 +767,19 @@ svg:hover {
 .product_price {
     font-family: 'MiniPixel', 'Segoe UI', Arial, sans-serif !important;
     font-size: 30px;
-    margin-top: 16px;
+    margin-top: 6px;
     display: block;
 }
 
 .product_name {
     font-size: 30px;
     font-weight: normal;
-    margin-top: auto;
+    margin-top: 10px;
 }
 
 .product_category {
     display: block;
-    margin-top: 12px;
+    margin-top: 4px;
     color: #888;
     font-family: 'MiniPixel', sans-serif !important;
     font-size: 20px;
@@ -808,10 +808,10 @@ svg:hover {
 }
 
 .view_product {
-    margin-top: auto;
-    margin-bottom: 10px;
+    margin-top: 8px;
+    margin-bottom: 4px;
     position: relative;
-    top: 10px;
+    top: 0;
 }
 
 .add_to_basket {
@@ -821,7 +821,7 @@ svg:hover {
 .product_review_summary {
     width: 100%;
     min-height: 42px;
-    margin-top: 4px;
+    margin-top: 0;
     display: flex;
     align-items: center;
     justify-content: center;

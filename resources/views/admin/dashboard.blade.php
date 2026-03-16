@@ -256,7 +256,7 @@
 
     </style>
 
-    <div class="admin-dashboard-page py-12 min-h-screen">
+    <div class="admin-dashboard-page pt-24 pb-12 min-h-screen">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             @if (session('status'))
                 <div class="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800 dark:border-emerald-800/70 dark:bg-emerald-900/20 dark:text-emerald-200">

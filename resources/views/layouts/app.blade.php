@@ -510,13 +510,8 @@
                     white-space: nowrap !important;
                 }
 
-                body.admin-page #theme-toggle-button + label {
-                    font-family: 'MiniPixel', sans-serif !important;
-                    box-sizing: border-box !important;
-                    min-width: 200px !important;
-                    padding: 12px 18px !important;
-                    font-size: 20px !important;
-                    line-height: 1 !important;
+                body.admin-page #theme-toggle-container {
+                    display: none !important;
                 }
 
                 body.admin-page .user-menu-item {
@@ -553,7 +548,7 @@
                     width: 100% !important;
                     max-width: 100% !important;
                     margin: 0;
-                    padding: 90px 0 40px;
+                    padding: 32px 0 40px;
                     min-height: 100vh;
                     z-index: 1;
                 }
@@ -561,6 +556,54 @@
                 body.admin-page main.admin-content,
                 body.admin-page main.admin-content * {
                     font-family: 'MiniPixel', sans-serif !important;
+                }
+
+                body.admin-page .admin-back-link {
+                    position: relative;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 10px;
+                    min-width: 180px;
+                    min-height: 58px;
+                    justify-content: center;
+                    overflow: visible;
+                    border-radius: 14px;
+                    border: 1px solid #444;
+                    background: #000;
+                    color: #fff;
+                    font-size: 20px;
+                    font-weight: 400;
+                    line-height: 1;
+                    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
+                    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+                }
+
+                body.admin-page .admin-back-link::after {
+                    content: '';
+                    position: absolute;
+                    top: -1px;
+                    left: -1px;
+                    right: -1px;
+                    bottom: -1px;
+                    border-radius: inherit;
+                    border: 1px solid transparent;
+                    opacity: 0;
+                    animation: veltrixGlow 2s infinite alternate;
+                    pointer-events: none;
+                    transition: opacity 0.2s ease;
+                }
+
+                body.admin-page .admin-back-link:hover,
+                body.admin-page .admin-back-link:focus-visible {
+                    background: #1d1d1d;
+                    border-color: transparent;
+                    outline: none;
+                    transform: translateY(-2px);
+                }
+
+                body.admin-page .admin-back-link:hover::after,
+                body.admin-page .admin-back-link:focus-visible::after {
+                    opacity: 1;
                 }
             @endif
             @if ($isProfilePage)
@@ -1054,7 +1097,7 @@
                 @if ($isAdminPage && $adminBackTarget)
                     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 md:pt-24">
                         <a href="{{ $adminBackTarget }}"
-                           class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/70 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-black/85">
+                           class="admin-back-link">
                             <span aria-hidden="true">←</span>
                             <span>{{ $adminBackLabel }}</span>
                         </a>
