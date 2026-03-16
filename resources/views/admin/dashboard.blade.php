@@ -91,36 +91,36 @@
             @endif
 
             <div class="mb-8 flex flex-wrap justify-center gap-4">
-                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
+                <a href="{{ route('admin.users.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalUsers) }}</p>
                     <p class="mt-2 text-sm text-gray-300">Registered accounts on the platform.</p>
-                </div>
-                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
+                </a>
+                <a href="{{ route('admin.products.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-emerald-300">Products</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalProducts) }}</p>
                     <p class="mt-2 text-sm text-gray-300">{{ $inStockProducts }} in stock, {{ $outOfStockProducts }} out of stock.</p>
-                </div>
-                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
+                </a>
+                <a href="{{ route('admin.orders.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-amber-300">Orders</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalOrders) }}</p>
                     <p class="mt-2 text-sm text-gray-300">{{ $processingOrders }} processing, {{ $completedOrders }} completed.</p>
-                </div>
-                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
+                </a>
+                <a href="{{ route('admin.revenue.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-pink-300">Revenue</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalRevenue, 2) }} GBP</p>
                     <p class="mt-2 text-sm text-gray-300">Average order value {{ number_format($averageOrderValue, 2) }} GBP.</p>
-                </div>
-                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
+                </a>
+                <a href="{{ route('admin.refunds.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-orange-300">Refunds</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($refundRequestCount) }}</p>
                     <p class="mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} pending decisions in the queue.</p>
-                </div>
-                <div class="w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl">
+                </a>
+                <a href="{{ route('admin.contact-queries.index') }}" class="block w-full sm:w-[calc(50%-0.5rem)] lg:w-[280px] min-h-[145px] rounded-3xl border border-white/10 bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-white/20">
                     <p class="text-sm uppercase tracking-[0.2em] text-sky-300">Contact queries</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($contactQueryCount) }}</p>
                     <p class="mt-2 text-sm text-gray-300">Open customer messages in the support inbox.</p>
-                </div>
+                </a>
             </div>
 
             <div class="mb-8 grid grid-cols-1 xl:grid-cols-3 gap-5">

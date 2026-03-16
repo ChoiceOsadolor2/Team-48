@@ -13,6 +13,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\RefundRequestController as AdminRefundRequestController;
+use App\Http\Controllers\Admin\RevenueController as AdminRevenueController;
 use App\Http\Controllers\Admin\FaqController as AdminFaqController;
 use App\Http\Controllers\Admin\ContactQueryController as AdminContactQueryController;
 use App\Http\Controllers\Admin\ReturnRequestController as AdminReturnRequestController;
@@ -340,6 +341,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::patch('/admin/refunds/{refundRequest}/status', [AdminRefundRequestController::class, 'updateStatus'])
         ->name('admin.refunds.update-status');
+
+    Route::get('/admin/revenue', [AdminRevenueController::class, 'index'])
+        ->name('admin.revenue.index');
 
     Route::get('/admin/faqs', [AdminFaqController::class, 'index'])
         ->name('admin.faqs.index');
