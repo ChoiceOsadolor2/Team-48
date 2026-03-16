@@ -320,7 +320,7 @@
                         </div>
                         <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-3.5 text-yellow-300">
                             <p class="text-sm font-semibold">Low stock</p>
-                            <p class="mt-1.5 text-2xl font-bold">{{ $lowStockProducts->count() }}</p>
+                            <p class="mt-1.5 text-2xl font-bold">{{ $lowStockProductCount }}</p>
                         </div>
                     </div>
                     <div class="mt-5">
@@ -333,10 +333,29 @@
                         @else
                             <div class="space-y-3">
                                 @foreach ($lowStockProducts as $product)
+                                    @php
+                                        $lowPlatforms = $product->platformStocks
+                                            ->filter(fn ($platformStock) => (int) $platformStock->stock > 0 && (int) $platformStock->stock <= 5)
+                                            ->pluck('platform')
+                                            ->values();
+                                    @endphp
                                     <div class="flex items-center justify-between rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3">
-                                        <span class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</span>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</div>
+                                            @if ($product->hasPlatformSpecificStock() && $lowPlatforms->isNotEmpty())
+                                                <div class="mt-2 text-sm" style="color: #888 !important;">
+                                                    {{ $lowPlatforms->implode(', ') }}
+                                                </div>
+                                            @endif
+                                        </div>
                                         <div class="flex items-center gap-3">
-                                            <span class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">{{ $product->stock }} left</span>
+                                            <span class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
+                                                @if ($product->hasPlatformSpecificStock())
+                                                    {{ $product->lowStockPlatformCount() }} platform{{ $product->lowStockPlatformCount() === 1 ? '' : 's' }} low
+                                                @else
+                                                    {{ $product->stock }} left
+                                                @endif
+                                            </span>
                                             <a
                                                 href="{{ route('admin.products.edit', $product) }}"
                                                 class="stock-health-link"
@@ -359,14 +378,34 @@
                         @else
                             <div class="space-y-3">
                                 @foreach ($outOfStockProductAlerts as $product)
+                                    @php
+                                        $outPlatforms = $product->platformStocks
+                                            ->filter(fn ($platformStock) => (int) $platformStock->stock <= 0)
+                                            ->pluck('platform')
+                                            ->values();
+                                    @endphp
                                     <div class="flex items-center justify-between rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3">
-                                        <span class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</span>
-                                        <a
-                                            href="{{ route('admin.products.edit', $product) }}"
-                                            class="stock-health-link"
-                                        >
-                                            Restock
-                                        </a>
+                                        <div class="min-w-0">
+                                            <div class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</div>
+                                            @if ($product->hasPlatformSpecificStock() && $outPlatforms->isNotEmpty())
+                                                <div class="mt-2 text-sm" style="color: #888 !important;">
+                                                    {{ $outPlatforms->implode(', ') }}
+                                                </div>
+                                            @endif
+                                        </div>
+                                        <div class="flex items-center gap-3">
+                                            @if ($product->hasPlatformSpecificStock() && $outPlatforms->isNotEmpty())
+                                                <span class="rounded-full bg-rose-100 px-3 py-1 text-sm font-semibold text-rose-800">
+                                                    {{ $outPlatforms->count() }} platform{{ $outPlatforms->count() === 1 ? '' : 's' }} out
+                                                </span>
+                                            @endif
+                                            <a
+                                                href="{{ route('admin.products.edit', $product) }}"
+                                                class="stock-health-link"
+                                            >
+                                                Restock
+                                            </a>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>

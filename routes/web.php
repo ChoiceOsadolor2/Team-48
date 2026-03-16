@@ -170,22 +170,26 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin', function () {
         $totalUsers = User::count();
-        $totalProducts = Product::count();
-        $inStockProducts = Product::where('stock', '>', 0)->count();
-        $outOfStockProducts = Product::where('stock', '<=', 0)->count();
-        $lowStockProductCount = Product::where('stock', '>', 0)
-            ->where('stock', '<=', 5)
-            ->count();
-        $lowStockProducts = Product::where('stock', '>', 0)
-            ->where('stock', '<=', 5)
-            ->orderBy('stock')
+        $inventoryProducts = Product::with('platformStocks')
             ->orderBy('name')
+            ->get(['id', 'name', 'stock', 'platform']);
+        $totalProducts = $inventoryProducts->count();
+        $inStockProducts = $inventoryProducts->filter(fn (Product $product) => $product->inventoryStatusKey() === 'in_stock')->count();
+        $outOfStockProducts = $inventoryProducts->filter(fn (Product $product) => $product->inventoryStatusKey() === 'out_of_stock')->count();
+        $lowStockProductCount = $inventoryProducts->filter(fn (Product $product) => $product->lowStockPlatformCount() > 0)->count();
+        $lowStockProducts = $inventoryProducts
+            ->filter(fn (Product $product) => $product->lowStockPlatformCount() > 0)
+            ->sortBy([
+                fn (Product $product) => $product->inventoryWorstStockValue(),
+                fn (Product $product) => mb_strtolower((string) $product->name),
+            ])
             ->take(5)
-            ->get(['id', 'name', 'stock']);
-        $outOfStockProductAlerts = Product::where('stock', '<=', 0)
-            ->orderBy('name')
+            ->values();
+        $outOfStockProductAlerts = $inventoryProducts
+            ->filter(fn (Product $product) => $product->inventoryStatusKey() === 'out_of_stock')
+            ->sortBy(fn (Product $product) => mb_strtolower((string) $product->name))
             ->take(5)
-            ->get(['id', 'name', 'stock']);
+            ->values();
 
         $totalOrders = Order::count();
         $processingOrders = Order::where('status', 'processing')->count();

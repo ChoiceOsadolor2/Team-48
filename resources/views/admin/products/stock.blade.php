@@ -6,7 +6,7 @@
                     {{ __('Stock Status') }}
                 </h2>
                 <p class="text-sm text-gray-500 dark:text-gray-400">
-                    Product availability is based on the inventory stock number.
+                    Product availability follows the lowest platform stock when a product uses platform-specific inventory.
                 </p>
             </div>
 
@@ -54,13 +54,15 @@
                         <tbody class="divide-y divide-gray-100 bg-white">
                             @forelse ($products as $product)
                                 @php
-                                    $isAvailable = (int) $product->stock > 0;
+                                    $statusKey = $product->inventoryStatusKey();
+                                    $isAvailable = $statusKey === 'in_stock';
+                                    $isLowStock = $statusKey === 'low_stock';
                                 @endphp
-                                <tr class="{{ $isAvailable ? '' : 'bg-rose-50/60' }}">
+                                <tr class="{{ $statusKey === 'out_of_stock' ? 'bg-rose-50/60' : ($isLowStock ? 'bg-amber-50/60' : '') }}">
                                     <td class="px-6 py-4 font-semibold text-gray-900">{{ $product->name }}</td>
                                     <td class="px-6 py-4 text-gray-600">{{ $product->category->name ?? '-' }}</td>
                                     <td class="px-6 py-4 text-gray-900">
-                                        <div class="font-semibold">{{ $product->stock }}</div>
+                                        <div class="font-semibold">{{ $product->inventorySummaryText() }}</div>
                                         @if ($product->platformStocks->isNotEmpty())
                                             <div class="mt-2 flex flex-wrap gap-2">
                                                 @foreach ($product->platformStocks as $platformStock)
@@ -72,8 +74,8 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4">
-                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $isAvailable ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800' }}">
-                                            {{ $isAvailable ? 'Available' : 'Out of stock' }}
+                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusKey === 'out_of_stock' ? 'bg-rose-100 text-rose-800' : ($isLowStock ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800') }}">
+                                            {{ $product->inventoryStatusLabel() }}
                                         </span>
                                     </td>
                                     <td class="px-6 py-4">

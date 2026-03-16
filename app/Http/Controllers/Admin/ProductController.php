@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -81,6 +82,24 @@ class ProductController extends Controller
             'Merchandise',
             'Trading Cards',
         ];
+    }
+
+    private function paginateCollection($items, Request $request, int $perPage = 15): LengthAwarePaginator
+    {
+        $page = max(1, (int) $request->query('page', 1));
+        $collection = $items->values();
+        $results = $collection->slice(($page - 1) * $perPage, $perPage)->values();
+
+        return new LengthAwarePaginator(
+            $results,
+            $collection->count(),
+            $perPage,
+            $page,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
     }
 
     private function adminFormCategories()
@@ -174,15 +193,22 @@ class ProductController extends Controller
             });
         }
 
-        if ($stock === 'in_stock') {
-            $query->where('stock', '>', 0);
-        } elseif ($stock === 'out_of_stock') {
-            $query->where('stock', '<=', 0);
-        } elseif ($stock === 'low_stock') {
-            $query->where('stock', '>', 0)->where('stock', '<=', 5);
+        $products = $query->get();
+
+        if ($stock !== '') {
+            $products = $products
+                ->filter(function (Product $product) use ($stock) {
+                    return match ($stock) {
+                        'in_stock' => $product->inventoryStatusKey() === 'in_stock',
+                        'out_of_stock' => $product->inventoryStatusKey() === 'out_of_stock',
+                        'low_stock' => $product->inventoryStatusKey() === 'low_stock',
+                        default => true,
+                    };
+                })
+                ->values();
         }
 
-        $products = $query->paginate(15)->appends($request->query());
+        $products = $this->paginateCollection($products, $request, 15);
 
         return view('admin.products.index', [
             'products' => $products,
@@ -197,16 +223,20 @@ class ProductController extends Controller
         $products = Product::with(['category', 'platformStocks'])
             ->get()
             ->sortBy([
-                fn ($product) => (int) ($product->stock !== 0),
-                fn ($product) => (int) $product->stock,
+                fn (Product $product) => match ($product->inventoryStatusKey()) {
+                    'out_of_stock' => 0,
+                    'low_stock' => 1,
+                    default => 2,
+                },
+                fn (Product $product) => $product->inventoryWorstStockValue(),
                 fn ($product) => mb_strtolower((string) $product->name),
             ])
             ->values();
 
         return view('admin.products.stock', [
             'products' => $products,
-            'inStockCount' => $products->where('stock', '>', 0)->count(),
-            'outOfStockCount' => $products->where('stock', '<=', 0)->count(),
+            'inStockCount' => $products->filter(fn (Product $product) => $product->inventoryStatusKey() === 'in_stock')->count(),
+            'outOfStockCount' => $products->filter(fn (Product $product) => $product->inventoryStatusKey() === 'out_of_stock')->count(),
         ]);
     }
 
@@ -222,26 +252,44 @@ class ProductController extends Controller
                         ->orWhere('platform', 'like', '%' . $search . '%');
                 });
             })
-            ->where('stock', '<=', 10)
-            ->orderBy('stock')
             ->orderBy('name')
-            ->get();
+            ->get()
+            ->filter(function (Product $product) {
+                return $product->inventoryWorstStockValue() <= 10;
+            })
+            ->values();
 
         if ($severity === 'critical') {
-            $products = $products->where('stock', '<=', 2)->values();
+            $products = $products->filter(fn (Product $product) => $product->inventoryWorstStockValue() <= 2)->values();
         } elseif ($severity === 'warning') {
-            $products = $products->whereBetween('stock', [3, 5])->values();
+            $products = $products->filter(function (Product $product) {
+                $worstStock = $product->inventoryWorstStockValue();
+
+                return $worstStock >= 3 && $worstStock <= 5;
+            })->values();
         } elseif ($severity === 'watch') {
-            $products = $products->whereBetween('stock', [6, 10])->values();
+            $products = $products->filter(function (Product $product) {
+                $worstStock = $product->inventoryWorstStockValue();
+
+                return $worstStock >= 6 && $worstStock <= 10;
+            })->values();
         }
 
         return view('admin.products.low-stock-center', [
             'products' => $products,
             'search' => $search,
             'severity' => $severity,
-            'criticalCount' => $products->where('stock', '<=', 2)->count(),
-            'warningCount' => $products->whereBetween('stock', [3, 5])->count(),
-            'watchCount' => $products->whereBetween('stock', [6, 10])->count(),
+            'criticalCount' => $products->filter(fn (Product $product) => $product->inventoryWorstStockValue() <= 2)->count(),
+            'warningCount' => $products->filter(function (Product $product) {
+                $worstStock = $product->inventoryWorstStockValue();
+
+                return $worstStock >= 3 && $worstStock <= 5;
+            })->count(),
+            'watchCount' => $products->filter(function (Product $product) {
+                $worstStock = $product->inventoryWorstStockValue();
+
+                return $worstStock >= 6 && $worstStock <= 10;
+            })->count(),
         ]);
     }
 

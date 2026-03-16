@@ -84,7 +84,7 @@
                             <tbody class="divide-y divide-gray-100">
                                 @foreach ($products as $product)
                                     @php
-                                        $priority = $product->stock <= 2 ? 'Critical' : ($product->stock <= 5 ? 'Warning' : 'Watch');
+                                        $priority = $product->inventoryWorstStockValue() <= 2 ? 'Critical' : ($product->inventoryWorstStockValue() <= 5 ? 'Warning' : 'Watch');
                                         $priorityClasses = $priority === 'Critical'
                                             ? 'bg-rose-100 text-rose-800'
                                             : ($priority === 'Warning' ? 'bg-amber-100 text-amber-800' : 'bg-sky-100 text-sky-800');
@@ -103,7 +103,7 @@
                                             @endif
                                         </td>
                                         <td class="px-5 py-4 text-gray-600">{{ $product->category->name ?? '-' }}</td>
-                                        <td class="px-5 py-4 font-semibold text-gray-900">{{ $product->stock }}</td>
+                                        <td class="px-5 py-4 font-semibold text-gray-900">{{ $product->inventorySummaryText() }}</td>
                                         <td class="px-5 py-4">
                                             <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $priorityClasses }}">
                                                 {{ $priority }}
