@@ -17,7 +17,7 @@
         if (request()->routeIs('admin.orders.show')) {
             $adminBackTarget = route('admin.orders.index');
             $adminBackLabel = 'Back to Orders';
-        } elseif (request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit') || request()->routeIs('admin.products.stock')) {
+        } elseif (request()->routeIs('admin.products.create') || request()->routeIs('admin.products.edit') || request()->routeIs('admin.products.stock') || request()->routeIs('admin.products.low-stock-center')) {
             $adminBackTarget = route('admin.products.index');
             $adminBackLabel = 'Back to Inventory';
         } elseif (request()->routeIs('admin.users.edit')) {

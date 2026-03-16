@@ -210,6 +210,41 @@ class ProductController extends Controller
         ]);
     }
 
+    public function lowStockCenter(Request $request)
+    {
+        $search = trim((string) $request->query('q', ''));
+        $severity = trim((string) $request->query('severity', ''));
+
+        $products = Product::with(['category', 'platformStocks'])
+            ->when($search !== '', function ($query) use ($search) {
+                $query->where(function ($nested) use ($search) {
+                    $nested->where('name', 'like', '%' . $search . '%')
+                        ->orWhere('platform', 'like', '%' . $search . '%');
+                });
+            })
+            ->where('stock', '<=', 10)
+            ->orderBy('stock')
+            ->orderBy('name')
+            ->get();
+
+        if ($severity === 'critical') {
+            $products = $products->where('stock', '<=', 2)->values();
+        } elseif ($severity === 'warning') {
+            $products = $products->whereBetween('stock', [3, 5])->values();
+        } elseif ($severity === 'watch') {
+            $products = $products->whereBetween('stock', [6, 10])->values();
+        }
+
+        return view('admin.products.low-stock-center', [
+            'products' => $products,
+            'search' => $search,
+            'severity' => $severity,
+            'criticalCount' => $products->where('stock', '<=', 2)->count(),
+            'warningCount' => $products->whereBetween('stock', [3, 5])->count(),
+            'watchCount' => $products->whereBetween('stock', [6, 10])->count(),
+        ]);
+    }
+
     public function create()
     {
         $categories = $this->adminFormCategories();

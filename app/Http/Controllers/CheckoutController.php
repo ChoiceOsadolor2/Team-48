@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
-use App\Models\Product;
+use App\Models\DiscountCode;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Support\InputSanitizer;
+use App\Models\Product;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class CheckoutController extends Controller
 {
+    private const DISCOUNT_SESSION_KEY = 'checkout.discount_code';
+
     private function shippingOptions(): array
     {
         return [
@@ -82,7 +85,7 @@ class CheckoutController extends Controller
             ->values()
             ->all();
 
-        return !empty($platforms) ? $platforms : ['Universal'];
+        return ! empty($platforms) ? $platforms : ['Universal'];
     }
 
     private function resolvePlatformSelection(Product $product, ?string $requestedPlatform = null): string
@@ -101,7 +104,78 @@ class CheckoutController extends Controller
     {
         return $product->stockForPlatform($platform);
     }
-    // ✅ SHOW checkout page only
+
+    private function calculateDiscountAmount(DiscountCode $discountCode, float $subtotal): float
+    {
+        $amount = $discountCode->type === 'percentage'
+            ? ($subtotal * ((float) $discountCode->value / 100))
+            : (float) $discountCode->value;
+
+        return min($subtotal, max(0, round($amount, 2)));
+    }
+
+    private function resolveValidDiscountCode(?string $code): array
+    {
+        $normalizedCode = strtoupper(trim((string) $code));
+
+        if ($normalizedCode === '') {
+            return ['discountCode' => null, 'message' => 'Please enter a discount code.'];
+        }
+
+        $discountCode = DiscountCode::query()
+            ->whereRaw('UPPER(code) = ?', [$normalizedCode])
+            ->first();
+
+        if (! $discountCode) {
+            return ['discountCode' => null, 'message' => 'That discount code could not be found.'];
+        }
+
+        if (! $discountCode->is_active) {
+            return ['discountCode' => null, 'message' => 'That discount code is not active right now.'];
+        }
+
+        if (! $discountCode->hasStarted()) {
+            return ['discountCode' => null, 'message' => 'That discount code is not available yet.'];
+        }
+
+        if ($discountCode->isExpired()) {
+            return ['discountCode' => null, 'message' => 'That discount code has expired.'];
+        }
+
+        if (! $discountCode->hasUsageRemaining()) {
+            return ['discountCode' => null, 'message' => 'That discount code has reached its usage limit.'];
+        }
+
+        return ['discountCode' => $discountCode, 'message' => null];
+    }
+
+    private function appliedDiscountSummary(float $subtotal): ?array
+    {
+        $storedCode = Session::get(self::DISCOUNT_SESSION_KEY);
+
+        if (! $storedCode) {
+            return null;
+        }
+
+        $resolved = $this->resolveValidDiscountCode($storedCode);
+        $discountCode = $resolved['discountCode'];
+
+        if (! $discountCode) {
+            Session::forget(self::DISCOUNT_SESSION_KEY);
+            session()->flash('discount_error', $resolved['message'] ?? 'That discount code is no longer available.');
+
+            return null;
+        }
+
+        return [
+            'code' => $discountCode->code,
+            'amount' => $this->calculateDiscountAmount($discountCode, $subtotal),
+            'label' => $discountCode->type === 'percentage'
+                ? rtrim(rtrim(number_format((float) $discountCode->value, 2), '0'), '.') . '% off'
+                : '£' . number_format((float) $discountCode->value, 2) . ' off',
+        ];
+    }
+
     public function index()
     {
         $cart = Session::get('cart', []);
@@ -115,7 +189,7 @@ class CheckoutController extends Controller
         $products = Product::with('platformStocks')->whereIn('id', $productIds)->get()->keyBy('id');
         $missingProductIds = array_diff($productIds, $products->keys()->all());
 
-        if (!empty($missingProductIds)) {
+        if (! empty($missingProductIds)) {
             foreach ($missingProductIds as $missingProductId) {
                 unset($cart[$missingProductId]);
             }
@@ -131,14 +205,16 @@ class CheckoutController extends Controller
         $selectedShipping = $this->emptyShippingSelection();
 
         foreach ($cart as $productId => $entryData) {
-            if (!isset($products[$productId])) continue;
+            if (! isset($products[$productId])) {
+                continue;
+            }
 
             $entry = $this->normalizeCartEntry($entryData);
             $product = $products[$productId];
             $subtotal = $product->price * $entry['quantity'];
 
             $items[] = [
-                'product'  => $product,
+                'product' => $product,
                 'quantity' => $entry['quantity'],
                 'platform' => $this->resolvePlatformSelection($product, $entry['platform']),
                 'subtotal' => $subtotal,
@@ -149,15 +225,49 @@ class CheckoutController extends Controller
 
         $shippingOptions = $this->shippingOptions();
         $shippingCost = $selectedShipping['price'];
+        $appliedDiscount = $this->appliedDiscountSummary($total);
 
-        return view('checkout.index', compact('items', 'total', 'shippingOptions', 'selectedShipping', 'shippingCost'));
+        return view('checkout.index', compact('items', 'total', 'shippingOptions', 'selectedShipping', 'shippingCost', 'appliedDiscount'));
     }
 
-    // ✅ PLACE order only (create order, create items, decrement stock)
+    public function applyDiscount(Request $request)
+    {
+        $cart = Session::get('cart', []);
+
+        if (empty($cart)) {
+            Session::forget(self::DISCOUNT_SESSION_KEY);
+
+            return redirect()->route('cart.index')
+                ->with('status', 'Your cart is empty.');
+        }
+
+        $resolved = $this->resolveValidDiscountCode($request->input('discount_code'));
+        $discountCode = $resolved['discountCode'];
+
+        if (! $discountCode) {
+            return redirect()->route('checkout.index')
+                ->withInput()
+                ->with('discount_error', $resolved['message']);
+        }
+
+        Session::put(self::DISCOUNT_SESSION_KEY, $discountCode->code);
+
+        return redirect()->route('checkout.index')
+            ->with('discount_success', 'Discount code applied successfully.');
+    }
+
+    public function removeDiscount()
+    {
+        Session::forget(self::DISCOUNT_SESSION_KEY);
+
+        return redirect()->route('checkout.index')
+            ->with('discount_success', 'Discount code removed.');
+    }
+
     public function place(Request $request)
     {
         $user = Auth::user();
-        if (!$user) {
+        if (! $user) {
             return redirect()->route('login');
         }
 
@@ -198,7 +308,7 @@ class CheckoutController extends Controller
         $shippingKey = trim((string) $request->input('shipping_option'));
         $shippingOptions = $this->shippingOptions();
 
-        if ($shippingKey === '' || !isset($shippingOptions[$shippingKey])) {
+        if ($shippingKey === '' || ! isset($shippingOptions[$shippingKey])) {
             return redirect()->route('checkout.index')
                 ->with('status', 'Please select a shipping option.');
         }
@@ -208,7 +318,6 @@ class CheckoutController extends Controller
         DB::beginTransaction();
 
         try {
-            // Lock products so stock can't be oversold in race conditions
             $productIds = array_keys($cart);
             $products = Product::with('platformStocks')->whereIn('id', $productIds)
                 ->lockForUpdate()
@@ -216,7 +325,7 @@ class CheckoutController extends Controller
                 ->keyBy('id');
             $missingProductIds = array_diff($productIds, $products->keys()->all());
 
-            if (!empty($missingProductIds)) {
+            if (! empty($missingProductIds)) {
                 foreach ($missingProductIds as $missingProductId) {
                     unset($cart[$missingProductId]);
                 }
@@ -228,9 +337,10 @@ class CheckoutController extends Controller
                     ->with('stock_error', 'Some items in your cart are no longer available and were removed.');
             }
 
-            // ✅ Validate stock before creating order
             foreach ($cart as $productId => $entryData) {
-                if (!isset($products[$productId])) continue;
+                if (! isset($products[$productId])) {
+                    continue;
+                }
 
                 $entry = $this->normalizeCartEntry($entryData);
                 $product = $products[$productId];
@@ -244,19 +354,41 @@ class CheckoutController extends Controller
                 }
             }
 
-            // Create order
+            $discountCode = null;
+            $discountAmount = 0.0;
+            $storedDiscountCode = Session::get(self::DISCOUNT_SESSION_KEY);
+
+            if ($storedDiscountCode) {
+                $discountCode = DiscountCode::query()
+                    ->whereRaw('UPPER(code) = ?', [strtoupper((string) $storedDiscountCode)])
+                    ->lockForUpdate()
+                    ->first();
+
+                if (! $discountCode || ! $discountCode->is_active || ! $discountCode->hasStarted() || $discountCode->isExpired() || ! $discountCode->hasUsageRemaining()) {
+                    Session::forget(self::DISCOUNT_SESSION_KEY);
+                    DB::rollBack();
+
+                    return redirect()->route('checkout.index')
+                        ->with('discount_error', 'That discount code is no longer available. Please review your checkout total and try again.');
+                }
+            }
+
             $order = Order::create([
                 'user_id' => $user->id,
-                'total'   => 0,
-                'status'  => 'processing',
+                'total' => 0,
+                'status' => 'processing',
                 'shipping_method' => $selectedShipping['label'],
                 'shipping_cost' => $selectedShipping['price'],
+                'discount_code' => $discountCode?->code,
+                'discount_amount' => 0,
             ]);
 
             $total = 0;
 
             foreach ($cart as $productId => $entryData) {
-                if (!isset($products[$productId])) continue;
+                if (! isset($products[$productId])) {
+                    continue;
+                }
 
                 $entry = $this->normalizeCartEntry($entryData);
                 $product = $products[$productId];
@@ -264,14 +396,13 @@ class CheckoutController extends Controller
                 $platform = $this->resolvePlatformSelection($product, $entry['platform']);
 
                 OrderItem::create([
-                    'order_id'   => $order->id,
+                    'order_id' => $order->id,
                     'product_id' => $productId,
-                    'quantity'   => $entry['quantity'],
-                    'price'      => $product->price,
-                    'platform'   => $platform,
+                    'quantity' => $entry['quantity'],
+                    'price' => $product->price,
+                    'platform' => $platform,
                 ]);
 
-                // ✅ decrement stock
                 $product->decrement('stock', $entry['quantity']);
 
                 if ($product->hasPlatformSpecificStock()) {
@@ -283,13 +414,21 @@ class CheckoutController extends Controller
                 $total += $subtotal;
             }
 
+            if ($discountCode) {
+                $discountAmount = $this->calculateDiscountAmount($discountCode, $total);
+                $discountCode->increment('used_count');
+            }
+
             $order->update([
-                'total' => $total + $selectedShipping['price'],
+                'total' => max(0, ($total + $selectedShipping['price']) - $discountAmount),
+                'discount_code' => $discountCode?->code,
+                'discount_amount' => $discountAmount,
             ]);
 
             DB::commit();
 
             Session::forget('cart');
+            Session::forget(self::DISCOUNT_SESSION_KEY);
 
             return redirect()->route('orders.show', $order->id)
                 ->with('status', 'Order placed successfully!');

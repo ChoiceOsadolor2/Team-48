@@ -130,6 +130,8 @@ Route::middleware('auth')->group(function () {
         ->name('cart.update.json');
 
     Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout.index');
+    Route::post('/checkout/discount', [CheckoutController::class, 'applyDiscount'])->name('checkout.discount.apply');
+    Route::delete('/checkout/discount', [CheckoutController::class, 'removeDiscount'])->name('checkout.discount.remove');
     Route::post('/checkout/place', [CheckoutController::class, 'place'])->name('checkout.place');
 
     Route::get('/orders', [OrdersController::class, 'index'])->name('orders.index');
@@ -279,6 +281,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::get('/admin/stock', [\App\Http\Controllers\Admin\ProductController::class, 'stock'])
         ->name('admin.products.stock');
+
+    Route::get('/admin/low-stock-center', [\App\Http\Controllers\Admin\ProductController::class, 'lowStockCenter'])
+        ->name('admin.products.low-stock-center');
 
     Route::get('/admin/products/create', [\App\Http\Controllers\Admin\ProductController::class, 'create'])
         ->name('admin.products.create');
