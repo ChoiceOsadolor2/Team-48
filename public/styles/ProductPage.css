@@ -56,6 +56,48 @@ nav > a {
   gap: 28px;
 }
 
+.product-loading-state {
+  width: min(1080px, calc(100vw - 220px));
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+}
+
+.product-loading-state.is-hidden {
+  display: none;
+}
+
+.product-loading-card {
+  width: min(520px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 28px;
+  border-radius: 16px;
+  border: 1px solid #444;
+  background: #1d1d1d;
+  text-align: center;
+}
+
+.product-loading-title,
+.product-loading-copy {
+  font-family: 'MiniPixel', sans-serif;
+}
+
+.product-loading-title {
+  font-size: 28px;
+  color: #fff;
+}
+
+.product-loading-copy {
+  font-size: 18px;
+  color: #888;
+  line-height: 1.5;
+}
+
 #product_display {
   display: flex;
   flex-direction: row;
@@ -70,6 +112,24 @@ nav > a {
   justify-content: center;
   align-items: flex-start;
   border: none;
+}
+
+#product_display,
+#product_reviews_section,
+#product_extra_panels,
+#previous_page {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.18s ease;
+}
+
+#product_display.is-loading,
+#product_reviews_section:not(.is-ready),
+#product_extra_panels:not(.is-ready),
+#previous_page.is-loading {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
 }
 
 #previous_page {
@@ -1084,6 +1144,7 @@ html.home[data-theme="light"] .product_meta_bubble,
 html.home[data-theme="light"] .product-review-card,
 html.home[data-theme="light"] .related-products-grid .product_card,
 html.home[data-theme="light"] .product-reviews-empty,
+html.home[data-theme="light"] .product-loading-card,
 html.home[data-theme="light"] #previous_page,
 html.home[data-theme="light"] #product_info .qty-input,
 html.home[data-theme="light"] #product_info>button,
@@ -1196,6 +1257,14 @@ html.home[data-theme="light"] .product-review-button {
 
 html.home[data-theme="light"] .product-reviews-subtext,
 html.home[data-theme="light"] .product-review-note {
+  color: #5f5a54;
+}
+
+html.home[data-theme="light"] .product-loading-title {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .product-loading-copy {
   color: #5f5a54;
 }
 

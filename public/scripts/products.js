@@ -207,8 +207,11 @@ async function ensureWishlistAuthenticated(force = false) {
 function setProductLoadingState(isLoading) {
   const loadingState = document.getElementById('product_loading_state');
   const extraPanels = document.getElementById('product_extra_panels');
+  const reviewsSection = document.getElementById('product_reviews_section');
+  const previousPageButton = document.getElementById('previous_page');
   if (loadingState) {
     loadingState.hidden = !isLoading;
+    loadingState.classList.toggle('is-hidden', !isLoading);
   }
 
   if (container2) {
@@ -218,6 +221,14 @@ function setProductLoadingState(isLoading) {
 
   if (extraPanels) {
     extraPanels.classList.toggle('is-ready', !isLoading);
+  }
+
+  if (reviewsSection) {
+    reviewsSection.classList.toggle('is-ready', !isLoading);
+  }
+
+  if (previousPageButton) {
+    previousPageButton.classList.toggle('is-loading', isLoading);
   }
 }
 
@@ -1798,8 +1809,15 @@ if (container || container2) {
 
 
           document.title = product.name;
-          loadProductReviewEntry(product.id);
-          loadProductReviews(product.id);
+          Promise.all([
+            loadProductReviewEntry(product.id),
+            loadProductReviews(product.id),
+          ]).finally(() => {
+            setProductLoadingState(false);
+          });
+        } else {
+          showProductPageError('We could not load this product right now. Please go back and try again.');
+          setProductLoadingState(false);
         }
 
         loadCartFromBackend();

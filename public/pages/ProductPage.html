@@ -17,13 +17,20 @@
     <main>
 <div class="product-page-inner">
 
-<button id="previous_page" type="button" aria-label="Go back" onclick="goBackToTop()">
+<div id="product_loading_state" class="product-loading-state">
+  <div class="product-loading-card">
+    <span class="product-loading-title">Loading product</span>
+    <span class="product-loading-copy">Preparing details, stock, and reviews...</span>
+  </div>
+</div>
+
+<button id="previous_page" class="is-loading" type="button" aria-label="Go back" onclick="goBackToTop()">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
     <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"/>
   </svg>
 </button>
 
-<section id="product_display">
+<section id="product_display" class="is-loading">
   <div id="product_carousal">
     <img class="product_image" id="main_image" alt="Main Product Image">
     
