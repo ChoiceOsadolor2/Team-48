@@ -561,12 +561,27 @@
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
+                body.admin-page main.admin-content *,
+                body.admin-page main.admin-content .font-semibold,
+                body.admin-page main.admin-content .font-bold,
+                body.admin-page main.admin-content .font-extrabold,
+                body.admin-page main.admin-content strong,
+                body.admin-page main.admin-content b {
+                    font-weight: 400 !important;
+                }
+
                 body.admin-page main.admin-content h1,
                 body.admin-page main.admin-content h2,
                 body.admin-page main.admin-content h3,
-                body.admin-page main.admin-content .page-intro-title {
+                body.admin-page main.admin-content h4,
+                body.admin-page main.admin-content h5,
+                body.admin-page main.admin-content h6,
+                body.admin-page main.admin-content .page-intro-title,
+                body.admin-page main.admin-content .users-title,
+                body.admin-page main.admin-content .products-title {
                     font-size: 30px !important;
                     line-height: 1.1 !important;
+                    font-weight: 700 !important;
                 }
 
                 body.admin-page main.admin-content p,
