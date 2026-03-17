@@ -346,6 +346,29 @@
             color: #8f8f95 !important;
         }
 
+        .admin-dashboard-page .dashboard-section {
+            margin-bottom: 40px;
+        }
+
+        .admin-dashboard-page .dashboard-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .admin-dashboard-page .dashboard-panel {
+            padding: 22px !important;
+        }
+
+        .admin-dashboard-page .dashboard-panel-header {
+            margin-bottom: 18px;
+        }
+
+        .admin-dashboard-page .dashboard-panel-subtitle {
+            margin-top: 6px;
+            font-size: 13px !important;
+            line-height: 1.4 !important;
+            color: #8f8f95 !important;
+        }
+
     </style>
 
     <div class="admin-dashboard-page pt-24 pb-12 min-h-screen">
@@ -356,7 +379,7 @@
                 </div>
             @endif
 
-            <div class="mb-8 flex items-center justify-between rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 p-7 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01]">
+            <div class="dashboard-section flex items-center justify-between rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 p-7 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01]">
     <div class="max-w-xl">
         <h3 class="mb-2 text-[1.75rem] font-extrabold tracking-tight drop-shadow-md">
             Welcome back, {{ auth()->user()->name }}!
@@ -374,7 +397,7 @@
                 </div>
             </div>
 
-            <div class="mb-8">
+            <div class="dashboard-section">
                 <section class="attention-strip">
                     <div class="attention-strip-copy">
                         <h3 class="attention-strip-title">Needs attention</h3>
@@ -406,7 +429,7 @@
                 </section>
             </div>
 
-            <div class="mb-8 flex flex-wrap justify-center gap-4">
+            <div class="dashboard-section flex flex-wrap justify-center gap-4">
                 <a href="{{ route('admin.users.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($totalUsers) }}</p>
@@ -439,11 +462,12 @@
                 </a>
             </div>
 
-            <div class="mb-8 flex justify-center">
-                <section class="w-full max-w-5xl rounded-3xl border border-[#444] bg-[#1d1d1f] p-5 shadow-xl">
-                    <div class="flex items-center justify-between">
+            <div class="dashboard-section flex justify-center">
+                <section class="dashboard-panel w-full max-w-5xl rounded-3xl border border-[#444] bg-[#1d1d1f] shadow-xl">
+                    <div class="dashboard-panel-header flex items-center justify-between">
                         <div>
                             <h3 class="text-xl font-bold text-white">Inventory Overview</h3>
+                            <p class="dashboard-panel-subtitle">Track stock health and jump straight into restocking priorities.</p>
                         </div>
                         <a href="{{ route('admin.products.create') }}" class="stock-health-link text-sm font-semibold">Add New Product</a>
                     </div>
