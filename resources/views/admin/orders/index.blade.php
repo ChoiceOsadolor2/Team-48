@@ -71,6 +71,10 @@
             padding-bottom: 20px !important;
         }
 
+        .admin-orders-page .orders-page-intro {
+            margin-bottom: 8px;
+        }
+
         html[data-theme="dark"] .admin-orders-page .orders-table-head {
             background: rgba(17, 24, 39, 0.78);
         }
@@ -78,9 +82,20 @@
         html[data-theme="dark"] .admin-orders-page .orders-row:hover {
             background: rgba(255, 255, 255, 0.03);
         }
+
+        @media (min-width: 768px) {
+            .admin-orders-page .orders-page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
     </style>
     <div class="admin-orders-page py-8 max-w-[1180px] mx-auto px-4 space-y-6">
-        <div class="flex items-center justify-between">
+        <div class="orders-page-intro">
             <div>
                 <h1 class="text-[1.7rem] font-bold text-gray-900 dark:text-white">All Orders</h1>
                 <p class="mt-1.5 text-[0.98rem] text-gray-500 dark:text-gray-400">Track fulfilment, review customers, and filter recent orders faster.</p>

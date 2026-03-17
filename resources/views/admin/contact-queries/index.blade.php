@@ -23,6 +23,32 @@
             line-height: 1.4 !important;
         }
 
+        .admin-contact-queries-page .page-intro {
+            margin-bottom: 8px;
+        }
+
+        .admin-contact-queries-page .page-intro-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #111827;
+        }
+
+        .admin-contact-queries-page .page-intro-copy {
+            margin-top: 8px;
+            color: #6b7280 !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-contact-queries-page .page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+
         .admin-contact-queries-page input,
         .admin-contact-queries-page select {
             min-height: 56px;
@@ -99,6 +125,14 @@
             background: rgba(17, 24, 39, 0.78);
         }
 
+        html[data-theme="dark"] .admin-contact-queries-page .page-intro-title {
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .page-intro-copy {
+            color: #9ca3af !important;
+        }
+
         html[data-theme="dark"] .admin-contact-queries-page .queries-filter-shell {
             background: #1f2937;
             border-color: #374151;
@@ -137,6 +171,12 @@
 
     <div class="admin-contact-queries-page py-12">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="page-intro">
+                <div>
+                    <h1 class="page-intro-title">Contact Queries</h1>
+                    <p class="page-intro-copy">View the support inbox, filter customer messages, and resolve requests faster.</p>
+                </div>
+            </div>
             <div class="queries-filter-shell rounded-3xl border p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.contact-queries.index') }}" class="queries-filter-form rounded-2xl border p-4">
                     <div class="queries-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(220px,0.85fr)_auto]">
@@ -172,7 +212,6 @@
                 <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Support inbox</h3>
-                        <p class="text-sm text-gray-500">Customer messages with quick status control and cleaner scanning.</p>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
                         Showing {{ $contactQueries->firstItem() ?? 0 }}-{{ $contactQueries->lastItem() ?? 0 }} of {{ $contactQueries->total() }}

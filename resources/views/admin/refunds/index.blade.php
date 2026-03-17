@@ -24,6 +24,32 @@
             line-height: 1.4 !important;
         }
 
+        .admin-refunds-page .page-intro {
+            margin-bottom: 8px;
+        }
+
+        .admin-refunds-page .page-intro-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #111827;
+        }
+
+        .admin-refunds-page .page-intro-copy {
+            margin-top: 8px;
+            color: #6b7280 !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-refunds-page .page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+
         .admin-refunds-page input,
         .admin-refunds-page select {
             min-height: 56px;
@@ -50,6 +76,14 @@
             padding-top: 20px !important;
             padding-bottom: 20px !important;
         }
+
+        html[data-theme="dark"] .admin-refunds-page .page-intro-title {
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-refunds-page .page-intro-copy {
+            color: #9ca3af !important;
+        }
     </style>
     <div class="admin-refunds-page py-8 max-w-6xl mx-auto px-4 space-y-6">
         @if (session('status'))
@@ -58,10 +92,10 @@
             </div>
         @endif
 
-        <div class="flex items-center justify-between">
+        <div class="page-intro">
             <div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Refund Requests</h1>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Review refund submissions and approve or deny them from one place.</p>
+                <h1 class="page-intro-title">Refund Requests</h1>
+                <p class="page-intro-copy">Handle refund decisions clearly and keep after-sales support moving.</p>
             </div>
         </div>
 
@@ -99,10 +133,9 @@
 
         <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-700">
-                <div>
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Refund queue</h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400">Pending and reviewed refund requests across completed orders.</p>
-                </div>
+                    <div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Refund queue</h3>
+                    </div>
                 <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
                     Showing {{ $refundRequests->firstItem() ?? 0 }}-{{ $refundRequests->lastItem() ?? 0 }} of {{ $refundRequests->total() }}
                 </span>

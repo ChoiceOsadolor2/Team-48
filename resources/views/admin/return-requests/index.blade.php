@@ -24,6 +24,32 @@
             line-height: 1.4 !important;
         }
 
+        .admin-return-requests-page .page-intro {
+            margin-bottom: 8px;
+        }
+
+        .admin-return-requests-page .page-intro-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #111827;
+        }
+
+        .admin-return-requests-page .page-intro-copy {
+            margin-top: 8px;
+            color: #6b7280 !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-return-requests-page .page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+
         .admin-return-requests-page input,
         .admin-return-requests-page select {
             min-height: 56px;
@@ -50,6 +76,14 @@
             padding-top: 20px !important;
             padding-bottom: 20px !important;
         }
+
+        html[data-theme="dark"] .admin-return-requests-page .page-intro-title {
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-return-requests-page .page-intro-copy {
+            color: #9ca3af !important;
+        }
     </style>
     <x-slot name="header">
         <div class="flex items-center justify-between">
@@ -62,6 +96,10 @@
 
     <div class="admin-return-requests-page py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="page-intro">
+                <h1 class="page-intro-title">Returns & Refunds</h1>
+                <p class="page-intro-copy">Track after-sales requests, review their status, and respond more efficiently.</p>
+            </div>
             <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.return-requests.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -102,7 +140,6 @@
                 <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Request queue</h3>
-                        <p class="text-sm text-gray-500">Approve or decline customer after-sales requests from one place.</p>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
                         Showing {{ $returnRequests->firstItem() ?? 0 }}-{{ $returnRequests->lastItem() ?? 0 }} of {{ $returnRequests->total() }}

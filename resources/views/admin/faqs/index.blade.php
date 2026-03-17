@@ -23,6 +23,32 @@
             line-height: 1.4 !important;
         }
 
+        .admin-faqs-page .page-intro {
+            margin-bottom: 8px;
+        }
+
+        .admin-faqs-page .page-intro-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #111827;
+        }
+
+        .admin-faqs-page .page-intro-copy {
+            margin-top: 8px;
+            color: #6b7280 !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-faqs-page .page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+
         .admin-faqs-page input,
         .admin-faqs-page select {
             min-height: 56px;
@@ -65,7 +91,25 @@
             border-color: #e5e7eb;
         }
 
+        .admin-faqs-page .faqs-table-shell {
+            background: #fff;
+            border-color: #e5e7eb;
+        }
+
         .admin-faqs-page .faqs-filter-form {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
+        .admin-faqs-page .faqs-input,
+        .admin-faqs-page .faqs-select,
+        .admin-faqs-page .faqs-bulk-select {
+            background: #fff;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+
+        .admin-faqs-page .faqs-bulk-bar {
             background: #f9fafb;
             border-color: #e5e7eb;
         }
@@ -83,12 +127,39 @@
             padding-bottom: 20px !important;
         }
 
+        .admin-faqs-page .faqs-table-shell th {
+            color: #6b7280 !important;
+        }
+
+        .admin-faqs-page .faqs-table-shell td {
+            color: #111827 !important;
+        }
+
+        .admin-faqs-page .faqs-table-shell .faqs-muted {
+            color: #6b7280 !important;
+        }
+
+        .admin-faqs-page .faqs-library-title {
+            font-size: 28px !important;
+            line-height: 1.1 !important;
+            color: #111827 !important;
+        }
+
         html[data-theme="dark"] .admin-faqs-page .faqs-table-head {
             background: rgba(17, 24, 39, 0.78);
         }
 
+        html[data-theme="dark"] .admin-faqs-page .page-intro-title {
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .page-intro-copy {
+            color: #9ca3af !important;
+        }
+
         html[data-theme="dark"] .admin-faqs-page .faqs-shell,
-        html[data-theme="dark"] .admin-faqs-page .faqs-filter-shell {
+        html[data-theme="dark"] .admin-faqs-page .faqs-filter-shell,
+        html[data-theme="dark"] .admin-faqs-page .faqs-table-shell {
             background: #1f2937;
             border-color: #374151;
         }
@@ -98,8 +169,34 @@
             border-color: #374151;
         }
 
+        html[data-theme="dark"] .admin-faqs-page .faqs-input,
+        html[data-theme="dark"] .admin-faqs-page .faqs-select,
+        html[data-theme="dark"] .admin-faqs-page .faqs-bulk-select {
+            background: #1f2937;
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .faqs-bulk-bar {
+            background: rgba(17, 24, 39, 0.78);
+            border-color: #374151;
+        }
+
         html[data-theme="dark"] .admin-faqs-page .faqs-row:hover {
             background: rgba(255, 255, 255, 0.03);
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .faqs-table-shell th,
+        html[data-theme="dark"] .admin-faqs-page .faqs-table-shell .faqs-muted {
+            color: #9ca3af !important;
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .faqs-table-shell td {
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .faqs-library-title {
+            color: #f9fafb !important;
         }
     </style>
     <x-slot name="header">
@@ -107,11 +204,11 @@
     </x-slot>
 
     <div class="admin-faqs-page py-12">
-        <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="faqs-shell flex items-center justify-between gap-4 rounded-3xl border p-6 shadow-sm">
+        <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+            <div class="page-intro flex items-start justify-between gap-4">
                 <div>
-                    <h3 class="text-[1.45rem] font-semibold text-gray-900">Chatbot FAQs</h3>
-                    <p class="mt-1.5 text-[0.98rem] text-gray-500">Manage the FAQ answers used by the chatbot.</p>
+                    <h1 class="page-intro-title">Chatbot FAQs</h1>
+                    <p class="page-intro-copy">Keep chatbot answers current and easy to manage from one admin section.</p>
                 </div>
                 <a href="{{ route('admin.faqs.create') }}" class="rounded-xl bg-cyan-600 px-4 py-3 text-[0.95rem] font-semibold text-white shadow-sm transition hover:bg-cyan-500">
                     + Add FAQ
@@ -127,13 +224,13 @@
                                 type="text"
                                 name="q"
                                 value="{{ $search ?? request('q') }}"
-                                class="w-full rounded-xl border border-gray-300 px-4 py-3 text-[0.95rem]"
+                                class="faqs-input w-full rounded-xl border border-gray-300 px-4 py-3 text-[0.95rem]"
                                 placeholder="Search keyword or answer..."
                             />
                         </div>
                         <div>
                             <label class="mb-1.5 block text-[0.95rem] font-semibold text-gray-700">Category</label>
-                            <select name="category" class="w-full rounded-xl border border-gray-300 px-4 py-3 text-[0.95rem]">
+                            <select name="category" class="faqs-select w-full rounded-xl border border-gray-300 px-4 py-3 text-[0.95rem]">
                                 <option value="">All categories</option>
                                 @foreach(($categories ?? \App\Models\Faq::CATEGORIES) as $value => $label)
                                     <option value="{{ $value }}" {{ ($category ?? request('category')) === $value ? 'selected' : '' }}>{{ $label }}</option>
@@ -148,11 +245,10 @@
                 </form>
             </div>
 
-            <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+            <div class="faqs-table-shell overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
                 <div class="flex items-center justify-between border-b border-gray-200 px-6 py-5">
                     <div>
-                        <h3 class="text-[1.2rem] font-semibold text-gray-900">FAQ library</h3>
-                        <p class="text-[0.95rem] text-gray-500">Searchable answers powering the site chatbot.</p>
+                        <h3 class="faqs-library-title text-[1.2rem] font-semibold text-gray-900">FAQ library</h3>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3.5 py-1.5 text-[0.82rem] font-semibold text-gray-700">
                         @if ($faqs instanceof \Illuminate\Contracts\Pagination\Paginator)
@@ -164,13 +260,13 @@
                 </div>
 
                 @if ($faqs->isEmpty())
-                    <div class="px-6 py-12 text-center text-[0.98rem] text-gray-500">
+                    <div class="faqs-muted px-6 py-12 text-center text-[0.98rem] text-gray-500">
                         No FAQs matched the current search.
                     </div>
                 @else
                     <form method="POST" action="{{ route('admin.faqs.bulk') }}">
                         @csrf
-                        <div class="border-b border-gray-200 bg-gray-50 px-6 py-5">
+                        <div class="faqs-bulk-bar border-b px-6 py-5">
                             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <div class="flex items-center gap-3">
                                     <label class="flex items-center gap-2 text-[0.95rem] font-semibold text-gray-700">
@@ -180,7 +276,7 @@
                                     <span class="text-[0.82rem] text-gray-500">Choose FAQs, then run a bulk action.</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <select name="action" class="rounded-xl border border-gray-300 px-3.5 py-2.5 text-[0.95rem]">
+                                    <select name="action" class="faqs-bulk-select rounded-xl border border-gray-300 px-3.5 py-2.5 text-[0.95rem]">
                                         <option value="">Bulk action</option>
                                         <option value="delete">Delete selected</option>
                                     </select>
@@ -218,7 +314,7 @@
                                                 {{ \App\Models\Faq::CATEGORIES[$faq->category] ?? ucfirst(str_replace('_', ' ', $faq->category)) }}
                                             </span>
                                         </td>
-                                        <td class="px-5 py-4 text-gray-600">{{ \Illuminate\Support\Str::limit($faq->answer, 140) }}</td>
+                                        <td class="faqs-muted px-5 py-4 text-gray-600">{{ \Illuminate\Support\Str::limit($faq->answer, 140) }}</td>
                                         <td class="px-5 py-4">
                                             <div class="flex justify-end gap-2">
                                                 <a href="{{ route('admin.faqs.edit', $faq) }}" class="rounded-lg border border-cyan-200 px-3.5 py-2 text-[0.82rem] font-semibold text-cyan-700 transition hover:bg-cyan-50">Edit</a>

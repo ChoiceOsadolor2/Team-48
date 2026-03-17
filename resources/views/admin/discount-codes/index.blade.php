@@ -1,17 +1,50 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Discount Codes</h2>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Create and manage promo codes from one admin hub.</p>
-        </div>
-    </x-slot>
+    <style>
+        .admin-discount-codes-page .page-intro-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #111827;
+        }
 
-    <div class="py-12">
+        .admin-discount-codes-page .page-intro-copy {
+            margin-top: 8px;
+            color: #6b7280 !important;
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        html[data-theme="dark"] .admin-discount-codes-page .page-intro-title {
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-discount-codes-page .page-intro-copy {
+            color: #9ca3af !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-discount-codes-page .page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+    </style>
+
+    <div class="admin-discount-codes-page py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="page-intro">
+                <div>
+                    <h1 class="page-intro-title">Discount Codes</h1>
+                    <p class="page-intro-copy">Create and manage promo codes from one admin hub.</p>
+                </div>
+            </div>
+
             <div class="flex items-center justify-between gap-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <div>
                     <h3 class="text-xl font-semibold text-gray-900">Discount code management</h3>
-                    <p class="mt-1 text-sm text-gray-500">Create percentage or fixed-amount discounts and manage when they run.</p>
                 </div>
                 <a href="{{ route('admin.discount-codes.create') }}" class="rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-500">
                     + Add Discount Code

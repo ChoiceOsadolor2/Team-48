@@ -1,18 +1,43 @@
 <x-app-layout>
-    <div class="py-8 max-w-7xl mx-auto px-4 space-y-6">
-        <div class="flex items-center justify-between gap-4">
+    <style>
+        .admin-revenue-page .page-intro-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #111827;
+        }
+
+        .admin-revenue-page .page-intro-copy {
+            margin-top: 8px;
+            color: #6b7280 !important;
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        html[data-theme="dark"] .admin-revenue-page .page-intro-title {
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-revenue-page .page-intro-copy {
+            color: #9ca3af !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-revenue-page .page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+    </style>
+    <div class="admin-revenue-page py-8 max-w-7xl mx-auto px-4 space-y-6">
+        <div class="page-intro">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Revenue Overview</h1>
-                <p class="mt-2 text-sm text-gray-500 dark:text-gray-400">
-                    Gross revenue excludes cancelled orders. Refund totals reflect approved refund requests only.
-                </p>
+                <h1 class="page-intro-title">Revenue Overview</h1>
+                <p class="page-intro-copy">Gross revenue excludes cancelled orders. Refund totals reflect approved refund requests only.</p>
             </div>
-            <a
-                href="{{ route('admin.dashboard') }}"
-                class="rounded-xl border border-gray-300 bg-white px-4 py-2.5 text-sm font-semibold text-gray-900 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:hover:bg-gray-700"
-            >
-                Back to Dashboard
-            </a>
         </div>
 
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">

@@ -1,12 +1,51 @@
 <x-app-layout>
-    <div class="py-10">
+    <style>
+        .admin-audit-page .page-intro-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #111827;
+        }
+
+        .admin-audit-page .page-intro-copy {
+            margin-top: 8px;
+            color: #6b7280 !important;
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        html[data-theme="dark"] .admin-audit-page .page-intro-title {
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-audit-page .page-intro-copy {
+            color: #9ca3af !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-audit-page .page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+    </style>
+    <div class="admin-audit-page py-10">
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
+            <div class="page-intro">
+                <div>
+                    <h1 class="page-intro-title">Admin audit log</h1>
+                    <p class="page-intro-copy">Track important admin actions across products, orders, FAQs, discounts, and support workflows.</p>
+                </div>
+            </div>
+
             <section class="rounded-3xl border border-gray-200 bg-white p-6 shadow-lg dark:border-gray-700 dark:bg-gray-800">
                 <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <p class="text-sm uppercase tracking-[0.18em] text-gray-400">Audit Trail</p>
-                        <h1 class="mt-2 text-2xl font-bold text-gray-900">Admin audit log</h1>
-                        <p class="mt-1 text-sm text-gray-500">Track important admin actions across products, orders, FAQs, discounts, and support workflows.</p>
+                        <h2 class="mt-2 text-2xl font-bold text-gray-900">Search audit history</h2>
                     </div>
 
                     <form method="GET" action="{{ route('admin.audit-logs.index') }}" class="flex w-full max-w-xl gap-3">
