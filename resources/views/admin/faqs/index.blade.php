@@ -215,7 +215,7 @@
                     </h1>
                     <p class="page-intro-copy">Keep chatbot answers current and easy to manage from one admin section.</p>
                 </div>
-                <a href="{{ route('admin.faqs.create') }}" class="rounded-xl bg-cyan-600 px-4 py-3 text-[0.95rem] font-semibold text-white shadow-sm transition hover:bg-cyan-500">
+                <a href="{{ route('admin.faqs.create') }}" class="admin-btn admin-btn--primary">
                     + Add FAQ
                 </a>
             </div>
@@ -243,8 +243,8 @@
                             </select>
                         </div>
                         <div class="faqs-filter-actions flex gap-2">
-                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-3 text-[0.95rem] font-semibold text-white transition hover:bg-indigo-500">Apply</button>
-                            <a href="{{ route('admin.faqs.index') }}" class="rounded-xl bg-gray-200 px-4 py-3 text-[0.95rem] font-semibold text-gray-800 transition hover:bg-gray-300">Clear</a>
+                            <button type="submit" class="admin-btn admin-btn--primary">Apply</button>
+                            <a href="{{ route('admin.faqs.index') }}" class="admin-btn admin-btn--secondary">Clear</a>
                         </div>
                     </div>
                 </form>
@@ -291,7 +291,7 @@
                                         <option value="">Bulk action</option>
                                         <option value="delete">Delete selected</option>
                                     </select>
-                                    <button type="submit" class="rounded-xl bg-gray-900 px-4 py-2.5 text-[0.95rem] font-semibold text-white transition hover:bg-gray-800" onclick="return confirm('Apply this bulk action to the selected FAQs?');">
+                                    <button type="submit" class="admin-btn admin-btn--secondary" onclick="return confirm('Apply this bulk action to the selected FAQs?');">
                                         Apply
                                     </button>
                                 </div>
@@ -328,8 +328,8 @@
                                         <td class="faqs-muted px-5 py-4 text-gray-600">{{ \Illuminate\Support\Str::limit($faq->answer, 140) }}</td>
                                         <td class="px-5 py-4">
                                             <div class="flex justify-end gap-2">
-                                                <a href="{{ route('admin.faqs.edit', $faq) }}" class="rounded-lg border border-cyan-200 px-3.5 py-2 text-[0.82rem] font-semibold text-cyan-700 transition hover:bg-cyan-50">Edit</a>
-                                                <button type="submit" form="delete-faq-{{ $faq->id }}" class="rounded-lg border border-rose-200 px-3.5 py-2 text-[0.82rem] font-semibold text-rose-700 transition hover:bg-rose-50" onclick="return confirm('Delete this FAQ?');">Delete</button>
+                                                <a href="{{ route('admin.faqs.edit', $faq) }}" class="admin-btn admin-btn--quiet">Edit</a>
+                                                <button type="submit" form="delete-faq-{{ $faq->id }}" class="admin-btn admin-btn--danger" onclick="return confirm('Delete this FAQ?');">Delete</button>
                                             </div>
                                         </td>
                                     </tr>

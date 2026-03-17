@@ -137,8 +137,8 @@
                         </div>
 
                         <div class="flex items-end gap-2">
-                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
-                            <a href="{{ route('admin.return-requests.index') }}" class="rounded-xl bg-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-300">Clear</a>
+                            <button type="submit" class="admin-btn admin-btn--primary">Apply</button>
+                            <a href="{{ route('admin.return-requests.index') }}" class="admin-btn admin-btn--secondary">Clear</a>
                         </div>
                     </div>
                 </form>
@@ -200,7 +200,7 @@
                                         <td class="px-5 py-4 align-top text-gray-500">{{ $returnRequest->created_at->format('d M Y, H:i') }}</td>
                                         <td class="px-5 py-4 align-top">
                                             <div class="flex justify-end gap-2">
-                                                <a href="{{ route('admin.return-requests.show', $returnRequest) }}" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-500">Review</a>
+                                                <a href="{{ route('admin.return-requests.show', $returnRequest) }}" class="admin-btn admin-btn--success">Review</a>
                                             </div>
                                         </td>
                                     </tr>

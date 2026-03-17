@@ -226,6 +226,12 @@
         .admin-products-page .products-tab.is-active {
             background: #1d1d1d !important;
             border-color: transparent !important;
+            color: #ffffff !important;
+        }
+
+        .admin-products-page .products-tab,
+        .admin-products-page .products-tab:visited {
+            color: rgba(255, 255, 255, 0.88) !important;
         }
 
         .admin-products-page .products-tab:hover::after,

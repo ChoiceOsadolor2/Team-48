@@ -127,8 +127,8 @@
                         </div>
 
                         <div class="flex gap-2">
-                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
-                            <a href="{{ route('admin.products.low-stock-center') }}" class="low-soft low-text rounded-xl px-4 py-3 text-sm font-semibold transition hover:bg-gray-200">Clear</a>
+                            <button type="submit" class="admin-btn admin-btn--primary">Apply</button>
+                            <a href="{{ route('admin.products.low-stock-center') }}" class="admin-btn admin-btn--secondary">Clear</a>
                         </div>
                     </div>
                 </form>
@@ -191,7 +191,7 @@
                                         </td>
                                         <td class="px-5 py-4">
                                             <div class="flex justify-end">
-                                                <a href="{{ route('admin.products.edit', $product) }}" class="rounded-lg border border-cyan-200 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-50">
+                                                <a href="{{ route('admin.products.edit', $product) }}" class="admin-btn admin-btn--quiet">
                                                     Restock now
                                                 </a>
                                             </div>

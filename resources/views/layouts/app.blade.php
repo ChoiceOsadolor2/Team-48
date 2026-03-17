@@ -605,6 +605,115 @@
                 body.admin-page .admin-back-link:focus-visible::after {
                     opacity: 1;
                 }
+
+                body.admin-page .admin-btn {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    min-height: 56px;
+                    padding: 0 22px;
+                    border-radius: 18px;
+                    border: 1px solid transparent;
+                    font-size: 20px;
+                    line-height: 1.2;
+                    font-weight: 400;
+                    text-decoration: none;
+                    transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+                }
+
+                body.admin-page .admin-btn:hover,
+                body.admin-page .admin-btn:focus-visible {
+                    transform: translateY(-1px);
+                    outline: none;
+                }
+
+                body.admin-page .admin-btn--primary {
+                    background: #06b6d4;
+                    border-color: #0891b2;
+                    color: #fff;
+                }
+
+                body.admin-page .admin-btn--primary:hover,
+                body.admin-page .admin-btn--primary:focus-visible {
+                    background: #0891b2;
+                }
+
+                body.admin-page .admin-btn--secondary {
+                    background: #e5e7eb;
+                    border-color: #d1d5db;
+                    color: #111827;
+                }
+
+                body.admin-page .admin-btn--secondary:hover,
+                body.admin-page .admin-btn--secondary:focus-visible {
+                    background: #d1d5db;
+                }
+
+                body.admin-page .admin-btn--quiet {
+                    background: #fff;
+                    border-color: #d1d5db;
+                    color: #0f172a;
+                }
+
+                body.admin-page .admin-btn--quiet:hover,
+                body.admin-page .admin-btn--quiet:focus-visible {
+                    background: #f9fafb;
+                }
+
+                body.admin-page .admin-btn--success {
+                    background: #059669;
+                    border-color: #047857;
+                    color: #fff;
+                }
+
+                body.admin-page .admin-btn--success:hover,
+                body.admin-page .admin-btn--success:focus-visible {
+                    background: #047857;
+                }
+
+                body.admin-page .admin-btn--danger {
+                    background: #dc2626;
+                    border-color: #b91c1c;
+                    color: #ffffff;
+                }
+
+                body.admin-page .admin-btn--danger:hover,
+                body.admin-page .admin-btn--danger:focus-visible {
+                    background: #b91c1c;
+                }
+
+                html[data-theme="dark"] body.admin-page .admin-btn--secondary {
+                    background: #374151;
+                    border-color: #4b5563;
+                    color: #f9fafb;
+                }
+
+                html[data-theme="dark"] body.admin-page .admin-btn--secondary:hover,
+                html[data-theme="dark"] body.admin-page .admin-btn--secondary:focus-visible {
+                    background: #4b5563;
+                }
+
+                html[data-theme="dark"] body.admin-page .admin-btn--quiet {
+                    background: #111827;
+                    border-color: #374151;
+                    color: #f9fafb;
+                }
+
+                html[data-theme="dark"] body.admin-page .admin-btn--quiet:hover,
+                html[data-theme="dark"] body.admin-page .admin-btn--quiet:focus-visible {
+                    background: #1f2937;
+                }
+
+                html[data-theme="dark"] body.admin-page .admin-btn--danger {
+                    background: #dc2626;
+                    border-color: #991b1b;
+                    color: #ffffff;
+                }
+
+                html[data-theme="dark"] body.admin-page .admin-btn--danger:hover,
+                html[data-theme="dark"] body.admin-page .admin-btn--danger:focus-visible {
+                    background: #b91c1c;
+                }
             @endif
             @if ($isProfilePage)
                 @font-face {

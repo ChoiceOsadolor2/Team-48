@@ -158,8 +158,8 @@
                 </div>
 
                 <div class="orders-filter-actions mt-4 flex gap-2">
-                    <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-3 text-[0.95rem] font-semibold text-white transition hover:bg-indigo-500">Apply</button>
-                    <a href="{{ route('admin.orders.index') }}" class="rounded-xl bg-gray-200 px-4 py-3 text-[0.95rem] font-semibold text-gray-800 transition hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600">Clear</a>
+                    <button type="submit" class="admin-btn admin-btn--primary">Apply</button>
+                    <a href="{{ route('admin.orders.index') }}" class="admin-btn admin-btn--secondary">Clear</a>
                 </div>
             </form>
         </div>
@@ -235,7 +235,7 @@
                                             <option value="completed" {{ $order->status === 'completed' || $order->status === 'delivered' ? 'selected' : '' }}>Completed</option>
                                             <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                         </select>
-                                        <button type="submit" class="rounded-lg bg-gray-900 px-3.5 py-2 text-[0.82rem] font-semibold text-white transition hover:bg-gray-800 dark:bg-cyan-600 dark:hover:bg-cyan-500">
+                                        <button type="submit" class="admin-btn admin-btn--primary">
                                             Save
                                         </button>
                                     </form>
@@ -243,7 +243,7 @@
                                 <td class="px-5 py-5 text-gray-500 dark:text-gray-400">{{ $order->created_at->format('d M Y H:i') }}</td>
                                 <td class="px-5 py-5">
                                     <div class="flex justify-end">
-                                        <a class="rounded-lg border border-cyan-200 px-3.5 py-2 text-[0.82rem] font-semibold text-cyan-700 transition hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-900/20"
+                                        <a class="admin-btn admin-btn--quiet"
                                            href="{{ route('admin.orders.show', $order) }}">
                                             View
                                         </a>

@@ -108,6 +108,63 @@
             border-color: #e5e7eb;
         }
 
+        .admin-contact-queries-page .queries-table-shell {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .admin-contact-queries-page .queries-table-shell h3,
+        .admin-contact-queries-page .queries-table-shell td,
+        .admin-contact-queries-page .queries-table-shell p,
+        .admin-contact-queries-page .queries-table-shell span,
+        .admin-contact-queries-page .queries-table-shell th {
+            color: #f9fafb !important;
+        }
+
+        .admin-contact-queries-page .queries-table-shell .queries-muted {
+            color: #9ca3af !important;
+        }
+
+        .admin-contact-queries-page .queries-table-shell .queries-count-pill {
+            background: rgba(255, 255, 255, 0.92);
+            color: #111827 !important;
+        }
+
+        .admin-contact-queries-page .queries-table-shell .queries-status-badge--resolved {
+            background: #d1fae5;
+            color: #065f46 !important;
+        }
+
+        .admin-contact-queries-page .queries-table-shell .queries-status-badge--unresolved {
+            background: #fef3c7;
+            color: #92400e !important;
+        }
+
+        .admin-contact-queries-page .queries-toggle-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 56px;
+            padding: 0 16px;
+            border-radius: 18px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+        }
+
+        .admin-contact-queries-page .queries-toggle-label {
+            color: #111827;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .admin-contact-queries-page .queries-toggle-btn {
+            border: 0;
+            background: transparent;
+            padding: 0;
+            line-height: 1;
+            cursor: pointer;
+        }
+
         .admin-contact-queries-page .queries-row {
             transition: background 0.2s ease;
         }
@@ -156,15 +213,29 @@
             border-color: #374151;
         }
 
+        html[data-theme="dark"] .admin-contact-queries-page .queries-toggle-wrap {
+            border-color: #374151;
+            background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .queries-toggle-label {
+            color: #f9fafb;
+        }
+
         html[data-theme="dark"] .admin-contact-queries-page .queries-row:hover {
             background: rgba(255, 255, 255, 0.03);
+        }
+
+        .queries-header-title,
+        .queries-header-copy {
+            color: #f9fafb !important;
         }
     </style>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Contact Queries</h2>
-                <p class="mt-1 text-sm text-gray-500">Messages submitted through the Contact Us forms.</p>
+                <h2 class="queries-header-title font-semibold text-xl leading-tight">Contact Queries</h2>
+                <p class="queries-header-copy mt-1 text-sm">Messages submitted through the Contact Us forms.</p>
             </div>
         </div>
     </x-slot>
@@ -206,19 +277,19 @@
                         </div>
 
                         <div class="queries-filter-actions flex items-end gap-2">
-                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
-                            <a href="{{ route('admin.contact-queries.index') }}" class="rounded-xl bg-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-300">Clear</a>
+                            <button type="submit" class="admin-btn admin-btn--primary">Apply</button>
+                            <a href="{{ route('admin.contact-queries.index') }}" class="admin-btn admin-btn--secondary">Clear</a>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <div class="queries-table-shell overflow-hidden rounded-3xl border shadow-sm">
                 <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Support inbox</h3>
+                        <h3 class="text-lg font-semibold">Support inbox</h3>
                     </div>
-                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                    <span class="queries-count-pill rounded-full px-3 py-1 text-xs font-semibold">
                         Showing {{ $contactQueries->firstItem() ?? 0 }}-{{ $contactQueries->lastItem() ?? 0 }} of {{ $contactQueries->total() }}
                     </span>
                 </div>
@@ -247,7 +318,7 @@
                                         <option value="unresolve">Mark unresolved</option>
                                         <option value="delete">Delete selected</option>
                                     </select>
-                                    <button type="submit" form="bulk-queries-form" class="rounded-xl bg-gray-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-gray-800" onclick="return confirm('Apply this bulk action to the selected contact queries?');">
+                                    <button type="submit" form="bulk-queries-form" class="admin-btn admin-btn--secondary" onclick="return confirm('Apply this bulk action to the selected contact queries?');">
                                         Apply
                                     </button>
                                 </div>
@@ -274,33 +345,35 @@
                                             <input type="checkbox" name="selected[]" value="{{ $contactQuery->id }}" form="bulk-queries-form" data-check-item="queries" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
                                         </td>
                                         <td class="px-5 py-4 align-top">
-                                            <p class="font-semibold text-gray-900">{{ $contactQuery->name }}</p>
-                                            <p class="mt-1 text-xs text-gray-500">{{ $contactQuery->email }}</p>
-                                        </td>
-                                        <td class="px-5 py-4 align-top">
-                                            <p class="font-semibold text-gray-900">{{ $contactQuery->subject }}</p>
-                                        </td>
+                                    <p class="font-semibold">{{ $contactQuery->name }}</p>
+                                    <p class="queries-muted mt-1 text-xs">{{ $contactQuery->email }}</p>
+                                </td>
+                                <td class="px-5 py-4 align-top">
+                                    <p class="font-semibold">{{ $contactQuery->subject }}</p>
+                                </td>
                                         <td class="px-5 py-4 align-top">
                                             <div class="flex flex-col gap-2">
-                                                <span class="inline-flex w-fit rounded-full px-3 py-1 text-xs font-semibold {{ $contactQuery->resolved_at ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800' }}">
-                                                    {{ $contactQuery->resolved_at ? 'Resolved' : 'Unresolved' }}
-                                                </span>
-                                                <form action="{{ route('admin.contact-queries.toggle', $contactQuery) }}" method="POST">
+                                                <form action="{{ route('admin.contact-queries.toggle', $contactQuery) }}" method="POST" class="queries-toggle-wrap">
                                                     @csrf
+                                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $contactQuery->resolved_at ? 'queries-status-badge--resolved' : 'queries-status-badge--unresolved' }}">
+                                                        {{ $contactQuery->resolved_at ? 'Resolved' : 'Unresolved' }}
+                                                    </span>
                                                     <button type="submit"
-                                                        class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors {{ $contactQuery->resolved_at ? 'bg-emerald-500' : 'bg-gray-300' }}"
+                                                        class="queries-toggle-btn"
                                                         aria-label="Toggle resolved status">
-                                                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition {{ $contactQuery->resolved_at ? 'translate-x-5' : 'translate-x-1' }}"></span>
+                                                        <span class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors {{ $contactQuery->resolved_at ? 'bg-emerald-500' : 'bg-gray-300' }}">
+                                                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition {{ $contactQuery->resolved_at ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                                                        </span>
                                                     </button>
                                                 </form>
                                             </div>
                                         </td>
-                                        <td class="px-5 py-4 align-top text-gray-600">{{ \Illuminate\Support\Str::limit($contactQuery->message, 120) }}</td>
-                                        <td class="px-5 py-4 align-top text-gray-500">{{ $contactQuery->created_at->format('d M Y, H:i') }}</td>
+                                        <td class="queries-muted px-5 py-4 align-top">{{ \Illuminate\Support\Str::limit($contactQuery->message, 120) }}</td>
+                                        <td class="queries-muted px-5 py-4 align-top">{{ $contactQuery->created_at->format('d M Y, H:i') }}</td>
                                         <td class="px-5 py-4 align-top">
                                             <div class="flex justify-end gap-2">
-                                                <a href="{{ route('admin.contact-queries.show', $contactQuery) }}" class="rounded-lg border border-cyan-200 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-50">View</a>
-                                                <button type="submit" form="delete-query-{{ $contactQuery->id }}" class="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-50" onclick="return confirm('Delete this contact query?');">Delete</button>
+                                                <a href="{{ route('admin.contact-queries.show', $contactQuery) }}" class="admin-btn admin-btn--quiet">View</a>
+                                                <button type="submit" form="delete-query-{{ $contactQuery->id }}" class="admin-btn admin-btn--danger" onclick="return confirm('Delete this contact query?');">Delete</button>
                                             </div>
                                         </td>
                                     </tr>

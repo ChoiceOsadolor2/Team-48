@@ -1,30 +1,120 @@
 <x-app-layout>
-    <div class="py-8 max-w-5xl mx-auto px-4">
-        <div class="flex items-center justify-between mb-6">
+    @php
+        $statusClasses = $contactQuery->resolved_at
+            ? 'bg-emerald-100 text-emerald-800'
+            : 'bg-amber-100 text-amber-800';
+    @endphp
+
+    <style>
+        .admin-contact-query-show-page .query-card {
+            background: #ffffff;
+            border-color: #e5e7eb;
+        }
+
+        .admin-contact-query-show-page .query-soft {
+            background: #f9fafb;
+        }
+
+        .admin-contact-query-show-page .query-text {
+            color: #111827 !important;
+        }
+
+        .admin-contact-query-show-page .query-muted {
+            color: #6b7280 !important;
+        }
+
+        .admin-contact-query-show-page .query-toggle-wrap {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 56px;
+            padding: 0 16px;
+            border-radius: 18px;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+        }
+
+        .admin-contact-query-show-page .query-toggle-label {
+            color: #111827;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .admin-contact-query-show-page .query-status-badge--resolved {
+            background: #d1fae5;
+            color: #065f46 !important;
+        }
+
+        .admin-contact-query-show-page .query-status-badge--unresolved {
+            background: #fef3c7;
+            color: #92400e !important;
+        }
+
+        .admin-contact-query-show-page .query-toggle-btn {
+            border: 0;
+            background: transparent;
+            padding: 0;
+            line-height: 1;
+            cursor: pointer;
+        }
+
+        html[data-theme="dark"] .admin-contact-query-show-page .query-card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        html[data-theme="dark"] .admin-contact-query-show-page .query-soft {
+            background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-contact-query-show-page .query-text {
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-contact-query-show-page .query-muted {
+            color: #9ca3af !important;
+        }
+
+        html[data-theme="dark"] .admin-contact-query-show-page .query-toggle-wrap {
+            border-color: #374151;
+            background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-contact-query-show-page .query-toggle-label {
+            color: #f9fafb;
+        }
+    </style>
+
+    <div class="admin-contact-query-show-page py-8 max-w-6xl mx-auto px-4 space-y-6">
+        <div class="query-card flex flex-col gap-4 rounded-3xl border p-6 shadow-sm lg:flex-row lg:items-start lg:justify-between">
             <div>
-                <h1 class="text-2xl font-bold">Contact Query #{{ $contactQuery->id }}</h1>
-                <p class="text-gray-600">
-                    {{ $contactQuery->created_at->format('d M Y H:i') }}
-                    ·
-                    <span class="font-semibold {{ $contactQuery->resolved_at ? 'text-emerald-600' : 'text-amber-600' }}">
-                        {{ $contactQuery->resolved_at ? 'Resolved' : 'Unresolved' }}
+                <p class="query-muted text-sm uppercase tracking-[0.18em]">Contact Query</p>
+                <h1 class="query-text mt-2 text-3xl font-bold">Query #{{ $contactQuery->id }}</h1>
+                <div class="mt-3 flex flex-wrap items-center gap-3">
+                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses }}">
+                        {{ $contactQuery->resolved_at ? 'Resolved' : 'Pending review' }}
                     </span>
-                </p>
+                    <span class="query-muted text-sm">Submitted {{ $contactQuery->created_at->format('d M Y, H:i') }}</span>
+                    @if ($contactQuery->resolved_at)
+                        <span class="query-muted text-sm">Resolved {{ $contactQuery->resolved_at->format('d M Y, H:i') }}</span>
+                    @endif
+                </div>
             </div>
 
-            <div class="flex gap-2">
-                <a href="{{ route('admin.contact-queries.index') }}"
-                   class="px-4 py-2 bg-gray-200 rounded hover:bg-gray-300">
-                    Back
+            <div class="flex flex-wrap gap-3">
+                <a href="{{ route('admin.contact-queries.index') }}" class="admin-btn admin-btn--secondary">
+                    Back to Queries
                 </a>
 
-                <form method="POST" action="{{ route('admin.contact-queries.toggle', $contactQuery) }}" class="flex items-center gap-3 rounded bg-white px-3 py-2 shadow">
+                <form method="POST" action="{{ route('admin.contact-queries.toggle', $contactQuery) }}" class="query-toggle-wrap">
                     @csrf
-                    <span class="text-sm font-semibold text-gray-700">Resolved</span>
-                    <button type="submit"
-                            class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors {{ $contactQuery->resolved_at ? 'bg-emerald-500' : 'bg-gray-300' }}"
-                            aria-label="Toggle resolved status">
-                        <span class="inline-block h-5 w-5 transform rounded-full bg-white transition {{ $contactQuery->resolved_at ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $contactQuery->resolved_at ? 'query-status-badge--resolved' : 'query-status-badge--unresolved' }}">
+                        {{ $contactQuery->resolved_at ? 'Resolved' : 'Unresolved' }}
+                    </span>
+                    <button type="submit" class="query-toggle-btn" aria-label="Toggle resolved status">
+                        <span class="relative inline-flex h-7 w-12 items-center rounded-full transition-colors {{ $contactQuery->resolved_at ? 'bg-emerald-500' : 'bg-gray-300' }}">
+                            <span class="inline-block h-5 w-5 transform rounded-full bg-white transition {{ $contactQuery->resolved_at ? 'translate-x-6' : 'translate-x-1' }}"></span>
+                        </span>
                     </button>
                 </form>
 
@@ -32,28 +122,70 @@
                       onsubmit="return confirm('Delete this contact query?')">
                     @csrf
                     @method('DELETE')
-                    <button type="submit"
-                            class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-500">
+                    <button type="submit" class="admin-btn admin-btn--danger">
                         Delete
                     </button>
                 </form>
             </div>
         </div>
 
-        <div class="bg-white shadow rounded p-5 mb-6">
-            <h2 class="font-semibold mb-3">Customer Details</h2>
-            <p class="mb-2"><strong>Name:</strong> {{ $contactQuery->name }}</p>
-            <p class="mb-2"><strong>Email:</strong> {{ $contactQuery->email }}</p>
-            <p><strong>Subject:</strong> {{ $contactQuery->subject }}</p>
-            @if ($contactQuery->resolved_at)
-                <p class="mt-2"><strong>Resolved at:</strong> {{ $contactQuery->resolved_at->format('d M Y H:i') }}</p>
-            @endif
-        </div>
+        <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+            <div class="space-y-6 xl:col-span-2">
+                <div class="query-card rounded-3xl border p-6 shadow-sm">
+                    <h2 class="query-text text-lg font-semibold">Customer details</h2>
+                    <div class="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2">
+                        <div class="query-soft rounded-2xl p-4">
+                            <p class="query-muted text-xs uppercase tracking-[0.16em]">Name</p>
+                            <p class="query-text mt-2 font-semibold">{{ $contactQuery->name }}</p>
+                        </div>
+                        <div class="query-soft rounded-2xl p-4">
+                            <p class="query-muted text-xs uppercase tracking-[0.16em]">Email</p>
+                            <p class="query-text mt-2 font-semibold">{{ $contactQuery->email }}</p>
+                        </div>
+                        <div class="query-soft rounded-2xl p-4 md:col-span-2">
+                            <p class="query-muted text-xs uppercase tracking-[0.16em]">Subject</p>
+                            <p class="query-text mt-2 font-semibold">{{ $contactQuery->subject }}</p>
+                        </div>
+                    </div>
+                </div>
 
-        <div class="bg-white shadow rounded p-5">
-            <h2 class="font-semibold mb-3">Message</h2>
-            <div class="text-gray-700 leading-7 whitespace-pre-line break-words">
-                {{ $contactQuery->message }}
+                <div class="query-card rounded-3xl border p-6 shadow-sm">
+                    <h2 class="query-text text-lg font-semibold">Message</h2>
+                    <div class="query-soft query-text mt-4 rounded-2xl p-4 leading-7 whitespace-pre-line break-words">
+                        {{ $contactQuery->message }}
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-6">
+                <div class="query-card rounded-3xl border p-6 shadow-sm">
+                    <h2 class="query-text text-lg font-semibold">Status overview</h2>
+                    <div class="mt-4 space-y-3">
+                        <div class="query-soft rounded-2xl p-4">
+                            <p class="query-muted text-xs uppercase tracking-[0.16em]">Current status</p>
+                            <p class="query-text mt-2 font-semibold">{{ $contactQuery->resolved_at ? 'Resolved' : 'Pending review' }}</p>
+                        </div>
+
+                        <div class="query-soft rounded-2xl p-4">
+                            <p class="query-muted text-xs uppercase tracking-[0.16em]">Submitted</p>
+                            <p class="query-text mt-2 font-semibold">{{ $contactQuery->created_at->format('d M Y, H:i') }}</p>
+                        </div>
+
+                        <div class="query-soft rounded-2xl p-4">
+                            <p class="query-muted text-xs uppercase tracking-[0.16em]">Resolved at</p>
+                            <p class="query-text mt-2 font-semibold">
+                                {{ $contactQuery->resolved_at ? $contactQuery->resolved_at->format('d M Y, H:i') : 'Not resolved yet' }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="query-card rounded-3xl border p-6 shadow-sm">
+                    <h2 class="query-text text-lg font-semibold">Support guidance</h2>
+                    <div class="query-soft query-text mt-4 rounded-2xl p-4 leading-7">
+                        Review the customer's message, mark it resolved once action has been taken, and delete it only if it is no longer needed for support history.
+                    </div>
+                </div>
             </div>
         </div>
     </div>

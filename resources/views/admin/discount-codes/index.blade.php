@@ -52,7 +52,7 @@
                 <div>
                     <h3 class="text-xl font-semibold text-gray-900">Discount code management</h3>
                 </div>
-                <a href="{{ route('admin.discount-codes.create') }}" class="rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-500">
+                <a href="{{ route('admin.discount-codes.create') }}" class="admin-btn admin-btn--primary">
                     + Add Discount Code
                 </a>
             </div>
@@ -81,8 +81,8 @@
                         </div>
 
                         <div class="flex gap-2">
-                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
-                            <a href="{{ route('admin.discount-codes.index') }}" class="rounded-xl bg-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-300">Clear</a>
+                            <button type="submit" class="admin-btn admin-btn--primary">Apply</button>
+                            <a href="{{ route('admin.discount-codes.index') }}" class="admin-btn admin-btn--secondary">Clear</a>
                         </div>
                     </div>
                 </form>
@@ -157,11 +157,11 @@
                                         </td>
                                         <td class="px-5 py-4">
                                             <div class="flex justify-end gap-2">
-                                                <a href="{{ route('admin.discount-codes.edit', $discountCode) }}" class="rounded-lg border border-cyan-200 px-3 py-1.5 text-xs font-semibold text-cyan-700 transition hover:bg-cyan-50">Edit</a>
+                                                <a href="{{ route('admin.discount-codes.edit', $discountCode) }}" class="admin-btn admin-btn--quiet">Edit</a>
                                                 <form action="{{ route('admin.discount-codes.destroy', $discountCode) }}" method="POST" onsubmit="return confirm('Delete this discount code?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-50">Delete</button>
+                                                    <button type="submit" class="admin-btn admin-btn--danger">Delete</button>
                                                 </form>
                                             </div>
                                         </td>
