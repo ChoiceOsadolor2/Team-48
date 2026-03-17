@@ -171,8 +171,12 @@
                 </div>
 
                 @if ($auditLogs->isEmpty())
-                    <div class="audit-muted px-6 py-10 text-center text-sm">
-                        No audit log entries match the current search.
+                    <div class="audit-muted px-6 py-10 text-center text-sm space-y-3">
+                        <p>No audit log entries match the current search.</p>
+                        <p>Try searching for a broader action, admin, or target.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.audit-logs.index') }}" class="admin-btn admin-btn--secondary">View full audit trail</a>
+                        </div>
                     </div>
                 @else
                     <div class="overflow-x-auto">

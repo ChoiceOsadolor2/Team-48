@@ -272,8 +272,13 @@
                 </div>
 
                 @if ($faqs->isEmpty())
-                    <div class="faqs-muted px-6 py-12 text-center text-[0.98rem] text-gray-500">
-                        No FAQs matched the current search.
+                    <div class="faqs-muted px-6 py-12 text-center text-[0.98rem] text-gray-500 space-y-3">
+                        <p>No FAQs matched the current search.</p>
+                        <p class="text-[0.92rem]">Try broadening the keyword or switching to a different category.</p>
+                        <div class="flex justify-center gap-3">
+                            <a href="{{ route('admin.faqs.index') }}" class="admin-btn admin-btn--secondary">View all FAQs</a>
+                            <a href="{{ route('admin.faqs.create') }}" class="admin-btn admin-btn--primary">Add FAQ</a>
+                        </div>
                     </div>
                 @else
                     <form method="POST" action="{{ route('admin.faqs.bulk') }}">

@@ -155,8 +155,12 @@
                 </div>
 
                 @if ($returnRequests->isEmpty())
-                    <div class="px-5 py-10 text-center text-sm text-gray-500">
-                        No return or refund requests matched the current filters.
+                    <div class="px-5 py-10 text-center text-sm text-gray-500 space-y-3">
+                        <p>No return or refund requests matched the current filters.</p>
+                        <p>Try clearing the search or switching the selected status and request type.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.return-requests.index') }}" class="admin-btn admin-btn--secondary">View all requests</a>
+                        </div>
                     </div>
                 @else
                     <div class="overflow-x-auto">

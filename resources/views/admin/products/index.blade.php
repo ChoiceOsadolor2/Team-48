@@ -597,8 +597,12 @@
                 </div>
 
                 @if ($products->isEmpty())
-                    <div class="products-copy px-5 py-10 text-center">
-                        No products matched these filters.
+                    <div class="products-copy px-5 py-10 text-center space-y-3">
+                        <p>No products matched the current filters.</p>
+                        <p class="products-copy-sm">Try clearing the search or switching category and stock filters.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.products.index') }}" class="admin-btn admin-btn--secondary">View all products</a>
+                        </div>
                     </div>
                 @else
                     <form id="bulk-products-form" method="POST" action="{{ route('admin.products.bulk') }}">

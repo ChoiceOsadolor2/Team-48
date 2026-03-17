@@ -412,8 +412,12 @@
                 </div>
 
                 @if ($users->isEmpty())
-                    <div class="users-copy px-5 py-10 text-center">
-                        No users found.
+                    <div class="users-copy px-5 py-10 text-center space-y-3">
+                        <p>No users matched the current filters.</p>
+                        <p class="users-copy-sm">Try broadening the search or switching the selected role.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.users.index') }}" class="admin-btn admin-btn--secondary">View all users</a>
+                        </div>
                     </div>
                 @else
                     <div class="overflow-x-auto">

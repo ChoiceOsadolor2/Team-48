@@ -101,8 +101,13 @@
                 </div>
 
                 @if ($discountCodes->isEmpty())
-                    <div class="px-5 py-10 text-center text-sm text-gray-500">
-                        No discount codes matched the current filters.
+                    <div class="px-5 py-10 text-center text-sm text-gray-500 space-y-3">
+                        <p>No discount codes matched the current filters.</p>
+                        <p>Try clearing the search or checking a different status.</p>
+                        <div class="flex justify-center gap-3">
+                            <a href="{{ route('admin.discount-codes.index') }}" class="admin-btn admin-btn--secondary">View all codes</a>
+                            <a href="{{ route('admin.discount-codes.create') }}" class="admin-btn admin-btn--primary">Add discount code</a>
+                        </div>
                     </div>
                 @else
                     <div class="overflow-x-auto">

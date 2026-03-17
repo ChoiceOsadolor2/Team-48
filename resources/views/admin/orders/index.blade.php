@@ -253,7 +253,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td class="px-5 py-10 text-center text-[0.98rem] text-gray-500 dark:text-gray-400" colspan="7">No orders found.</td>
+                                <td class="px-5 py-10 text-center text-[0.98rem] text-gray-500 dark:text-gray-400" colspan="7">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <p>No orders matched the current search or filters.</p>
+                                        <a href="{{ route('admin.orders.index') }}" class="admin-btn admin-btn--secondary">View all orders</a>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>

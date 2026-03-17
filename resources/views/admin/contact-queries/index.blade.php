@@ -305,8 +305,12 @@
                 </div>
 
                 @if ($contactQueries->isEmpty())
-                    <div class="px-5 py-10 text-center text-sm text-gray-500">
-                        No contact queries matched the current filters.
+                    <div class="px-5 py-10 text-center text-sm text-gray-500 space-y-3">
+                        <p>No contact queries matched the current filters.</p>
+                        <p class="queries-muted">Try broadening the search or switching the status filter.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.contact-queries.index') }}" class="admin-btn admin-btn--secondary">View all queries</a>
+                        </div>
                     </div>
                 @else
                     <form id="bulk-queries-form" method="POST" action="{{ route('admin.contact-queries.bulk') }}">

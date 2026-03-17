@@ -146,8 +146,12 @@
                 </div>
 
                 @if ($products->isEmpty())
-                    <div class="low-muted px-5 py-10 text-center text-sm">
-                        No products matched the current low-stock filters.
+                    <div class="low-muted px-5 py-10 text-center text-sm space-y-3">
+                        <p>No products matched the current low-stock filters.</p>
+                        <p>Try switching the severity or clearing the product search.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.products.low-stock-center') }}" class="admin-btn admin-btn--secondary">View full restock queue</a>
+                        </div>
                     </div>
                 @else
                     <div class="overflow-x-auto">

@@ -234,7 +234,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400" colspan="7">No refund requests found.</td>
+                                <td class="px-5 py-10 text-center text-sm text-gray-500 dark:text-gray-400" colspan="7">
+                                    <div class="flex flex-col items-center gap-3">
+                                        <p>No refund requests matched the current filters.</p>
+                                        <a href="{{ route('admin.refunds.index') }}" class="admin-btn admin-btn--secondary">View all refunds</a>
+                                    </div>
+                                </td>
                             </tr>
                         @endforelse
                     </tbody>
