@@ -63,7 +63,7 @@
                                                     @method('PUT')
                                                     <label for="quantity-{{ $item['product']->id }}" class="sr-only">Quantity, {{ $item['product']->name }}</label>
                                                     <div class="flex items-center border border-gray-300 rounded-lg bg-gray-50 overflow-hidden">
-                                                        <input type="number" id="quantity-{{ $item['product']->id }}" name="quantity" value="{{ $item['quantity'] }}" min="1" class="w-16 text-center border-none focus:ring-0 p-2 bg-transparent font-medium text-gray-900">
+                                                        <input type="number" id="quantity-{{ $item['product']->id }}" name="quantity" value="{{ $item['quantity'] }}" min="1" max="{{ $item['product']->stock }}" class="w-16 text-center border-none focus:ring-0 p-2 bg-transparent font-medium text-gray-900">
                                                     </div>
                                                     <button type="submit" class="text-indigo-600 hover:text-indigo-800 text-sm font-semibold tracking-wide uppercase transition-colors">Update</button>
                                                 </form>

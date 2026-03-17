@@ -857,8 +857,14 @@ nav {
 
 nav.open {
   height: 50em;
-  background-color: var(--background-light);
   transition: ease-in-out 0.3s;
+  background-color: rgb(238, 238, 238, 0.6);
+  transition: height 0.3s ease-in-out;
+}
+
+nav.open a {
+  font-size: 4rem;
+  transition: font-size 0.3s ease;
 }
 
 nav.close {
