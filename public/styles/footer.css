@@ -1,11 +1,58 @@
+@font-face {
+    font-family: 'MiniPixel';
+    src: url('../fonts/mini-pixel-7.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+#footer {
+    width: 100%;
+    flex: 0 0 auto;
+}
+
 .site-footer {
     margin: 0;
     padding: 0;
-    font-size: 25px;
+    font-size: 30px;
+    font-weight: 400;
+    font-family: 'MiniPixel', sans-serif;
     color: white;
-    background: rgb(0, 0, 0);
-    padding-top: 30px;
-    
+    background: #1d1d1d;
+    padding-top: 0;
+    border-top: 1px solid #444;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-right: calc(50% - 50vw);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+
+.site-footer,
+.site-footer * {
+    box-sizing: border-box;
+}
+
+.site-footer,
+.site-footer h3,
+.site-footer p,
+.site-footer a,
+.site-footer li,
+.site-footer span {
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+.site-footer h3,
+.site-footer p,
+.site-footer ul,
+.site-footer li {
+    margin: 0;
+}
+
+.site-footer ul {
+    padding: 0;
+    list-style: none;
 }
 
 .site-footer a {
@@ -13,24 +60,25 @@
     color: white;
 }
 
-.main-container {
+.site-footer .main-container {
     width: 1140px;
     margin: auto;
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
+    padding-top: 12px;
 }
 
 .footer-content {
     flex: 1;
     min-width: 250px;
-    padding: 20px;
+    padding: 10px 20px 0;
 }
 
 .site-footer h3 {
-    color: orange;
-    margin-bottom: 15px;
-    font-size: 40px;
+    color: #ffa825;
+    margin-bottom: 10px;
+    font-size: 30px;
     text-align: center;
 }
 
@@ -39,6 +87,14 @@
     width: 190px;
     margin: auto;
     padding: 7px;
+}
+
+.footer-contact-label {
+    color: #888;
+}
+
+.footer-contact-value {
+    color: white;
 }
 
 .footer-content ul {
@@ -91,44 +147,75 @@
 }
 
 .site-footer a:hover {
-    color: rgb(255, 162, 0);
+    color: #ffa825;
 }
 
 .footer-social-icons i:hover {
-    color: rgb(255, 157, 0);
+    color: #ffa825;
 }
 
 .footer-bottom-bar {
-    background: rgb(56, 43, 195);
     text-align: center;
-    padding: 10px 0;
-    margin-top: 50px;
+    padding: 2px 0 0;
+    margin-top: 0;
+    background: #1d1d1d;
 }
 
 .footer-bottom-bar p {
-    color: rgb(229, 198, 198);
+    color: white;
     margin: 0;
     font-size: 20px;
-    padding: 7px;
+    font-weight: 400;
+    padding: 3px 7px 1px;
 }
 
-.footer-bottom-bar {
-    background: linear-gradient(
-        90deg, /*this is the gradient direction from left to right */
-        /*270deg if want right to left */
-        rgb(209, 12, 12), rgb(153, 108, 24), rgb(219, 219, 60), rgb(3, 131, 3), rgb(14, 14, 237), rgb(60, 5, 100), rgb(240, 125, 240)
-    );
-    background-size: 1500% 1400%; /*big gradient */
-    /* can change the speed of the rainbow based on its seconds */
-    animation: footer-bottom-bar-rainbow 17s linear infinite;
-    text-align: center;
-    padding: 10px 0;
-    margin-top: 50px;
+html.home[data-theme="light"] .site-footer {
+    color: #1a1511;
+    background: #ffffff;
+    border-top-color: #d1d5db;
+    box-shadow: none;
+    opacity: 1;
 }
 
-/*animation for the footer itself */
-@keyframes footer-bottom-bar-rainbow {
-    0%{background-position: 0% 50%;} /*start from left */
-    50% {background-position:100% 50%; } /*right */
-    100%{background-position: 0% 50%; } /* back to start */
+html.home[data-theme="light"] #footer {
+    background: #ffffff;
+}
+
+html.home[data-theme="light"] .site-footer::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #ffffff;
+    z-index: -1;
+    pointer-events: none;
+}
+
+html.home[data-theme="light"] .site-footer h3 {
+    color: #c67d0f;
+}
+
+html.home[data-theme="light"] .footer-contact-label {
+    color: #7a6c60;
+}
+
+html.home[data-theme="light"] .footer-contact-value,
+html.home[data-theme="light"] .footer-list li,
+html.home[data-theme="light"] .site-footer a,
+html.home[data-theme="light"] .footer-social-icons i,
+html.home[data-theme="light"] .footer-bottom-bar p {
+    color: #1a1511;
+}
+
+html.home[data-theme="light"] .footer-bottom-bar {
+    background: #ffffff;
+}
+
+html.home[data-theme="light"] .site-footer .main-container,
+html.home[data-theme="light"] .footer-content {
+    background: #ffffff;
+}
+
+html.home[data-theme="light"] .site-footer a:hover,
+html.home[data-theme="light"] .footer-social-icons i:hover {
+    color: #c67d0f;
 }

@@ -46,6 +46,27 @@ main {
   font-size: var(--page-text-size);
 }
 
+html[data-theme="light"] body {
+  color: #111;
+  background-color: #f6efe6;
+}
+
+html[data-theme="light"] main {
+  background-color: #f6efe6;
+}
+
+html[data-theme="light"] .search-container {
+  background: rgba(255, 250, 244, 0.96);
+  border-color: rgba(17, 17, 17, 0.18);
+}
+
+html[data-theme="light"] .search-bar,
+html[data-theme="light"] .search-close {
+  background: #fff;
+  color: #111;
+  border-color: rgba(17, 17, 17, 0.12);
+}
+
 /* Navigation Bar */
 .nav {
   position: fixed;
@@ -217,9 +238,32 @@ main {
 }
 
 .cat-box:hover {
-  background: #2a2a2a;
+  background: #1d1d1d;
   transform: scale(1.04);
   transition: ease-in-out 0.2s;
+}
+
+html[data-theme="light"] .cat-box,
+html[data-theme="light"] .review-card,
+html[data-theme="light"] .hp-service-card,
+html[data-theme="light"] .hp-value-card,
+html[data-theme="light"] .contact-form,
+html[data-theme="light"] .contact-field-wrap,
+html[data-theme="light"] .submit-wrap,
+html[data-theme="light"] .swipe-indicator {
+  background: rgba(255, 255, 255, 0.9);
+  color: #111;
+  border-color: rgba(17, 17, 17, 0.1);
+}
+
+html[data-theme="light"] .main-desc,
+html[data-theme="light"] .review-text,
+html[data-theme="light"] .review-author,
+html[data-theme="light"] .hp-about-text p,
+html[data-theme="light"] .contact-subtitle,
+html[data-theme="light"] .error-message,
+html[data-theme="light"] .success-message {
+  color: #2a2a2a;
 }
 
 .cat-box:hover::after {
@@ -233,7 +277,7 @@ main {
 }
 
 .cat-box:hover svg {
-  background: #2a2a2a;
+  background: transparent;
   animation: elastic 0.6s ease;
 }
 
@@ -360,6 +404,7 @@ main {
   padding: 2rem;
   width: 300px;
   min-width: 300px;
+  height: 480px;
   flex-shrink: 0;
   scroll-snap-align: center;
   text-align: left;
@@ -369,22 +414,65 @@ main {
   cursor: default;
 }
 
+.review-card--placeholder {
+  opacity: 1;
+  background: #1d1d1d;
+}
+
 .review-stars {
+  order: 1;
   color: #ffa825;
   font-size: 1.8rem;
   letter-spacing: 2px;
+  align-self: center;
+  text-align: center;
+  margin-top: 0;
 }
 
 .review-text {
-  font-size: 20px;
+  order: 3;
+  font-size: var(--page-text-size);
   line-height: 1.6;
   flex-grow: 1;
+  font-weight: normal;
+  color: #fff;
+}
+
+.review-badge {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  align-self: center;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(50, 210, 255, 0.28);
+  background: rgba(50, 210, 255, 0.12);
+  color: #a8f0ff;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.review-card-title {
+  font-size: 20px;
+  color: #fff;
+  line-height: 1.4;
 }
 
 .review-author {
-  font-size: 18px;
+  order: 4;
+  font-size: var(--page-text-size);
   color: #888;
   margin-top: auto;
+  font-weight: normal;
+}
+
+.reviews-empty {
+  color: #888;
+  max-width: 800px;
+  margin: 1rem auto 0;
+  font-size: 20px;
 }
 
 .cat-box span {
@@ -402,6 +490,46 @@ main {
 
 .categories {
   margin-top: 2rem;
+}
+
+@media (min-width: 1200px) {
+  .categories-all .cat-box {
+    width: calc((min(1600px, calc(100vw - 48px)) - 6rem) / 7);
+    min-width: 0;
+    height: 160px;
+    padding: 14px 10px;
+  }
+
+  .categories-all .cat-box svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .categories-all .cat-box span {
+    font-size: 18px;
+  }
+
+  .categories {
+    width: min(1600px, calc(100vw - 48px));
+    flex-wrap: nowrap;
+    gap: 1rem;
+  }
+
+  .categories .cat-box {
+    width: calc((100% - 6rem) / 7);
+    min-width: 0;
+    height: 160px;
+    padding: 14px 10px;
+  }
+
+  .categories .cat-box svg {
+    width: 56px;
+    height: 56px;
+  }
+
+  .categories .cat-box span {
+    font-size: 18px;
+  }
 }
 
 .swipe-indicator {
@@ -492,17 +620,29 @@ main {
 }
 
 .hp-subsection-label {
+  position: relative;
   font-size: var(--page-text-size);
   color: #ffa825;
   letter-spacing: 3px;
   text-transform: uppercase;
-  border-bottom: 1px solid;
+  border-bottom: none;
   box-shadow: none !important;
   padding-bottom: 0.5rem;
   width: 100%;
   text-align: center;
   margin: 0;
   animation: veltrixGlow 2s infinite alternate;
+}
+
+.hp-subsection-label::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-bottom: 1px solid transparent;
+  animation: veltrixGlow 2s infinite alternate;
+  pointer-events: none;
 }
 
 .hp-services-grid {
@@ -541,7 +681,7 @@ main {
 
 .hp-service-card p {
   font-size: var(--page-text-size);
-  color: #aaa;
+  color: #888;
   line-height: 1.6;
 }
 
@@ -576,7 +716,7 @@ main {
 
 .hp-value-card p {
   font-size: var(--page-text-size);
-  color: #aaa;
+  color: #888;
   line-height: 1.6;
 }
 
@@ -637,14 +777,16 @@ html.home main {
   font-family: 'MiniPixel', sans-serif;
   font-size: var(--page-text-size);
   text-align: center;
+  pointer-events: none;
+  cursor: default;
 }
 
-.input-wrapper {
+.contact-field-wrap {
   position: relative;
   display: block;
 }
 
-.input-wrapper::after {
+.contact-field-wrap::after {
   content: '';
   position: absolute;
   top: -1px;
@@ -659,12 +801,11 @@ html.home main {
   pointer-events: none;
 }
 
-.form-group input,
-.form-group textarea {
+.contact-field {
   display: block;
   width: 100%;
   box-sizing: border-box;
-  background-color: #1a1a1a;
+  background-color: #000;
   border: 1px solid #444;
   border-radius: 12px;
   padding: 18px 20px;
@@ -673,15 +814,25 @@ html.home main {
   font-size: 20px;
   outline: none;
   resize: none;
-  transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: none;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
-  background-color: #222;
+.contact-editable-field {
+  min-height: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: text;
 }
 
-.input-wrapper:focus-within::after {
+.contact-field:hover,
+.contact-field:focus {
+  background-color: #1d1d1d;
+  border-color: transparent;
+}
+
+.contact-field-wrap:hover::after,
+.contact-field-wrap:focus-within::after {
   opacity: 1;
 }
 
@@ -697,14 +848,18 @@ html.home main {
 .btn-submit {
   position: relative;
   margin-top: 15px;
-  padding: 18px 30px;
+  min-height: 60px;
+  padding: 12px 30px;
   border: 1px solid #444;
   border-radius: 12px;
-  background-color: #1a1a1a;
+  background-color: #000;
   color: white;
   font-size: var(--page-text-size);
   cursor: pointer;
   font-family: 'MiniPixel', sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.3s ease;
 }
 
@@ -724,6 +879,7 @@ html.home main {
 }
 
 .btn-submit:hover {
+  background-color: #1d1d1d;
   transform: translateY(-2px);
 }
 
@@ -748,4 +904,157 @@ html.home main {
   color: #ffa825;
   font-family: 'MiniPixel', sans-serif;
   font-size: 16px;
+}
+
+/* =============================
+   Homepage: Refined Light Mode
+   ============================= */
+html.home[data-theme="light"] body {
+  color: #1a1511;
+  background: #e7e3dc;
+}
+
+html.home[data-theme="light"] main {
+  position: relative;
+  isolation: isolate;
+  background: #e7e3dc;
+}
+
+html.home[data-theme="light"] main::before,
+html.home[data-theme="light"] main::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url(../assets/Veltrix-homepage-background.png);
+  background-repeat: repeat-y;
+  background-size: contain;
+  background-position: var(--bg-y-pos, center 0);
+  pointer-events: none;
+  z-index: 0;
+}
+
+html.home[data-theme="light"] main::before {
+  opacity: 0.08;
+}
+
+html.home[data-theme="light"] main::after {
+  opacity: 0.32;
+  filter: grayscale(1) contrast(2.8) brightness(0);
+  mix-blend-mode: multiply;
+}
+
+html.home[data-theme="light"] main > * {
+  position: relative;
+  z-index: 1;
+}
+
+html.home[data-theme="light"] .main-logo {
+  filter: drop-shadow(0 18px 30px rgba(120, 94, 64, 0.12));
+}
+
+html.home[data-theme="light"] .main-desc,
+html.home[data-theme="light"] .reviews-inner p,
+html.home[data-theme="light"] .hp-about-text p,
+html.home[data-theme="light"] .contact-subtitle {
+  color: #5e5146;
+}
+
+html.home[data-theme="light"] .review-author,
+html.home[data-theme="light"] .reviews-empty,
+html.home[data-theme="light"] .review-badge,
+html.home[data-theme="light"] .hp-service-card p,
+html.home[data-theme="light"] .hp-value-card p,
+html.home[data-theme="light"] .swipe-indicator {
+  color: #7a6c60;
+}
+
+html.home[data-theme="light"] .swipe-indicator {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+html.home[data-theme="light"] .reviews-inner h2,
+html.home[data-theme="light"] .review-card-title,
+html.home[data-theme="light"] .hp-about-heading,
+html.home[data-theme="light"] .hp-service-card h3,
+html.home[data-theme="light"] .hp-value-card h3,
+html.home[data-theme="light"] .form-group label,
+html.home[data-theme="light"] .cat-box span {
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .hp-about-tagline,
+html.home[data-theme="light"] .hp-subsection-label,
+html.home[data-theme="light"] .main-subtitle {
+  color: #c67d0f;
+}
+
+html.home[data-theme="light"] .cat-box,
+html.home[data-theme="light"] .review-card,
+html.home[data-theme="light"] .hp-service-card,
+html.home[data-theme="light"] .hp-value-card {
+  background: #ffffff;
+  border-color: #111;
+  box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+  color: #1a1511;
+}
+
+html.home[data-theme="light"] .review-card {
+  border-color: #111;
+}
+
+html.home[data-theme="light"] .review-badge {
+  background: rgba(50, 210, 255, 0.1);
+  border-color: rgba(50, 210, 255, 0.24);
+  color: #20596d;
+}
+
+html.home[data-theme="light"] .cat-box:hover,
+html.home[data-theme="light"] .review-card:hover,
+html.home[data-theme="light"] .hp-service-card:hover,
+html.home[data-theme="light"] .hp-value-card:hover {
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .contact-form {
+  background: transparent;
+}
+
+html.home[data-theme="light"] .contact-field-wrap,
+html.home[data-theme="light"] .submit-wrap {
+  background: transparent;
+  border-color: transparent;
+}
+
+html.home[data-theme="light"] .contact-field {
+  background: #ffffff;
+  color: #1a1511;
+  border-color: #111;
+  box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
+html.home[data-theme="light"] .contact-field:hover,
+html.home[data-theme="light"] .contact-field:focus {
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .contact-field::placeholder {
+  color: #8b7c70;
+}
+
+html.home[data-theme="light"] .btn-submit {
+  background: #ffffff;
+  border-color: #111;
+  color: #1a1511;
+  box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
+html.home[data-theme="light"] .btn-submit:hover {
+  background: #ffffff;
+}
+
+html.home[data-theme="light"] .error-message,
+html.home[data-theme="light"] .success-message {
+  color: #c67d0f;
 }

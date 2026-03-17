@@ -14,6 +14,7 @@ class OrderItem extends Model
         'product_id',
         'quantity',
         'price',
+        'platform',
     ];
 
     public function order()
@@ -26,5 +27,25 @@ class OrderItem extends Model
         return $this->belongsTo(Product::class)->withDefault([
             'name' => 'Product Deleted',
         ]);
+    }
+
+    public function review()
+    {
+        return $this->hasOne(Review::class);
+    }
+
+    public function refundRequest()
+    {
+        return $this->hasOne(RefundRequest::class);
+    }
+
+    public function returnRequests()
+    {
+        return $this->hasMany(ReturnRequest::class);
+    }
+
+    public function latestReturnRequest()
+    {
+        return $this->hasOne(ReturnRequest::class)->latestOfMany();
     }
 }

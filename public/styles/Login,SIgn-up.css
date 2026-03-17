@@ -4,7 +4,7 @@
     src: url('../fonts/mini-pixel-7.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
-    font-display: swap;
+    font-display: block;
 }
 
 * {
@@ -28,6 +28,10 @@ body {
 
 /* Login page uses the same animated background setup as home/product pages */
 body.login-page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: stretch;
     background-color: #000;
     background-image: url('../assets/Veltrix-homepage-background.png');
     background-repeat: repeat-y;
@@ -35,11 +39,55 @@ body.login-page {
     background-position: var(--bg-y-pos, center 0);
     image-rendering: auto;
     overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
+}
+
+html[data-theme="light"] body.login-page {
+    background-color: #e7e3dc;
+    background-image: none;
+    color: #1a1511;
+}
+
+html[data-theme="light"] body.login-page::before,
+html[data-theme="light"] body.login-page::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    background-image: url('../assets/Veltrix-homepage-background.png');
+    background-repeat: repeat-y;
+    background-size: contain;
+    background-position: var(--bg-y-pos, center 0);
+}
+
+html[data-theme="light"] body.login-page::before {
+    opacity: 0.08;
+}
+
+html[data-theme="light"] body.login-page::after {
+    opacity: 0.32;
+    filter: grayscale(1) contrast(2.8) brightness(0);
+    mix-blend-mode: multiply;
+}
+
+body.login-page > * {
+    position: relative;
+    z-index: 1;
 }
 
 /* Match product page navbar exactly */
+body.login-page header {
+    z-index: 100;
+}
 body.login-page header,
 body.login-page header * {
+    font-family: 'MiniPixel', sans-serif !important;
+}
+
+body.login-page #vx-chatbot-container,
+body.login-page #vx-chatbot-container * {
     font-family: 'MiniPixel', sans-serif !important;
 }
 
@@ -63,18 +111,52 @@ body.login-page .user-menu-dropdown {
     left: auto !important;
 }
 
+.login-page-title {
+    position: static;
+    margin: 0;
+    text-align: center;
+    font-family: 'MiniPixel', sans-serif;
+    font-size: 100px;
+    font-weight: 700;
+    color: white;
+}
+
+html[data-theme="light"] .login-page-title {
+    color: #111;
+}
+
+.auth-page-shell {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1 0 auto;
+    padding-top: 90px;
+}
+
+body.login-page #footer {
+    margin-top: 180px;
+}
+
+body.forgot-password-page #footer {
+    margin-top: 285px;
+}
+
+body.register-page #footer {
+    margin-top: 6px;
+}
 
 /*Login Box at the center */
 .login-box {
     width: 450px;
     height: 80%;
-    margin-top: 8%;
+    margin: 0 auto 0;
     background: transparent;
-    border: 2px solid rgba(154, 154, 154, 0.1);
+    border: 1px solid #444;
     backdrop-filter: blur(15px);
     color: white;
     border-radius: 20px;
-    padding: 30px 40px;
+    padding: 4px 40px 10px;
 }
 
 /* Login page card matches review/cart bubble style */
@@ -83,6 +165,28 @@ body.auth-login-page .login-box {
     border: 1px solid #444;
     backdrop-filter: none;
     font-family: 'MiniPixel', sans-serif;
+}
+
+html[data-theme="light"] body.auth-login-page .login-box {
+    background-color: #ffffff;
+    border-color: rgba(74, 58, 39, 0.15);
+    color: #1a1511;
+    box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+}
+
+html[data-theme="light"] body.auth-login-page .login-box *,
+html[data-theme="light"] body.auth-login-page .login-box h1,
+html[data-theme="light"] body.auth-login-page .login-box p,
+html[data-theme="light"] body.auth-login-page .login-box a,
+html[data-theme="light"] body.auth-login-page .login-box label {
+    color: #1a1511 !important;
+}
+
+html[data-theme="light"] .input-box input {
+    background: #fff;
+    color: #1a1511;
+    border-color: rgba(74, 58, 39, 0.15);
+    box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
 }
 
 body.auth-login-page .login-box *,
@@ -94,12 +198,6 @@ body.auth-login-page .login-box h1,
 body.auth-login-page .login-box p,
 body.auth-login-page .login-box .field-error {
     font-family: 'MiniPixel', sans-serif;
-}
-
-.login-box h1 {
-    font-size: 30px;
-    text-align: center;
-    font-weight: 400;
 }
 
 .login-box .input-box {
@@ -116,6 +214,7 @@ body.auth-login-page .login-box .input-box::after {
     inset: -1px;
     border-radius: 12px;
     border: 1px solid transparent;
+    animation: veltrixGlow 2s infinite alternate;
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.2s ease;
@@ -124,7 +223,6 @@ body.auth-login-page .login-box .input-box::after {
 body.auth-login-page .login-box .input-box:hover::after,
 body.auth-login-page .login-box .input-box:focus-within::after {
     opacity: 1;
-    animation: veltrixGlow 2s infinite alternate;
 }
 
 .input-box input {
@@ -153,13 +251,13 @@ body.auth-login-page .login-box .login-button,
 body.auth-login-page .login-box .register-link,
 body.auth-login-page .login-box .register-link p,
 body.auth-login-page .login-box .register-link p a {
-    font-size: 1.1em;
+    font-size: 20px;
 }
 
 /* Keep Remember me and Forgot password exactly equal (no nested em compounding). */
 body.auth-login-page .login-box .remember-forgot {
     align-items: center;
-    font-size: 1.1em;
+    font-size: 20px;
 }
 
 body.auth-login-page .login-box .remember-forgot .remember-wrap,
@@ -189,6 +287,15 @@ body.auth-login-page .input-box input:not(.input-error):focus,
 body.auth-login-page .input-box input:not(.input-error):focus-visible,
 body.auth-login-page .input-box input:not(.input-error):active {
     background: #1d1d1d;
+    border-color: transparent;
+}
+
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):hover,
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):focus,
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):focus-visible,
+html[data-theme="light"] body.auth-login-page .input-box input:not(.input-error):active {
+    background: #ffffff;
+    border-color: transparent;
 }
 
 /* Keep browser autofill from turning fields white */
@@ -210,7 +317,7 @@ body.auth-login-page .input-box input:-webkit-autofill:active {
     -webkit-box-shadow: 0 0 0 1000px #1d1d1d inset !important;
     box-shadow: 0 0 0 1000px #1d1d1d inset !important;
     background-color: #1d1d1d !important;
-    border: 1px solid #444 !important;
+    border: 1px solid transparent !important;
 }
 
 body.auth-login-page .input-box input:autofill,
@@ -227,11 +334,17 @@ body.auth-login-page .input-box input:autofill:focus,
 body.auth-login-page .input-box input:autofill:active {
     box-shadow: 0 0 0 1000px #1d1d1d inset !important;
     background-color: #1d1d1d !important;
+    border: 1px solid transparent !important;
 }
 
 .input-box input::placeholder {
     /*colour change for placeholders (user&pass) */
-    color: rgb(255, 255, 255);
+    color: #888;
+    font-size: 20px;
+}
+
+html[data-theme="light"] .input-box input::placeholder {
+    color: #8b7c70;
 }
 
 /*icons position */
@@ -291,6 +404,7 @@ body.auth-login-page .input-box input:autofill:active {
 
 /* Login page button matches textbox interactions */
 body.auth-login-page .login-box .login-button {
+    position: relative;
     height: 50px;
     background: #000;
     border: 1px solid #444;
@@ -298,7 +412,22 @@ body.auth-login-page .login-box .login-button {
     box-shadow: none;
     color: #fff;
     font-weight: 400;
-    transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    transition: all 0.25s ease;
+}
+
+body.auth-login-page .login-box .login-button::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    animation: veltrixGlow 2s infinite alternate;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
 }
 
 body.auth-login-page .login-box .login-button:hover,
@@ -307,8 +436,31 @@ body.auth-login-page .login-box .login-button:focus-visible,
 body.auth-login-page .login-box .login-button:active {
     background: #1d1d1d;
     color: #fff;
-    animation: veltrixGlow 2s infinite alternate;
     box-shadow: none;
+    border-color: transparent;
+    transform: translateY(-2px);
+}
+
+body.auth-login-page .login-box .login-button:hover::after,
+body.auth-login-page .login-box .login-button:focus::after,
+body.auth-login-page .login-box .login-button:focus-visible::after,
+body.auth-login-page .login-box .login-button:active::after {
+    opacity: 1;
+}
+
+html[data-theme="light"] body.auth-login-page .login-box .login-button {
+    background: #ffffff;
+    color: #1a1511;
+    border-color: rgba(74, 58, 39, 0.15);
+    box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
+html[data-theme="light"] body.auth-login-page .login-box .login-button:hover,
+html[data-theme="light"] body.auth-login-page .login-box .login-button:focus,
+html[data-theme="light"] body.auth-login-page .login-box .login-button:focus-visible,
+html[data-theme="light"] body.auth-login-page .login-box .login-button:active {
+    background: #ffffff;
+    color: #1a1511;
 }
 
 
@@ -321,7 +473,7 @@ body.auth-login-page .login-box .login-button:active {
 .login-box .register-link {
     font-size: 15px;
     text-align: center;
-    margin: 20px 0 15px;
+    margin: 12px 0 6px;
 }
 
 .register-link p a {
@@ -365,6 +517,28 @@ body.auth-login-page .remember-forgot input[type="checkbox"] {
     place-content: center;
     cursor: pointer;
     transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+}
+
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"] {
+    background: #ffffff;
+    border-color: rgba(74, 58, 39, 0.15);
+    box-shadow: 0 12px 26px rgba(123, 99, 69, 0.06);
+}
+
+body.auth-login-page .remember-forgot input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    right: -1px;
+    bottom: -1px;
+    border-radius: inherit;
+    border: 1px solid transparent;
+    animation: veltrixGlow 2s infinite alternate;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
 }
 
 body.auth-login-page .remember-forgot input[type="checkbox"]::after {
@@ -379,8 +553,17 @@ body.auth-login-page .remember-forgot input[type="checkbox"]::after {
     margin-top: -1px;
 }
 
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]::after {
+    border-right-color: #1a1511;
+    border-bottom-color: #1a1511;
+}
+
 body.auth-login-page .remember-forgot input[type="checkbox"]:checked {
     background: #1d1d1d;
+}
+
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]:checked {
+    background: #ffffff;
 }
 
 body.auth-login-page .remember-forgot input[type="checkbox"]:checked::after {
@@ -390,14 +573,49 @@ body.auth-login-page .remember-forgot input[type="checkbox"]:checked::after {
 body.auth-login-page .remember-forgot input[type="checkbox"]:hover,
 body.auth-login-page .remember-forgot input[type="checkbox"]:active {
     background: #1d1d1d;
-    animation: veltrixGlow 2s infinite alternate;
+    border-color: transparent;
     outline: none;
+}
+
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]:hover,
+html[data-theme="light"] body.auth-login-page .remember-forgot input[type="checkbox"]:active {
+    background: #ffffff;
+    border-color: transparent;
+}
+
+body.auth-login-page .remember-forgot input[type="checkbox"]:hover::before,
+body.auth-login-page .remember-forgot input[type="checkbox"]:active::before,
+body.auth-login-page .remember-forgot input[type="checkbox"]:checked::before {
+    opacity: 1;
 }
 
 /* Final override: keep "Don't have an account?" and "Register" identical */
 body.auth-login-page .login-box .register-link p,
 body.auth-login-page .login-box .register-link p a {
-    font-size: 1em !important;
+    font-size: 20px !important;
     font-weight: 400 !important;
     line-height: 1;
+}
+
+#forgotPasswordForm input::placeholder {
+    font-size: 20px;
+}
+
+#forgotPasswordForm .login-button {
+    font-size: 20px !important;
+}
+
+#forgotPasswordForm .register-link,
+#forgotPasswordForm .register-link p,
+#forgotPasswordForm .register-link p a {
+    font-size: 20px !important;
+}
+
+#form input,
+#form input::placeholder,
+#form .login-button,
+#form .register-link,
+#form .register-link p,
+#form .register-link p a {
+    font-size: 20px !important;
 }

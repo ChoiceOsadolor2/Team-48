@@ -1,264 +1,473 @@
-const headerFile = '../pages/header.html';
+const headerFile = '/pages/header.html';
+const footerFile = '/pages/footer.html';
+const PAGE_CHROME_CACHE_TTL = 5 * 60 * 1000;
+let userStatusPromise = null;
+const CHATBOT_STATE_KEY = 'veltrix_chatbot_state';
 
-fetch(headerFile)
-  .then(response => response.text())
-  .then(html => {
-    const headerEl = document.querySelector('header');
-    headerEl.innerHTML = html;
+function clearPersistedChatbotState() {
+  try {
+    sessionStorage.removeItem(CHATBOT_STATE_KEY);
+  } catch (error) {
+    console.warn('Unable to clear chatbot state:', error);
+  }
+}
 
-    // Extract chatbot from header to prevent CSS flex/filter containing-block traps
-    // Extract fixed UI elements from header to prevent CSS flex/filter containing-block traps
-    const chatbotUI = document.getElementById('vx-chatbot-container');
-    if (chatbotUI) document.body.appendChild(chatbotUI);
-    const scrollTopBtn = document.getElementById('vx-scroll-top');
-    if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
+function getCsrfToken() {
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (metaToken) return metaToken;
 
-    const footerFile = '../pages/footer.html';
-    fetch(footerFile)
-      .then(response => response.text())
-      .then(html => {
-        const footerEl = document.querySelector('footer');
-        if (footerEl) footerEl.innerHTML = html;
-      });
+  const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+  return cookieMatch ? decodeURIComponent(cookieMatch[1]) : '';
+}
 
-    (function bindVeltrixSearch() {
-      const form =
-        headerEl.querySelector('#vx-search-form') ||
-        headerEl.querySelector('#global-search-form') ||
-        headerEl.querySelector('#search-form') ||
-        headerEl.querySelector('#search')?.querySelector('form');
+async function ensureCsrfToken() {
+  const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  if (metaToken) return metaToken;
 
-      const input =
-        headerEl.querySelector('#vx-search-input') ||
-        headerEl.querySelector('#global-search-input') ||
-        headerEl.querySelector('#global_search') ||
-        headerEl.querySelector('#search-bar') ||
-        form?.querySelector('input[type="search"]') ||
-        form?.querySelector('input[type="text"]') ||
-        headerEl.querySelector('#search input');
+  try {
+    const response = await fetch('/csrf-token', {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      credentials: 'include',
+    });
 
-      if (!form || !input) return;
-      if (form.dataset.boundSearch === '1') return;
-      form.dataset.boundSearch = '1';
+    if (!response.ok) return getCsrfToken() || '';
 
-      function goToShopAll() {
-        const q = (input.value || '').trim();
-        if (!q) return;
-        try { closeSection('search'); } catch (_) { }
-        window.location.href = `ShopAll.html?q=${encodeURIComponent(q)}`;
+    const data = await response.json().catch(() => ({}));
+    const refreshedToken = data?.token || getCsrfToken();
+
+    if (refreshedToken) {
+      let metaTag = document.querySelector('meta[name="csrf-token"]');
+      if (!metaTag) {
+        metaTag = document.createElement('meta');
+        metaTag.setAttribute('name', 'csrf-token');
+        document.head.appendChild(metaTag);
       }
+      metaTag.setAttribute('content', refreshedToken);
+    }
 
-      form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        goToShopAll();
-      });
+    return refreshedToken || getCsrfToken() || '';
+  } catch (error) {
+    console.error('Failed to refresh CSRF token:', error);
+    return getCsrfToken() || '';
+  }
+}
 
-      // Force Enter to work even if other scripts intercept it
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') {
-          e.preventDefault();
-          e.stopPropagation();
-          if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
-          goToShopAll();
+function readCachedPageChrome(cacheKey) {
+  try {
+    const raw = sessionStorage.getItem(cacheKey);
+    if (!raw) return null;
+
+    const parsed = JSON.parse(raw);
+    if (!parsed?.html || !parsed?.savedAt) return null;
+    if (Date.now() - parsed.savedAt > PAGE_CHROME_CACHE_TTL) return null;
+
+    return parsed.html;
+  } catch (_) {
+    return null;
+  }
+}
+
+function writeCachedPageChrome(cacheKey, html) {
+  try {
+    sessionStorage.setItem(cacheKey, JSON.stringify({ html, savedAt: Date.now() }));
+  } catch (_) {
+    // Ignore storage failures.
+  }
+}
+
+async function fetchTextWithSessionCache(url, cacheKey) {
+  const cached = readCachedPageChrome(cacheKey);
+  if (cached) return cached;
+
+  const response = await fetch(url, { credentials: 'same-origin' });
+  if (!response.ok) throw new Error(`Failed to load ${url}`);
+
+  const html = await response.text();
+  writeCachedPageChrome(cacheKey, html);
+  return html;
+}
+
+function getUserStatus() {
+  if (!userStatusPromise) {
+    userStatusPromise = fetch('/user-status', {
+      headers: { Accept: 'application/json' },
+      credentials: 'include'
+    })
+      .then(async (res) => {
+        if (!res.ok) return null;
+        try {
+          return await res.json();
+        } catch (_) {
+          return null;
         }
-      }, true);
+      })
+      .catch(() => null);
+  }
 
-      // ==========================
-      // Ajax Live Autocomplete
-      // ==========================
-      const resultsContainer = headerEl.querySelector('#vx-search-results');
-      let debounceTimer = null;
+  return userStatusPromise;
+}
 
-      if (resultsContainer) {
-        input.addEventListener('input', (e) => {
-          const query = e.target.value.trim();
+function initSiteToasts() {
+  if (window.__siteToastInit) return;
 
-          if (!query) {
-            resultsContainer.style.display = 'none';
-            resultsContainer.innerHTML = '';
-            return;
-          }
+  let toastRegion = document.getElementById('site-toast-region');
+  if (!toastRegion) {
+    toastRegion = document.createElement('div');
+    toastRegion.id = 'site-toast-region';
+    toastRegion.className = 'site-toast-region';
+    toastRegion.setAttribute('aria-live', 'polite');
+    toastRegion.setAttribute('aria-atomic', 'true');
+    document.body.appendChild(toastRegion);
+  }
 
-          clearTimeout(debounceTimer);
-          debounceTimer = setTimeout(() => {
-            fetch(`/products/search-json?q=${encodeURIComponent(query)}`)
-              .then(res => res.json())
-              .then(data => {
-                resultsContainer.innerHTML = '';
+  window.__siteToastInit = true;
 
-                if (!data.success || !data.results || data.results.length === 0) {
-                  resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">No products found.</li>';
-                  resultsContainer.style.display = 'block';
-                  return;
-                }
+  const TOAST_TITLES = {
+    success: 'Success',
+    error: 'Something went wrong',
+    info: 'Notice'
+  };
 
-                data.results.slice(0, 5).forEach(product => {
-                  let imgUrl = '../assets/MainLogo.png';
-                  if (product.image_url) {
-                    imgUrl = product.image_url.startsWith('http')
-                      ? product.image_url
-                      : '/storage/' + product.image_url.replace(/^\/+/, '');
-                  }
+  const TOAST_ICONS = {
+    success: 'OK',
+    error: '!',
+    info: 'i'
+  };
 
-                  const li = document.createElement('li');
-                  li.innerHTML = `
-                    <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
-                    <div class="vx-search-dropdown-info">
-                      <span class="vx-search-dropdown-title">${product.name}</span>
-                      <span class="vx-search-dropdown-price">£${Number(product.price).toFixed(2)}</span>
-                    </div>
-                  `;
-                  li.addEventListener('click', () => {
-                    window.location.href = `ProductPage.html?id=${product.id}`;
-                  });
-                  resultsContainer.appendChild(li);
-                });
+  function closeToast(toast) {
+    if (!toast || toast.dataset.closing === '1') return;
 
-                resultsContainer.style.display = 'flex';
-                resultsContainer.style.flexDirection = 'column';
-              })
-              .catch(err => console.error('Live search error:', err));
-          }, 300);
-        });
+    toast.dataset.closing = '1';
+    toast.classList.remove('is-visible');
+    toast.classList.add('is-closing');
+    window.setTimeout(() => toast.remove(), 220);
+  }
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!form.contains(e.target) && !resultsContainer.contains(e.target)) {
-            resultsContainer.style.display = 'none';
-          }
-        });
+  window.showSiteToast = function (type, message, options = {}) {
+    const normalizedType = ['success', 'error', 'info'].includes(type) ? type : 'info';
+    const normalizedMessage = String(message || '').trim();
 
-        // Focus brings it back if there's text
-        input.addEventListener('focus', () => {
-          if (input.value.trim() && resultsContainer.innerHTML !== '') {
-            resultsContainer.style.display = 'flex';
-          }
-        });
+    if (!normalizedMessage) return null;
+
+    const toast = document.createElement('div');
+    toast.className = `site-toast site-toast--${normalizedType}`;
+    toast.setAttribute('role', normalizedType === 'error' ? 'alert' : 'status');
+
+    const title = options.title || TOAST_TITLES[normalizedType];
+    const icon = options.icon || TOAST_ICONS[normalizedType];
+
+    toast.innerHTML = `
+      <span class="site-toast-icon" aria-hidden="true">${icon}</span>
+      <div class="site-toast-content">
+        <span class="site-toast-title">${title}</span>
+        <span class="site-toast-message"></span>
+      </div>
+      <button type="button" class="site-toast-close" aria-label="Dismiss notification">&times;</button>
+    `;
+
+    toast.querySelector('.site-toast-message').textContent = normalizedMessage;
+    toast.querySelector('.site-toast-close').addEventListener('click', () => closeToast(toast));
+
+    toastRegion.appendChild(toast);
+    window.requestAnimationFrame(() => toast.classList.add('is-visible'));
+
+    const duration = Number(options.duration || 5000);
+    if (duration > 0) {
+      window.setTimeout(() => closeToast(toast), duration);
+    }
+
+    return toast;
+  };
+}
+
+function bindVeltrixHeader(headerEl) {
+  if (!headerEl || headerEl.dataset.veltrixHeaderBound === '1') return;
+  headerEl.dataset.veltrixHeaderBound = '1';
+
+  // Extract fixed UI elements from header to prevent CSS flex/filter containing-block traps
+  const chatbotUI = document.getElementById('vx-chatbot-container');
+  if (chatbotUI) document.body.appendChild(chatbotUI);
+  const scrollTopBtn = document.getElementById('vx-scroll-top');
+  if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
+
+  fetchTextWithSessionCache(footerFile, 'veltrix:footer')
+    .then(html => {
+      const footerEl = document.getElementById('footer') || document.querySelector('footer');
+      if (footerEl) footerEl.innerHTML = html;
+    })
+    .catch(err => console.error('Footer load error:', err));
+
+  (function bindVeltrixSearch() {
+    const form =
+      headerEl.querySelector('#vx-search-form') ||
+      headerEl.querySelector('#global-search-form') ||
+      headerEl.querySelector('#search-form') ||
+      headerEl.querySelector('#search')?.querySelector('form');
+
+    const input =
+      headerEl.querySelector('#vx-search-input') ||
+      headerEl.querySelector('#global-search-input') ||
+      headerEl.querySelector('#global_search') ||
+      headerEl.querySelector('#search-bar') ||
+      form?.querySelector('input[type="search"]') ||
+      form?.querySelector('input[type="text"]') ||
+      headerEl.querySelector('#search input');
+
+    if (!form || !input) return;
+    if (form.dataset.boundSearch === '1') return;
+    form.dataset.boundSearch = '1';
+
+    function goToShopAll() {
+      const q = (input.value || '').trim();
+      if (!q) return;
+      try { closeSection('search'); } catch (_) { }
+      window.location.href = `/pages/ShopAll.html?q=${encodeURIComponent(q)}`;
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      goToShopAll();
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        e.stopPropagation();
+        if (typeof e.stopImmediatePropagation === 'function') e.stopImmediatePropagation();
+        goToShopAll();
       }
+    }, true);
 
-    })();
+    let resultsContainer = headerEl.querySelector('#vx-search-results');
+    if (!resultsContainer) {
+      resultsContainer = document.createElement('ul');
+      resultsContainer.id = 'vx-search-results';
+      resultsContainer.className = 'vx-search-dropdown';
+      resultsContainer.style.display = 'none';
+      const searchRoot = headerEl.querySelector('#search');
+      if (searchRoot) {
+        searchRoot.appendChild(resultsContainer);
+      }
+    }
+    let debounceTimer = null;
+    let searchController = null;
 
-    const userMenuBtn = headerEl.querySelector('#userMenuBtn');
-    const userMenuDropdown = headerEl.querySelector('#userMenuDropdown');
-    const adminLink = headerEl.querySelector('#admin-link');
-    const ordersLink = headerEl.querySelector('#orders-link');
-    const logoEl = headerEl.querySelector('#header_logo');
+    if (resultsContainer) {
+      input.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
 
-    if (logoEl) {
-      const goHomeTop = () => {
-        window.location.href = '/pages/index.html';
-      };
+        if (!query) {
+          resultsContainer.style.display = 'none';
+          resultsContainer.innerHTML = '';
+          if (searchController) searchController.abort();
+          return;
+        }
 
-      logoEl.style.cursor = 'pointer';
-      logoEl.setAttribute('role', 'link');
-      logoEl.setAttribute('tabindex', '0');
-      logoEl.addEventListener('click', goHomeTop);
-      logoEl.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          goHomeTop();
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => {
+          if (searchController) searchController.abort();
+          searchController = new AbortController();
+
+          fetch(`/products/search-json?q=${encodeURIComponent(query)}`, {
+            signal: searchController.signal,
+            credentials: 'include'
+          })
+            .then(async res => {
+              if (!res.ok) {
+                throw new Error('Search request failed.');
+              }
+
+              return res.json();
+            })
+            .then(data => {
+              resultsContainer.innerHTML = '';
+
+              if (!data.success || !data.results || data.results.length === 0) {
+                resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">No products found.</li>';
+                resultsContainer.style.display = 'block';
+                return;
+              }
+
+              const fragment = document.createDocumentFragment();
+
+              data.results.slice(0, 5).forEach(product => {
+                const hasImage = !!product.image_url;
+                const imageMarkup = hasImage
+                  ? `<img src="${product.image_url.startsWith('http')
+                      ? product.image_url
+                      : '/storage/' + product.image_url.replace(/^\/+/, '')}" alt="${product.name}" class="vx-search-dropdown-img" loading="lazy" decoding="async">`
+                  : `<div class="vx-search-dropdown-no-image">No image</div>`;
+
+                const li = document.createElement('li');
+                li.innerHTML = `
+                  ${imageMarkup}
+                  <div class="vx-search-dropdown-info">
+                    <span class="vx-search-dropdown-title">${product.name}</span>
+                    <span class="vx-search-dropdown-price">${Number(product.price).toFixed(2)} GBP</span>
+                  </div>
+                `;
+                li.addEventListener('click', () => {
+                  window.location.href = `/pages/ProductPage.html?id=${product.id}`;
+                });
+                fragment.appendChild(li);
+              });
+
+              resultsContainer.appendChild(fragment);
+              resultsContainer.style.display = 'flex';
+              resultsContainer.style.flexDirection = 'column';
+            })
+            .catch(err => {
+              if (err.name === 'AbortError') return;
+              console.error('Live search error:', err);
+              resultsContainer.innerHTML = '<li class="vx-search-dropdown-empty">Search is unavailable right now.</li>';
+              resultsContainer.style.display = 'block';
+            });
+        }, 220);
+      });
+
+      document.addEventListener('click', (e) => {
+        if (!form.contains(e.target) && !resultsContainer.contains(e.target)) {
+          resultsContainer.style.display = 'none';
+        }
+      });
+
+      input.addEventListener('focus', () => {
+        if (input.value.trim() && resultsContainer.innerHTML !== '') {
+          resultsContainer.style.display = 'flex';
         }
       });
     }
+  })();
 
-    if (adminLink) adminLink.style.display = 'none';
-    if (ordersLink) ordersLink.style.display = 'none';
+  const userMenuBtn = headerEl.querySelector('#userMenuBtn');
+  const userMenuDropdown = headerEl.querySelector('#userMenuDropdown');
+  const adminLink = headerEl.querySelector('#admin-link');
+  const logoEl = headerEl.querySelector('#header_logo');
 
-    if (userMenuBtn && userMenuDropdown) {
-      const closeMenu = () => {
-        userMenuDropdown.classList.remove('open');
-        userMenuBtn.setAttribute('aria-expanded', 'false');
-      };
+  if (logoEl) {
+    const goHomeTop = () => {
+      window.location.href = '/pages/index.html';
+    };
 
-      userMenuBtn.addEventListener('click', (e) => {
+    logoEl.style.cursor = 'pointer';
+    logoEl.setAttribute('role', 'link');
+    logoEl.setAttribute('tabindex', '0');
+    logoEl.addEventListener('click', goHomeTop);
+    logoEl.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        e.stopPropagation();
-        const open = userMenuDropdown.classList.toggle('open');
-        userMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
-      });
+        goHomeTop();
+      }
+    });
+  }
 
-      document.addEventListener('click', closeMenu);
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') closeMenu();
-      });
+  if (adminLink) adminLink.style.display = 'none';
+  if (userMenuBtn && userMenuDropdown) {
+    const closeMenu = () => {
+      userMenuDropdown.classList.remove('open');
+      userMenuBtn.setAttribute('aria-expanded', 'false');
+    };
 
-      fetch('/user-status', {
-        headers: { Accept: 'application/json' },
-        credentials: 'include'
-      })
-        .then(res => res.json())
-        .then(data => {
-          if (data.logged_in) {
-            userMenuDropdown.innerHTML = `
-              <a href="/orders" class="user-menu-item">Previous Orders</a>
-              <a href="/profile" class="user-menu-item">Profile Info</a>
-              <button type="button" class="user-menu-item danger" id="logoutBtn">
-                Logout
-              </button>
-            `;
+    userMenuBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const open = userMenuDropdown.classList.toggle('open');
+      userMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
 
-            if (adminLink && data.user?.role === 'admin') {
-              adminLink.style.display = 'inline-block';
-            }
+    document.addEventListener('click', closeMenu);
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeMenu();
+    });
 
-            const logoutBtn = userMenuDropdown.querySelector('#logoutBtn');
-            if (logoutBtn) {
-              logoutBtn.onclick = async () => {
-                await fetch('/logout-json', { credentials: 'include' });
-                window.location.href = '/pages/login.html';
-              };
-            }
-          } else {
-            userMenuDropdown.innerHTML = `
-              <a href="/pages/login.html" class="user-menu-item">Login</a>
-              <a href="/pages/register.html" class="user-menu-item">Register</a>
-            `;
+    getUserStatus()
+      .then(data => {
+        if (data?.logged_in) {
+          userMenuDropdown.innerHTML = `
+            <a href="/orders" class="user-menu-item">Order History</a>
+            <a href="/wishlist" class="user-menu-item">Wishlist</a>
+            <a href="/profile" class="user-menu-item">Profile</a>
+            <button type="button" class="user-menu-item danger" id="logoutBtn">
+              Logout
+            </button>
+          `;
+
+          if (adminLink && data.user?.role === 'admin') {
+            adminLink.style.display = 'inline-block';
           }
-        })
-        .catch(() => {
+
+          const logoutBtn = userMenuDropdown.querySelector('#logoutBtn');
+          if (logoutBtn) {
+            logoutBtn.onclick = async () => {
+              try {
+                clearPersistedChatbotState();
+                const csrfToken = await ensureCsrfToken();
+                await fetch('/logout-json', {
+                  method: 'POST',
+                  headers: {
+                    Accept: 'application/json',
+                    ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+                  },
+                  credentials: 'include'
+                });
+              } catch (_) {}
+              window.location.href = '/pages/login.html';
+            };
+          }
+        } else {
           userMenuDropdown.innerHTML = `
             <a href="/pages/login.html" class="user-menu-item">Login</a>
             <a href="/pages/register.html" class="user-menu-item">Register</a>
           `;
-        });
-    }
-
-    fetch('/user-status', {
-      headers: { 'Accept': 'application/json' }
-    })
-      .then(res => res.text())
-      .then(text => {
-        try {
-          JSON.parse(text);
-        } catch (e) {
-          console.error('Non-JSON /user-status response:', text);
         }
       })
-      .catch(err => {
-        console.error('User status error:', err);
+      .catch(() => {
+        userMenuDropdown.innerHTML = `
+          <a href="/pages/login.html" class="user-menu-item">Login</a>
+          <a href="/pages/register.html" class="user-menu-item">Register</a>
+        `;
       });
+  }
 
-    initChatbot();
-    initScrollTop();
-  });
+  initChatbot();
+  initScrollTop();
+  initSiteToasts();
+}
+
+const existingHeader = document.querySelector('header');
+
+if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
+  bindVeltrixHeader(existingHeader);
+} else {
+  fetchTextWithSessionCache(headerFile, 'veltrix:header')
+    .then(html => {
+      const headerEl = document.querySelector('header');
+      if (!headerEl) return;
+      headerEl.innerHTML = html;
+      bindVeltrixHeader(headerEl);
+    })
+    .catch(err => console.error('Header load error:', err));
+}
 
 ; (async function () {
   try {
-    const res = await fetch('/user-status', {
-      headers: { 'Accept': 'application/json' }
-    });
-
-    if (!res.ok) return;
-
-    const data = await res.json();
+    const data = await getUserStatus();
+    if (!data) return;
 
     const remember = localStorage.getItem('rememberLogin') === '1';
     const temp = sessionStorage.getItem('tempLoggedIn') === '1';
 
     if (data.logged_in && !remember && !temp) {
+      clearPersistedChatbotState();
+      const csrfToken = await ensureCsrfToken();
       await fetch('/logout-json', {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+        },
+        credentials: 'include'
       });
 
       window.location.reload();
@@ -275,14 +484,24 @@ function initScrollTop() {
   const scrollTopBtn = document.getElementById('vx-scroll-top');
   if (!scrollTopBtn) return;
 
-  // Show/hide based on scroll position
-  window.addEventListener('scroll', () => {
+  let ticking = false;
+
+  function syncScrollTopVisibility() {
     if (window.scrollY > 300) {
       scrollTopBtn.classList.remove('hidden');
     } else {
       scrollTopBtn.classList.add('hidden');
     }
-  });
+    ticking = false;
+  }
+
+  window.addEventListener('scroll', () => {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(syncScrollTopVisibility);
+  }, { passive: true });
+
+  syncScrollTopVisibility();
 
   // Smooth scroll to top on click
   scrollTopBtn.addEventListener('click', () => {
@@ -299,21 +518,88 @@ function initScrollTop() {
 function initChatbot() {
   const toggleBtn = document.getElementById('vx-chatbot-toggle');
   const closeBtn = document.getElementById('vx-chatbot-close');
+  const resetBtn = document.getElementById('vx-chatbot-reset');
   const chatWindow = document.getElementById('vx-chatbot-window');
   const chatForm = document.getElementById('vx-chat-form');
   const chatInput = document.getElementById('vx-chat-input');
   const chatMessages = document.getElementById('vx-chat-messages');
+  const chatStateKey = CHATBOT_STATE_KEY;
+  const chatInactivityLimitMs = 5 * 60 * 1000;
 
   if (!toggleBtn || !chatWindow) return;
+
+  const defaultGreeting = 'Hello. How can I assist you today?';
+
+  const clearChatState = () => {
+    clearPersistedChatbotState();
+  };
+
+  const resetChatTranscript = () => {
+    chatMessages.innerHTML = '';
+    clearChatState();
+    appendMessage('ai', defaultGreeting);
+    openChat();
+  };
+
+  const readChatState = () => {
+    try {
+      const raw = sessionStorage.getItem(chatStateKey);
+      if (!raw) return null;
+      const state = JSON.parse(raw);
+      const lastUpdated = Number(state?.lastUpdated || 0);
+
+      if (lastUpdated && Date.now() - lastUpdated > chatInactivityLimitMs) {
+        clearChatState();
+        return null;
+      }
+
+      return state;
+    } catch (error) {
+      console.warn('Unable to restore chatbot state:', error);
+      return null;
+    }
+  };
+
+  const saveChatState = () => {
+    try {
+      const messages = Array.from(chatMessages.querySelectorAll('.vx-message')).map((messageEl) => {
+        const sender = messageEl.classList.contains('user-message') ? 'user' : 'ai';
+        const body = messageEl.querySelector('.vx-message-body');
+        const text = (body ? body.textContent : messageEl.childNodes[0]?.textContent || messageEl.textContent || '').trim();
+        const suggestions = Array.from(messageEl.querySelectorAll('.vx-chat-suggestion')).map((chip) => ({
+          label: chip.textContent?.trim() || 'Open',
+          ...(chip.tagName === 'A'
+            ? { url: chip.getAttribute('href') || '' }
+            : { message: chip.dataset.message || chip.textContent?.trim() || 'Help' }),
+        }));
+
+        return {
+          sender,
+          text,
+          suggestions,
+        };
+      });
+
+      sessionStorage.setItem(chatStateKey, JSON.stringify({
+        isOpen: !chatWindow.classList.contains('hidden'),
+        messages,
+        lastUpdated: Date.now(),
+      }));
+    } catch (error) {
+      console.warn('Unable to save chatbot state:', error);
+    }
+  };
 
   // Toggle Window
   const openChat = () => {
     chatWindow.classList.remove('hidden');
     chatInput.focus();
+    saveChatState();
   };
 
   const closeChat = () => {
     chatWindow.classList.add('hidden');
+    saveChatState();
   };
 
   toggleBtn.addEventListener('click', () => {
@@ -325,67 +611,147 @@ function initChatbot() {
   });
 
   closeBtn.addEventListener('click', closeChat);
+  if (resetBtn) {
+    resetBtn.addEventListener('click', resetChatTranscript);
+  }
+
+  async function sendChatMessage(userMessage) {
+    if (!userMessage) return;
+
+    appendMessage('user', userMessage);
+    chatInput.value = '';
+    const typingIndicator = appendMessage('ai', '...');
+
+    try {
+      const csrfToken = await ensureCsrfToken();
+
+      const response = await fetch('/chatbot/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+          ...(csrfToken ? { 'X-CSRF-TOKEN': csrfToken } : {})
+        },
+        credentials: 'include',
+        body: JSON.stringify({ message: userMessage })
+      });
+
+      const rawText = await response.text();
+      let data = null;
+
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseError) {
+        throw new Error('Chatbot returned an invalid response.');
+      }
+
+      if (response.ok && data.status === 'success') {
+        renderAiResponse(typingIndicator, data.reply, data.suggestions || []);
+      } else {
+        typingIndicator.textContent = data?.message || data?.reply || 'I was unable to complete that request just now. Please try again in a moment.';
+      }
+    } catch (error) {
+      console.error('Chatbot Error:', error);
+      typingIndicator.textContent = 'I am unable to connect to support services right now. Please try again shortly or use the contact page below.';
+    }
+  }
 
   // Handle Form Submission
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const userMessage = chatInput.value.trim();
-    if (!userMessage) return;
-
-    // Append User Message
-    appendMessage('user', userMessage);
-    chatInput.value = '';
-
-    // Append 'Typing...' Indicator
-    const typingIndicator = appendMessage('ai', '...');
-
-    try {
-      // Send to Backend
-      const response = await fetch('/chatbot/ask', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify({ message: userMessage })
-      });
-
-      const data = await response.json();
-
-      // Update the typing indicator with the real response
-      if (data.status === 'success') {
-        typingIndicator.textContent = data.reply;
-      } else {
-        typingIndicator.textContent = "Error: Couldn't reach the server right now.";
-      }
-
-    } catch (error) {
-      console.error("Chatbot Error:", error);
-      typingIndicator.textContent = "Oops! My circuits are crossed. Try again later.";
-    }
+    await sendChatMessage(userMessage);
   });
 
-  // Helper to append a bubble
   function appendMessage(senderType, text) {
     const msgDiv = document.createElement('div');
     msgDiv.classList.add('vx-message');
     msgDiv.classList.add(senderType === 'ai' ? 'ai-message' : 'user-message');
     msgDiv.textContent = text;
     chatMessages.appendChild(msgDiv);
-
-    // Auto-scroll to bottom
     chatMessages.scrollTop = chatMessages.scrollHeight;
-
+    saveChatState();
     return msgDiv;
   }
+
+  function renderAiResponse(messageEl, text, suggestions) {
+    messageEl.textContent = '';
+
+    const body = document.createElement('div');
+    body.className = 'vx-message-body';
+    body.textContent = text;
+    messageEl.appendChild(body);
+
+    if (Array.isArray(suggestions) && suggestions.length) {
+      const chips = document.createElement('div');
+      chips.className = 'vx-chat-suggestions';
+
+      suggestions.slice(0, 4).forEach((suggestion) => {
+        const chip = document.createElement(suggestion.url ? 'a' : 'button');
+        chip.className = 'vx-chat-suggestion';
+        chip.textContent = suggestion.label || 'Open';
+
+        if (suggestion.url) {
+          chip.href = suggestion.url;
+          chip.addEventListener('click', saveChatState);
+        } else {
+          chip.type = 'button';
+          chip.dataset.message = suggestion.message || suggestion.label || 'Help';
+          chip.addEventListener('click', () => sendChatMessage(suggestion.message || suggestion.label || 'Help'));
+        }
+
+        chips.appendChild(chip);
+      });
+
+      messageEl.appendChild(chips);
+    }
+
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    saveChatState();
+  }
+
+  const renderSavedMessage = (message) => {
+    const messageEl = appendMessage(message.sender === 'user' ? 'user' : 'ai', message.text || '');
+
+    if (message.sender !== 'user' && Array.isArray(message.suggestions) && message.suggestions.length) {
+      renderAiResponse(messageEl, message.text || '', message.suggestions);
+      return;
+    }
+
+    saveChatState();
+  };
+
+  const restoreChatState = () => {
+    const state = readChatState();
+    if (!state) {
+      chatMessages.innerHTML = '';
+      clearChatState();
+      appendMessage('ai', defaultGreeting);
+      closeChat();
+      return;
+    }
+
+    chatMessages.innerHTML = '';
+
+    const savedMessages = Array.isArray(state.messages) ? state.messages : [];
+    if (!savedMessages.length) {
+      appendMessage('ai', defaultGreeting);
+    } else {
+      savedMessages.forEach((message) => renderSavedMessage(message));
+    }
+
+    if (state.isOpen) {
+      openChat();
+    } else {
+      closeChat();
+    }
+  };
+
+  restoreChatState();
 }
 
-
-
-
-
-/* Close and open functions have been refactored to be more generic and reusable 
-Rule- As long as you pass in the ID of the panel to be opened or closed , 
+/* Close and open functions have been refactored to be more generic and reusable
+Rule- As long as you pass in the ID of the panel to be opened or closed ,
 its class list is toggled between 'open' and 'close'
 These classLists can be found in Style.JS , Animations Sectio */
 
@@ -420,7 +786,6 @@ function syncCartScrollLock() {
 // Inline Header Search Toggle
 window.toggleInlineSearch = function () {
   const headerEl = document.querySelector('header');
-  const searchInput = document.getElementById('vx-search-input');
 
   if (headerEl) {
     headerEl.classList.toggle('search-active');

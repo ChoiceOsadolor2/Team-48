@@ -1,29 +1,78 @@
-// moving background animation --> backgrund is of a section to to repeat, this section x position is dcremented by 1 each time. 
-// Moving background
-let x = 0;
+// moving background animation --> background is a section that repeats.
 const section = document.getElementById('wrapper_overlay');
+const section2 = document.querySelector('main');
+const animatedLoginBody = document.body.classList.contains('login-page');
+const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
-function moveX() {
+let x = 0;
+let y = 0;
+let animationFrameId = null;
+let lastFrameTime = 0;
+
+function updateBackgroundPositions() {
   if (section) {
-    x--;
     section.style.backgroundPosition = `${x}px`;
   }
 
-}
-
-let y = 0;
-const section2 = document.querySelector('main');
-
-function moveY() {
-  y++
   if (section2) {
     section2.style.backgroundPosition = `center ${y}px`;
   }
+
   document.body.style.setProperty('--bg-y-pos', `center ${y}px`);
 }
-setInterval(moveY, 20)
 
-setInterval(moveX, 30)
+function animateBackground(timestamp) {
+  if (document.hidden || prefersReducedMotion.matches) {
+    animationFrameId = null;
+    return;
+  }
+
+  if (!lastFrameTime || timestamp - lastFrameTime >= 40) {
+    x -= 1;
+    y += 1;
+    updateBackgroundPositions();
+    lastFrameTime = timestamp;
+  }
+
+  animationFrameId = window.requestAnimationFrame(animateBackground);
+}
+
+function startBackgroundAnimation() {
+  if (animationFrameId || prefersReducedMotion.matches) return;
+  animationFrameId = window.requestAnimationFrame(animateBackground);
+}
+
+function stopBackgroundAnimation() {
+  if (!animationFrameId) return;
+  window.cancelAnimationFrame(animationFrameId);
+  animationFrameId = null;
+}
+
+if (section || section2 || animatedLoginBody) {
+  updateBackgroundPositions();
+  startBackgroundAnimation();
+
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) {
+      stopBackgroundAnimation();
+      return;
+    }
+
+    lastFrameTime = 0;
+    startBackgroundAnimation();
+  });
+
+  if (typeof prefersReducedMotion.addEventListener === 'function') {
+    prefersReducedMotion.addEventListener('change', () => {
+      if (prefersReducedMotion.matches) {
+        stopBackgroundAnimation();
+      } else {
+        lastFrameTime = 0;
+        startBackgroundAnimation();
+      }
+    });
+  }
+}
 
 
 
@@ -31,7 +80,13 @@ const filter = document.getElementById("filter");
 let lastScrollY = window.scrollY;
 
 if (filter) {
+  let filterTicking = false;
+
   window.addEventListener("scroll", () => {
+    if (filterTicking) return;
+    filterTicking = true;
+
+    window.requestAnimationFrame(() => {
     if (window.scrollY > lastScrollY) {
       filter.style.opacity = "0";
     } else {
@@ -39,14 +94,15 @@ if (filter) {
     }
 
     lastScrollY = window.scrollY;
-  });
+      filterTicking = false;
+    });
+  }, { passive: true });
 }
 
 
 
 
 // Dark Mode Toggle 
-document.querySelector("html").setAttribute("data-theme", 'dark');
 
 
 // Create a button element for theme toggling
@@ -142,100 +198,125 @@ button.addEventListener("click", (event) => {
   button.checked = (currentThemeSetting === "dark");
 });
 
+systemSettingDark.addEventListener("change", (event) => {
+  if (localStorage.getItem("theme") !== null) return;
+
+  const nextTheme = event.matches ? "dark" : "light";
+  updateButton({ buttonEl: button, isDark: nextTheme === "dark" });
+  updateThemeOnHtmlEl({ theme: nextTheme });
+  currentThemeSetting = nextTheme;
+  button.checked = (currentThemeSetting === "dark");
+});
+
 
 // ============================================
 // Reviews: Infinite Loop + Drag to Scroll
 // ============================================
 
-const reviewsSlider = document.querySelector('.reviews-scroll-container');
+window.initReviewsSlider = function initReviewsSlider() {
+  const reviewsSlider = document.querySelector('.reviews-scroll-container');
+  if (!reviewsSlider) return;
 
-if (reviewsSlider) {
+  Array.from(reviewsSlider.querySelectorAll('[data-review-clone="1"]')).forEach((clone) => clone.remove());
 
-  // --- Infinite Loop Setup ---
   const originalCards = Array.from(reviewsSlider.children);
   const totalCards = originalCards.length;
+  if (!totalCards) return;
 
-  // Clone all cards and append a copy at the end and prepend at the start
-  originalCards.forEach(card => {
-    const cloneEnd = card.cloneNode(true);
-    cloneEnd.setAttribute('aria-hidden', 'true');
-    reviewsSlider.appendChild(cloneEnd);
-  });
+  if (totalCards > 1) {
+    originalCards.forEach(card => {
+      const cloneEnd = card.cloneNode(true);
+      cloneEnd.setAttribute('aria-hidden', 'true');
+      cloneEnd.dataset.reviewClone = '1';
+      reviewsSlider.appendChild(cloneEnd);
+    });
 
-  originalCards.forEach(card => {
-    const cloneStart = card.cloneNode(true);
-    cloneStart.setAttribute('aria-hidden', 'true');
-    reviewsSlider.prepend(cloneStart);
-  });
+    originalCards.slice().reverse().forEach(card => {
+      const cloneStart = card.cloneNode(true);
+      cloneStart.setAttribute('aria-hidden', 'true');
+      cloneStart.dataset.reviewClone = '1';
+      reviewsSlider.prepend(cloneStart);
+    });
+  }
 
-  // Calculate card width (including gap)
   function getCardWidth() {
     const card = reviewsSlider.querySelector('.review-card');
-    const gap = parseInt(getComputedStyle(reviewsSlider).gap) || 32;
-    return card.offsetWidth + gap;
+    const gap = parseInt(getComputedStyle(reviewsSlider).gap, 10) || 32;
+    return card ? card.offsetWidth + gap : 0;
   }
 
-  // Start scroll position = width of one full set of clones (at the start)
-  function initScroll() {
-    reviewsSlider.scrollLeft = getCardWidth() * totalCards;
+  const cardWidth = getCardWidth();
+  if (totalCards > 1 && cardWidth > 0) {
+    const cloneSetWidth = cardWidth * totalCards;
+    const centeredStart = cloneSetWidth + Math.max(0, (cloneSetWidth - reviewsSlider.clientWidth) / 2);
+    reviewsSlider.scrollLeft = centeredStart;
+  } else {
+    reviewsSlider.scrollLeft = 0;
   }
 
-  initScroll();
+  if (reviewsSlider.dataset.loopBound !== '1') {
+    let isJumping = false;
 
-  // On scroll: silently jump when entering the clone zones
-  let isJumping = false;
-  reviewsSlider.addEventListener('scroll', () => {
-    if (isJumping) return;
-    const cardW = getCardWidth();
-    const cloneSetWidth = cardW * totalCards;
-    const sl = reviewsSlider.scrollLeft;
-    const maxScroll = reviewsSlider.scrollWidth - reviewsSlider.clientWidth;
+    reviewsSlider.addEventListener('scroll', () => {
+      if (isJumping) return;
 
-    // If scrolled into the leading clone zone, jump to same position in real cards
-    if (sl < cloneSetWidth - cardW) {
-      isJumping = true;
-      reviewsSlider.scrollLeft = sl + cloneSetWidth;
-      requestAnimationFrame(() => { isJumping = false; });
-    }
+      const currentOriginalCards = Array.from(reviewsSlider.children).filter(card => card.dataset.reviewClone !== '1');
+      if (currentOriginalCards.length <= 1) return;
 
-    // If scrolled into the trailing clone zone, jump back
-    if (sl > cloneSetWidth * 2 - cardW) {
-      isJumping = true;
-      reviewsSlider.scrollLeft = sl - cloneSetWidth;
-      requestAnimationFrame(() => { isJumping = false; });
-    }
-  });
+      const currentCardWidth = getCardWidth();
+      if (!currentCardWidth) return;
 
-  // --- Drag to Scroll ---
-  let isDown = false;
-  let startX;
-  let scrollStart;
+      const cloneSetWidth = currentCardWidth * currentOriginalCards.length;
+      const sl = reviewsSlider.scrollLeft;
 
-  reviewsSlider.addEventListener('mousedown', (e) => {
-    isDown = true;
-    reviewsSlider.classList.add('active');
-    startX = e.pageX - reviewsSlider.offsetLeft;
-    scrollStart = reviewsSlider.scrollLeft;
-  });
+      if (sl < cloneSetWidth - currentCardWidth) {
+        isJumping = true;
+        reviewsSlider.scrollLeft = sl + cloneSetWidth;
+        requestAnimationFrame(() => { isJumping = false; });
+      }
 
-  reviewsSlider.addEventListener('mouseleave', () => {
-    isDown = false;
-    reviewsSlider.classList.remove('active');
-  });
+      if (sl > cloneSetWidth * 2 - currentCardWidth) {
+        isJumping = true;
+        reviewsSlider.scrollLeft = sl - cloneSetWidth;
+        requestAnimationFrame(() => { isJumping = false; });
+      }
+    });
 
-  reviewsSlider.addEventListener('mouseup', () => {
-    isDown = false;
-    reviewsSlider.classList.remove('active');
-  });
+    reviewsSlider.dataset.loopBound = '1';
+  }
 
-  reviewsSlider.addEventListener('mousemove', (e) => {
-    if (!isDown) return;
-    e.preventDefault();
-    const x = e.pageX - reviewsSlider.offsetLeft;
-    const walk = (x - startX) * 1.5;
-    reviewsSlider.scrollLeft = scrollStart - walk;
-  });
-}
+  if (reviewsSlider.dataset.dragBound !== '1') {
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
 
+    reviewsSlider.addEventListener('mousedown', (e) => {
+      isDown = true;
+      reviewsSlider.classList.add('active');
+      startX = e.pageX - reviewsSlider.offsetLeft;
+      scrollStart = reviewsSlider.scrollLeft;
+    });
 
+    reviewsSlider.addEventListener('mouseleave', () => {
+      isDown = false;
+      reviewsSlider.classList.remove('active');
+    });
 
+    reviewsSlider.addEventListener('mouseup', () => {
+      isDown = false;
+      reviewsSlider.classList.remove('active');
+    });
+
+    reviewsSlider.addEventListener('mousemove', (e) => {
+      if (!isDown) return;
+      e.preventDefault();
+      const x = e.pageX - reviewsSlider.offsetLeft;
+      const walk = (x - startX) * 1.5;
+      reviewsSlider.scrollLeft = scrollStart - walk;
+    });
+
+    reviewsSlider.dataset.dragBound = '1';
+  }
+};
+
+window.initReviewsSlider();

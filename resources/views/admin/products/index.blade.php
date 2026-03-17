@@ -1,114 +1,846 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Products') }}
-        </h2>
+        <div>
+            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                {{ __('Products') }}
+            </h2>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Manage catalogue items, stock, and pricing from one place.</p>
+        </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
+    <style>
+        .admin-products-page,
+        .admin-products-page * {
+            font-family: 'MiniPixel', sans-serif !important;
+            font-weight: 400 !important;
+        }
 
-                    @if (session('status'))
-                        <div class="mb-4 text-green-400">
-                            {{ session('status') }}
+        .admin-products-page {
+            color: #fff;
+        }
+
+        .admin-products-page .products-role-chip,
+        .admin-products-page .products-note,
+        .admin-products-page .products-status-chip,
+        .admin-products-page .products-tab {
+            background: #1d1d1f !important;
+            border-color: #444 !important;
+        }
+
+        .admin-products-page .products-shell {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        .admin-products-page .products-filter-box {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        .admin-products-page .products-title {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+            color: #fff !important;
+        }
+
+        .admin-products-page .products-page-intro {
+            margin-bottom: 8px;
+        }
+
+        .admin-products-page .products-copy,
+        .admin-products-page .products-copy-sm,
+        .admin-products-page .products-copy-xs,
+        .admin-products-page label,
+        .admin-products-page input,
+        .admin-products-page select,
+        .admin-products-page th,
+        .admin-products-page td,
+        .admin-products-page button,
+        .admin-products-page a {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-products-page .products-copy,
+        .admin-products-page .products-copy-sm,
+        .admin-products-page .products-copy-xs {
+            color: #888 !important;
+        }
+
+        .admin-products-page .products-pill {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-products-page label,
+        .admin-products-page input,
+        .admin-products-page select {
+            color: #f9fafb !important;
+        }
+
+        .admin-products-page .products-input,
+        .admin-products-page .products-select {
+            min-height: 56px;
+            border: 1px solid #444 !important;
+            border-radius: 18px !important;
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
+            box-shadow: none !important;
+            transition: background 0.2s ease, border-color 0.2s ease;
+        }
+
+        .admin-products-page .products-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: none !important;
+            padding-right: 52px !important;
+        }
+
+        .admin-products-page .products-input::placeholder {
+            color: #9ca3af !important;
+        }
+
+        .admin-products-page .products-field-shell {
+            position: relative;
+            border-radius: 18px;
+            overflow: visible;
+        }
+
+        .admin-products-page .products-field-shell::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            border: 1px solid transparent;
+            opacity: 0;
+            animation: veltrixGlow 2s infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .admin-products-page .products-field-shell:hover::after,
+        .admin-products-page .products-field-shell:focus-within::after {
+            opacity: 0;
+        }
+
+        .admin-products-page .products-field-shell:hover .products-input,
+        .admin-products-page .products-field-shell:hover .products-select,
+        .admin-products-page .products-field-shell:focus-within .products-input,
+        .admin-products-page .products-field-shell:focus-within .products-select {
+            background: #1d1d1d !important;
+            border-color: transparent !important;
+            outline: none !important;
+        }
+
+        .admin-products-page .products-select-wrap {
+            position: relative;
+        }
+
+        .admin-products-page .products-select-wrap::after {
+            content: '';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            width: 10px;
+            height: 10px;
+            border-right: 2px solid rgba(249, 250, 251, 0.7);
+            border-bottom: 2px solid rgba(249, 250, 251, 0.7);
+            transform: translateY(-65%) rotate(45deg);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .admin-products-page .products-action-btn {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 56px;
+            min-width: 90px;
+            padding: 0 22px;
+            border: 1px solid #444 !important;
+            border-radius: 18px !important;
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+            text-decoration: none !important;
+            overflow: visible;
+            cursor: pointer;
+        }
+
+        .admin-products-page .products-action-btn::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            border: 1px solid transparent;
+            opacity: 0;
+            animation: veltrixGlow 2s infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .admin-products-page .products-action-btn:hover,
+        .admin-products-page .products-action-btn:focus-visible {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+            transform: none;
+            outline: none;
+        }
+
+        .admin-products-page .products-action-btn:hover::after,
+        .admin-products-page .products-action-btn:focus-visible::after {
+            opacity: 0;
+        }
+
+        .admin-products-page .products-tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+            padding: 0 18px;
+            border-radius: 999px;
+            border: 1px solid #444;
+            background: #000 !important;
+            color: #111827 !important;
+            text-decoration: none !important;
+            transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+            position: relative;
+            overflow: visible;
+        }
+
+        .admin-products-page .products-tab::after {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: inherit;
+            border: 1px solid transparent;
+            opacity: 0;
+            animation: veltrixGlow 2s infinite alternate;
+            pointer-events: none;
+            transition: opacity 0.2s ease;
+        }
+
+        .admin-products-page .products-tab:hover,
+        .admin-products-page .products-tab.is-active {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+            color: #ffffff !important;
+        }
+
+        .admin-products-page .products-tab,
+        .admin-products-page .products-tab:visited {
+            color: rgba(255, 255, 255, 0.88) !important;
+        }
+
+        .admin-products-page .products-tab:hover::after,
+        .admin-products-page .products-tab.is-active::after {
+            opacity: 0;
+        }
+
+        .admin-products-page .products-table-shell {
+            overflow: hidden;
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        .admin-products-page .products-filter-grid {
+            align-items: end;
+        }
+
+        .admin-products-page .products-filter-actions {
+            justify-content: flex-start;
+        }
+
+        .admin-products-page .products-table-head {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        .admin-products-page .products-table-row {
+            transition: background 0.2s ease;
+            background: #1d1d1d !important;
+        }
+
+        .admin-products-page .products-table-row:hover {
+            background: #1d1d1d !important;
+        }
+
+        .admin-products-page .products-table-row input[type="checkbox"] {
+            accent-color: #22d3ee;
+        }
+
+        .admin-products-page .products-note {
+            color: #9ca3af !important;
+        }
+
+        .admin-products-page .products-table-shell th {
+            color: #9ca3af !important;
+        }
+
+        .admin-products-page .products-table-shell td,
+        .admin-products-page .products-table-shell .text-white,
+        .admin-products-page .products-table-shell .products-platform-line {
+            color: #f9fafb !important;
+        }
+
+        .admin-products-page .products-table-shell .products-copy-sm,
+        .admin-products-page .products-table-shell .products-copy-xs,
+        .admin-products-page .products-table-shell .products-note {
+            color: #9ca3af !important;
+        }
+
+        .admin-products-page .products-table-shell .products-pill {
+            background: #2a2a2a !important;
+            border-color: #444 !important;
+            color: #f9fafb !important;
+        }
+
+        .admin-products-page .products-table-shell .products-action-btn {
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
+            border-color: #444 !important;
+        }
+
+        .admin-products-page .products-table-shell .products-action-btn:hover,
+        .admin-products-page .products-table-shell .products-action-btn:focus-visible {
+            background: #1d1d1d !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-shell {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-filter-box {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page label,
+        html[data-theme="dark"] .admin-products-page input,
+        html[data-theme="dark"] .admin-products-page select {
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-input,
+        html[data-theme="dark"] .admin-products-page .products-select {
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
+            border-color: #444 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-select-wrap::after {
+            border-right-color: rgba(249, 250, 251, 0.7);
+            border-bottom-color: rgba(249, 250, 251, 0.7);
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-action-btn {
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
+            border-color: #444 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-head {
+            background: #1d1d1d !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-row {
+            background: #1d1d1d !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-row:hover {
+            background: #1d1d1d !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell th,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-copy-sm,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-copy-xs,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-note {
+            color: #9ca3af !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell td,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .text-white,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-platform-line {
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-pill {
+            background: #2a2a2a !important;
+            border-color: #444 !important;
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn {
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
+            border-color: #444 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn:hover,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn:focus-visible {
+            background: #1d1d1d !important;
+        }
+
+        @media (min-width: 768px) {
+            .admin-products-page .products-page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+
+        .admin-products-page .products-platform-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 14px;
+        }
+
+        .admin-products-page .products-platform-line {
+            color: #fff !important;
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(17, 24, 39, 0.72);
+            font-size: 0.82rem !important;
+            line-height: 1.2 !important;
+            white-space: nowrap;
+        }
+
+        .admin-products-page .products-stock-panel {
+            display: grid;
+            gap: 12px;
+            min-width: 320px;
+        }
+
+        .admin-products-page .products-stock-topline {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .admin-products-page .products-stock-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
+        }
+
+        .admin-products-page .products-stock-overview {
+            color: #9ca3af !important;
+            font-size: 0.92rem !important;
+            line-height: 1.35 !important;
+            text-align: right;
+        }
+
+        .admin-products-page .products-stock-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .admin-products-page .products-stock-metric {
+            border: 1px solid #3a3a3d;
+            border-radius: 16px;
+            background: #232323;
+            padding: 10px 12px;
+        }
+
+        .admin-products-page .products-stock-metric-label {
+            display: block;
+            color: #9ca3af !important;
+            font-size: 0.78rem !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .admin-products-page .products-stock-metric-value {
+            display: block;
+            margin-top: 6px;
+            color: #f9fafb !important;
+            font-size: 1rem !important;
+            line-height: 1.2 !important;
+        }
+
+        .admin-products-page .products-stock-cell {
+            padding-left: 32px !important;
+        }
+
+        .admin-products-page .products-stock-toggle {
+            margin-top: 12px;
+        }
+
+        .admin-products-page .products-stock-toggle summary {
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #9ca3af !important;
+            font-size: 0.9rem !important;
+        }
+
+        .admin-products-page .products-stock-toggle summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .admin-products-page .products-stock-toggle summary::after {
+            content: '+';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+
+        .admin-products-page .products-stock-toggle[open] summary::after {
+            content: '-';
+        }
+
+        .admin-products-page .products-stock-header {
+            padding-left: 0 !important;
+        }
+
+        .admin-products-page .products-status-chip {
+            background: transparent !important;
+            border: none !important;
+            padding-left: 0 !important;
+            padding-right: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+        }
+
+        .admin-products-page .products-meta-line {
+            margin-top: 8px;
+            color: #9ca3af !important;
+            font-size: 0.92rem !important;
+            line-height: 1.35 !important;
+        }
+    </style>
+
+    <div class="admin-products-page py-8">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="products-page-intro">
+                <div>
+                    <h1 class="flex items-center gap-3 text-[1.7rem] font-bold text-gray-900 dark:text-white">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 7h-9"></path>
+                            <path d="M14 17H5"></path>
+                            <circle cx="17" cy="17" r="3"></circle>
+                            <circle cx="7" cy="7" r="3"></circle>
+                        </svg>
+                        <span>Products</span>
+                    </h1>
+                    <p class="mt-1.5 text-[0.98rem] text-gray-500 dark:text-gray-400">Manage catalogue items, pricing, and platform stock from one place.</p>
+                </div>
+            </div>
+
+            <div class="products-shell rounded-3xl border p-5 shadow-sm">
+                @php
+                    $currentCategory = $categoryKey ?? request('category');
+                @endphp
+
+                <form method="GET" action="{{ route('admin.products.index') }}" class="products-filter-box rounded-2xl border p-4">
+                    <div class="products-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(220px,0.8fr)_auto]">
+                        <div>
+                            <label class="mb-2 block">Search</label>
+                            <div class="products-field-shell">
+                                <input
+                                    type="text"
+                                    name="q"
+                                    value="{{ $search ?? request('q') }}"
+                                    class="products-input w-full px-4 py-3"
+                                    placeholder="Search name, description, platform..."
+                                    autocomplete="off"
+                                    autocorrect="off"
+                                    autocapitalize="off"
+                                    spellcheck="false"
+                                />
+                            </div>
                         </div>
-                    @endif
 
-                    <div class="mb-4">
-                        <a href="{{ route('admin.products.create') }}"
-                           class="inline-block px-4 py-2 bg-blue-600 text-white rounded">
-                            + Add Product
-                        </a>
+                        <div>
+                            <label class="mb-2 block">Stock</label>
+                            <div class="products-field-shell">
+                                <div class="products-select-wrap">
+                                    <select name="stock" class="products-select w-full px-4 py-3">
+                                        <option value="">All stock levels</option>
+                                        <option value="in_stock" {{ ($stockFilter ?? request('stock')) === 'in_stock' ? 'selected' : '' }}>Healthy stock</option>
+                                        <option value="low_stock" {{ ($stockFilter ?? request('stock')) === 'low_stock' ? 'selected' : '' }}>Needs restock</option>
+                                        <option value="out_of_stock" {{ ($stockFilter ?? request('stock')) === 'out_of_stock' ? 'selected' : '' }}>Out of stock</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="products-filter-actions flex items-end gap-3">
+                            @if ($currentCategory)
+                                <input type="hidden" name="category" value="{{ $currentCategory }}">
+                            @endif
+                            <button type="submit" class="products-action-btn">Apply</button>
+                            <a href="{{ $currentCategory ? route('admin.products.index', ['category' => $currentCategory]) : route('admin.products.index') }}" class="products-action-btn">Clear</a>
+                        </div>
+                    </div>
+                </form>
+
+                <div class="mt-4 flex flex-wrap gap-2">
+                    <a href="{{ route('admin.products.index') }}" class="products-tab {{ !$currentCategory ? 'is-active' : '' }}">
+                        All
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Games']) }}" class="products-tab {{ $currentCategory === 'Games' ? 'is-active' : '' }}">
+                        Video Games
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Consoles and PCs']) }}" class="products-tab {{ $currentCategory === 'Consoles and PCs' ? 'is-active' : '' }}">
+                        Consoles and PCs
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Accessories']) }}" class="products-tab {{ $currentCategory === 'Accessories' ? 'is-active' : '' }}">
+                        Accessories
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Hardware']) }}" class="products-tab {{ $currentCategory === 'Hardware' ? 'is-active' : '' }}">
+                        Hardware
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Furniture']) }}" class="products-tab {{ $currentCategory === 'Furniture' ? 'is-active' : '' }}">
+                        Furniture
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Merchandise']) }}" class="products-tab {{ $currentCategory === 'Merchandise' ? 'is-active' : '' }}">
+                        Merchandise
+                    </a>
+                    <a href="{{ route('admin.products.index', ['category' => 'Trading Cards']) }}" class="products-tab {{ $currentCategory === 'Trading Cards' ? 'is-active' : '' }}">
+                        Trading Cards
+                    </a>
+                </div>
+            </div>
+
+            <div class="products-table-shell rounded-3xl border shadow-sm">
+                <div class="flex items-center justify-between border-b border-[#444] px-5 py-4">
+                    <div>
+                        <h3 class="products-title">Product Inventory</h3>
+                        <p class="products-copy">A cleaner view of products, stock status, and actions.</p>
+                    </div>
+                    <span class="products-pill rounded-full border px-3 py-2 text-white">
+                        Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }}
+                    </span>
+                </div>
+
+                @if ($products->isEmpty())
+                    <div class="products-copy px-5 py-10 text-center space-y-3">
+                        <p>No products matched the current filters.</p>
+                        <p class="products-copy-sm">Try clearing the search or switching category and stock filters.</p>
+                        <div class="flex justify-center">
+                            <a href="{{ route('admin.products.index') }}" class="admin-btn admin-btn--secondary">View all products</a>
+                        </div>
+                    </div>
+                @else
+                    <form id="bulk-products-form" method="POST" action="{{ route('admin.products.bulk') }}">
+                        @csrf
+                        <input type="hidden" name="action" value="delete">
+                    </form>
+
+                    <div class="border-b border-[#444] bg-[#1d1d1f] px-5 py-4">
+                        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                            <div class="flex items-center gap-3">
+                                <label class="flex items-center gap-2">
+                                    <input type="checkbox" data-check-all="products" class="h-4 w-4 rounded border-[#444] bg-black">
+                                    Select all
+                                </label>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button type="submit" form="bulk-products-form" class="products-action-btn min-w-[220px]" onclick="return confirm('Delete all selected products?');">
+                                    Delete Selected
+                                </button>
+                            </div>
+                        </div>
                     </div>
 
-                    @php
-                        // Comes from controller: 'Games', 'Consoles and PCs', etc.
-                        $currentCategory = $categoryKey ?? request('category');
-                    @endphp
-
-                    {{-- Category tabs --}}
-                    <div class="mb-6 flex flex-wrap gap-1 text-xs">
-                        {{-- All --}}
-                        <a href="{{ route('admin.products.index') }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ !$currentCategory ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            All
-                        </a>
-
-                        {{-- Games -> key "Games" --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Games']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Games' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Games
-                        </a>
-
-                        {{-- Consoles and PCs -> key "Consoles and PCs" --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Consoles and PCs']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Consoles and PCs' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Consoles and PCs
-                        </a>
-
-                        {{-- Accessories -> key "Accessories" --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Accessories']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Accessories' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Accessories
-                        </a>
-
-                        {{-- Hardware -> key "Hardware" (chairs + monitors) --}}
-                        <a href="{{ route('admin.products.index', ['category' => 'Hardware']) }}"
-                           class="px-3 py-1 border rounded-t
-                                  {{ $currentCategory === 'Hardware' ? 'font-semibold bg-gray-200 dark:bg-gray-700' : 'bg-gray-100 dark:bg-gray-900' }}">
-                            Hardware
-                        </a>
-                    </div>
-
-                    @if ($products->isEmpty())
-                        <p>No products yet.</p>
-                    @else
-                        <table class="w-full border-collapse text-sm">
-                            <thead>
-                                <tr class="border-b border-gray-700">
-                                    <th class="text-left p-2">Name</th>
-                                    <th class="text-left p-2">Category</th>
-                                    <th class="text-left p-2">Price</th>
-                                    <th class="text-left p-2">Stock</th>
-                                    <th class="text-left p-2">Actions</th>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead class="products-table-head text-left">
+                                <tr class="uppercase tracking-[0.18em] text-[#888]">
+                                    <th class="px-5 py-4">
+                                        <span class="sr-only">Select</span>
+                                    </th>
+                                    <th class="px-5 py-4">Product</th>
+                                    <th class="px-5 py-4">Category</th>
+                                    <th class="px-5 py-4">Price</th>
+                                    <th class="products-stock-header px-5 py-4">Stock</th>
+                                    <th class="px-5 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($products as $product)
-                                    <tr class="border-b border-gray-700">
-                                        <td class="p-2">{{ $product->name }}</td>
-                                        <td class="p-2">{{ $product->category->name ?? '-' }}</td>
-                                        <td class="p-2">£{{ number_format($product->price, 2) }}</td>
-                                        <td class="p-2">{{ $product->stock }}</td>
-                                        <td class="p-2 flex gap-3">
-                                            <a href="{{ route('admin.products.edit', $product) }}"
-                                               class="text-blue-400 hover:underline">Edit</a>
+                                    @php
+                                        $trackedPlatformCount = $product->platformStocks->count();
+                                    @endphp
+                                    <tr class="products-table-row transition">
+                                        <td class="px-5 py-5">
+                                            <input type="checkbox" name="selected[]" value="{{ $product->id }}" form="bulk-products-form" data-check-item="products" class="h-4 w-4 rounded border-[#444] bg-black">
+                                        </td>
+                                        <td class="px-5 py-5">
+                                            <div class="text-white">{{ $product->name }}</div>
+                                            <div class="products-meta-line">
+                                                @if ($product->hasPlatformSpecificStock())
+                                                    {{ $trackedPlatformCount }} platform{{ $trackedPlatformCount === 1 ? '' : 's' }} tracked
+                                                @else
+                                                    Standard stock item
+                                                @endif
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-5 text-white">
+                                            <span class="products-pill rounded-full border px-3 py-2">{{ $product->category->name ?? '-' }}</span>
+                                        </td>
+                                        <td class="px-5 py-5 text-white">
+                                            <div>{{ number_format($product->price, 2) }} GBP</div>
+                                        </td>
+                                        <td class="products-stock-cell px-5 py-5">
+                                            @php
+                                                $stockTextClasses = $product->inventoryStatusKey() === 'out_of_stock'
+                                                    ? 'text-rose-300'
+                                                    : ($product->inventoryStatusKey() === 'low_stock' ? 'text-amber-300' : 'text-emerald-300');
+                                                $stockLabel = $product->inventoryStatusLabel();
+                                                $outCount = $product->outOfStockPlatformCount();
+                                                $lowCount = $product->lowStockPlatformCount();
+                                                $inCount = $product->hasPlatformSpecificStock()
+                                                    ? $product->platformStocks->filter(fn ($platformStock) => (int) $platformStock->stock > 0)->count()
+                                                    : max((int) $product->stock, 0);
+                                                $healthyCount = $product->hasPlatformSpecificStock()
+                                                    ? $product->platformStocks->filter(fn ($platformStock) => (int) $platformStock->stock > 5)->count()
+                                                    : ((int) $product->stock > 5 ? 1 : 0);
+                                                $totalUnits = $product->hasPlatformSpecificStock()
+                                                    ? $product->platformStocks->sum(fn ($platformStock) => (int) $platformStock->stock)
+                                                    : (int) $product->stock;
+                                                $singlePlatformStock = $product->hasPlatformSpecificStock() && $trackedPlatformCount === 1
+                                                    ? $product->platformStocks->first()
+                                                    : null;
+                                            @endphp
+                                            <div class="products-stock-panel">
+                                                <div class="products-stock-topline">
+                                                    <div class="products-stock-summary">
+                                                        <span class="products-status-chip rounded-full px-3 py-2 {{ $stockTextClasses }}">{{ $stockLabel }}</span>
+                                                    </div>
+                                                    <div class="products-stock-overview">
+                                                        @if ($product->hasPlatformSpecificStock())
+                                                            {{ $trackedPlatformCount }} platform{{ $trackedPlatformCount === 1 ? '' : 's' }}
+                                                        @else
+                                                            Standard stock
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                                @if ($singlePlatformStock)
+                                                    <div class="products-stock-metrics">
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">{{ $singlePlatformStock->platform }} units</span>
+                                                            <span class="products-stock-metric-value">{{ (int) $singlePlatformStock->stock }}</span>
+                                                        </div>
+                                                    </div>
+                                                @elseif ($product->hasPlatformSpecificStock())
+                                                    <div class="products-stock-metrics">
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Units</span>
+                                                            <span class="products-stock-metric-value">{{ $totalUnits }}</span>
+                                                        </div>
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Healthy</span>
+                                                            <span class="products-stock-metric-value">{{ $healthyCount }}</span>
+                                                        </div>
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Low</span>
+                                                            <span class="products-stock-metric-value">{{ $lowCount }}</span>
+                                                        </div>
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Empty</span>
+                                                            <span class="products-stock-metric-value">{{ $outCount }}</span>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="products-stock-metrics">
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Units in stock</span>
+                                                            <span class="products-stock-metric-value">{{ $totalUnits }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endif
 
-                                            <form action="{{ route('admin.products.destroy', $product) }}"
-                                                  method="POST"
-                                                  onsubmit="return confirm('Delete this product?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-400 hover:underline">
+                                                <details class="products-stock-toggle">
+                                                    <summary>Show platform stock</summary>
+                                                    <div class="products-platform-list">
+                                                        @if ($product->platformStocks->isNotEmpty())
+                                                            @foreach ($product->platformStocks as $platformStock)
+                                                                <span class="products-platform-line">
+                                                                    {{ $platformStock->platform }}: {{ $platformStock->stock }}
+                                                                </span>
+                                                            @endforeach
+                                                        @else
+                                                            <span class="products-platform-line">
+                                                                Standard stock: {{ (int) $product->stock }}
+                                                            </span>
+                                                        @endif
+                                                    </div>
+                                                </details>
+                                            </div>
+                                        </td>
+                                        <td class="px-5 py-5">
+                                            <div class="flex justify-end gap-2">
+                                                <a href="{{ route('admin.products.edit', $product) }}" class="products-action-btn">
+                                                    Edit
+                                                </a>
+                                                <button type="submit" form="delete-product-{{ $product->id }}" class="products-action-btn" onclick="return confirm('Delete this product?');">
                                                     Delete
                                                 </button>
-                                            </form>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    @endif
+                    </div>
 
-                </div>
+                    @foreach ($products as $product)
+                        <form id="delete-product-{{ $product->id }}" action="{{ route('admin.products.destroy', $product) }}" method="POST" class="hidden">
+                            @csrf
+                            @method('DELETE')
+                        </form>
+                    @endforeach
+                @endif
+
+                @if ($products instanceof \Illuminate\Contracts\Pagination\Paginator && $products->hasPages())
+                    <div class="border-t border-[#444] px-5 py-4">
+                        {{ $products->links() }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>
-</x-app-layout>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const master = document.querySelector('[data-check-all="products"]');
+            const items = document.querySelectorAll('[data-check-item="products"]');
+            if (!master || !items.length) return;
+
+            master.addEventListener('change', function () {
+                items.forEach((item) => item.checked = master.checked);
+            });
+        });
+    </script>
+</x-app-layout>

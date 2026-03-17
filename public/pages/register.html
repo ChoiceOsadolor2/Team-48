@@ -1,197 +1,601 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="home">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Veltrix</title>
+  <link rel="icon" href="../assets/MainLogo.png" type="image/png">
 
-    <link rel="stylesheet" href="../styles/Login,SIgn-up.css">
-    <link rel="stylesheet" href="../styles/style.css">
+  <link rel="stylesheet" href="../styles/Login,SIgn-up.css">
+  <link rel="stylesheet" href="../styles/style.css">
+  <link rel="stylesheet" href="../styles/footer.css">
 
-    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'> 
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+  <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
 
-    <style>
-      .field-error {
-        display: none;
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -24px;
-        font-size: 16px;
-        color: #ffa825;
-        font-family: 'MiniPixel', sans-serif;
-        text-align: center;
-      }
-    </style>
+  <style>
+    .field-error {
+      display: none;
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -24px;
+      font-size: 16px;
+      color: #ffa825;
+      font-family: 'MiniPixel', sans-serif;
+      text-align: center;
+    }
+
+    .masked-register-password {
+      -webkit-text-security: disc;
+      text-security: disc;
+    }
+
+    .password-hint {
+      margin: -8px 0 6px;
+      color: #fff;
+      font-size: 20px;
+      line-height: 1.5;
+      font-family: 'MiniPixel', sans-serif;
+      font-weight: 400;
+      text-align: center;
+    }
+
+    .password-hint+.input-box {
+      margin-top: 0;
+    }
+
+    .password-hint+.input-box+.login-button {
+      margin-top: 0;
+    }
+
+    .captcha-overlay {
+      position: fixed !important;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 2000 !important;
+      padding: 24px;
+    }
+
+    .captcha-overlay.open {
+      display: flex;
+    }
+
+    body.captcha-open #theme-toggle-container,
+    body.captcha-open #vx-chatbot-toggle,
+    body.captcha-open #vx-chatbot-window {
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    .captcha-modal {
+      width: min(520px, 100%);
+      background: #1d1d1d;
+      border: 1px solid #444;
+      border-radius: 20px;
+      padding: 28px 28px 24px;
+      color: #fff;
+      font-family: 'MiniPixel', sans-serif;
+      text-align: center;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+    }
+
+    .captcha-title {
+      font-family: 'MiniPixel', sans-serif;
+      font-size: 30px;
+      font-weight: 400;
+      margin-bottom: 14px;
+    }
+
+    .captcha-copy {
+      font-family: 'MiniPixel', sans-serif;
+      font-size: 20px;
+      font-weight: 400;
+      color: #fff;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+
+    .captcha-code {
+      width: 100%;
+      padding: 18px 20px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      border: 1px solid #444;
+      background: #000;
+      color: #fff;
+      font-family: 'MiniPixel', sans-serif;
+      font-size: 30px;
+      font-weight: 400;
+      letter-spacing: 4px;
+      text-align: center;
+      user-select: none;
+    }
+
+    .captcha-input-wrap {
+      position: relative;
+      width: 100%;
+      margin: 0 0 18px;
+    }
+
+    .captcha-input-wrap::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      animation: veltrixGlow 2s infinite alternate;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .captcha-input-wrap:hover::after,
+    .captcha-input-wrap:focus-within::after {
+      opacity: 1;
+    }
+
+    .captcha-input {
+      width: 100%;
+      height: 60px;
+      border-radius: 12px;
+      border: 1px solid #444;
+      background: #000;
+      color: #fff;
+      font-family: 'MiniPixel', sans-serif;
+      font-size: 20px;
+      outline: none;
+      padding: 0 18px;
+      text-align: center;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .captcha-input::placeholder {
+      color: #888;
+    }
+
+    .captcha-input:hover,
+    .captcha-input:focus {
+      background: #1d1d1d;
+      border-color: transparent;
+    }
+
+    .captcha-error {
+      display: none;
+      margin: 0 0 16px;
+      font-family: 'MiniPixel', sans-serif;
+      font-size: 16px;
+      color: #ffa825;
+      text-align: center;
+    }
+
+    .captcha-actions {
+      display: flex;
+      justify-content: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .captcha-btn {
+      min-width: 150px;
+      height: 52px;
+      border-radius: 14px;
+      border: 1px solid #444;
+      background: #000;
+      color: #fff;
+      font-family: 'MiniPixel', sans-serif;
+      font-size: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+      overflow: visible;
+      isolation: isolate;
+      z-index: 0;
+    }
+
+    .captcha-btn::after {
+      content: "";
+      position: absolute;
+      inset: -1px;
+      border-radius: 14px;
+      border: 1px solid transparent;
+      animation: veltrixGlow 2s infinite alternate;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: -1;
+    }
+
+    .captcha-btn:hover,
+    .captcha-btn:focus-visible {
+      background: #1d1d1d;
+      border-color: transparent;
+      transform: translateY(-2px);
+    }
+
+    .captcha-btn:hover::after,
+    .captcha-btn:focus-visible::after {
+      opacity: 1;
+    }
+  </style>
 </head>
 
-<body class="login-page auth-login-page">
+<body class="login-page auth-login-page register-page">
 
-<header></header>
+  <header></header>
 
-<div class="login-box">
-    <form id="form" autocomplete="off" novalidate>
-        <h1>Register</h1>
-
+  <div class="auth-page-shell">
+    <h1 class="login-page-title">Register</h1>
+    <div class="login-box">
+      <form id="form" autocomplete="off" novalidate>
         <div class="input-box">
-            <input type="email" id="email" placeholder="Email" required autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
-            <i class='bx bx-envelope'></i>
-            <p id="registerEmailError" class="field-error"></p>
-        </div>
-        
-        <div class="input-box">
-            <input type="text" id="username" placeholder="Username" required autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
-            <i class='bx bxs-user'></i>
-            <p id="registerUsernameError" class="field-error"></p>
+          <input type="text" id="email" placeholder="Email" required inputmode="email" autocomplete="one-time-code"
+            autocapitalize="off" autocorrect="off" spellcheck="false" readonly data-lpignore="true"
+            data-1p-ignore="true" data-bwignore="true" data-form-type="other">
+          <i class='bx bx-envelope'></i>
+          <p id="registerEmailError" class="field-error"></p>
         </div>
 
         <div class="input-box">
-            <input type="password" id="password" placeholder="Password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
-            <i id="toggleRegisterPassword" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0" aria-label="Show password" aria-pressed="false"></i>
-            <p id="registerPasswordError" class="field-error"></p>
+          <input type="text" id="username" placeholder="Username" required autocomplete="off" autocapitalize="off"
+            autocorrect="off" spellcheck="false">
+          <i class='bx bxs-user'></i>
+          <p id="registerUsernameError" class="field-error"></p>
         </div>
 
         <div class="input-box">
-            <input type="password" id="password2" placeholder="Retype Password" required autocomplete="new-password" autocapitalize="off" autocorrect="off" spellcheck="false">
-            <i id="toggleRegisterPassword2" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0" aria-label="Show password" aria-pressed="false"></i>
-            <p id="registerPassword2Error" class="field-error"></p>
+          <input type="text" id="password" class="masked-register-password" placeholder="Password" required
+            autocomplete="one-time-code" autocapitalize="off" autocorrect="off" spellcheck="false" readonly
+            data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other">
+          <i id="toggleRegisterPassword" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0"
+            aria-label="Show password" aria-pressed="false"></i>
+          <p id="registerPasswordError" class="field-error"></p>
+        </div>
+
+        <p class="password-hint">Minimum 8 characters, 1 capital, and 1 symbol: ! ? / \ % &amp;</p>
+
+        <div class="input-box">
+          <input type="text" id="password2" class="masked-register-password" placeholder="Retype Password" required
+            autocomplete="one-time-code" autocapitalize="off" autocorrect="off" spellcheck="false" readonly
+            data-lpignore="true" data-1p-ignore="true" data-bwignore="true" data-form-type="other">
+          <i id="toggleRegisterPassword2" class='bx bxs-lock-alt toggle-password' role="button" tabindex="0"
+            aria-label="Show password" aria-pressed="false"></i>
+          <p id="registerPassword2Error" class="field-error"></p>
         </div>
 
         <button type="submit" class="login-button">Register</button>
 
         <div class="register-link">
-            <p>Already have an account? <a href="/pages/login.html">Login</a></p>
+          <p>Already have an account? <a href="/pages/login.html">Login</a></p>
         </div>
-    </form>
-</div>
+      </form>
+    </div>
+  </div>
 
-<script src="../scripts/header.js"></script>
-<script src="../scripts/animations.js" defer></script>
+  <div id="captchaOverlay" class="captcha-overlay" aria-hidden="true">
+    <div class="captcha-modal" role="dialog" aria-modal="true" aria-labelledby="captchaTitle">
+      <h2 id="captchaTitle" class="captcha-title">Verification</h2>
+      <p class="captcha-copy">Type the code below to finish registering.</p>
+      <div id="captchaCode" class="captcha-code"></div>
 
-<script>
-function wirePasswordToggle(iconId, inputId) {
-    const icon = document.getElementById(iconId);
-    const input = document.getElementById(inputId);
-    if (!icon || !input) return;
+      <div class="captcha-input-wrap">
+        <input id="captchaInput" class="captcha-input" type="text" placeholder="Enter code" autocomplete="off"
+          autocapitalize="characters" spellcheck="false">
+      </div>
 
-    const toggle = () => {
-        const showing = input.type === "text";
-        input.type = showing ? "password" : "text";
+      <p id="captchaError" class="captcha-error"></p>
+
+      <div class="captcha-actions">
+        <button id="captchaCancel" type="button" class="captcha-btn">Cancel</button>
+        <button id="captchaRefresh" type="button" class="captcha-btn">Refresh</button>
+        <button id="captchaConfirm" type="button" class="captcha-btn">Verify</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="../scripts/header.js?v=2"></script>
+  <script src="../scripts/footer.js"></script>
+  <script src="../scripts/animations.js" defer></script>
+
+  <script>
+    function unlockField(el) {
+      if (!el) return;
+      if (el.hasAttribute("readonly")) {
+        el.removeAttribute("readonly");
+      }
+    }
+
+    ["email", "password", "password2"].forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      el.addEventListener("focus", () => unlockField(el));
+      el.addEventListener("mousedown", () => unlockField(el));
+      el.addEventListener("touchstart", () => unlockField(el), { passive: true });
+    });
+
+    function wirePasswordToggle(iconId, inputId) {
+      const icon = document.getElementById(iconId);
+      const input = document.getElementById(inputId);
+      if (!icon || !input) return;
+
+      const toggle = () => {
+        unlockField(input);
+        const showing = !input.classList.contains("masked-register-password");
+        input.classList.toggle("masked-register-password", showing);
         icon.className = showing ? "bx bxs-lock-alt toggle-password" : "bx bx-lock-open-alt toggle-password";
         icon.setAttribute("aria-label", showing ? "Show password" : "Hide password");
         icon.setAttribute("aria-pressed", showing ? "false" : "true");
-    };
+      };
 
-    icon.addEventListener("click", toggle);
-    icon.addEventListener("keydown", (e) => {
+      icon.addEventListener("click", toggle);
+      icon.addEventListener("keydown", (e) => {
         if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            toggle();
+          e.preventDefault();
+          toggle();
         }
-    });
-}
+      });
+    }
 
-wirePasswordToggle("toggleRegisterPassword", "password");
-wirePasswordToggle("toggleRegisterPassword2", "password2");
+    wirePasswordToggle("toggleRegisterPassword", "password");
+    wirePasswordToggle("toggleRegisterPassword2", "password2");
 
-const emailInput = document.getElementById("email");
-const usernameInput = document.getElementById("username");
-const passwordInput = document.getElementById("password");
-const password2Input = document.getElementById("password2");
+    const emailInput = document.getElementById("email");
+    const usernameInput = document.getElementById("username");
+    const passwordInput = document.getElementById("password");
+    const password2Input = document.getElementById("password2");
+    const captchaOverlay = document.getElementById("captchaOverlay");
+    const captchaCodeEl = document.getElementById("captchaCode");
+    const captchaInput = document.getElementById("captchaInput");
+    const captchaError = document.getElementById("captchaError");
+    const captchaCancel = document.getElementById("captchaCancel");
+    const captchaRefresh = document.getElementById("captchaRefresh");
+    const captchaConfirm = document.getElementById("captchaConfirm");
 
-const emailError = document.getElementById("registerEmailError");
-const usernameError = document.getElementById("registerUsernameError");
-const passwordError = document.getElementById("registerPasswordError");
-const password2Error = document.getElementById("registerPassword2Error");
+    const emailError = document.getElementById("registerEmailError");
+    const usernameError = document.getElementById("registerUsernameError");
+    const passwordError = document.getElementById("registerPasswordError");
+    const password2Error = document.getElementById("registerPassword2Error");
 
-function showFieldError(el, message) {
-    if (!el) return;
-    el.textContent = message || "";
-    if (message) {
+    let pendingRegistration = null;
+    let captchaCode = "";
+
+    function generateCaptchaCode() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < 6; i += 1) {
+        code += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return code;
+    }
+
+    function showCaptchaError(message) {
+      captchaError.textContent = message || "";
+      captchaError.style.display = message ? "block" : "none";
+    }
+
+    function refreshCaptcha() {
+      captchaCode = generateCaptchaCode();
+      captchaCodeEl.textContent = captchaCode;
+      captchaInput.value = "";
+      showCaptchaError("");
+    }
+
+    function openCaptcha(payload) {
+      pendingRegistration = payload;
+      refreshCaptcha();
+      captchaOverlay.classList.add("open");
+      captchaOverlay.style.display = "flex";
+      captchaOverlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("captcha-open");
+      document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => captchaInput.focus());
+    }
+
+    function closeCaptcha() {
+      captchaOverlay.classList.remove("open");
+      captchaOverlay.style.display = "none";
+      captchaOverlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("captcha-open");
+      document.body.style.overflow = "";
+      pendingRegistration = null;
+      showCaptchaError("");
+    }
+
+    async function submitRegistration(payload) {
+      const getCsrfToken = () => {
+        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (metaToken) return metaToken;
+
+        const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
+      };
+
+      const ensureCsrfToken = async () => {
+        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (metaToken) return metaToken;
+
+        const response = await fetch('/csrf-token', {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          credentials: 'include'
+        });
+
+        if (!response.ok) return "";
+
+        const data = await response.json().catch(() => ({}));
+        const refreshedToken = data?.token || getCsrfToken();
+
+        if (refreshedToken) {
+          let metaTag = document.querySelector('meta[name="csrf-token"]');
+          if (!metaTag) {
+            metaTag = document.createElement('meta');
+            metaTag.setAttribute('name', 'csrf-token');
+            document.head.appendChild(metaTag);
+          }
+          metaTag.setAttribute('content', refreshedToken);
+        }
+
+        return refreshedToken || getCsrfToken() || "";
+      };
+
+      const csrfToken = await ensureCsrfToken();
+
+      const res = await fetch('/register-json', {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {})
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          name: payload.username,
+          email: payload.email,
+          password: payload.password
+        })
+      });
+
+      const rawText = await res.text();
+      let data = {};
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseError) {
+        console.error("Non-JSON response from register-json:", rawText);
+      }
+
+      if (res.ok && data.success) {
+        window.location.href = "/pages/index.html";
+        return;
+      }
+
+      if (res.status === 422 && data.errors) {
+        if (data.errors.email?.[0]) showFieldError(emailError, data.errors.email[0]);
+        if (data.errors.name?.[0]) showFieldError(usernameError, data.errors.name[0]);
+        if (data.errors.password?.[0]) showFieldError(passwordError, data.errors.password[0]);
+        return;
+      }
+
+      showFieldError(emailError, data.message || "Registration failed. Please check your details and try again.");
+    }
+
+    function showFieldError(el, message) {
+      if (!el) return;
+      el.textContent = message || "";
+      if (message) {
         el.style.display = "block";
         el.style.animation = "none";
         void el.offsetWidth;
         el.style.animation = "fadeSlideUp 0.3s ease";
-    } else {
+      } else {
         el.style.display = "none";
         el.style.animation = "none";
+      }
     }
-}
 
-function clearRegisterErrors() {
-    showFieldError(emailError, "");
-    showFieldError(usernameError, "");
-    showFieldError(passwordError, "");
-    showFieldError(password2Error, "");
-}
+    function clearRegisterErrors() {
+      showFieldError(emailError, "");
+      showFieldError(usernameError, "");
+      showFieldError(passwordError, "");
+      showFieldError(password2Error, "");
+    }
 
-if (emailInput) emailInput.addEventListener("input", () => showFieldError(emailError, ""));
-if (usernameInput) usernameInput.addEventListener("input", () => showFieldError(usernameError, ""));
-if (passwordInput) passwordInput.addEventListener("input", () => showFieldError(passwordError, ""));
-if (password2Input) password2Input.addEventListener("input", () => showFieldError(password2Error, ""));
+    if (emailInput) emailInput.addEventListener("input", () => showFieldError(emailError, ""));
+    if (usernameInput) usernameInput.addEventListener("input", () => showFieldError(usernameError, ""));
+    if (passwordInput) passwordInput.addEventListener("input", () => showFieldError(passwordError, ""));
+    if (password2Input) password2Input.addEventListener("input", () => showFieldError(password2Error, ""));
 
-document.getElementById("form").addEventListener("submit", async function (e) {
-    e.preventDefault();
+    captchaCancel.addEventListener("click", closeCaptcha);
+    captchaRefresh.addEventListener("click", refreshCaptcha);
+    captchaConfirm.addEventListener("click", async () => {
+      if (!pendingRegistration) return;
 
-    const email = emailInput ? emailInput.value.trim() : "";
-    const username = usernameInput ? usernameInput.value.trim() : "";
-    const password = passwordInput ? passwordInput.value.trim() : "";
-    const password2 = password2Input ? password2Input.value.trim() : "";
+      if (captchaInput.value.trim().toUpperCase() !== captchaCode) {
+        showCaptchaError("Incorrect code");
+        captchaInput.focus();
+        return;
+      }
 
-    clearRegisterErrors();
+      const payload = pendingRegistration;
+      closeCaptcha();
 
-    let hasEmptyField = false;
-    if (!email) {
+      try {
+        await submitRegistration(payload);
+      } catch (error) {
+        console.error(error);
+        showFieldError(emailError, "Unable to contact server. Please try again.");
+      }
+    });
+
+    captchaInput.addEventListener("input", () => showCaptchaError(""));
+    captchaInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        captchaConfirm.click();
+      }
+    });
+
+    captchaOverlay.addEventListener("click", (e) => {
+      if (e.target === captchaOverlay) {
+        closeCaptcha();
+      }
+    });
+
+    document.getElementById("form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const email = emailInput ? emailInput.value.trim() : "";
+      const username = usernameInput ? usernameInput.value.trim() : "";
+      const password = passwordInput ? passwordInput.value.trim() : "";
+      const password2 = password2Input ? password2Input.value.trim() : "";
+
+      clearRegisterErrors();
+
+      let hasEmptyField = false;
+      if (!email) {
         showFieldError(emailError, "Empty Field");
         hasEmptyField = true;
-    }
-    if (!username) {
+      }
+      if (!username) {
         showFieldError(usernameError, "Empty Field");
         hasEmptyField = true;
-    }
-    if (!password) {
+      }
+      if (!password) {
         showFieldError(passwordError, "Empty Field");
         hasEmptyField = true;
-    }
-    if (!password2) {
+      }
+      if (!password2) {
         showFieldError(password2Error, "Empty Field");
         hasEmptyField = true;
-    }
-    if (hasEmptyField) return;
+      }
+      if (hasEmptyField) return;
 
-    if (password !== password2) {
+      if (password !== password2) {
         showFieldError(password2Error, "Passwords do not match.");
         return;
-    }
+      }
 
-    try {
-        const params = new URLSearchParams({
-            name: username,
-            email: email,
-            password: password
-        });
+      const hasCapital = /[A-Z]/.test(password);
+      const hasRequiredSymbol = /[!\?\/\\%&]/.test(password);
+      if (password.length < 8 || !hasCapital || !hasRequiredSymbol) {
+        showFieldError(passwordError, "Use 8+ chars, 1 capital, and 1 symbol: ! ? / \\ % &.");
+        return;
+      }
 
-        const res = await fetch(`/register-json?${params.toString()}`, {
-            method: "GET",
-            headers: { "Accept": "application/json" }
-        });
-
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-            showFieldError(emailError, data.message || "Registration failed. Email may already exist.");
-            return;
-        }
-
-        window.location.href = "/profile";
-
-    } catch (error) {
-        console.error(error);
-        showFieldError(emailError, "Something went wrong. Please try again.");
-    }
-});
-</script>
+      openCaptcha({ email, username, password });
+    });
+  </script>
 
 </body>
+
 </html>

@@ -6,16 +6,31 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>{{ config('app.name', 'Laravel') }}</title>
+        <title>Veltrix</title>
+        <link rel="icon" href="/assets/MainLogo.png" type="image/png">
+        <script>
+            (function () {
+                try {
+                    const savedTheme = localStorage.getItem('theme');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+                    document.documentElement.setAttribute('data-theme', theme);
+                } catch (_) {
+                    document.documentElement.setAttribute('data-theme', 'light');
+                }
+            })();
+        </script>
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preload" href="/fonts/mini-pixel-7.ttf" as="font" type="font/ttf" crossorigin>
 
         <script src="https://cdn.tailwindcss.com"></script>
 
         <script defer src="https://unpkg.com/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
         <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
         @if ($isForgotPassword)
+            <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
             <link rel="stylesheet" href="/styles/style.css">
             <style>
                 @font-face {
@@ -23,7 +38,7 @@
                     src: url('/fonts/mini-pixel-7.ttf') format('truetype');
                     font-weight: normal;
                     font-style: normal;
-                    font-display: swap;
+                    font-display: block;
                 }
 
                 /* Match login/register/header look exactly on forgot-password route */
@@ -105,7 +120,7 @@
         </div>
 
         @if ($isForgotPassword)
-            <script src="/scripts/header.js"></script>
+            <script src="/scripts/header.js?v=2"></script>
             <script src="/scripts/animations.js" defer></script>
         @endif
 

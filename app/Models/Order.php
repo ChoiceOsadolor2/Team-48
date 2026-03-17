@@ -13,6 +13,10 @@ class Order extends Model
         'user_id',
         'total',
         'status',
+        'shipping_method',
+        'shipping_cost',
+        'discount_code',
+        'discount_amount',
     ];
 
     public function items()
@@ -23,5 +27,15 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function returnRequests()
+    {
+        return $this->hasMany(ReturnRequest::class);
+    }
+
+    public function serviceReviews()
+    {
+        return $this->hasMany(ServiceReview::class);
     }
 }

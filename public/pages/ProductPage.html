@@ -3,22 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../styles/ProductPage.css">
+    <link rel="preload" href="../fonts/mini-pixel-7.ttf" as="font" type="font/ttf" crossorigin>
+    <link rel="stylesheet" href="../styles/ProductPage.css?v=4">
     <link rel="stylesheet" href="../styles/style.css">
-    <title>Document</title>
+    <link rel="stylesheet" href="../styles/footer.css">
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+    <title>Veltrix</title>
+    <link rel="icon" href="../assets/MainLogo.png" type="image/png">
 </head>
 <body>
 <header></header>
 
     <main>
+<div class="product-page-inner">
 
-<button id="previous_page" type="button" aria-label="Go back" onclick="goBackToTop()">
+<div id="product_loading_state" class="product-loading-state">
+  <div class="product-loading-card">
+    <span class="product-loading-title">Loading product</span>
+    <span class="product-loading-copy">Preparing details, stock, and reviews...</span>
+  </div>
+</div>
+
+<button id="previous_page" class="is-loading" type="button" aria-label="Go back" onclick="goBackToTop()">
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
     <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z"/>
   </svg>
 </button>
 
-<section id="product_display">
+<section id="product_display" class="is-loading">
   <div id="product_carousal">
     <img class="product_image" id="main_image" alt="Main Product Image">
     
@@ -32,32 +44,79 @@
       <span class="product_price"></span>
     </div>
 
+    <div class="product-purchase-row">
+      <div class="qty-input">
+        <button class="qty-count qty-count--minus" type="button">-</button>
 
-    <div class="qty-input">
-      <button class="qty-count qty-count--minus" type="button">-</button>
+        <input
+          class="quantity product-qty"
+          type="number"
+          min="1"
+          max="10"
+          value="1"
+          readonly
+          inputmode="none"
+        />
 
-      <input
-        class="quantity product-qty"
-        type="number"
-        min="1"
-        max="10"
-        value="1"
-        readonly
-        inputmode="none"
-      />
+        <button class="qty-count qty-count--add" type="button">+</button>
+      </div>
 
-      <button class="qty-count qty-count--add" type="button">+</button>
+      <div class="product-platform-picker">
+        <div class="product-platform-custom-select" id="product_platform_picker">
+          <select id="product_platform_select" class="product-platform-select" aria-label="Select platform"></select>
+          <div class="product-platform-selected" aria-hidden="true">
+            <span class="val">Universal</span>
+          </div>
+          <div class="product-platform-items product-platform-hide"></div>
+        </div>
+      </div>
     </div>
 
 
+    <div class="product-action-row">
+      <button class="add_to_basket"> Add to Basket</button>
+      <button class="wishlist_toggle" type="button" data-wishlist-product-id="">Wishlist</button>
+    </div>
 
-    <button class="add_to_basket"> Add to Basket</button>
   </div>
-
-  
 </section>
 
+<section id="product_reviews_section" class="product-reviews-section">
+  <div class="product-reviews-header">
+    <div class="product-reviews-heading">
+      <h2 class="product-reviews-title">Reviews</h2>
+      <p class="product-reviews-subtext">Verified buyers can rate the product and leave written feedback after delivery.</p>
+    </div>
+    <div class="product-reviews-actions">
+      <label class="product-review-sort" for="product_reviews_sort">
+        <span>Sort reviews</span>
+        <select id="product_reviews_sort" aria-label="Sort product reviews">
+          <option value="recent">Most recent</option>
+          <option value="highest">Highest rated</option>
+        </select>
+      </label>
+      <button class="product-review-button" id="product_write_review" type="button">Leave a Review</button>
+    </div>
+  </div>
+
+  <p class="product-review-note" id="product_write_review_hint">Sign in and open Order History to review a completed purchase.</p>
+  <div id="product_reviews_empty" class="product-reviews-empty">No reviews yet.</div>
+  <div id="product_reviews_list" class="product-reviews-list"></div>
+</section>
+
+<section id="product_extra_panels" class="product-related-section">
+  <div class="product-reviews-header">
+    <h2 class="product-reviews-title">Related Products</h2>
+  </div>
+
+  <div id="related_products_empty" class="product-reviews-empty" hidden>No related products found.</div>
+  <div id="related_products" class="related-products-grid"></div>
+</section>
+
+</div>
 </main>
+
+<div id="footer"></div>
 
 <script>
   function goBackToTop() {
@@ -75,8 +134,9 @@
     window.location.href = '/pages/index.html';
   }
 </script>
-<script src="../scripts/header.js"></script>
+<script src="../scripts/header.js?v=2"></script>
+<script src="../scripts/footer.js"></script>
 <script src="../scripts/animations.js" defer></script>
-<script src="../scripts/products.js?v=8"></script>
+<script src="../scripts/products.js?v=13"></script>
 </body>
 </html>

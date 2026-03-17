@@ -4,166 +4,215 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>All Products</title>
+  <title>Veltrix</title>
+  <link rel="icon" href="../assets/MainLogo.png" type="image/png">
   <link rel="stylesheet" href="../styles/style.css" />
-  <link rel="stylesheet" href="../styles/ShopAll.css" />
-  <!-- Icons -->
+  <link rel="stylesheet" href="../styles/ShopAll.css?v=2" />
+  <link rel="stylesheet" href="../styles/footer.css" />
   <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
-
   <header></header>
 
   <main>
-    <h1 style="width: 100%; text-align: center; font-size: 5em;" id="title">All Products</h1>
+    <h1 style="width: 100%; text-align: center; font-size: 100px;" id="title">All Products</h1>
+    <div class="shop-toolbar-toggle-row">
+      <button type="button" id="toggle_filters">Show filters</button>
+    </div>
 
-    <div id="sort_container" style="width:100%; text-align:center;">
-      <div class="custom-select" style="display:inline-block; position:relative; text-align:left;">
-        <select id="sort_products" style="display:none;">
-          <option value="default">Default</option>
-          <option value="price_low">Price Low → High</option>
-          <option value="price_high">Price High → Low</option>
-        </select>
+    <section class="shop-toolbar is-hidden" aria-label="Shop filters">
+      <div class="shop-toolbar__header">
+        <p class="shop-toolbar__summary" id="results_summary">Loading products...</p>
+      </div>
 
-        <div class="select-selected">
-          <span class="val">Default</span>
+      <div class="shop-filter-grid">
+        <label class="shop-filter-field shop-filter-field--range">
+          <span>Price range</span>
+          <div class="shop-price-range">
+            <div class="shop-price-range__values">
+              <span>From <strong id="filter_min_price_value">0</strong></span>
+              <span>To <strong id="filter_max_price_value">10000</strong></span>
+            </div>
+            <div class="shop-price-range__sliders">
+              <div class="shop-price-range__track"></div>
+              <div class="shop-price-range__fill" id="shop_price_range_fill"></div>
+              <input type="range" id="filter_min_price_range" min="0" max="10000" step="1" value="0" aria-label="Minimum price">
+              <input type="range" id="filter_max_price_range" min="0" max="10000" step="1" value="10000" aria-label="Maximum price">
+            </div>
+            <input type="hidden" id="filter_min_price" value="">
+            <input type="hidden" id="filter_max_price" value="">
+          </div>
+        </label>
+
+        <div class="shop-filter-field">
+          <span>Category</span>
+          <div class="custom-select custom-select--category" style="display:inline-block; position:relative; text-align:left;">
+            <select id="filter_category" style="display:none;">
+              <option value="">All</option>
+              <option value="Video Games">Video Games</option>
+              <option value="Consoles and PCs">Consoles and PCs</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Hardware">Hardware</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Merchandise">Merchandise</option>
+              <option value="Trading Cards">Trading Cards</option>
+            </select>
+
+            <div class="select-selected">
+              <span class="val">All</span>
+            </div>
+
+            <div class="select-items select-hide">
+              <div data-value="">All</div>
+              <div data-value="Video Games">Video Games</div>
+              <div data-value="Consoles and PCs">Consoles and PCs</div>
+              <div data-value="Accessories">Accessories</div>
+              <div data-value="Hardware">Hardware</div>
+              <div data-value="Furniture">Furniture</div>
+              <div data-value="Merchandise">Merchandise</div>
+              <div data-value="Trading Cards">Trading Cards</div>
+            </div>
+          </div>
         </div>
 
-        <div class="select-items select-hide">
-          <div data-value="price_low">Price Low → High</div>
-          <div data-value="price_high">Price High → Low</div>
+        <div class="shop-filter-field">
+          <span>Availability</span>
+          <div class="custom-select custom-select--availability" style="display:inline-block; position:relative; text-align:left;">
+            <select id="filter_availability" style="display:none;">
+              <option value="">All products</option>
+              <option value="in_stock">In stock only</option>
+              <option value="out_of_stock">Out of stock only</option>
+            </select>
+
+            <div class="select-selected">
+              <span class="val">All products</span>
+            </div>
+
+            <div class="select-items select-hide">
+              <div data-value="">All products</div>
+              <div data-value="in_stock">In stock only</div>
+              <div data-value="out_of_stock">Out of stock only</div>
+            </div>
+          </div>
+        </div>
+        <div class="shop-filter-field shop-filter-field--sort">
+          <span>Sort by</span>
+          <div class="custom-select" style="display:inline-block; position:relative; text-align:left;">
+            <select id="sort_products" style="display:none;">
+              <option value="default">Default</option>
+              <option value="newest">Newest First</option>
+              <option value="price_low">Price Low to High</option>
+              <option value="price_high">Price High to Low</option>
+              <option value="name_asc">Name A to Z</option>
+              <option value="name_desc">Name Z to A</option>
+            </select>
+
+            <div class="select-selected">
+              <span class="val">Default</span>
+            </div>
+
+            <div class="select-items select-hide">
+              <div data-value="newest">Newest First</div>
+              <div data-value="price_low">Price Low to High</div>
+              <div data-value="price_high">Price High to Low</div>
+              <div data-value="name_asc">Name A to Z</div>
+              <div data-value="name_desc">Name Z to A</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="shop-filter-actions">
+          <button type="button" id="apply_filters">Apply</button>
+          <button type="button" id="clear_filters" class="is-secondary">Clear</button>
         </div>
       </div>
-    </div>
+    </section>
 
     <script>
       document.addEventListener("DOMContentLoaded", function () {
-        const customSelect = document.querySelector(".custom-select");
-        const selectedDiv = customSelect.querySelector(".select-selected");
-        const valSpan = selectedDiv.querySelector(".val");
-        const itemsDiv = customSelect.querySelector(".select-items");
-        const nativeSelect = document.getElementById("sort_products");
-        const itemDivs = itemsDiv.querySelectorAll("div");
+        const customSelects = document.querySelectorAll(".custom-select");
+        if (!customSelects.length) return;
 
-        // Toggle list open/close
-        selectedDiv.addEventListener("click", function (e) {
-          e.stopPropagation();
-          itemsDiv.classList.toggle("select-hide");
-          selectedDiv.classList.toggle("select-arrow-active");
+        function closeAllSelect(except) {
+          customSelects.forEach((customSelect) => {
+            if (customSelect === except) return;
+            const selectedDiv = customSelect.querySelector(".select-selected");
+            const itemsDiv = customSelect.querySelector(".select-items");
+            if (selectedDiv) selectedDiv.classList.remove("select-arrow-active");
+            if (itemsDiv) itemsDiv.classList.add("select-hide");
+          });
+        }
 
-          if (!itemsDiv.classList.contains("select-hide")) {
-            const currentChildren = Array.from(itemsDiv.children);
-            const visibleChildren = currentChildren.filter(d => d.style.display !== "none");
+        customSelects.forEach((customSelect) => {
+          const selectedDiv = customSelect.querySelector(".select-selected");
+          const valSpan = selectedDiv?.querySelector(".val");
+          const itemsDiv = customSelect.querySelector(".select-items");
+          const nativeSelect = customSelect.querySelector("select");
+          const itemDivs = itemsDiv ? Array.from(itemsDiv.querySelectorAll("div")) : [];
 
-            // Reset all borders
-            currentChildren.forEach(d => {
-              d.style.borderTopLeftRadius = "0";
-              d.style.borderTopRightRadius = "0";
-              d.style.borderBottomLeftRadius = "0";
-              d.style.borderBottomRightRadius = "0";
-            });
+          if (!selectedDiv || !valSpan || !itemsDiv || !nativeSelect) return;
 
-            // Apply rounding to first and last visible item
-            if (visibleChildren.length > 0) {
-              visibleChildren[0].style.borderTopLeftRadius = "9px";
-              visibleChildren[0].style.borderTopRightRadius = "9px";
-              visibleChildren[visibleChildren.length - 1].style.borderBottomLeftRadius = "9px";
-              visibleChildren[visibleChildren.length - 1].style.borderBottomRightRadius = "9px";
-            }
-          }
-        });
-
-        // Handle option clicks
-        itemDivs.forEach(item => {
-          item.addEventListener("click", function (e) {
+          selectedDiv.addEventListener("click", function (e) {
             e.stopPropagation();
-            const value = this.getAttribute("data-value");
-            const text = this.innerHTML;
+            const willOpen = itemsDiv.classList.contains("select-hide");
+            closeAllSelect(customSelect);
+            itemsDiv.classList.toggle("select-hide", !willOpen);
+            selectedDiv.classList.toggle("select-arrow-active", willOpen);
 
-            // Update custom selected text
-            valSpan.innerHTML = text;
+            if (!itemsDiv.classList.contains("select-hide")) {
+              const visibleChildren = itemDivs.filter((d) => d.style.display !== "none");
 
-            // Update natively hidden select and trigger change event for products.js
-            Array.from(nativeSelect.options).forEach(opt => {
-              if (opt.value === value) {
-                opt.selected = true;
+              itemDivs.forEach((d) => {
+                d.style.borderTopLeftRadius = "0";
+                d.style.borderTopRightRadius = "0";
+                d.style.borderBottomLeftRadius = "0";
+                d.style.borderBottomRightRadius = "0";
+              });
+
+              if (visibleChildren.length > 0) {
+                visibleChildren[0].style.borderTopLeftRadius = "9px";
+                visibleChildren[0].style.borderTopRightRadius = "9px";
+                visibleChildren[visibleChildren.length - 1].style.borderBottomLeftRadius = "9px";
+                visibleChildren[visibleChildren.length - 1].style.borderBottomRightRadius = "9px";
               }
+            }
+          });
+
+          itemDivs.forEach((item) => {
+            item.addEventListener("click", function (e) {
+              e.stopPropagation();
+              const value = this.getAttribute("data-value") ?? "";
+              const text = this.innerHTML;
+
+              valSpan.innerHTML = text;
+              nativeSelect.value = value;
+              nativeSelect.dispatchEvent(new Event("change"));
+              closeAllSelect();
             });
-            nativeSelect.dispatchEvent(new Event('change'));
+          });
 
-            // Update custom list options to hide the active one
-            // First, reset all original divs
-            itemDivs.forEach(div => div.style.display = "block");
-
-            // Check if Default option was injected dynamically earlier
-            let injectedDefault = itemsDiv.querySelector('div[data-value="default"]');
-            if (injectedDefault) {
-              injectedDefault.style.display = "block";
+          nativeSelect.addEventListener("change", function () {
+            const selectedOption = nativeSelect.selectedOptions[0];
+            if (selectedOption) {
+              valSpan.textContent = selectedOption.textContent;
             }
-
-            this.style.display = "none"; // Hide currently selected
-
-            // Ensure 'Default' option is available to switch back to if we aren't on it
-            if (value !== 'default') {
-              let defaultOpt = itemsDiv.querySelector('div[data-value="default"]');
-              if (!defaultOpt) {
-                defaultOpt = document.createElement('div');
-                defaultOpt.setAttribute('data-value', 'default');
-                defaultOpt.innerHTML = 'Default';
-                defaultOpt.addEventListener('click', itemClickReset);
-                itemsDiv.prepend(defaultOpt);
-              }
-            } else {
-              let defaultOpt = itemsDiv.querySelector('div[data-value="default"]');
-              if (defaultOpt) defaultOpt.style.display = 'none';
-            }
-
-            // Close the dropdown
-            closeAllSelect();
           });
         });
 
-        function itemClickReset(e) {
-          e.stopPropagation();
-          const value = this.getAttribute("data-value");
-          const text = this.innerHTML;
-          valSpan.innerHTML = text;
-          nativeSelect.value = value;
-          nativeSelect.dispatchEvent(new Event('change'));
-
-          // Reset all static items
-          itemDivs.forEach(div => div.style.display = "block");
-
-          // Re-hide the default option since we are selecting it
-          let injectedDefault = itemsDiv.querySelector('div[data-value="default"]');
-          if (injectedDefault) {
-            injectedDefault.style.display = "none";
-          }
-
+        document.addEventListener("click", function () {
           closeAllSelect();
-        }
-
-        // Close dropdown if clicking outside
-        function closeAllSelect() {
-          itemsDiv.classList.add("select-hide");
-          selectedDiv.classList.remove("select-arrow-active");
-        }
-        document.addEventListener("click", closeAllSelect);
-
-        // Initial setup for default option
-        let defaultOpt = document.createElement('div');
-        defaultOpt.setAttribute('data-value', 'default');
-        defaultOpt.innerHTML = 'Default';
-        defaultOpt.style.display = 'none'; // Hidden initially
-        defaultOpt.addEventListener('click', itemClickReset);
-        itemsDiv.prepend(defaultOpt);
+        });
       });
     </script>
 
-    <!-- Loading message -->
     <div id="loading_products" style="text-align:center; font-size:1.2em; margin-bottom:20px;">
       Loading products...
+    </div>
+
+    <div id="empty_products_state" class="shop-empty-state" hidden>
+      <h3>No products match those filters</h3>
+      <p>Try widening the price range, changing the category, or clearing the stock filter.</p>
     </div>
 
     <section id="products_container">
@@ -171,62 +220,24 @@
         <div class="product_card" data-name="Game Headset" data-price="59.99">
           <img class="product_image" alt="Product image" />
           <h3 class="product_name"></h3>
+          <span class="product_category"></span>
           <span class="product_price"></span>
           <button class="view_product">View Product</button>
-          <button class="add_to_basket">Add to Basket</button>
+          <div class="product_review_summary" aria-label="Product reviews">
+            <span class="product_review_stars"></span>
+          </div>
         </div>
       </template>
-
     </section>
+
   </main>
 
+  <div id="footer"></div>
 
-
-
-  <script src="../scripts/header.js"></script>
+  <script src="../scripts/header.js?v=2"></script>
+  <script src="../scripts/footer.js"></script>
   <script src="../scripts/animations.js" defer></script>
-  <script src="../scripts/products.js?v=8"></script>
-  <script>
-    (function () {
-      const query = (localStorage.getItem("veltrix_search_query") || "").trim().toLowerCase();
-      if (!query) return;
-
-      function applyFilter() {
-        const cards = document.querySelectorAll(".product_card");
-        if (!cards.length) return false;
-
-        let shown = 0;
-        cards.forEach(card => {
-          const name = (card.dataset.name || "").toLowerCase();
-          const match = name.includes(query);
-          card.style.display = match ? "" : "none";
-          if (match) shown++;
-        });
-
-        const title = document.getElementById("title");
-        if (title) title.textContent = `Results for "${query}" (${shown})`;
-
-        return true;
-      }
-
-      // Try now
-      if (applyFilter()) return;
-
-      // If products.js injects cards later, watch for it
-      const container = document.getElementById("products_container");
-      if (!container) return;
-
-      const observer = new MutationObserver(() => {
-        if (applyFilter()) observer.disconnect();
-      });
-
-      observer.observe(container, { childList: true, subtree: true });
-    })();
-  </script>
-
-
-
-
+  <script src="../scripts/products.js?v=13"></script>
 </body>
 
 </html>

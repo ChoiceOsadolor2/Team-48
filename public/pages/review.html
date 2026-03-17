@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" class="home">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Veltrix</title>
+    <link rel="icon" href="../assets/MainLogo.png" type="image/png">
+    <link rel="stylesheet" href="../styles/styleHomepage.css">
+    <link rel="stylesheet" href="../styles/style.css">
+    <link rel="stylesheet" href="../styles/footer.css">
+    <link rel="stylesheet" href="../styles/ReviewPage.css">
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
+</head>
+<body>
+    <header></header>
+
+    <main class="review-page-shell">
+        <div class="review-page-inner">
+            <h1 class="review-page-title">Add Product Review</h1>
+
+            <section class="review-card">
+                <form id="review_form" class="review-form" novalidate>
+                    <div class="review-field">
+                        <label for="review_product">Product</label>
+                        <div class="review-field-wrap review-field-wrap--static">
+                            <input id="review_product" name="product" type="text" placeholder="Product name" readonly>
+                        </div>
+                        <div class="review-error" data-error-for="product"></div>
+                    </div>
+
+                    <div class="review-field-row">
+                        <div class="review-field">
+                            <label for="review_platform">Platform</label>
+                            <div class="review-field-wrap review-field-wrap--static">
+                                <input id="review_platform" name="platform" type="text" placeholder="Universal" readonly>
+                            </div>
+                            <div class="review-error" data-error-for="platform"></div>
+                        </div>
+
+                        <div class="review-field">
+                            <label for="review_rating">Rating</label>
+                            <div class="review-rating-custom-select review-rating-stars" id="review_rating_picker">
+                                <select id="review_rating" name="rating" aria-label="Select rating">
+                                    <option value="">Select rating</option>
+                                    <option value="5">5 Stars</option>
+                                    <option value="4">4 Stars</option>
+                                    <option value="3">3 Stars</option>
+                                    <option value="2">2 Stars</option>
+                                    <option value="1">1 Star</option>
+                                </select>
+                                <div class="review-star-picker" aria-hidden="true"></div>
+                            </div>
+                            <div class="review-error" data-error-for="rating"></div>
+                        </div>
+                    </div>
+
+                    <div class="review-field">
+                        <label for="review_title">Review Title</label>
+                        <div class="review-field-wrap">
+                            <input id="review_title" name="title" type="text" placeholder="Write a short title">
+                        </div>
+                        <div class="review-error" data-error-for="title"></div>
+                    </div>
+
+                    <div class="review-field">
+                        <label for="review_message">Your Review</label>
+                        <div class="review-field-wrap review-field-wrap--textarea">
+                            <textarea id="review_message" name="message" rows="7" placeholder="Share your thoughts"></textarea>
+                        </div>
+                        <div class="review-error" data-error-for="message"></div>
+                    </div>
+
+                    <div class="review-actions">
+                        <button type="submit" class="review-submit-button">Submit Review</button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+
+    <div id="footer"></div>
+
+    <script src="../scripts/header.js?v=2"></script>
+    <script src="../scripts/footer.js"></script>
+    <script src="../scripts/animations.js" defer></script>
+    <script src="../scripts/products.js?v=9"></script>
+    <script src="../scripts/review.js"></script>
+</body>
+</html>

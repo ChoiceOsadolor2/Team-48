@@ -1,14 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="home">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Forgot Password</title>
+    <title>Veltrix</title>
+    <link rel="icon" href="/assets/MainLogo.png" type="image/png">
 
     <link rel="stylesheet" href="/styles/Login,SIgn-up.css">
     <link rel="stylesheet" href="/styles/style.css">
+    <link rel="stylesheet" href="/styles/footer.css">
     <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
 
     <style>
       .field-error {
@@ -33,14 +36,17 @@
     </style>
 </head>
 
-<body class="login-page auth-login-page">
+<body class="login-page auth-login-page forgot-password-page">
 <header></header>
 
+<div class="auth-page-shell">
+<h1 class="login-page-title">Forgot Password</h1>
 <div class="login-box">
     <form id="forgotPasswordForm" method="POST" action="{{ route('password.email') }}" novalidate autocomplete="off">
         @csrf
-        <h1>Forgot Password</h1>
-
+        <p class="field-success" style="margin-top: 0; margin-bottom: 18px; color: #ffffff;">
+            Enter your email and we'll send you a temporary password.
+        </p>
         <div class="input-box">
             <input
                 type="email"
@@ -65,15 +71,19 @@
             <p class="field-success">{{ session('status') }}</p>
         @endif
 
-        <button type="submit" class="login-button">Email Password Reset Link</button>
+        <button type="submit" class="login-button">Email Temporary Password</button>
 
         <div class="register-link">
             <p><a href="/pages/login.html">Back to Login</a></p>
         </div>
     </form>
 </div>
+</div>
 
-<script src="/scripts/header.js"></script>
+<div id="footer"></div>
+
+<script src="/scripts/header.js?v=2"></script>
+<script src="/scripts/footer.js"></script>
 <script src="/scripts/animations.js" defer></script>
 <script>
 const forgotEmailInput = document.getElementById("email");
@@ -101,10 +111,14 @@ if (forgotEmailInput) {
 if (forgotForm) {
     forgotForm.addEventListener("submit", function (e) {
         const email = forgotEmailInput ? forgotEmailInput.value.trim() : "";
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         showFieldError(forgotEmailError, "");
         if (!email) {
             e.preventDefault();
             showFieldError(forgotEmailError, "Empty Field");
+        } else if (!emailPattern.test(email)) {
+            e.preventDefault();
+            showFieldError(forgotEmailError, "Please enter a valid email format");
         }
     });
 }

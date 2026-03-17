@@ -1,65 +1,89 @@
 <x-app-layout>
+    <link rel="stylesheet" href="{{ asset('styles/orders.css') }}" />
 
-    <div class="max-w-4xl mx-auto py-8">
-
-        {{-- Page title --}}
-        <h1 class="text-3xl font-bold mb-6">
-            Order #{{ $order->id }}
-        </h1>
-
-        {{-- Order Details Card --}}
-        <div class="bg-white p-6 shadow rounded">
-
-            {{-- Flash success message --}}
-            @if (session('status'))
-                <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
-                    {{ session('status') }}
-                </div>
-            @endif
-
-            <p class="mb-2"><strong>Status:</strong> {{ ucfirst($order->status) }}</p>
-            <p class="mb-4"><strong>Total:</strong> £{{ number_format($order->total, 2) }}</p>
-
-            <h2 class="text-xl font-semibold mt-6 mb-4">Items</h2>
-
-            <table class="min-w-full bg-white rounded">
-                <thead>
-                    <tr class="bg-gray-100">
-                        <th class="px-6 py-3 border-b text-left">Product</th>
-                        <th class="px-6 py-3 border-b text-left">Quantity</th>
-                        <th class="px-6 py-3 border-b text-left">Price</th>
-                    </tr>
-                </thead>
-
-                <tbody>
-                    @foreach ($order->items as $item)
-                        <tr>
-                            <td class="px-6 py-4 border-b">
-                                {{ optional($item->product)->name ?? 'Product Deleted' }}
-                            </td>
-                            <td class="px-6 py-4 border-b">
-                                {{ $item->quantity }}
-                            </td>
-                            <td class="px-6 py-4 border-b">
-                                £{{ number_format($item->price, 2) }}
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
-
-            {{-- Back to orders --}}
-            <div class="mt-6">
-                <a 
-                    href="{{ route('orders.index') }}"
-                    class="px-5 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700"
-                >
-                    Back to Orders
-                </a>
-            </div>
-
+    <div class="orders-main invoice-page-shell w-full max-w-5xl mx-auto py-8">
+        <div class="orders-header invoice-page-header">
+            <h1 class="orders-title">Invoice</h1>
         </div>
 
-    </div>
+        <div class="orders-container invoice-container">
+            <article class="order-card invoice-card">
+                <div class="order-body invoice-body">
+                    <div class="orders-header invoice-header">
+                        <h1 class="orders-title invoice-title">
+                            <span class="invoice-order-label">Order #:</span>
+                            <span class="invoice-order-number">VX-{{ $order->id }}</span>
+                        </h1>
+                        <div class="invoice-header-actions">
+                            <a href="{{ route('orders.download', $order->id) }}" class="btn-secondary">Download Invoice</a>
+                        </div>
+                    </div>
 
+                    <div class="invoice-summary">
+                        <p class="invoice-summary-line">
+                            <span class="item-label">Status:</span>
+                            <span class="invoice-summary-value">{{ ucfirst($order->status) }}</span>
+                        </p>
+                        @if ($order->shipping_method || (float) $order->shipping_cost > 0)
+                            <p class="invoice-summary-line">
+                                <span class="item-label">Shipping:</span>
+                                <span class="invoice-summary-value">
+                                    {{ $order->shipping_method ?: 'Delivery' }}
+                                    @if ((float) $order->shipping_cost > 0)
+                                        ({{ number_format($order->shipping_cost, 2) }} GBP)
+                                    @endif
+                                </span>
+                            </p>
+                        @endif
+                        @if ($order->discount_code || (float) $order->discount_amount > 0)
+                            <p class="invoice-summary-line">
+                                <span class="item-label">Discount:</span>
+                                <span class="invoice-summary-value">
+                                    {{ $order->discount_code ?: 'Promo code' }}
+                                    @if ((float) $order->discount_amount > 0)
+                                        (-{{ number_format($order->discount_amount, 2) }} GBP)
+                                    @endif
+                                </span>
+                            </p>
+                        @endif
+                        <p class="invoice-summary-line">
+                            <span class="item-label">Total:</span>
+                            <span class="invoice-summary-value">{{ number_format($order->total, 2) }} GBP</span>
+                        </p>
+                    </div>
+
+                    <section class="invoice-items-section">
+                        <h2 class="invoice-section-title">Items</h2>
+
+                        <table class="invoice-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Platform</th>
+                                    <th>Price</th>
+                                    <th>Quantity</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                @foreach ($order->items as $item)
+                                    <tr>
+                                        <td>{{ optional($item->product)->name ?? 'Product Deleted' }}</td>
+                                        <td>{{ $item->platform ?: (optional($item->product)->platform ?? 'Universal') }}</td>
+                                        <td>{{ number_format($item->price, 2) }} GBP</td>
+                                        <td>{{ $item->quantity }}</td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </section>
+
+                    <div class="invoice-actions">
+                        <a href="{{ route('orders.index') }}" class="btn-secondary">Back to Orders</a>
+                        <a href="{{ url('/pages/index.html') }}" class="btn-secondary">Back to Home</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
 </x-app-layout>

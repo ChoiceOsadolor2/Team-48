@@ -1,12 +1,8 @@
 <section>
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Profile Information') }}
+            {{ __('Update Information') }}
         </h2>
-
-        <p class="mt-1 text-sm text-gray-600">
-            {{ __("Update your account's profile information and email address.") }}
-        </p>
     </header>
 
     <form id="send-verification" method="post" action="{{ route('verification.send') }}">
@@ -18,18 +14,24 @@
         @method('patch')
 
         {{-- Name --}}
-        <div>
+        <div class="profile-field">
             <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" name="name" type="text" class="mt-1 block w-full"
-                :value="old('name', $user->name)" required autofocus autocomplete="name" />
+            <div class="profile-input-wrap contact-field-wrap">
+                <x-text-input id="name" name="name" type="text" class="block w-full contact-field profile-textbox"
+                    :value="old('name', $user->name)" required autocomplete="off" readonly
+                    onfocus="this.removeAttribute('readonly');" autocapitalize="words" spellcheck="false" />
+            </div>
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
 
         {{-- Email --}}
-        <div>
+        <div class="profile-field">
             <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" name="email" type="email" class="mt-1 block w-full"
-                :value="old('email', $user->email)" required autocomplete="username" />
+            <div class="profile-input-wrap contact-field-wrap">
+                <x-text-input id="email" name="email" type="email" class="block w-full contact-field profile-textbox"
+                    :value="old('email', $user->email)" required autocomplete="off" readonly
+                    onfocus="this.removeAttribute('readonly');" autocapitalize="off" spellcheck="false" />
+            </div>
             <x-input-error class="mt-2" :messages="$errors->get('email')" />
 
             @if ($user instanceof \Illuminate\Contracts\Auth\MustVerifyEmail && ! $user->hasVerifiedEmail())
@@ -53,48 +55,69 @@
         </div>
 
         {{-- Phone --}}
-        <div>
-            <x-input-label for="phone" :value="__('Phone')" />
-            <x-text-input
-                id="phone"
-                name="phone"
-                type="text"
-                class="mt-1 block w-full"
-                :value="old('phone', $user->phone)"
-                autocomplete="tel"
-            />
+        <div class="profile-field">
+            <x-input-label for="phone_display" :value="__('Phone')" />
+            <div class="profile-input-wrap contact-field-wrap">
+                <input type="hidden" id="phone" name="phone" value="{{ old('phone', $user->phone) }}">
+                <textarea
+                    id="phone_display"
+                    name="vx_phone_display"
+                    class="block w-full contact-field profile-textbox profile-textarea-singleline"
+                    autocomplete="off"
+                    readonly
+                    onfocus="this.removeAttribute('readonly');"
+                    oninput="document.getElementById('phone').value = this.value"
+                    onchange="document.getElementById('phone').value = this.value"
+                    data-form-type="other"
+                    aria-autocomplete="none"
+                    autocapitalize="off"
+                    spellcheck="false"
+                    rows="1"
+                >{{ old('phone', $user->phone) }}</textarea>
+            </div>
             <x-input-error class="mt-2" :messages="$errors->get('phone')" />
         </div>
 
         {{-- Address --}}
-        <div>
-            <x-input-label for="address" :value="__('Address')" />
-            <x-text-input
-                id="address"
-                name="address"
-                type="text"
-                class="mt-1 block w-full"
-                :value="old('address', $user->address)"
-                autocomplete="street-address"
-            />
+        <div class="profile-field">
+            <x-input-label for="address_display" :value="__('Address')" />
+            <div class="profile-input-wrap contact-field-wrap">
+                <input type="hidden" id="address" name="address" value="{{ old('address', $user->address) }}">
+                <div
+                    id="address_display"
+                    class="contact-field contact-editable-field profile-textbox profile-editable-field"
+                    contenteditable="true"
+                    role="textbox"
+                    aria-label="Address"
+                    spellcheck="false"
+                    autocapitalize="words"
+                    oninput="document.getElementById('address').value = this.textContent"
+                    onkeydown="if (event.key === 'Enter') event.preventDefault();"
+                >{{ old('address', $user->address) }}</div>
+            </div>
             <x-input-error class="mt-2" :messages="$errors->get('address')" />
         </div>
 
         {{-- Date of Birth --}}
-        <div>
+        <div class="profile-field">
             <x-input-label for="date_of_birth" :value="__('Date of Birth')" />
-            <x-text-input
-                id="date_of_birth"
-                name="date_of_birth"
-                type="date"
-                class="mt-1 block w-full"
-                :value="old('date_of_birth', $user->date_of_birth)"
-            />
+            <div class="profile-input-wrap contact-field-wrap">
+                <x-text-input
+                    id="date_of_birth"
+                    name="date_of_birth"
+                    type="date"
+                    class="block w-full contact-field profile-textbox"
+                    :value="old('date_of_birth', $user->date_of_birth)"
+                    autocomplete="off"
+                    readonly
+                    onfocus="this.removeAttribute('readonly');"
+                />
+            </div>
             <x-input-error class="mt-2" :messages="$errors->get('date_of_birth')" />
         </div>
 
-        <div class="flex items-center gap-4">
-            <x-primary-button>{{ __('Save') }}</x-primary-button>
+        <div class="flex items-center justify-center gap-4">
+            <x-primary-button class="profile-action-button">{{ __('Save') }}</x-primary-button>
 
             @if (session('status') === 'profile-updated')
                 <p
@@ -108,4 +131,3 @@
         </div>
     </form>
 </section>
-

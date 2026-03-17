@@ -45,4 +45,30 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function reviews()
+    {
+        return $this->hasMany(\App\Models\Review::class);
+    }
+
+    public function refundRequests()
+    {
+        return $this->hasMany(\App\Models\RefundRequest::class);
+    }
+
+    public function serviceReviews()
+    {
+        return $this->hasMany(\App\Models\ServiceReview::class);
+    }
+
+    public function wishlistItems()
+    {
+        return $this->hasMany(\App\Models\WishlistItem::class);
+    }
+
+    public function wishlistProducts()
+    {
+        return $this->belongsToMany(\App\Models\Product::class, 'wishlist_items')
+            ->withTimestamps();
+    }
 }
