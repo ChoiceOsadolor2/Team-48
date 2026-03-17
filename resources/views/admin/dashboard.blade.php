@@ -297,8 +297,8 @@
                 </a>
             </div>
 
-            <div class="mb-8 grid grid-cols-1 xl:grid-cols-2 gap-5">
-                <section class="rounded-3xl border border-[#444] bg-[#1d1d1f] p-5 shadow-xl xl:col-span-1">
+            <div class="mb-8 flex justify-center">
+                <section class="w-full max-w-5xl rounded-3xl border border-[#444] bg-[#1d1d1f] p-5 shadow-xl">
                     <div class="flex items-center justify-between">
                         <div>
                             <h3 class="text-xl font-bold text-white">Inventory Overview</h3>
