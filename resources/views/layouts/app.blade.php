@@ -630,15 +630,23 @@
                     outline: none;
                 }
 
-                body.admin-page .admin-btn--primary {
-                    background: #06b6d4;
-                    border-color: #0891b2;
-                    color: #fff;
+                body.admin-page .admin-btn--primary,
+                body.admin-page button.admin-btn--primary,
+                body.admin-page a.admin-btn--primary {
+                    background: #67e8f9;
+                    border-color: #22d3ee;
+                    color: #fff !important;
+                    box-shadow: 0 10px 24px rgba(103, 232, 249, 0.28);
                 }
 
                 body.admin-page .admin-btn--primary:hover,
-                body.admin-page .admin-btn--primary:focus-visible {
-                    background: #0891b2;
+                body.admin-page .admin-btn--primary:focus-visible,
+                body.admin-page button.admin-btn--primary:hover,
+                body.admin-page button.admin-btn--primary:focus-visible,
+                body.admin-page a.admin-btn--primary:hover,
+                body.admin-page a.admin-btn--primary:focus-visible {
+                    background: #22d3ee;
+                    border-color: #06b6d4;
                 }
 
                 body.admin-page .admin-btn--secondary {
