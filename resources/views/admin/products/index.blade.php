@@ -403,14 +403,23 @@
 
         .admin-products-page .products-platform-list {
             display: flex;
-            flex-direction: column;
-            gap: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
             margin-top: 14px;
-            margin-left: -20px;
         }
 
         .admin-products-page .products-platform-line {
             color: #fff !important;
+            display: inline-flex;
+            align-items: center;
+            min-height: 34px;
+            padding: 0 12px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            background: rgba(17, 24, 39, 0.72);
+            font-size: 0.82rem !important;
+            line-height: 1.2 !important;
+            white-space: nowrap;
         }
 
         .admin-products-page .products-stock-summary {
@@ -419,7 +428,6 @@
             align-items: center;
             column-gap: 16px;
             margin-bottom: 12px;
-            margin-left: -20px;
         }
 
         .admin-products-page .products-stock-summary .products-status-chip {
@@ -433,6 +441,41 @@
 
         .admin-products-page .products-stock-cell {
             padding-left: 32px !important;
+        }
+
+        .admin-products-page .products-stock-toggle {
+            margin-top: 12px;
+        }
+
+        .admin-products-page .products-stock-toggle summary {
+            list-style: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            color: #9ca3af !important;
+            font-size: 0.9rem !important;
+        }
+
+        .admin-products-page .products-stock-toggle summary::-webkit-details-marker {
+            display: none;
+        }
+
+        .admin-products-page .products-stock-toggle summary::after {
+            content: '+';
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 18px;
+            height: 18px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+
+        .admin-products-page .products-stock-toggle[open] summary::after {
+            content: '-';
         }
 
         .admin-products-page .products-stock-header {
@@ -615,6 +658,7 @@
                                                 $inCount = $product->hasPlatformSpecificStock()
                                                     ? $product->platformStocks->filter(fn ($platformStock) => (int) $platformStock->stock > 0)->count()
                                                     : max((int) $product->stock, 0);
+                                                $trackedPlatformCount = $product->platformStocks->count();
                                             @endphp
                                             <div class="products-stock-summary">
                                                 <span class="products-status-chip rounded-full px-3 py-2 {{ $stockTextClasses }}">{{ $stockLabel }}</span>
@@ -638,15 +682,22 @@
                                                     <span class="products-copy-sm">{{ $inCount }} platform{{ $inCount === 1 ? '' : 's' }} ready to sell</span>
                                                 </div>
                                             @endif
-                                            @if ($product->platformStocks->isNotEmpty())
+                                            <details class="products-stock-toggle">
+                                                <summary>Show platform stock</summary>
                                                 <div class="products-platform-list">
-                                                    @foreach ($product->platformStocks as $platformStock)
-                                                        <div class="products-platform-line">
-                                                            {{ $platformStock->platform }}: {{ $platformStock->stock }}
-                                                        </div>
-                                                    @endforeach
+                                                    @if ($product->platformStocks->isNotEmpty())
+                                                        @foreach ($product->platformStocks as $platformStock)
+                                                            <span class="products-platform-line">
+                                                                {{ $platformStock->platform }}: {{ $platformStock->stock }}
+                                                            </span>
+                                                        @endforeach
+                                                    @else
+                                                        <span class="products-platform-line">
+                                                            Standard stock: {{ (int) $product->stock }}
+                                                        </span>
+                                                    @endif
                                                 </div>
-                                            @endif
+                                            </details>
                                         </td>
                                         <td class="px-5 py-5">
                                             <div class="flex justify-end gap-2">
