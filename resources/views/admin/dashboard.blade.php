@@ -497,8 +497,12 @@
                         @if ($lowStockProducts->isEmpty())
                             <p class="rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm text-gray-400">No products currently need urgent restocking.</p>
                         @else
+                            @php
+                                $visibleLowStockProducts = $lowStockProducts->take(3);
+                                $extraLowStockProducts = $lowStockProducts->slice(3)->values();
+                            @endphp
                             <div class="space-y-3">
-                                @foreach ($lowStockProducts as $product)
+                                @foreach ($visibleLowStockProducts as $product)
                                     @php
                                         $lowPlatforms = $product->platformStocks
                                             ->filter(fn ($platformStock) => (int) $platformStock->stock > 0 && (int) $platformStock->stock <= 5)
@@ -531,6 +535,61 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                @if ($extraLowStockProducts->isNotEmpty())
+                                    <div x-data="{ open: false }" class="space-y-3">
+                                        <button
+                                            type="button"
+                                            x-show="!open"
+                                            @click="open = true"
+                                            class="inline-flex items-center gap-2 rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:border-cyan-500/40 hover:text-cyan-200"
+                                        >
+                                            <span>Show all {{ $lowStockProducts->count() }} restock alerts</span>
+                                        </button>
+                                        <div x-show="open" x-collapse class="space-y-3">
+                                            @foreach ($extraLowStockProducts as $product)
+                                                @php
+                                                    $lowPlatforms = $product->platformStocks
+                                                        ->filter(fn ($platformStock) => (int) $platformStock->stock > 0 && (int) $platformStock->stock <= 5)
+                                                        ->pluck('platform')
+                                                        ->values();
+                                                @endphp
+                                                <div class="flex items-center justify-between rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3">
+                                                    <div class="min-w-0">
+                                                        <div class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</div>
+                                                        @if ($product->hasPlatformSpecificStock() && $lowPlatforms->isNotEmpty())
+                                                            <div class="mt-2 text-sm" style="color: #888 !important;">
+                                                                {{ $lowPlatforms->implode(', ') }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center gap-3">
+                                                        <span class="rounded-full bg-amber-100 px-3 py-1 text-sm font-semibold text-amber-800">
+                                                            @if ($product->hasPlatformSpecificStock())
+                                                                {{ $product->lowStockPlatformCount() }} platform{{ $product->lowStockPlatformCount() === 1 ? '' : 's' }} low
+                                                            @else
+                                                                {{ $product->stock }} left
+                                                            @endif
+                                                        </span>
+                                                        <a
+                                                            href="{{ route('admin.products.edit', $product) }}"
+                                                            class="stock-health-link"
+                                                        >
+                                                            Restock
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            <button
+                                                type="button"
+                                                @click="open = false"
+                                                class="inline-flex items-center gap-2 rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:border-cyan-500/40 hover:text-cyan-200"
+                                            >
+                                                <span>Show less</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>
@@ -542,8 +601,12 @@
                         @if ($outOfStockProductAlerts->isEmpty())
                             <p class="rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm text-gray-400">No products are currently out of stock.</p>
                         @else
+                            @php
+                                $visibleOutOfStockProducts = $outOfStockProductAlerts->take(3);
+                                $extraOutOfStockProducts = $outOfStockProductAlerts->slice(3)->values();
+                            @endphp
                             <div class="space-y-3">
-                                @foreach ($outOfStockProductAlerts as $product)
+                                @foreach ($visibleOutOfStockProducts as $product)
                                     @php
                                         $outPlatforms = $product->platformStocks
                                             ->filter(fn ($platformStock) => (int) $platformStock->stock <= 0)
@@ -574,6 +637,59 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                @if ($extraOutOfStockProducts->isNotEmpty())
+                                    <div x-data="{ open: false }" class="space-y-3">
+                                        <button
+                                            type="button"
+                                            x-show="!open"
+                                            @click="open = true"
+                                            class="inline-flex items-center gap-2 rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:border-cyan-500/40 hover:text-cyan-200"
+                                        >
+                                            <span>Show all {{ $outOfStockProductAlerts->count() }} out-of-stock alerts</span>
+                                        </button>
+                                        <div x-show="open" x-collapse class="space-y-3">
+                                            @foreach ($extraOutOfStockProducts as $product)
+                                                @php
+                                                    $outPlatforms = $product->platformStocks
+                                                        ->filter(fn ($platformStock) => (int) $platformStock->stock <= 0)
+                                                        ->pluck('platform')
+                                                        ->values();
+                                                @endphp
+                                                <div class="flex items-center justify-between rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3">
+                                                    <div class="min-w-0">
+                                                        <div class="font-semibold text-gray-100" style="font-size: 20px !important; line-height: 1.2 !important;">{{ $product->name }}</div>
+                                                        @if ($product->hasPlatformSpecificStock() && $outPlatforms->isNotEmpty())
+                                                            <div class="mt-2 text-sm" style="color: #888 !important;">
+                                                                {{ $outPlatforms->implode(', ') }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex items-center gap-3">
+                                                        @if ($product->hasPlatformSpecificStock() && $outPlatforms->isNotEmpty())
+                                                            <span class="rounded-full bg-rose-100 px-3 py-1 text-sm font-semibold text-rose-800">
+                                                                {{ $outPlatforms->count() }} platform{{ $outPlatforms->count() === 1 ? '' : 's' }} out
+                                                            </span>
+                                                        @endif
+                                                        <a
+                                                            href="{{ route('admin.products.edit', $product) }}"
+                                                            class="stock-health-link"
+                                                        >
+                                                            Restock
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            @endforeach
+                                            <button
+                                                type="button"
+                                                @click="open = false"
+                                                class="inline-flex items-center gap-2 rounded-2xl border border-[#444] bg-[#1d1d1f] px-4 py-3 text-sm font-semibold text-cyan-300 transition hover:border-cyan-500/40 hover:text-cyan-200"
+                                            >
+                                                <span>Show less</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                @endif
                             </div>
                         @endif
                     </div>
