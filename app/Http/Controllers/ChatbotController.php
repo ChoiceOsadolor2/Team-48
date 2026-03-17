@@ -25,26 +25,48 @@ class ChatbotController extends Controller
         'send back' => 'return',
         'cancel purchase' => 'cancel order',
         'cancel my order' => 'cancel order',
+        'cncel order' => 'cancel order',
         'track package' => 'track order',
         'where is my order' => 'order status',
+        'wheres my order' => 'order status',
+        'where my order' => 'order status',
+        'track my order' => 'order status',
+        'ordr status' => 'order status',
+        'ordr' => 'order',
         'log in' => 'login',
         'sign in' => 'login',
+        'signin' => 'login',
         'sign up' => 'register',
+        'signup' => 'register',
         'gaming pc' => 'pc',
         'in stock' => 'available',
         'out of stock' => 'unavailable',
         'available now' => 'available',
+        'instock' => 'available',
+        'restok' => 'restock',
         'open hours' => 'opening hours',
         'when are you open' => 'opening hours',
         'opening times' => 'opening hours',
         'recommend me' => 'recommend',
         'what should i buy' => 'recommend',
+        'what should i get' => 'recommend',
         'best product' => 'recommend',
         'delete my account' => 'account deletion',
         'remove my account' => 'account deletion',
         'close my account' => 'account deletion',
         'card payment' => 'payment',
         'pay by card' => 'payment',
+        'paymnt' => 'payment',
+        'refun' => 'refund',
+        'retun' => 'return',
+        'contoller' => 'controller',
+        'cntact' => 'contact',
+        'suport' => 'support',
+        'shippng' => 'shipping',
+        'delivry' => 'delivery',
+        'availble' => 'available',
+        'ps five' => 'ps5',
+        'x box' => 'xbox',
     ];
 
     private const INTENTS = [
@@ -52,8 +74,8 @@ class ChatbotController extends Controller
             'keywords' => ['shipping', 'delivery', 'deliver', 'dispatch', 'arrive', 'arrival', 'postage', 'ship', 'shipped'],
             'faq_keywords' => ['shipping', 'delivery'],
             'suggestions' => [
-                ['label' => 'Shipping times', 'message' => 'How long does shipping take?'],
-                ['label' => 'Delivery options', 'message' => 'What delivery options do you offer?'],
+                ['label' => 'Order history', 'url' => '/orders'],
+                ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
                 ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
             ],
         ],
@@ -61,8 +83,8 @@ class ChatbotController extends Controller
             'keywords' => ['return', 'returns', 'refund', 'exchange', 'cancel order', 'replacement'],
             'faq_keywords' => ['returns', 'refund'],
             'suggestions' => [
-                ['label' => 'Start a return', 'message' => 'How do I start a return?'],
-                ['label' => 'Order help', 'message' => 'How do I check my order status?'],
+                ['label' => 'Start a refund', 'url' => '/orders'],
+                ['label' => 'Order history', 'url' => '/orders'],
                 ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
             ],
         ],
@@ -70,9 +92,9 @@ class ChatbotController extends Controller
             'keywords' => ['order', 'orders', 'track', 'tracking', 'status', 'purchase', 'bought'],
             'faq_keywords' => ['order', 'orders', 'status'],
             'suggestions' => [
-                ['label' => 'Track my order', 'message' => 'How do I track my order?'],
+                ['label' => 'Track my order', 'url' => '/orders'],
                 ['label' => 'Previous orders', 'url' => '/orders'],
-                ['label' => 'Need returns help', 'message' => 'How do returns work?'],
+                ['label' => 'Returns & refunds', 'url' => '/orders'],
             ],
         ],
         'account' => [
@@ -88,8 +110,8 @@ class ChatbotController extends Controller
             'keywords' => ['payment', 'card', 'visa', 'mastercard', 'paypal', 'checkout', 'billing'],
             'faq_keywords' => ['payment', 'checkout'],
             'suggestions' => [
-                ['label' => 'Checkout help', 'message' => 'I need help with checkout.'],
-                ['label' => 'Order help', 'message' => 'How do I check my order status?'],
+                ['label' => 'Go to checkout', 'url' => '/checkout'],
+                ['label' => 'Order history', 'url' => '/orders'],
                 ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
             ],
         ],
@@ -117,7 +139,7 @@ class ChatbotController extends Controller
             'suggestions' => [
                 ['label' => 'Profile info', 'url' => '/profile'],
                 ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
-                ['label' => 'Account help', 'message' => 'I need help with my account.'],
+                ['label' => 'Login page', 'url' => '/pages/login.html'],
             ],
         ],
         'opening_hours' => [
@@ -126,7 +148,7 @@ class ChatbotController extends Controller
             'suggestions' => [
                 ['label' => 'Contact us', 'url' => '/pages/index.html#contactus'],
                 ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
-                ['label' => 'Store help', 'message' => 'How can I contact support?'],
+                ['label' => 'Order history', 'url' => '/orders'],
             ],
         ],
         'contact' => [
@@ -134,17 +156,17 @@ class ChatbotController extends Controller
             'faq_keywords' => ['contact'],
             'suggestions' => [
                 ['label' => 'Contact us', 'url' => '/pages/index.html#contactus'],
-                ['label' => 'Shipping help', 'message' => 'I need help with shipping.'],
-                ['label' => 'Returns help', 'message' => 'I need help with returns.'],
+                ['label' => 'Order history', 'url' => '/orders'],
+                ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
             ],
         ],
         'greeting' => [
             'keywords' => ['hello', 'hey', 'hi', 'yo'],
             'faq_keywords' => ['hello', 'hi', 'help'],
             'suggestions' => [
-                ['label' => 'Shipping help', 'message' => 'How long does shipping take?'],
-                ['label' => 'Track order', 'message' => 'How do I track my order?'],
-                ['label' => 'Returns', 'message' => 'How do returns work?'],
+                ['label' => 'Shop products', 'url' => '/pages/ShopAll.html'],
+                ['label' => 'Track order', 'url' => '/orders'],
+                ['label' => 'Contact us', 'url' => '/pages/index.html#contactus'],
             ],
         ],
     ];
@@ -174,23 +196,35 @@ class ChatbotController extends Controller
             ]);
         }
 
-        $intent = $this->detectIntent($message, $context);
-        $bestFaq = $this->findBestFaq($message, $intent, $faqs, $context);
+        $intents = $this->detectIntents($message, $context);
+        $intent = $intents[0] ?? null;
+        $bestFaq = $this->findBestFaq($message, $intents, $faqs, $context);
         $reply = $bestFaq['faq']?->answer;
         $fallbackSuggestions = [];
 
         if (! $reply) {
-            [$reply, $fallbackSuggestions] = $this->buildFallback($message, $intent, $context);
+            [$reply, $fallbackSuggestions] = $this->buildFallback($message, $intents, $context);
         }
 
-        if ($reply && $intent) {
-            $reply = $this->appendContextualHelp($reply, $intent);
+        if ($this->isGenericOrderSupportRequest($message, $intents)) {
+            $reply = "I can help with order-related queries. Please use the options below to track your order, open your order history, or access returns and refunds support.";
+            $fallbackSuggestions = [];
         }
 
-        $suggestions = $fallbackSuggestions ?: $this->suggestionsForIntent($intent);
+        if ($reply && ! empty($intents)) {
+            $reply = $this->appendContextualHelp($reply, $intents);
+        }
+
+        $suggestions = $fallbackSuggestions ?: $this->suggestionsForIntents($intents, $context);
+
+        if ($intent === 'greeting') {
+            $reply = "Hi, how can I help you today?";
+            $suggestions = [];
+        }
 
         $request->session()->put('chatbot_context', [
             'intent' => $intent,
+            'intents' => $intents,
             'message' => $message,
             'normalized_message' => $this->normalize($message),
             'tokens' => $this->tokenize($message),
@@ -204,11 +238,12 @@ class ChatbotController extends Controller
             'status' => 'success',
             'reply' => $reply ?: "I'm not entirely sure about that yet, but I can still point you to the right page.",
             'intent' => $intent,
+            'intents' => $intents,
             'suggestions' => $suggestions,
         ]);
     }
 
-    private function detectIntent(string $message, array $context): ?string
+    private function detectIntents(string $message, array $context): array
     {
         $normalized = $this->normalize($message);
         $tokens = $this->tokenize($message);
@@ -251,27 +286,38 @@ class ChatbotController extends Controller
         }
 
         arsort($scores);
-        $bestIntent = array_key_first($scores);
-        $bestScore = $bestIntent ? $scores[$bestIntent] : 0;
+        $selected = [];
+        foreach ($scores as $intent => $score) {
+            if ($score >= 5) {
+                $selected[] = $intent;
+            }
 
-        if ($bestScore >= 5) {
-            return $bestIntent;
+            if (count($selected) >= 2) {
+                break;
+            }
+        }
+
+        if (! empty($selected)) {
+            return $selected;
         }
 
         if (($isFollowUp || $isShortMessage) && ! empty($context['intent'])) {
-            return $context['intent'];
+            return [$context['intent']];
         }
 
-        return null;
+        return [];
     }
 
-    private function findBestFaq(string $message, ?string $intent, $faqs, array $context): array
+    private function findBestFaq(string $message, array $intents, $faqs, array $context): array
     {
         $tokens = $this->tokenize($message);
         $normalized = $this->normalize($message);
         $bestFaq = null;
         $bestScore = 0;
-        $preferredFaqKeywords = $intent ? (self::INTENTS[$intent]['faq_keywords'] ?? []) : [];
+        $preferredFaqKeywords = collect($intents)
+            ->flatMap(fn ($intent) => self::INTENTS[$intent]['faq_keywords'] ?? [])
+            ->values()
+            ->all();
         $previousFaqKeyword = $this->normalize((string) ($context['faq_keyword'] ?? ''));
         $previousFaqCategory = $context['faq_category'] ?? null;
 
@@ -300,7 +346,7 @@ class ChatbotController extends Controller
                 }
             }
 
-            if ($intent && ($faq->category ?? 'general') === $intent) {
+            if (! empty($intents) && in_array(($faq->category ?? 'general'), $intents, true)) {
                 $score += 18;
             }
 
@@ -328,14 +374,16 @@ class ChatbotController extends Controller
         ];
     }
 
-    private function buildFallback(string $message, ?string $intent, array $context): array
+    private function buildFallback(string $message, array $intents, array $context): array
     {
         $tokens = array_values(array_unique(array_merge(
             $this->tokenize($message),
             array_slice($context['tokens'] ?? [], 0, 3)
         )));
 
-        $categoryFilters = $this->guessRelevantProductCategories($tokens, $intent, $context);
+        $primaryIntent = $intents[0] ?? null;
+        $secondaryIntent = $intents[1] ?? null;
+        $categoryFilters = $this->guessRelevantProductCategories($tokens, $primaryIntent, $context);
 
         $products = Product::query()
             ->with('category')
@@ -359,7 +407,7 @@ class ChatbotController extends Controller
             ->limit(3)
             ->get();
 
-        $suggestions = $this->suggestionsForIntent($intent);
+        $suggestions = $this->suggestionsForIntents($intents, $context);
 
         foreach ($products as $product) {
             $suggestions[] = [
@@ -381,8 +429,8 @@ class ChatbotController extends Controller
             ->values()
             ->all();
 
-        $reply = match ($intent) {
-            'orders' => "I think you're asking about an order, but I couldn't find the exact FAQ answer. These next steps should still help.",
+        $reply = match ($primaryIntent) {
+            'orders' => "I can help with order-related queries. Please review the options below to track your order, open your order history, or continue with returns and refunds support.",
             'shipping' => "This sounds like a shipping question. I couldn't find the exact FAQ match, but these options should help.",
             'returns' => "This looks like a returns question. I couldn't find the exact FAQ match, but these links should get you there.",
             'payment' => "This seems payment-related. I couldn't find the exact FAQ answer, but these options should help you continue.",
@@ -391,33 +439,64 @@ class ChatbotController extends Controller
             default => "I couldn't find an exact FAQ match, but these options should help you keep going.",
         };
 
+        if ($primaryIntent && $secondaryIntent) {
+            $reply .= ' I also picked up a second topic in your message, so I included actions for both.';
+        }
+
         return [$reply, $suggestions];
     }
 
-    private function suggestionsForIntent(?string $intent): array
+    private function suggestionsForIntents(array $intents, array $context = []): array
     {
-        if ($intent && isset(self::INTENTS[$intent]['suggestions'])) {
-            return self::INTENTS[$intent]['suggestions'];
+        $suggestions = collect();
+
+        foreach (array_slice($intents, 0, 2) as $intent) {
+            foreach (self::INTENTS[$intent]['suggestions'] ?? [] as $suggestion) {
+                $suggestions->push($suggestion);
+            }
         }
 
-        return [
+        foreach ($this->contextualActionSuggestions($intents, $context) as $suggestion) {
+            $suggestions->push($suggestion);
+        }
+
+        if ($suggestions->isEmpty()) {
+            $suggestions = collect([
             ['label' => 'Shipping help', 'message' => 'How long does shipping take?'],
             ['label' => 'Track an order', 'message' => 'How do I track my order?'],
             ['label' => 'Returns', 'message' => 'How do returns work?'],
-        ];
+            ]);
+        }
+
+        return $suggestions
+            ->unique(fn ($item) => ($item['label'] ?? '') . '|' . ($item['url'] ?? '') . '|' . ($item['message'] ?? ''))
+            ->take(4)
+            ->values()
+            ->all();
     }
 
-    private function appendContextualHelp(string $reply, ?string $intent): string
+    private function appendContextualHelp(string $reply, array $intents): string
     {
         if (! Auth::check()) {
             return $reply;
         }
 
-        return match ($intent) {
-            'orders' => $reply . ' You can also open your Previous Orders page from the account menu.',
-            'account', 'account_deletion' => $reply . ' Your profile page is available from the account menu if you want to manage account details.',
-            default => $reply,
-        };
+        foreach ($intents as $intent) {
+            $reply = match ($intent) {
+                'orders' => $this->appendIfMissing(
+                    $reply,
+                    ' You can view and manage your orders from the Previous Orders page in your account menu.'
+                ),
+                'account', 'account_deletion' => $reply . ' Your profile page is available from the account menu if you want to manage account details.',
+                'returns' => $this->appendIfMissing(
+                    $reply,
+                    ' If your order is completed, you can start a return or refund from Order History.'
+                ),
+                default => $reply,
+            };
+        }
+
+        return $reply;
     }
 
     private function rememberRecentIntent(array $context, ?string $intent): array
@@ -553,8 +632,9 @@ class ChatbotController extends Controller
 
         $text = preg_replace('/[^a-z0-9\s]/', ' ', $text) ?? $text;
         $text = preg_replace('/\s+/', ' ', $text) ?? $text;
+        $text = trim($text);
 
-        return trim($text);
+        return $this->correctTypos($text);
     }
 
     private function isCloseMatch(string $input, string $candidate): bool
@@ -568,5 +648,130 @@ class ChatbotController extends Controller
         }
 
         return levenshtein($input, $candidate) <= 1;
+    }
+
+    private function correctTypos(string $text): string
+    {
+        $parts = preg_split('/\s+/', $text) ?: [];
+        $vocabulary = collect(self::INTENTS)
+            ->flatMap(fn ($intent) => $intent['keywords'] ?? [])
+            ->flatMap(fn ($phrase) => preg_split('/\s+/', $this->normalizeKnownPhrase($phrase)) ?: [])
+            ->merge(collect(self::SYNONYMS)
+                ->flatMap(fn ($replacement, $phrase) => array_merge(
+                    preg_split('/\s+/', $this->normalizeKnownPhrase((string) $phrase)) ?: [],
+                    preg_split('/\s+/', $this->normalizeKnownPhrase((string) $replacement)) ?: []
+                )))
+            ->merge(['refund', 'return', 'order', 'orders', 'shipping', 'delivery', 'payment', 'stock', 'available', 'support', 'contact', 'recommend', 'controller', 'headset', 'cards', 'login', 'register'])
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $corrected = array_map(function ($part) use ($vocabulary) {
+            if (strlen($part) < 4) {
+                return $part;
+            }
+
+            foreach ($vocabulary as $candidate) {
+                if ($part === $candidate) {
+                    return $part;
+                }
+
+                if (levenshtein($part, $candidate) === 1) {
+                    return $candidate;
+                }
+            }
+
+            return $part;
+        }, $parts);
+
+        return implode(' ', $corrected);
+    }
+
+    private function normalizeKnownPhrase(string $text): string
+    {
+        $text = Str::lower($text);
+        $text = preg_replace('/[^a-z0-9\s]/', ' ', $text) ?? $text;
+        $text = preg_replace('/\s+/', ' ', $text) ?? $text;
+
+        return trim($text);
+    }
+
+    private function contextualActionSuggestions(array $intents, array $context): array
+    {
+        $suggestions = [];
+        $activeIntents = array_values(array_unique(array_filter(array_merge(
+            $intents,
+            array_slice($context['recent_intents'] ?? [], 0, 2)
+        ))));
+
+        if (in_array('orders', $activeIntents, true)) {
+            $suggestions[] = ['label' => 'Previous orders', 'url' => '/orders'];
+        }
+
+        if (in_array('returns', $activeIntents, true)) {
+            $suggestions[] = ['label' => 'Returns & refunds', 'url' => '/orders'];
+        }
+
+        if (in_array('contact', $activeIntents, true) || in_array('shipping', $activeIntents, true) || in_array('payment', $activeIntents, true)) {
+            $suggestions[] = ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'];
+        }
+
+        if (in_array('stock', $activeIntents, true) || in_array('recommendations', $activeIntents, true)) {
+            $suggestions[] = ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'];
+        }
+
+        if (Auth::check() && in_array('account', $activeIntents, true)) {
+            $suggestions[] = ['label' => 'Profile info', 'url' => '/profile'];
+        }
+
+        return $suggestions;
+    }
+
+    private function isGenericOrderSupportRequest(string $message, array $intents): bool
+    {
+        if (! in_array('orders', $intents, true)) {
+            return false;
+        }
+
+        $normalized = $this->normalizeKnownPhrase($message);
+
+        foreach ([
+            'i need help with an order',
+            'i need help with order',
+            'need help with an order',
+            'need help with order',
+            'help with an order',
+            'help with order',
+            'i need help with my order',
+            'help with my order',
+            'order help',
+        ] as $phrase) {
+            if (str_contains($normalized, $phrase)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function appendIfMissing(string $reply, string $suffix): string
+    {
+        $normalizedReply = $this->normalizeKnownPhrase($reply);
+        $normalizedSuffix = $this->normalizeKnownPhrase($suffix);
+
+        if ($normalizedSuffix !== '' && str_contains($normalizedReply, trim($normalizedSuffix))) {
+            return $reply;
+        }
+
+        if (str_contains($normalizedReply, 'previous orders') && str_contains($normalizedSuffix, 'previous orders')) {
+            return $reply;
+        }
+
+        if (str_contains($normalizedReply, 'order history') && str_contains($normalizedSuffix, 'order history')) {
+            return $reply;
+        }
+
+        return rtrim($reply) . $suffix;
     }
 }

@@ -2,6 +2,15 @@ const headerFile = '/pages/header.html';
 const footerFile = '/pages/footer.html';
 const PAGE_CHROME_CACHE_TTL = 5 * 60 * 1000;
 let userStatusPromise = null;
+const CHATBOT_STATE_KEY = 'veltrix_chatbot_state';
+
+function clearPersistedChatbotState() {
+  try {
+    sessionStorage.removeItem(CHATBOT_STATE_KEY);
+  } catch (error) {
+    console.warn('Unable to clear chatbot state:', error);
+  }
+}
 
 function getCsrfToken() {
   const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -392,6 +401,7 @@ function bindVeltrixHeader(headerEl) {
           if (logoutBtn) {
             logoutBtn.onclick = async () => {
               try {
+                clearPersistedChatbotState();
                 const csrfToken = await ensureCsrfToken();
                 await fetch('/logout-json', {
                   method: 'POST',
@@ -449,6 +459,7 @@ if (existingHeader && existingHeader.querySelector('#userMenuBtn')) {
     const temp = sessionStorage.getItem('tempLoggedIn') === '1';
 
     if (data.logged_in && !remember && !temp) {
+      clearPersistedChatbotState();
       const csrfToken = await ensureCsrfToken();
       await fetch('/logout-json', {
         method: 'POST',
@@ -511,17 +522,76 @@ function initChatbot() {
   const chatForm = document.getElementById('vx-chat-form');
   const chatInput = document.getElementById('vx-chat-input');
   const chatMessages = document.getElementById('vx-chat-messages');
+  const chatStateKey = CHATBOT_STATE_KEY;
+  const chatInactivityLimitMs = 5 * 60 * 1000;
 
   if (!toggleBtn || !chatWindow) return;
+
+  const defaultGreeting = 'Hi there! How can I help you?';
+
+  const clearChatState = () => {
+    clearPersistedChatbotState();
+  };
+
+  const readChatState = () => {
+    try {
+      const raw = sessionStorage.getItem(chatStateKey);
+      if (!raw) return null;
+      const state = JSON.parse(raw);
+      const lastUpdated = Number(state?.lastUpdated || 0);
+
+      if (lastUpdated && Date.now() - lastUpdated > chatInactivityLimitMs) {
+        clearChatState();
+        return null;
+      }
+
+      return state;
+    } catch (error) {
+      console.warn('Unable to restore chatbot state:', error);
+      return null;
+    }
+  };
+
+  const saveChatState = () => {
+    try {
+      const messages = Array.from(chatMessages.querySelectorAll('.vx-message')).map((messageEl) => {
+        const sender = messageEl.classList.contains('user-message') ? 'user' : 'ai';
+        const body = messageEl.querySelector('.vx-message-body');
+        const text = (body ? body.textContent : messageEl.childNodes[0]?.textContent || messageEl.textContent || '').trim();
+        const suggestions = Array.from(messageEl.querySelectorAll('.vx-chat-suggestion')).map((chip) => ({
+          label: chip.textContent?.trim() || 'Open',
+          ...(chip.tagName === 'A'
+            ? { url: chip.getAttribute('href') || '' }
+            : { message: chip.dataset.message || chip.textContent?.trim() || 'Help' }),
+        }));
+
+        return {
+          sender,
+          text,
+          suggestions,
+        };
+      });
+
+      sessionStorage.setItem(chatStateKey, JSON.stringify({
+        isOpen: !chatWindow.classList.contains('hidden'),
+        messages,
+        lastUpdated: Date.now(),
+      }));
+    } catch (error) {
+      console.warn('Unable to save chatbot state:', error);
+    }
+  };
 
   // Toggle Window
   const openChat = () => {
     chatWindow.classList.remove('hidden');
     chatInput.focus();
+    saveChatState();
   };
 
   const closeChat = () => {
     chatWindow.classList.add('hidden');
+    saveChatState();
   };
 
   toggleBtn.addEventListener('click', () => {
@@ -589,6 +659,7 @@ function initChatbot() {
     msgDiv.textContent = text;
     chatMessages.appendChild(msgDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    saveChatState();
     return msgDiv;
   }
 
@@ -611,8 +682,10 @@ function initChatbot() {
 
         if (suggestion.url) {
           chip.href = suggestion.url;
+          chip.addEventListener('click', saveChatState);
         } else {
           chip.type = 'button';
+          chip.dataset.message = suggestion.message || suggestion.label || 'Help';
           chip.addEventListener('click', () => sendChatMessage(suggestion.message || suggestion.label || 'Help'));
         }
 
@@ -623,7 +696,47 @@ function initChatbot() {
     }
 
     chatMessages.scrollTop = chatMessages.scrollHeight;
+    saveChatState();
   }
+
+  const renderSavedMessage = (message) => {
+    const messageEl = appendMessage(message.sender === 'user' ? 'user' : 'ai', message.text || '');
+
+    if (message.sender !== 'user' && Array.isArray(message.suggestions) && message.suggestions.length) {
+      renderAiResponse(messageEl, message.text || '', message.suggestions);
+      return;
+    }
+
+    saveChatState();
+  };
+
+  const restoreChatState = () => {
+    const state = readChatState();
+    if (!state) {
+      chatMessages.innerHTML = '';
+      clearChatState();
+      appendMessage('ai', defaultGreeting);
+      closeChat();
+      return;
+    }
+
+    chatMessages.innerHTML = '';
+
+    const savedMessages = Array.isArray(state.messages) ? state.messages : [];
+    if (!savedMessages.length) {
+      appendMessage('ai', defaultGreeting);
+    } else {
+      savedMessages.forEach((message) => renderSavedMessage(message));
+    }
+
+    if (state.isOpen) {
+      openChat();
+    } else {
+      closeChat();
+    }
+  };
+
+  restoreChatState();
 }
 
 /* Close and open functions have been refactored to be more generic and reusable
