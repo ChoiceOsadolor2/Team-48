@@ -1,4 +1,56 @@
 <x-app-layout>
+    <style>
+        .admin-return-requests-page,
+        .admin-return-requests-page * {
+            font-family: 'MiniPixel', sans-serif !important;
+            font-weight: 400 !important;
+        }
+
+        .admin-return-requests-page h2,
+        .admin-return-requests-page h3 {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+        }
+
+        .admin-return-requests-page p,
+        .admin-return-requests-page label,
+        .admin-return-requests-page input,
+        .admin-return-requests-page select,
+        .admin-return-requests-page th,
+        .admin-return-requests-page td,
+        .admin-return-requests-page button,
+        .admin-return-requests-page a {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-return-requests-page input,
+        .admin-return-requests-page select {
+            min-height: 56px;
+            border-radius: 18px !important;
+            padding: 0 16px !important;
+        }
+
+        .admin-return-requests-page .rounded-xl,
+        .admin-return-requests-page .rounded-lg {
+            border-radius: 18px !important;
+        }
+
+        .admin-return-requests-page button,
+        .admin-return-requests-page a.rounded-xl,
+        .admin-return-requests-page a.rounded-lg {
+            min-height: 56px;
+            padding: 0 22px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-return-requests-page tbody td {
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
+        }
+    </style>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
@@ -8,7 +60,7 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="admin-return-requests-page py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.return-requests.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">

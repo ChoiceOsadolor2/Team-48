@@ -1,5 +1,57 @@
 <x-app-layout>
-    <div class="py-8 max-w-6xl mx-auto px-4 space-y-6">
+    <style>
+        .admin-refunds-page,
+        .admin-refunds-page * {
+            font-family: 'MiniPixel', sans-serif !important;
+            font-weight: 400 !important;
+        }
+
+        .admin-refunds-page h1,
+        .admin-refunds-page h3 {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+        }
+
+        .admin-refunds-page p,
+        .admin-refunds-page label,
+        .admin-refunds-page input,
+        .admin-refunds-page select,
+        .admin-refunds-page th,
+        .admin-refunds-page td,
+        .admin-refunds-page button,
+        .admin-refunds-page a {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-refunds-page input,
+        .admin-refunds-page select {
+            min-height: 56px;
+            border-radius: 18px !important;
+            padding: 0 16px !important;
+        }
+
+        .admin-refunds-page .rounded-xl,
+        .admin-refunds-page .rounded-lg {
+            border-radius: 18px !important;
+        }
+
+        .admin-refunds-page button,
+        .admin-refunds-page a.rounded-xl,
+        .admin-refunds-page a.rounded-lg {
+            min-height: 56px;
+            padding: 0 22px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-refunds-page tbody td {
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
+        }
+    </style>
+    <div class="admin-refunds-page py-8 max-w-6xl mx-auto px-4 space-y-6">
         @if (session('status'))
             <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800 dark:border-emerald-800/70 dark:bg-emerald-900/20 dark:text-emerald-200">
                 {{ session('status') }}

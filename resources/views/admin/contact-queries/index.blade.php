@@ -1,5 +1,52 @@
 <x-app-layout>
     <style>
+        .admin-contact-queries-page,
+        .admin-contact-queries-page * {
+            font-family: 'MiniPixel', sans-serif !important;
+            font-weight: 400 !important;
+        }
+
+        .admin-contact-queries-page h3 {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+        }
+
+        .admin-contact-queries-page p,
+        .admin-contact-queries-page label,
+        .admin-contact-queries-page input,
+        .admin-contact-queries-page select,
+        .admin-contact-queries-page th,
+        .admin-contact-queries-page td,
+        .admin-contact-queries-page button,
+        .admin-contact-queries-page a {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-contact-queries-page input,
+        .admin-contact-queries-page select {
+            min-height: 56px;
+            border-radius: 18px !important;
+            padding: 0 16px !important;
+        }
+
+        .admin-contact-queries-page .rounded-xl {
+            border-radius: 18px !important;
+        }
+
+        .admin-contact-queries-page button,
+        .admin-contact-queries-page a.rounded-xl {
+            min-height: 56px;
+            padding: 0 22px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-contact-queries-page .rounded-lg {
+            border-radius: 18px !important;
+        }
+
         .admin-contact-queries-page .queries-filter-grid {
             align-items: end;
         }
@@ -22,12 +69,30 @@
             border-color: #e5e7eb;
         }
 
+        .admin-contact-queries-page .queries-input,
+        .admin-contact-queries-page .queries-select,
+        .admin-contact-queries-page .queries-bulk-select {
+            background: #fff;
+            border-color: #d1d5db;
+            color: #111827;
+        }
+
+        .admin-contact-queries-page .queries-bulk-bar {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
         .admin-contact-queries-page .queries-row {
             transition: background 0.2s ease;
         }
 
         .admin-contact-queries-page .queries-row:hover {
             background: rgba(15, 23, 42, 0.035);
+        }
+
+        .admin-contact-queries-page .queries-row td {
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
         }
 
         html[data-theme="dark"] .admin-contact-queries-page .queries-table-head {
@@ -40,6 +105,19 @@
         }
 
         html[data-theme="dark"] .admin-contact-queries-page .queries-filter-form {
+            background: rgba(17, 24, 39, 0.78);
+            border-color: #374151;
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .queries-input,
+        html[data-theme="dark"] .admin-contact-queries-page .queries-select,
+        html[data-theme="dark"] .admin-contact-queries-page .queries-bulk-select {
+            background: #1f2937;
+            border-color: #374151;
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .queries-bulk-bar {
             background: rgba(17, 24, 39, 0.78);
             border-color: #374151;
         }
@@ -68,14 +146,14 @@
                                 type="text"
                                 name="q"
                                 value="{{ $search ?? request('q') }}"
-                                class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm"
+                                class="queries-input w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm"
                                 placeholder="Search name, email, subject..."
                             />
                         </div>
 
                         <div>
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Status</label>
-                            <select name="status" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm">
+                            <select name="status" class="queries-select w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm">
                                 <option value="">All queries</option>
                                 <option value="resolved" {{ ($status ?? request('status')) === 'resolved' ? 'selected' : '' }}>Resolved</option>
                                 <option value="unresolved" {{ ($status ?? request('status')) === 'unresolved' ? 'selected' : '' }}>Unresolved</option>
@@ -109,7 +187,7 @@
                     <form id="bulk-queries-form" method="POST" action="{{ route('admin.contact-queries.bulk') }}">
                         @csrf
                     </form>
-                    <div class="border-b border-gray-200 bg-gray-50 px-5 py-4">
+                    <div class="queries-bulk-bar border-b px-5 py-4">
                             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <div class="flex items-center gap-3">
                                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -119,7 +197,7 @@
                                     <span class="text-xs text-gray-500">Choose queries, then resolve, unresolve, or delete them in one go.</span>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <select name="action" form="bulk-queries-form" class="rounded-xl border border-gray-300 px-3 py-2 text-sm">
+                                    <select name="action" form="bulk-queries-form" class="queries-bulk-select rounded-xl border border-gray-300 px-3 py-2 text-sm">
                                         <option value="">Bulk action</option>
                                         <option value="resolve">Mark resolved</option>
                                         <option value="unresolve">Mark unresolved</option>

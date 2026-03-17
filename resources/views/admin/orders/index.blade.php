@@ -1,5 +1,51 @@
 <x-app-layout>
     <style>
+        .admin-orders-page,
+        .admin-orders-page * {
+            font-family: 'MiniPixel', sans-serif !important;
+            font-weight: 400 !important;
+        }
+
+        .admin-orders-page h1,
+        .admin-orders-page h3 {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+        }
+
+        .admin-orders-page p,
+        .admin-orders-page label,
+        .admin-orders-page input,
+        .admin-orders-page select,
+        .admin-orders-page th,
+        .admin-orders-page td,
+        .admin-orders-page button,
+        .admin-orders-page a {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-orders-page input,
+        .admin-orders-page select {
+            min-height: 56px;
+            border-radius: 18px !important;
+            padding: 0 16px !important;
+        }
+
+        .admin-orders-page .rounded-xl,
+        .admin-orders-page .rounded-lg {
+            border-radius: 18px !important;
+        }
+
+        .admin-orders-page button,
+        .admin-orders-page a.rounded-xl,
+        .admin-orders-page a.rounded-lg {
+            min-height: 56px;
+            padding: 0 22px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .admin-orders-page .orders-filter-grid {
             align-items: end;
         }
@@ -18,6 +64,11 @@
 
         .admin-orders-page .orders-row:hover {
             background: rgba(15, 23, 42, 0.035);
+        }
+
+        .admin-orders-page .orders-row td {
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
         }
 
         html[data-theme="dark"] .admin-orders-page .orders-table-head {

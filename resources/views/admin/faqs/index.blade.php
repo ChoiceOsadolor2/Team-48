@@ -1,5 +1,52 @@
 <x-app-layout>
     <style>
+        .admin-faqs-page,
+        .admin-faqs-page * {
+            font-family: 'MiniPixel', sans-serif !important;
+            font-weight: 400 !important;
+        }
+
+        .admin-faqs-page h3 {
+            font-size: 30px !important;
+            line-height: 1.1 !important;
+        }
+
+        .admin-faqs-page p,
+        .admin-faqs-page label,
+        .admin-faqs-page input,
+        .admin-faqs-page select,
+        .admin-faqs-page th,
+        .admin-faqs-page td,
+        .admin-faqs-page button,
+        .admin-faqs-page a {
+            font-size: 20px !important;
+            line-height: 1.4 !important;
+        }
+
+        .admin-faqs-page input,
+        .admin-faqs-page select {
+            min-height: 56px;
+            border-radius: 18px !important;
+            padding: 0 16px !important;
+        }
+
+        .admin-faqs-page .rounded-xl {
+            border-radius: 18px !important;
+        }
+
+        .admin-faqs-page button,
+        .admin-faqs-page a.rounded-xl {
+            min-height: 56px;
+            padding: 0 22px !important;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-faqs-page .rounded-lg {
+            border-radius: 18px !important;
+        }
+
         .admin-faqs-page .faqs-filter-grid {
             align-items: end;
         }
@@ -29,6 +76,11 @@
 
         .admin-faqs-page .faqs-row:hover {
             background: rgba(15, 23, 42, 0.035);
+        }
+
+        .admin-faqs-page .faqs-row td {
+            padding-top: 20px !important;
+            padding-bottom: 20px !important;
         }
 
         html[data-theme="dark"] .admin-faqs-page .faqs-table-head {
