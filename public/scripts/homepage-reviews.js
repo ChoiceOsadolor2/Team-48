@@ -19,7 +19,10 @@
 
   function renderStars(rating) {
     const safeRating = Math.max(0, Math.min(5, Number(rating || 0)));
-    return `${'\u2605'.repeat(safeRating)}${'\u2606'.repeat(Math.max(0, 5 - safeRating))}`;
+    const fullStars = Math.floor(safeRating);
+    const hasHalfStar = safeRating % 1 >= 0.5;
+    const emptyStars = Math.max(0, 5 - fullStars - (hasHalfStar ? 1 : 0));
+    return `${'\u2605'.repeat(fullStars)}${hasHalfStar ? '\u00bd' : ''}${'\u2606'.repeat(emptyStars)}`;
   }
 
   function expandReviewsForSlider(reviews) {

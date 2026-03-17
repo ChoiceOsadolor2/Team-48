@@ -18,6 +18,9 @@ const container2 = document.getElementById('product_display');
 const productReviewsSection = document.getElementById('product_reviews_section');
 const productReviewsList = document.getElementById('product_reviews_list');
 const productReviewsEmpty = document.getElementById('product_reviews_empty');
+const productReviewsSort = document.getElementById('product_reviews_sort');
+const productWriteReviewButton = document.getElementById('product_write_review');
+const productWriteReviewHint = document.getElementById('product_write_review_hint');
 const minPriceInput = document.getElementById('filter_min_price');
 const maxPriceInput = document.getElementById('filter_max_price');
 const minPriceRange = document.getElementById('filter_min_price_range');
@@ -39,6 +42,7 @@ let currentPriceRangeMax = 10000;
 let wishlistLoaded = false;
 let wishlistAuthenticated = false;
 let wishlistLoadPromise = null;
+let productReviewCache = [];
 const wishlistProductIds = new Set();
 
 function ensureInlineNotice(id, parent, className = '') {
@@ -397,13 +401,40 @@ function renderRelatedProducts(currentProduct, products) {
   relatedContainer.appendChild(fragment);
 }
 
+function sortProductReviews(reviews = [], sortValue = '') {
+  const list = Array.isArray(reviews) ? [...reviews] : [];
+  const activeSort = String(sortValue || productReviewsSort?.value || 'recent');
+
+  if (activeSort === 'highest') {
+    return list.sort((a, b) => {
+      const ratingDiff = Number(b?.rating || 0) - Number(a?.rating || 0);
+      if (ratingDiff !== 0) return ratingDiff;
+      return new Date(b?.created_at || 0).getTime() - new Date(a?.created_at || 0).getTime();
+    });
+  }
+
+  return list.sort((a, b) => new Date(b?.created_at || 0).getTime() - new Date(a?.created_at || 0).getTime());
+}
+
+function formatDisplayedReviewStars(rating) {
+  const safeRating = Math.max(0, Math.min(5, Number(rating || 0)));
+  const fullStars = Math.floor(safeRating);
+  const hasHalfStar = safeRating % 1 >= 0.5;
+  const emptyStars = Math.max(0, 5 - fullStars - (hasHalfStar ? 1 : 0));
+  const numericLabel = Number.isInteger(safeRating) ? safeRating : safeRating.toFixed(1);
+
+  return `${'\u2605'.repeat(fullStars)}${hasHalfStar ? '\u00bd' : ''}${'\u2606'.repeat(emptyStars)} ${numericLabel}/5`;
+}
+
 function renderProductReviews(reviews = []) {
   if (!productReviewsSection || !productReviewsList || !productReviewsEmpty) return;
 
   productReviewsSection.hidden = false;
   productReviewsList.innerHTML = '';
 
-  if (!reviews.length) {
+  const sortedReviews = sortProductReviews(reviews);
+
+  if (!sortedReviews.length) {
     productReviewsEmpty.hidden = false;
     productReviewsEmpty.textContent = 'No reviews yet';
     return;
@@ -413,7 +444,7 @@ function renderProductReviews(reviews = []) {
 
   const fragment = document.createDocumentFragment();
 
-  reviews.forEach((review) => {
+  sortedReviews.forEach((review) => {
     const card = document.createElement('article');
     card.className = 'product-review-card';
 
@@ -424,6 +455,10 @@ function renderProductReviews(reviews = []) {
     author.className = 'product-review-author';
     author.textContent = review.user_name || 'Veltrix customer';
 
+    const badge = document.createElement('span');
+    badge.className = 'product-review-badge';
+    badge.textContent = review.verified_purchase ? 'Verified Purchase' : 'Customer Review';
+
     const platform = document.createElement('span');
     platform.className = 'product-review-platform';
     platform.textContent = review.platform || 'Universal';
@@ -433,14 +468,13 @@ function renderProductReviews(reviews = []) {
     date.textContent = review.created_at || '';
 
     top.appendChild(author);
+    top.appendChild(badge);
     top.appendChild(platform);
     if (date.textContent) top.appendChild(date);
 
     const rating = document.createElement('div');
     rating.className = 'product-review-rating';
-    const filledStars = '★'.repeat(Math.max(0, Math.min(5, Number(review.rating || 0))));
-    const emptyStars = '☆'.repeat(Math.max(0, 5 - Number(review.rating || 0)));
-    rating.textContent = `${filledStars}${emptyStars}`;
+    rating.textContent = formatDisplayedReviewStars(review.rating);
 
     const title = document.createElement('h3');
     title.className = 'product-review-title';
@@ -458,6 +492,84 @@ function renderProductReviews(reviews = []) {
   });
 
   productReviewsList.appendChild(fragment);
+}
+
+function setProductReviewButtonState({ text, disabled = false, hint = '' }) {
+  if (productWriteReviewButton) {
+    productWriteReviewButton.textContent = text || 'Leave a Review';
+    productWriteReviewButton.disabled = Boolean(disabled);
+  }
+
+  if (productWriteReviewHint) {
+    productWriteReviewHint.textContent = hint || '';
+  }
+}
+
+async function loadProductReviewEntry(productId) {
+  if (!productWriteReviewButton || !productId) return;
+
+  setProductReviewButtonState({
+    text: 'Checking review access...',
+    disabled: true,
+    hint: 'Checking whether you have an eligible completed order for this product.',
+  });
+
+  try {
+    const response = await fetch(`/products/id/${encodeURIComponent(productId)}/review-entry`, {
+      credentials: 'include',
+      headers: {
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to load review entry');
+    }
+
+    const data = await response.json();
+    const orderItemId = String(data?.order_item_id || '').trim();
+
+    if (!data?.authenticated) {
+      setProductReviewButtonState({
+        text: 'Sign In to Review',
+        disabled: false,
+        hint: data?.message || 'Sign in and open Order History to review a completed purchase.',
+      });
+
+      productWriteReviewButton.onclick = () => {
+        window.location.href = '/login';
+      };
+      return;
+    }
+
+    if (data?.can_review && orderItemId) {
+      setProductReviewButtonState({
+        text: 'Leave a Review',
+        disabled: false,
+        hint: 'Open the product review form for your latest eligible completed order.',
+      });
+
+      productWriteReviewButton.onclick = () => {
+        window.location.href = `/pages/review.html?order_item_id=${encodeURIComponent(orderItemId)}`;
+      };
+      return;
+    }
+
+    setProductReviewButtonState({
+      text: data?.already_reviewed ? 'Review Already Added' : 'Order Required to Review',
+      disabled: true,
+      hint: data?.message || 'Buy and complete an order for this product to leave a review.',
+    });
+    productWriteReviewButton.onclick = null;
+  } catch (error) {
+    console.error('Error loading product review entry:', error);
+    setProductReviewButtonState({
+      text: 'Leave a Review',
+      disabled: true,
+      hint: 'Unable to check review access right now. Please try again later.',
+    });
+    productWriteReviewButton.onclick = null;
+  }
 }
 
 async function loadProductReviews(productId) {
@@ -478,13 +590,22 @@ async function loadProductReviews(productId) {
     }
 
     const data = await response.json();
-    renderProductReviews(Array.isArray(data?.reviews) ? data.reviews : []);
+    productReviewCache = Array.isArray(data?.reviews) ? data.reviews : [];
+    renderProductReviews(productReviewCache);
   } catch (error) {
     console.error('Error loading product reviews:', error);
+    productReviewCache = [];
     productReviewsList.innerHTML = '';
     productReviewsEmpty.hidden = false;
     productReviewsEmpty.textContent = 'Unable to load reviews right now';
   }
+}
+
+if (productReviewsSort && productReviewsSort.dataset.bound !== '1') {
+  productReviewsSort.dataset.bound = '1';
+  productReviewsSort.addEventListener('change', () => {
+    renderProductReviews(productReviewCache);
+  });
 }
 
 function isShopAllPage() {
@@ -1677,6 +1798,7 @@ if (container || container2) {
 
 
           document.title = product.name;
+          loadProductReviewEntry(product.id);
           loadProductReviews(product.id);
         }
 
@@ -1815,3 +1937,4 @@ window.RemoveFromCart = async function (productId) {
     showBasketError('Could not remove item from cart.', { toast: true, type: 'error' });
   }
 };
+

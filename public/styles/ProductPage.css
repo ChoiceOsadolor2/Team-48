@@ -301,6 +301,70 @@ body.cart-open #previous_page {
   width: 150px !important;
 }
 
+.product-review-button {
+  width: auto;
+  min-width: 220px;
+  height: 44px;
+  min-height: 44px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background: #000;
+  color: #fff;
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 20px;
+  font-weight: 400;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.25s ease;
+}
+
+.product-review-button::after {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  animation: veltrixGlow 2s infinite alternate;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.product-review-button:hover,
+.product-review-button:focus-visible {
+  background: #1d1d1d;
+  transform: translateY(-2px);
+  border-color: transparent;
+  outline: none;
+}
+
+.product-review-button:hover::after,
+.product-review-button:focus-visible::after {
+  opacity: 1;
+}
+
+.product-review-button:disabled {
+  opacity: 0.68;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.product-review-button:disabled::after {
+  opacity: 0;
+}
+
+.product-review-note {
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 16px;
+  line-height: 1.45;
+  color: #8f8f8f;
+  margin: 0;
+  text-align: center;
+}
+
 #product_info .qty-input {
   position: relative;
   display: inline-flex;
@@ -655,8 +719,9 @@ html.home main {
 .product-reviews-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 16px;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
 .product-reviews-title {
@@ -664,7 +729,56 @@ html.home main {
   font-size: 30px;
   font-weight: 400;
   color: #fff;
-  text-align: center;
+  text-align: left;
+}
+
+.product-reviews-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.product-reviews-subtext {
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  color: #8f8f8f;
+  max-width: 620px;
+}
+
+.product-reviews-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.product-review-sort {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  color: #8f8f8f;
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 16px;
+}
+
+.product-review-sort select {
+  min-width: 220px;
+  height: 44px;
+  border: 1px solid #444;
+  border-radius: 10px;
+  background: #1d1d1d;
+  color: #fff;
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 18px;
+  padding: 0 14px;
+  cursor: pointer;
+}
+
+.product-review-sort select:focus-visible {
+  outline: 1px solid #32d2ff;
+  outline-offset: 2px;
 }
 
 .product-reviews-empty {
@@ -698,6 +812,20 @@ html.home main {
   flex-wrap: wrap;
   align-items: center;
   gap: 10px 14px;
+}
+
+.product-review-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(50, 210, 255, 0.15);
+  color: #9fe9ff;
+  border: 1px solid rgba(50, 210, 255, 0.3);
+  font-family: 'MiniPixel', sans-serif;
+  font-size: 14px;
+  line-height: 1;
 }
 
 .product-review-author,
@@ -1057,6 +1185,34 @@ html.home[data-theme="light"] .product-action-row > button {
   color: #1a1511;
   border-color: #000000;
   box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+}
+
+html.home[data-theme="light"] .product-review-button {
+  background: #ffffff;
+  color: #1a1511;
+  border-color: #000000;
+  box-shadow: 0 18px 38px rgba(123, 99, 69, 0.08);
+}
+
+html.home[data-theme="light"] .product-reviews-subtext,
+html.home[data-theme="light"] .product-review-note {
+  color: #5f5a54;
+}
+
+html.home[data-theme="light"] .product-review-sort {
+  color: #5f5a54;
+}
+
+html.home[data-theme="light"] .product-review-sort select {
+  background: #ffffff;
+  color: #1a1511;
+  border-color: #000000;
+}
+
+html.home[data-theme="light"] .product-review-badge {
+  background: rgba(50, 210, 255, 0.12);
+  color: #0f4f63;
+  border-color: rgba(50, 210, 255, 0.25);
 }
 
 html.home[data-theme="light"] .product-action-row > button.is-active {

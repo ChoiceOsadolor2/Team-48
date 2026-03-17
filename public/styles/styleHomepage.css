@@ -420,19 +420,38 @@ html[data-theme="light"] .success-message {
 }
 
 .review-stars {
+  order: 1;
   color: #ffa825;
   font-size: 1.8rem;
   letter-spacing: 2px;
   align-self: center;
   text-align: center;
+  margin-top: 0;
 }
 
 .review-text {
+  order: 3;
   font-size: var(--page-text-size);
   line-height: 1.6;
   flex-grow: 1;
   font-weight: normal;
   color: #fff;
+}
+
+.review-badge {
+  order: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  align-self: center;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid rgba(50, 210, 255, 0.28);
+  background: rgba(50, 210, 255, 0.12);
+  color: #a8f0ff;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .review-card-title {
@@ -442,6 +461,7 @@ html[data-theme="light"] .success-message {
 }
 
 .review-author {
+  order: 4;
   font-size: var(--page-text-size);
   color: #888;
   margin-top: auto;
@@ -941,6 +961,7 @@ html.home[data-theme="light"] .contact-subtitle {
 
 html.home[data-theme="light"] .review-author,
 html.home[data-theme="light"] .reviews-empty,
+html.home[data-theme="light"] .review-badge,
 html.home[data-theme="light"] .hp-service-card p,
 html.home[data-theme="light"] .hp-value-card p,
 html.home[data-theme="light"] .swipe-indicator {
@@ -981,6 +1002,12 @@ html.home[data-theme="light"] .hp-value-card {
 
 html.home[data-theme="light"] .review-card {
   border-color: #111;
+}
+
+html.home[data-theme="light"] .review-badge {
+  background: rgba(50, 210, 255, 0.1);
+  border-color: rgba(50, 210, 255, 0.24);
+  color: #20596d;
 }
 
 html.home[data-theme="light"] .cat-box:hover,

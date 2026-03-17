@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OrderItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 
 class ProductController extends Controller
@@ -81,13 +84,63 @@ class ProductController extends Controller
                 return [
                     'id' => $review->id,
                     'user_name' => $review->user?->name ?? 'Veltrix customer',
+                    'verified_purchase' => true,
                     'platform' => $review->platform ?: 'Universal',
-                    'rating' => (int) $review->rating,
+                    'rating' => (float) $review->rating,
                     'title' => $review->title,
                     'message' => $review->message,
                     'created_at' => optional($review->created_at)->format('M d Y'),
                 ];
             })->values(),
+        ]);
+    }
+
+    public function reviewEntry(Product $product): JsonResponse
+    {
+        if (! Auth::check()) {
+            return response()->json([
+                'authenticated' => false,
+                'can_review' => false,
+                'message' => 'Sign in and open Order History to review your purchase.',
+            ]);
+        }
+
+        $reviewableItem = OrderItem::query()
+            ->with(['order:id,user_id,status', 'review:id,order_item_id'])
+            ->where('product_id', $product->id)
+            ->whereHas('order', function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->whereIn('status', ['completed', 'delivered']);
+            })
+            ->whereDoesntHave('review')
+            ->latest('id')
+            ->first();
+
+        if ($reviewableItem) {
+            return response()->json([
+                'authenticated' => true,
+                'can_review' => true,
+                'order_item_id' => $reviewableItem->id,
+                'message' => 'You can review this product from your latest eligible order.',
+            ]);
+        }
+
+        $hasReviewedItem = OrderItem::query()
+            ->where('product_id', $product->id)
+            ->whereHas('order', function ($query) {
+                $query->where('user_id', Auth::id())
+                    ->whereIn('status', ['completed', 'delivered']);
+            })
+            ->whereHas('review')
+            ->exists();
+
+        return response()->json([
+            'authenticated' => true,
+            'can_review' => false,
+            'already_reviewed' => $hasReviewedItem,
+            'message' => $hasReviewedItem
+                ? 'You have already reviewed your eligible purchase of this product.'
+                : 'Buy and complete an order for this product to leave a review.',
         ]);
     }
 

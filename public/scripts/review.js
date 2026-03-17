@@ -64,11 +64,10 @@
   const submitButton = form.querySelector('.review-submit-button');
 
   const ratingPicker = document.getElementById('review_rating_picker');
-  const ratingSelected = ratingPicker?.querySelector('.review-rating-selected');
-  const ratingSelectedValue = ratingSelected?.querySelector('.val');
-  const ratingItems = ratingPicker?.querySelector('.review-rating-items');
+  const ratingStarPicker = ratingPicker?.querySelector('.review-star-picker');
 
   let activeOrderItemId = '';
+  let activeProductId = '';
   let canSubmitReview = false;
   let syncRatingPlaceholderState = () => {};
 
@@ -108,98 +107,71 @@
   };
 
   const initRatingPicker = () => {
-    if (!fields.rating || !ratingPicker || !ratingSelected || !ratingSelectedValue || !ratingItems) return;
+    if (!fields.rating || !ratingPicker || !ratingStarPicker) return;
 
-    ratingItems.innerHTML = '';
-    let glowSyncFrame = null;
+    ratingStarPicker.innerHTML = '';
 
-    const stopGlowSync = () => {
-      if (glowSyncFrame !== null) {
-        cancelAnimationFrame(glowSyncFrame);
-        glowSyncFrame = null;
-      }
+    const caption = document.createElement('div');
+    caption.className = 'review-rating-caption';
+    ratingPicker.appendChild(caption);
+
+    const formatRatingLabel = (value) => {
+      const numeric = Number(value || 0);
+      if (!numeric) return 'Hover to choose your rating';
+      return `${numeric} / 5 stars`;
     };
 
-    const syncGlow = () => {
-      const glowStyles = window.getComputedStyle(ratingSelected, '::after');
-      const borderColor = glowStyles.borderTopColor || glowStyles.borderColor;
-      const boxShadow = glowStyles.boxShadow;
+    const updateStars = (previewValue = null) => {
+      const selectedValue = Number(fields.rating.value || 0);
+      const activeValue = previewValue === null ? selectedValue : Number(previewValue || 0);
 
-      if (borderColor) {
-        ratingPicker.style.setProperty('--review-glow-color', borderColor);
-      }
-
-      if (boxShadow && boxShadow !== 'none') {
-        ratingPicker.style.setProperty('--review-glow-shadow', boxShadow);
-      }
-
-      if (ratingPicker.classList.contains('is-open')) {
-        glowSyncFrame = requestAnimationFrame(syncGlow);
-      } else {
-        glowSyncFrame = null;
-      }
-    };
-
-    const startGlowSync = () => {
-      if (glowSyncFrame === null) syncGlow();
-    };
-
-    syncRatingPlaceholderState = () => {
-      const value = String(fields.rating.value || '').trim();
-      const selectedOption = fields.rating.selectedOptions?.[0];
-      ratingSelectedValue.textContent = selectedOption?.textContent || 'Select rating';
-      ratingSelected.classList.toggle('is-placeholder', !value);
-      ratingItems.querySelectorAll('.review-rating-option').forEach((item) => {
-        item.classList.toggle('is-selected', item.dataset.value === value);
+      ratingStarPicker.querySelectorAll('.review-star-segment').forEach((button) => {
+        const segmentValue = Number(button.dataset.value || 0);
+        button.classList.toggle('is-active', previewValue === null && segmentValue <= selectedValue);
+        button.classList.toggle('is-preview', previewValue !== null && segmentValue <= activeValue);
       });
+
+      const labelValue = previewValue === null ? selectedValue : activeValue;
+      caption.textContent = formatRatingLabel(labelValue);
+      caption.classList.toggle('has-value', labelValue > 0);
     };
 
-    const closePicker = () => {
-      ratingPicker.classList.remove('is-open');
-      ratingItems.classList.add('review-rating-hide');
-      stopGlowSync();
-    };
+    for (let star = 1; star <= 5; star += 1) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'review-star-segment';
+      button.dataset.value = String(star);
+      button.setAttribute('aria-label', `${star} stars`);
 
-    Array.from(fields.rating.options).forEach((option) => {
-      if (!String(option.value || '').trim()) return;
-
-      const customOption = document.createElement('div');
-      customOption.className = 'review-rating-option';
-      customOption.dataset.value = option.value;
-      customOption.textContent = option.textContent;
-      customOption.addEventListener('click', (event) => {
-        event.stopPropagation();
-        fields.rating.value = option.value;
-        syncRatingPlaceholderState();
-        closePicker();
-      });
-      ratingItems.appendChild(customOption);
-    });
-
-    syncRatingPlaceholderState();
-
-    if (ratingPicker.dataset.bound !== '1') {
-      ratingPicker.dataset.bound = '1';
-
-      ratingSelected.addEventListener('click', (event) => {
-        event.stopPropagation();
+      button.addEventListener('mouseenter', () => {
         if (fields.rating.disabled) return;
-
-        const willOpen = ratingItems.classList.contains('review-rating-hide');
-        closePicker();
-        if (willOpen) {
-          ratingPicker.classList.add('is-open');
-          ratingItems.classList.remove('review-rating-hide');
-          startGlowSync();
-        }
+        updateStars(star);
       });
 
-      document.addEventListener('click', () => {
-        closePicker();
+      button.addEventListener('focus', () => {
+        if (fields.rating.disabled) return;
+        updateStars(star);
       });
+
+      button.addEventListener('click', () => {
+        if (fields.rating.disabled) return;
+        fields.rating.value = String(star);
+        updateStars();
+      });
+
+      ratingStarPicker.appendChild(button);
     }
 
+    ratingPicker.addEventListener('mouseleave', () => {
+      updateStars();
+    });
+
+    syncRatingPlaceholderState = () => {
+      updateStars();
+    };
+
     fields.rating.addEventListener('change', syncRatingPlaceholderState);
+    syncRatingPlaceholderState();
   };
 
   const loadReviewContext = async () => {
@@ -234,6 +206,7 @@
       const data = await response.json();
 
       activeOrderItemId = String(data.order_item_id || '');
+      activeProductId = String(data.product_id || '');
       fields.product.value = data.product_name || '';
       fields.platform.value = data.platform || 'Universal';
       clearErrors();
@@ -316,6 +289,13 @@
       fields.title.value = '';
       fields.message.value = '';
       syncRatingPlaceholderState();
+      if (activeProductId) {
+        window.setTimeout(() => {
+          window.location.href = `/pages/ProductPage.html?id=${encodeURIComponent(activeProductId)}`;
+        }, 600);
+        return;
+      }
+
       lockReviewForm('Your review has been saved.', 'Review Added');
     } catch (error) {
       console.error('Error saving review:', error);

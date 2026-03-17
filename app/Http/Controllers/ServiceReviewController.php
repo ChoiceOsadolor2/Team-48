@@ -33,7 +33,7 @@ class ServiceReviewController extends Controller
                 return [
                     'id' => $review->id,
                     'user_name' => $review->user?->name ?? 'Veltrix customer',
-                    'rating' => (int) $review->rating,
+                    'rating' => (float) $review->rating,
                     'title' => $review->title,
                     'message' => $review->message,
                     'created_at' => optional($review->created_at)->format('M d Y'),
@@ -117,7 +117,7 @@ class ServiceReviewController extends Controller
             'review' => [
                 'id' => $review->id,
                 'user_name' => $review->user?->name ?? 'Veltrix customer',
-                'rating' => (int) $review->rating,
+                'rating' => (float) $review->rating,
                 'title' => $review->title,
                 'message' => $review->message,
                 'created_at' => optional($review->created_at)->format('M d Y'),

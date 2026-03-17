@@ -25,6 +25,7 @@ class ReviewController extends Controller
 
         return response()->json([
             'order_item_id' => $orderItem->id,
+            'product_id' => $orderItem->product_id,
             'product_name' => $orderItem->product->name ?? 'Unknown Product',
             'platform' => $orderItem->platform ?: ($orderItem->product->platform ?? 'Universal'),
             'already_reviewed' => (bool) $orderItem->review,
@@ -74,6 +75,7 @@ class ReviewController extends Controller
         return response()->json([
             'success' => true,
             'review_id' => $review->id,
+            'product_id' => $orderItem->product_id,
         ]);
     }
 

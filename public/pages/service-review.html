@@ -30,7 +30,7 @@
 
                     <div class="review-field">
                         <label for="service_review_rating">Rating</label>
-                        <div class="review-rating-custom-select" id="service_review_rating_picker">
+                        <div class="review-rating-custom-select review-rating-stars" id="service_review_rating_picker">
                             <select id="service_review_rating" name="rating" aria-label="Select rating">
                                 <option value="">Select rating</option>
                                 <option value="5">5 Stars</option>
@@ -39,8 +39,7 @@
                                 <option value="2">2 Stars</option>
                                 <option value="1">1 Star</option>
                             </select>
-                            <div class="review-rating-selected"><span class="val">Select rating</span></div>
-                            <div class="review-rating-items review-rating-hide"></div>
+                            <div class="review-star-picker" aria-hidden="true"></div>
                         </div>
                         <div class="review-error" data-error-for="rating"></div>
                     </div>

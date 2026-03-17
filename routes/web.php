@@ -91,6 +91,7 @@ Route::middleware(['auth', 'admin'])->get('/products/create', function () {
     return redirect()->route('admin.products.create');
 });
 Route::get('/products/id/{product}/reviews', [ProductController::class, 'reviews'])->name('products.reviews');
+Route::get('/products/id/{product}/review-entry', [ProductController::class, 'reviewEntry'])->name('products.review-entry');
 Route::get('/products/{slug}', [ProductController::class, 'show'])->name('products.show');
 
 Route::get('/search', [ProductController::class, 'search'])->name('products.search');
