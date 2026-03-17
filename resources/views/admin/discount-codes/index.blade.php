@@ -51,6 +51,7 @@
             <div class="flex items-center justify-between gap-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <div>
                     <h3 class="text-xl font-semibold text-gray-900">Discount code management</h3>
+                    <p class="mt-1 text-sm text-gray-500">Manage live offers, code availability, and campaign windows from one place.</p>
                 </div>
                 <a href="{{ route('admin.discount-codes.create') }}" class="admin-btn admin-btn--primary">
                     + Add Discount Code

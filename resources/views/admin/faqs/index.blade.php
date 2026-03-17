@@ -260,6 +260,7 @@
                             </svg>
                             <span>FAQ library</span>
                         </h3>
+                        <p class="faqs-muted mt-1 text-[0.95rem] text-gray-500">Keep chatbot answers accurate, current, and easy for customers to discover.</p>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3.5 py-1.5 text-[0.82rem] font-semibold text-gray-700">
                         @if ($faqs instanceof \Illuminate\Contracts\Pagination\Paginator)

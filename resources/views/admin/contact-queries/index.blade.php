@@ -130,6 +130,15 @@
             color: #111827 !important;
         }
 
+        .admin-contact-queries-page .queries-table-shell .queries-bulk-bar,
+        .admin-contact-queries-page .queries-table-shell .queries-bulk-bar label,
+        .admin-contact-queries-page .queries-table-shell .queries-bulk-bar span,
+        .admin-contact-queries-page .queries-table-shell .queries-bulk-bar p,
+        .admin-contact-queries-page .queries-table-shell .queries-bulk-bar select,
+        .admin-contact-queries-page .queries-table-shell .queries-bulk-bar option {
+            color: #f9fafb !important;
+        }
+
         .admin-contact-queries-page .queries-table-shell .queries-status-badge--resolved {
             background: #d1fae5;
             color: #065f46 !important;
@@ -288,6 +297,7 @@
                 <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold">Support inbox</h3>
+                        <p class="queries-muted mt-1 text-sm">Review customer messages, update status, and keep support follow-up organised.</p>
                     </div>
                     <span class="queries-count-pill rounded-full px-3 py-1 text-xs font-semibold">
                         Showing {{ $contactQueries->firstItem() ?? 0 }}-{{ $contactQueries->lastItem() ?? 0 }} of {{ $contactQueries->total() }}
@@ -303,7 +313,7 @@
                         @csrf
                     </form>
                     <div class="queries-bulk-bar border-b px-5 py-4">
-                            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div class="queries-bulk-bar flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <div class="flex items-center gap-3">
                                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
                                         <input type="checkbox" data-check-all="queries" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">

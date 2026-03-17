@@ -12,6 +12,9 @@
             <div>
                 <p class="text-sm uppercase tracking-[0.18em] text-gray-400">Return Request</p>
                 <h1 class="mt-2 text-3xl font-bold text-gray-900">Request #{{ $returnRequest->id }}</h1>
+                <p class="mt-2 max-w-2xl text-[0.98rem] text-gray-500">
+                    Review the request, confirm the customer context, and record a clear outcome for the support team.
+                </p>
                 <div class="mt-3 flex flex-wrap items-center gap-3">
                     <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses }}">
                         {{ ucfirst($returnRequest->status) }}
@@ -67,7 +70,7 @@
             <div class="space-y-6">
                 <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
                     <h2 class="text-lg font-semibold text-gray-900">Decision</h2>
-                    <p class="mt-2 text-sm text-gray-500">Approve or decline the request and leave internal notes for the support team.</p>
+                    <p class="mt-2 text-sm text-gray-500">Approve or decline the request and leave clear internal notes for the support team.</p>
 
                     <form method="POST" action="{{ route('admin.return-requests.update-status', $returnRequest) }}" class="mt-5 space-y-4">
                         @csrf

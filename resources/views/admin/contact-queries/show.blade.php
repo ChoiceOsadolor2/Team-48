@@ -90,6 +90,9 @@
             <div>
                 <p class="query-muted text-sm uppercase tracking-[0.18em]">Contact Query</p>
                 <h1 class="query-text mt-2 text-3xl font-bold">Query #{{ $contactQuery->id }}</h1>
+                <p class="query-muted mt-2 text-[0.98rem]">
+                    Review the customer message, update support status, and keep internal guidance consistent.
+                </p>
                 <div class="mt-3 flex flex-wrap items-center gap-3">
                     <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $statusClasses }}">
                         {{ $contactQuery->resolved_at ? 'Resolved' : 'Pending review' }}

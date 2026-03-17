@@ -68,6 +68,9 @@
                     <div>
                         <p class="order-muted text-[0.95rem] uppercase tracking-[0.18em]">Order overview</p>
                         <h1 class="order-text mt-2 text-[2rem] font-bold">Order #{{ $order->id }}</h1>
+                        <p class="order-muted mt-2 text-[0.98rem]">
+                            Review fulfilment progress, customer details, and order totals before making admin changes.
+                        </p>
                         <p class="order-text mt-2 text-[0.98rem]">
                             Placed on {{ $order->created_at->format('d M Y \\a\\t H:i') }}
                         </p>
