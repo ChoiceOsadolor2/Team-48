@@ -40,6 +40,7 @@ class FaqController extends Controller
                     });
                 })
                 ->when($category !== '', fn ($query) => $query->where('category', $category))
+                ->orderByDesc('priority')
                 ->orderBy('category')
                 ->orderBy('keyword')
                 ->paginate(15)
@@ -68,6 +69,7 @@ class FaqController extends Controller
         $data = $request->validate([
             'keyword' => ['required', 'string', 'max:255', 'unique:faqs,keyword'],
             'category' => ['required', 'string', 'in:' . implode(',', array_keys(Faq::CATEGORIES))],
+            'priority' => ['required', 'integer', 'min:0', 'max:10'],
             'answer' => ['required', 'string'],
         ]);
 
@@ -94,6 +96,7 @@ class FaqController extends Controller
         $data = $request->validate([
             'keyword' => ['required', 'string', 'max:255', 'unique:faqs,keyword,' . $faq->id],
             'category' => ['required', 'string', 'in:' . implode(',', array_keys(Faq::CATEGORIES))],
+            'priority' => ['required', 'integer', 'min:0', 'max:10'],
             'answer' => ['required', 'string'],
         ]);
 

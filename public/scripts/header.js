@@ -518,6 +518,7 @@ function initScrollTop() {
 function initChatbot() {
   const toggleBtn = document.getElementById('vx-chatbot-toggle');
   const closeBtn = document.getElementById('vx-chatbot-close');
+  const resetBtn = document.getElementById('vx-chatbot-reset');
   const chatWindow = document.getElementById('vx-chatbot-window');
   const chatForm = document.getElementById('vx-chat-form');
   const chatInput = document.getElementById('vx-chat-input');
@@ -527,10 +528,17 @@ function initChatbot() {
 
   if (!toggleBtn || !chatWindow) return;
 
-  const defaultGreeting = 'Hi there! How can I help you?';
+  const defaultGreeting = 'Hello. How can I assist you today?';
 
   const clearChatState = () => {
     clearPersistedChatbotState();
+  };
+
+  const resetChatTranscript = () => {
+    chatMessages.innerHTML = '';
+    clearChatState();
+    appendMessage('ai', defaultGreeting);
+    openChat();
   };
 
   const readChatState = () => {
@@ -603,6 +611,9 @@ function initChatbot() {
   });
 
   closeBtn.addEventListener('click', closeChat);
+  if (resetBtn) {
+    resetBtn.addEventListener('click', resetChatTranscript);
+  }
 
   async function sendChatMessage(userMessage) {
     if (!userMessage) return;
@@ -637,11 +648,11 @@ function initChatbot() {
       if (response.ok && data.status === 'success') {
         renderAiResponse(typingIndicator, data.reply, data.suggestions || []);
       } else {
-        typingIndicator.textContent = data?.message || data?.reply || "The chatbot couldn't answer right now. Please try again in a moment.";
+        typingIndicator.textContent = data?.message || data?.reply || 'I was unable to complete that request just now. Please try again in a moment.';
       }
     } catch (error) {
       console.error('Chatbot Error:', error);
-      typingIndicator.textContent = 'The chatbot could not reach the site backend. Make sure the Laravel server is running, then try again.';
+      typingIndicator.textContent = 'I am unable to connect to support services right now. Please try again shortly or use the contact page below.';
     }
   }
 

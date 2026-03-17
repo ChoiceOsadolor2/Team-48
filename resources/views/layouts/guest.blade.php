@@ -23,6 +23,7 @@
 
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+        <link rel="preload" href="/fonts/mini-pixel-7.ttf" as="font" type="font/ttf" crossorigin>
 
         <script src="https://cdn.tailwindcss.com"></script>
 
@@ -37,7 +38,7 @@
                     src: url('/fonts/mini-pixel-7.ttf') format('truetype');
                     font-weight: normal;
                     font-style: normal;
-                    font-display: swap;
+                    font-display: block;
                 }
 
                 /* Match login/register/header look exactly on forgot-password route */

@@ -23,5 +23,5 @@ class Faq extends Model
         'contact' => 'Contact',
     ];
 
-    protected $fillable = ['keyword', 'answer', 'category'];
+    protected $fillable = ['keyword', 'answer', 'category', 'priority'];
 }

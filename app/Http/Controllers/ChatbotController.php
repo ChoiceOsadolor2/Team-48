@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Faq;
 use App\Models\Category;
+use App\Models\ChatbotUnansweredQuestion;
 use App\Models\Product;
 use App\Support\InputSanitizer;
 use Illuminate\Http\Request;
@@ -188,7 +189,7 @@ class ChatbotController extends Controller
         if ($faqs->isEmpty()) {
             return response()->json([
                 'status' => 'success',
-                'reply' => "I can't find the local FAQ knowledge base yet. Please run the site setup so I can answer store questions.",
+                'reply' => 'The help centre is not available at the moment. Please use the links below for support or continue browsing the store.',
                 'suggestions' => [
                     ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
                     ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
@@ -199,27 +200,61 @@ class ChatbotController extends Controller
         $intents = $this->detectIntents($message, $context);
         $intent = $intents[0] ?? null;
         $bestFaq = $this->findBestFaq($message, $intents, $faqs, $context);
+        $confidence = $this->determineConfidenceLevel($bestFaq['score']);
+        $recognizedProducts = $this->recognizeProducts($message, $intents);
         $reply = $bestFaq['faq']?->answer;
         $fallbackSuggestions = [];
 
+        if ($bestFaq['faq'] && ! $this->faqMatchesCurrentIntent($bestFaq['faq'], $intents, $bestFaq['score'])) {
+            $reply = null;
+            $confidence = 'low';
+        }
+
         if (! $reply) {
-            [$reply, $fallbackSuggestions] = $this->buildFallback($message, $intents, $context);
+            [$reply, $fallbackSuggestions] = $this->buildFallback($message, $intents, $context, $recognizedProducts, $confidence);
+        } elseif (! empty($recognizedProducts)) {
+            $reply = $this->appendRecognizedProductHelp($reply, $recognizedProducts, $intents);
         }
 
         if ($this->isGenericOrderSupportRequest($message, $intents)) {
-            $reply = "I can help with order-related queries. Please use the options below to track your order, open your order history, or access returns and refunds support.";
+            $reply = 'I can help with order-related queries. Please use the options below to track an order, review your order history, or access returns and refunds support.';
             $fallbackSuggestions = [];
+        }
+
+        if ($this->isGenericContactSupportRequest($message, $intents)) {
+            $reply = 'I can help you contact our support team. Please use the options below to open the contact page or review your recent orders if your query relates to an existing purchase.';
+            $fallbackSuggestions = [];
+            $suggestions = [
+                ['label' => 'Contact us', 'url' => '/pages/index.html#contactus'],
+                ['label' => 'Order history', 'url' => '/orders'],
+            ];
+        } elseif ($this->isGenericShippingSupportRequest($message, $intents)) {
+            $reply = 'I can help with delivery and shipping queries. Please use the options below to review your order history, continue browsing, or contact support for further assistance.';
+            $fallbackSuggestions = [];
+            $suggestions = [
+                ['label' => 'Order history', 'url' => '/orders'],
+                ['label' => 'Contact support', 'url' => '/pages/index.html#contactus'],
+                ['label' => 'Browse products', 'url' => '/pages/ShopAll.html'],
+            ];
+        } else {
+            $suggestions = $fallbackSuggestions ?: $this->suggestionsForIntents($intents, $context, $recognizedProducts, $confidence);
         }
 
         if ($reply && ! empty($intents)) {
             $reply = $this->appendContextualHelp($reply, $intents);
         }
 
-        $suggestions = $fallbackSuggestions ?: $this->suggestionsForIntents($intents, $context);
-
         if ($intent === 'greeting') {
-            $reply = "Hi, how can I help you today?";
+            $reply = 'Hello. How can I assist you today?';
             $suggestions = [];
+        }
+
+        if ($confidence === 'low') {
+            $reply = $this->appendSupportHandoff($reply, $intents);
+        }
+
+        if (! $bestFaq['faq'] || $confidence === 'low') {
+            $this->logUnansweredQuestion($message, $intents, $bestFaq['score'], $recognizedProducts);
         }
 
         $request->session()->put('chatbot_context', [
@@ -230,15 +265,17 @@ class ChatbotController extends Controller
             'tokens' => $this->tokenize($message),
             'faq_keyword' => $bestFaq['faq']?->keyword,
             'faq_category' => $bestFaq['faq']?->category,
+            'recognized_products' => collect($recognizedProducts)->pluck('name')->all(),
             'recent_intents' => $this->rememberRecentIntent($context, $intent),
             'updated_at' => now()->toIso8601String(),
         ]);
 
         return response()->json([
             'status' => 'success',
-            'reply' => $reply ?: "I'm not entirely sure about that yet, but I can still point you to the right page.",
+            'reply' => $reply ?: 'I was not able to match that with a specific help article, but I can still direct you to the most relevant next step.',
             'intent' => $intent,
             'intents' => $intents,
+            'confidence' => $confidence,
             'suggestions' => $suggestions,
         ]);
     }
@@ -350,6 +387,8 @@ class ChatbotController extends Controller
                 $score += 18;
             }
 
+            $score += min(20, ((int) ($faq->priority ?? 0)) * 2);
+
             if (($faq->category ?? 'general') === 'general') {
                 $score += 1;
             }
@@ -374,7 +413,7 @@ class ChatbotController extends Controller
         ];
     }
 
-    private function buildFallback(string $message, array $intents, array $context): array
+    private function buildFallback(string $message, array $intents, array $context, array $recognizedProducts = [], string $confidence = 'low'): array
     {
         $tokens = array_values(array_unique(array_merge(
             $this->tokenize($message),
@@ -385,7 +424,10 @@ class ChatbotController extends Controller
         $secondaryIntent = $intents[1] ?? null;
         $categoryFilters = $this->guessRelevantProductCategories($tokens, $primaryIntent, $context);
 
-        $products = Product::query()
+        $products = collect($recognizedProducts)->take(3);
+
+        if ($products->isEmpty()) {
+            $products = Product::query()
             ->with('category')
             ->when(! empty($categoryFilters), function ($query) use ($categoryFilters) {
                 $query->whereHas('category', function ($categoryQuery) use ($categoryFilters) {
@@ -406,8 +448,9 @@ class ChatbotController extends Controller
             })
             ->limit(3)
             ->get();
+        }
 
-        $suggestions = $this->suggestionsForIntents($intents, $context);
+        $suggestions = $this->suggestionsForIntents($intents, $context, $products->all(), $confidence);
 
         foreach ($products as $product) {
             $suggestions[] = [
@@ -430,23 +473,27 @@ class ChatbotController extends Controller
             ->all();
 
         $reply = match ($primaryIntent) {
-            'orders' => "I can help with order-related queries. Please review the options below to track your order, open your order history, or continue with returns and refunds support.",
-            'shipping' => "This sounds like a shipping question. I couldn't find the exact FAQ match, but these options should help.",
-            'returns' => "This looks like a returns question. I couldn't find the exact FAQ match, but these links should get you there.",
-            'payment' => "This seems payment-related. I couldn't find the exact FAQ answer, but these options should help you continue.",
-            'stock' => "This sounds like an availability question. I couldn't find the exact FAQ answer, but you can keep going from here.",
-            'recommendations' => "It sounds like you want product suggestions. I couldn't match a specific FAQ, but these browsing links should help.",
-            default => "I couldn't find an exact FAQ match, but these options should help you keep going.",
+            'orders' => 'I can help with order-related queries. Please review the options below to track an order, open your order history, or continue with returns and refunds support.',
+            'shipping' => 'This appears to be a delivery or shipping query. I was not able to locate an exact help article, but the options below should point you in the right direction.',
+            'returns' => 'This appears to be a returns or refunds query. I was not able to locate an exact help article, but the options below should help you continue.',
+            'payment' => 'This appears to be a payment or checkout query. I was not able to locate an exact help article, but the options below should help you continue.',
+            'stock' => 'This appears to be an availability query. I was not able to locate an exact help article, but the options below should help you continue.',
+            'recommendations' => 'I can help with product suggestions. I was not able to match a specific help article, but the options below should help you browse relevant items.',
+            default => 'I was not able to match that with a specific help article, but the options below should help you continue.',
         };
 
+        if ($products->isNotEmpty() && in_array($primaryIntent, ['stock', 'recommendations'], true)) {
+            $reply .= ' I found a matching product that may be relevant below.';
+        }
+
         if ($primaryIntent && $secondaryIntent) {
-            $reply .= ' I also picked up a second topic in your message, so I included actions for both.';
+            $reply .= ' I also identified a second topic in your message, so I included actions for both.';
         }
 
         return [$reply, $suggestions];
     }
 
-    private function suggestionsForIntents(array $intents, array $context = []): array
+    private function suggestionsForIntents(array $intents, array $context = [], array $recognizedProducts = [], string $confidence = 'high'): array
     {
         $suggestions = collect();
 
@@ -460,12 +507,25 @@ class ChatbotController extends Controller
             $suggestions->push($suggestion);
         }
 
+        foreach (array_slice($recognizedProducts, 0, 2) as $product) {
+            if (isset($product->id, $product->name)) {
+                $suggestions->push([
+                    'label' => Str::limit($product->name, 28),
+                    'url' => '/pages/ProductPage.html?id=' . $product->id,
+                ]);
+            }
+        }
+
         if ($suggestions->isEmpty()) {
             $suggestions = collect([
-            ['label' => 'Shipping help', 'message' => 'How long does shipping take?'],
+            ['label' => 'Delivery information', 'message' => 'How long does shipping take?'],
             ['label' => 'Track an order', 'message' => 'How do I track my order?'],
-            ['label' => 'Returns', 'message' => 'How do returns work?'],
+            ['label' => 'Returns and refunds', 'message' => 'How do returns work?'],
             ]);
+        }
+
+        if ($confidence === 'low') {
+            $suggestions->prepend(['label' => 'Contact support', 'url' => '/pages/index.html#contactus']);
         }
 
         return $suggestions
@@ -485,12 +545,20 @@ class ChatbotController extends Controller
             $reply = match ($intent) {
                 'orders' => $this->appendIfMissing(
                     $reply,
-                    ' You can view and manage your orders from the Previous Orders page in your account menu.'
+                    ' You can review and manage your orders from the Previous Orders page in your account menu.'
                 ),
-                'account', 'account_deletion' => $reply . ' Your profile page is available from the account menu if you want to manage account details.',
+                'payment' => $this->appendIfMissing(
+                    $reply,
+                    ' If you are signed in, you can review your recent orders from the account menu at any time.'
+                ),
+                'account', 'account_deletion' => $reply . ' Your profile page is available from the account menu if you need to manage your account details.',
                 'returns' => $this->appendIfMissing(
                     $reply,
-                    ' If your order is completed, you can start a return or refund from Order History.'
+                    ' If an order has been completed, you can start a return or refund from Order History.'
+                ),
+                'contact' => $this->appendIfMissing(
+                    $reply,
+                    ' If your query relates to an existing purchase, your Order History page may also be helpful.'
                 ),
                 default => $reply,
             };
@@ -700,10 +768,9 @@ class ChatbotController extends Controller
     private function contextualActionSuggestions(array $intents, array $context): array
     {
         $suggestions = [];
-        $activeIntents = array_values(array_unique(array_filter(array_merge(
-            $intents,
-            array_slice($context['recent_intents'] ?? [], 0, 2)
-        ))));
+        $activeIntents = ! empty($intents)
+            ? array_values(array_unique(array_filter($intents)))
+            : array_values(array_unique(array_filter(array_slice($context['recent_intents'] ?? [], 0, 2))));
 
         if (in_array('orders', $activeIntents, true)) {
             $suggestions[] = ['label' => 'Previous orders', 'url' => '/orders'];
@@ -723,6 +790,10 @@ class ChatbotController extends Controller
 
         if (Auth::check() && in_array('account', $activeIntents, true)) {
             $suggestions[] = ['label' => 'Profile info', 'url' => '/profile'];
+        }
+
+        if (in_array('orders', $activeIntents, true) && Auth::check()) {
+            $suggestions[] = ['label' => 'Account profile', 'url' => '/profile'];
         }
 
         return $suggestions;
@@ -755,6 +826,61 @@ class ChatbotController extends Controller
         return false;
     }
 
+    private function isGenericContactSupportRequest(string $message, array $intents): bool
+    {
+        if (! in_array('contact', $intents, true)) {
+            return false;
+        }
+
+        $normalized = $this->normalizeKnownPhrase($message);
+
+        foreach ([
+            'i need to speak to a human',
+            'need to speak to a human',
+            'speak to a human',
+            'speak to someone',
+            'talk to someone',
+            'talk to a human',
+            'contact support',
+            'need support',
+            'i need support',
+            'i need help from support',
+            'human support',
+            'support help',
+        ] as $phrase) {
+            if (str_contains($normalized, $phrase)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function isGenericShippingSupportRequest(string $message, array $intents): bool
+    {
+        if (! in_array('shipping', $intents, true)) {
+            return false;
+        }
+
+        $normalized = $this->normalizeKnownPhrase($message);
+
+        foreach ([
+            'what are shipping terms',
+            'shipping terms',
+            'shipping policy',
+            'delivery policy',
+            'delivery terms',
+            'shipping help',
+            'delivery help',
+        ] as $phrase) {
+            if (str_contains($normalized, $phrase)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function appendIfMissing(string $reply, string $suffix): string
     {
         $normalizedReply = $this->normalizeKnownPhrase($reply);
@@ -773,5 +899,106 @@ class ChatbotController extends Controller
         }
 
         return rtrim($reply) . $suffix;
+    }
+
+    private function determineConfidenceLevel(int $score): string
+    {
+        return match (true) {
+            $score >= 24 => 'high',
+            $score >= 12 => 'medium',
+            default => 'low',
+        };
+    }
+
+    private function faqMatchesCurrentIntent(Faq $faq, array $intents, int $score): bool
+    {
+        if (empty($intents)) {
+            return $score >= 8;
+        }
+
+        $category = $faq->category ?? 'general';
+        if ($category === 'general' || in_array($category, $intents, true)) {
+            return true;
+        }
+
+        return $score >= 26;
+    }
+
+    private function recognizeProducts(string $message, array $intents): array
+    {
+        $normalized = $this->normalize($message);
+        $tokens = $this->tokenize($message);
+
+        if (empty($tokens) || ! in_array($intents[0] ?? null, ['stock', 'recommendations', 'orders', 'returns'], true)) {
+            return [];
+        }
+
+        return Product::query()
+            ->when(! empty($tokens), function ($query) use ($tokens) {
+                $query->where(function ($inner) use ($tokens) {
+                    foreach (array_slice($tokens, 0, 5) as $token) {
+                        $inner->orWhere('name', 'like', '%' . $token . '%')
+                            ->orWhere('platform', 'like', '%' . $token . '%');
+                    }
+                });
+            })
+            ->get()
+            ->map(function ($product) use ($normalized, $tokens) {
+                $name = $this->normalizeKnownPhrase($product->name);
+                $score = str_contains($normalized, $name) ? 24 : 0;
+
+                foreach ($tokens as $token) {
+                    if (str_contains($name, $token)) {
+                        $score += 5;
+                    }
+                }
+
+                $product->chatbot_match_score = $score;
+                return $product;
+            })
+            ->filter(fn ($product) => $product->chatbot_match_score >= 8)
+            ->sortByDesc('chatbot_match_score')
+            ->take(3)
+            ->values()
+            ->all();
+    }
+
+    private function appendRecognizedProductHelp(string $reply, array $recognizedProducts, array $intents): string
+    {
+        $firstProduct = $recognizedProducts[0] ?? null;
+        if (! $firstProduct || ! isset($firstProduct->name)) {
+            return $reply;
+        }
+
+        if (in_array($intents[0] ?? null, ['stock', 'recommendations'], true)) {
+            return $this->appendIfMissing($reply, ' I found a relevant match for ' . $firstProduct->name . ' below.');
+        }
+
+        return $reply;
+    }
+
+    private function appendSupportHandoff(string $reply, array $intents): string
+    {
+        if (in_array('contact', $intents, true)) {
+            return $this->appendIfMissing($reply, ' If you would prefer direct assistance, please use the contact page below.');
+        }
+
+        return $this->appendIfMissing($reply, ' If you need further assistance, please contact our support team using the link below.');
+    }
+
+    private function logUnansweredQuestion(string $message, array $intents, int $score, array $recognizedProducts = []): void
+    {
+        if (! Schema::hasTable('chatbot_unanswered_questions')) {
+            return;
+        }
+
+        ChatbotUnansweredQuestion::query()->create([
+            'user_id' => Auth::id(),
+            'message' => $message,
+            'normalized_message' => $this->normalizeKnownPhrase($message),
+            'detected_intents' => $intents,
+            'match_score' => $score,
+            'recognized_products' => collect($recognizedProducts)->pluck('name')->all(),
+        ]);
     }
 }

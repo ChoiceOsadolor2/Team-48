@@ -72,6 +72,9 @@
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
         @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage)
+            <link rel="preload" href="/fonts/mini-pixel-7.ttf" as="font" type="font/ttf" crossorigin>
+        @endif
+        @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage)
             <link rel="stylesheet" href="/styles/styleHomepage.css">
         @endif
         @if ($isProfilePage || $isOrdersPage || $isCheckoutPage || $isAdminPage || $isWishlistPage)
@@ -236,7 +239,7 @@
                     src: url('/fonts/mini-pixel-7.ttf') format('truetype');
                     font-weight: normal;
                     font-style: normal;
-                    font-display: swap;
+                    font-display: block;
                 }
 
                 body.orders-page,
@@ -483,7 +486,7 @@
                     src: url('/fonts/mini-pixel-7.ttf') format('truetype');
                     font-weight: normal;
                     font-style: normal;
-                    font-display: swap;
+                    font-display: block;
                 }
 
                 body.admin-page {
@@ -721,7 +724,7 @@
                     src: url('/fonts/mini-pixel-7.ttf') format('truetype');
                     font-weight: normal;
                     font-style: normal;
-                    font-display: swap;
+                    font-display: block;
                 }
 
                 body.profile-page {

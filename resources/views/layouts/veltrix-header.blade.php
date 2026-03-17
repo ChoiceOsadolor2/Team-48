@@ -105,10 +105,13 @@
     <div id="vx-chatbot-window" class="hidden">
         <div class="vx-chat-header">
             <span>Veltrix AI Assistant</span>
-            <button id="vx-chatbot-close">&#10006;</button>
+            <div class="vx-chat-header-actions">
+                <button id="vx-chatbot-reset" type="button">New chat</button>
+                <button id="vx-chatbot-close">&#10006;</button>
+            </div>
         </div>
         <div id="vx-chat-messages">
-            <div class="vx-message ai-message">Hi there! How can I help you?</div>
+            <div class="vx-message ai-message">Hello. How can I assist you today?</div>
         </div>
         <form id="vx-chat-form">
             <input type="text" id="vx-chat-input" placeholder="Ask a question..." autocomplete="off" required>

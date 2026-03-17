@@ -311,6 +311,7 @@
                                     <th class="px-5 py-4 font-semibold"><span class="sr-only">Select</span></th>
                                     <th class="px-5 py-4 font-semibold">Keyword</th>
                                     <th class="px-5 py-4 font-semibold">Category</th>
+                                    <th class="px-5 py-4 font-semibold">Priority</th>
                                     <th class="px-5 py-4 font-semibold">Answer preview</th>
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
@@ -331,6 +332,7 @@
                                                 {{ \App\Models\Faq::CATEGORIES[$faq->category] ?? ucfirst(str_replace('_', ' ', $faq->category)) }}
                                             </span>
                                         </td>
+                                        <td class="faqs-muted px-5 py-4 text-gray-600">{{ $faq->priority ?? 0 }}</td>
                                         <td class="faqs-muted px-5 py-4 text-gray-600">{{ \Illuminate\Support\Str::limit($faq->answer, 140) }}</td>
                                         <td class="px-5 py-4">
                                             <div class="flex justify-end gap-2">

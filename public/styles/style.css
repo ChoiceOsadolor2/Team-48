@@ -282,6 +282,12 @@ html.home[data-theme="light"] .vx-chat-header {
   border-bottom-color: rgba(74, 58, 39, 0.12);
 }
 
+html.home[data-theme="light"] #vx-chatbot-reset {
+  background: rgba(255, 255, 255, 0.72);
+  color: #1a1511;
+  border-color: rgba(74, 58, 39, 0.14);
+}
+
 html.home[data-theme="light"] .vx-message.ai-message {
   background: #f4eadc;
   color: #1a1511;
@@ -1340,6 +1346,30 @@ body.cart-open #vx-chatbot-container {
   font-size: 1.1rem;
   letter-spacing: 1px;
   font-family: 'MiniPixel', sans-serif;
+}
+
+.vx-chat-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#vx-chatbot-reset {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid #333;
+  border-radius: 999px;
+  color: #d9d9d9;
+  min-height: 28px;
+  padding: 0 10px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+}
+
+#vx-chatbot-reset:hover {
+  color: #fff;
+  border-color: #ffa825;
+  background: rgba(255, 168, 37, 0.08);
 }
 
 #vx-chatbot-close {
