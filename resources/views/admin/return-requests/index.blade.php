@@ -77,6 +77,12 @@
             padding-bottom: 20px !important;
         }
 
+        .admin-return-requests-page .returns-count-pill {
+            background: #2a2a2a !important;
+            border: 1px solid #444 !important;
+            color: #f9fafb !important;
+        }
+
         html[data-theme="dark"] .admin-return-requests-page .page-intro-title {
             color: #f9fafb;
         }
@@ -97,16 +103,18 @@
     <div class="admin-return-requests-page py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="page-intro">
-                <h1 class="page-intro-title flex items-center gap-3">
-                    <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 8v8a2 2 0 0 1-2 2H8"></path>
-                        <path d="M3 16V8a2 2 0 0 1 2-2h11"></path>
-                        <path d="m7 12-4 4 4 4"></path>
-                        <path d="m17 4 4 4-4 4"></path>
-                    </svg>
-                    <span>Returns & Refunds</span>
-                </h1>
-                <p class="page-intro-copy">Track after-sales requests, review their status, and respond more efficiently.</p>
+                <div>
+                    <h1 class="page-intro-title flex items-center gap-3">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 8v8a2 2 0 0 1-2 2H8"></path>
+                            <path d="M3 16V8a2 2 0 0 1 2-2h11"></path>
+                            <path d="m7 12-4 4 4 4"></path>
+                            <path d="m17 4 4 4-4 4"></path>
+                        </svg>
+                        <span>Returns & Refunds</span>
+                    </h1>
+                    <p class="page-intro-copy">Track after-sales requests, review their status, and respond more efficiently.</p>
+                </div>
             </div>
             <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.return-requests.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
@@ -149,7 +157,7 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Request queue</h3>
                     </div>
-                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                    <span class="returns-count-pill rounded-full px-3 py-1 text-xs font-semibold">
                         Showing {{ $returnRequests->firstItem() ?? 0 }}-{{ $returnRequests->lastItem() ?? 0 }} of {{ $returnRequests->total() }}
                     </span>
                 </div>
