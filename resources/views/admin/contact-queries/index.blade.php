@@ -12,6 +12,16 @@
             background: #f8fafc;
         }
 
+        .admin-contact-queries-page .queries-filter-shell {
+            background: #fff;
+            border-color: #e5e7eb;
+        }
+
+        .admin-contact-queries-page .queries-filter-form {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
         .admin-contact-queries-page .queries-row {
             transition: background 0.2s ease;
         }
@@ -22,6 +32,16 @@
 
         html[data-theme="dark"] .admin-contact-queries-page .queries-table-head {
             background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .queries-filter-shell {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .queries-filter-form {
+            background: rgba(17, 24, 39, 0.78);
+            border-color: #374151;
         }
 
         html[data-theme="dark"] .admin-contact-queries-page .queries-row:hover {
@@ -39,8 +59,8 @@
 
     <div class="admin-contact-queries-page py-12">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
-                <form method="GET" action="{{ route('admin.contact-queries.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            <div class="queries-filter-shell rounded-3xl border p-5 shadow-sm">
+                <form method="GET" action="{{ route('admin.contact-queries.index') }}" class="queries-filter-form rounded-2xl border p-4">
                     <div class="queries-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(220px,0.85fr)_auto]">
                         <div>
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Search</label>
@@ -70,7 +90,7 @@
                 </form>
             </div>
 
-            <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+            <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
                 <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Support inbox</h3>

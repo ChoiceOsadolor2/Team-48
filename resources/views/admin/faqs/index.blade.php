@@ -12,6 +12,17 @@
             background: #f8fafc;
         }
 
+        .admin-faqs-page .faqs-shell,
+        .admin-faqs-page .faqs-filter-shell {
+            background: #fff;
+            border-color: #e5e7eb;
+        }
+
+        .admin-faqs-page .faqs-filter-form {
+            background: #f9fafb;
+            border-color: #e5e7eb;
+        }
+
         .admin-faqs-page .faqs-row {
             transition: background 0.2s ease;
         }
@@ -24,6 +35,17 @@
             background: rgba(17, 24, 39, 0.78);
         }
 
+        html[data-theme="dark"] .admin-faqs-page .faqs-shell,
+        html[data-theme="dark"] .admin-faqs-page .faqs-filter-shell {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .faqs-filter-form {
+            background: rgba(17, 24, 39, 0.78);
+            border-color: #374151;
+        }
+
         html[data-theme="dark"] .admin-faqs-page .faqs-row:hover {
             background: rgba(255, 255, 255, 0.03);
         }
@@ -34,7 +56,7 @@
 
     <div class="admin-faqs-page py-12">
         <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            <div class="flex items-center justify-between gap-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
+            <div class="faqs-shell flex items-center justify-between gap-4 rounded-3xl border p-6 shadow-sm">
                 <div>
                     <h3 class="text-[1.45rem] font-semibold text-gray-900">Chatbot FAQs</h3>
                     <p class="mt-1.5 text-[0.98rem] text-gray-500">Manage the FAQ answers used by the chatbot.</p>
@@ -44,8 +66,8 @@
                 </a>
             </div>
 
-            <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
-                <form method="GET" action="{{ route('admin.faqs.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-5">
+            <div class="faqs-filter-shell rounded-3xl border p-6 shadow-sm">
+                <form method="GET" action="{{ route('admin.faqs.index') }}" class="faqs-filter-form rounded-2xl border p-5">
                     <div class="faqs-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[1fr,220px,auto] md:items-end">
                         <div class="flex-1">
                             <label class="mb-1.5 block text-[0.95rem] font-semibold text-gray-700">Search FAQs</label>

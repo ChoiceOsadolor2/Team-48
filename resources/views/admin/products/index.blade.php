@@ -19,18 +19,22 @@
             color: #fff;
         }
 
-        .admin-products-page .products-shell,
-        .admin-products-page .products-filter-box,
-        .admin-products-page .products-table-shell,
-        .admin-products-page .products-table-head,
-        .admin-products-page .products-table-row,
-        .admin-products-page .products-pill,
         .admin-products-page .products-role-chip,
         .admin-products-page .products-note,
         .admin-products-page .products-status-chip,
         .admin-products-page .products-tab {
             background: #1d1d1f !important;
             border-color: #444 !important;
+        }
+
+        .admin-products-page .products-shell {
+            background: #fff !important;
+            border-color: #e5e7eb !important;
+        }
+
+        .admin-products-page .products-filter-box {
+            background: #f9fafb !important;
+            border-color: #e5e7eb !important;
         }
 
         .admin-products-page .products-title {
@@ -65,20 +69,18 @@
         }
 
         .admin-products-page label,
-        .admin-products-page th,
-        .admin-products-page td,
         .admin-products-page input,
         .admin-products-page select {
-            color: #fff !important;
+            color: #111827 !important;
         }
 
         .admin-products-page .products-input,
         .admin-products-page .products-select {
             min-height: 56px;
-            border: 1px solid #444 !important;
+            border: 1px solid #d1d5db !important;
             border-radius: 18px !important;
-            background: #000 !important;
-            color: #fff !important;
+            background: #fff !important;
+            color: #111827 !important;
             box-shadow: none !important;
             transition: background 0.2s ease, border-color 0.2s ease;
         }
@@ -138,8 +140,8 @@
             top: 50%;
             width: 10px;
             height: 10px;
-            border-right: 2px solid rgba(255, 255, 255, 0.7);
-            border-bottom: 2px solid rgba(255, 255, 255, 0.7);
+            border-right: 2px solid rgba(17, 24, 39, 0.7);
+            border-bottom: 2px solid rgba(17, 24, 39, 0.7);
             transform: translateY(-65%) rotate(45deg);
             pointer-events: none;
             z-index: 2;
@@ -153,10 +155,10 @@
             min-height: 56px;
             min-width: 90px;
             padding: 0 22px;
-            border: 1px solid #444 !important;
+            border: 1px solid #d1d5db !important;
             border-radius: 18px !important;
-            background: #000 !important;
-            color: #fff !important;
+            background: #fff !important;
+            color: #111827 !important;
             transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
             text-decoration: none !important;
             overflow: visible;
@@ -177,7 +179,7 @@
 
         .admin-products-page .products-action-btn:hover,
         .admin-products-page .products-action-btn:focus-visible {
-            background: #1d1d1d !important;
+            background: #f9fafb !important;
             border-color: transparent !important;
             transform: translateY(-1px);
             outline: none;
@@ -197,7 +199,7 @@
             border-radius: 999px;
             border: 1px solid #444;
             background: #000 !important;
-            color: #fff !important;
+            color: #111827 !important;
             text-decoration: none !important;
             transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
             position: relative;
@@ -229,6 +231,8 @@
 
         .admin-products-page .products-table-shell {
             overflow: hidden;
+            background: #fff !important;
+            border-color: #e5e7eb !important;
         }
 
         .admin-products-page .products-filter-grid {
@@ -240,15 +244,17 @@
         }
 
         .admin-products-page .products-table-head {
-            background: #18181a !important;
+            background: #f9fafb !important;
+            border-color: #e5e7eb !important;
         }
 
         .admin-products-page .products-table-row {
             transition: background 0.2s ease;
+            background: #fff !important;
         }
 
         .admin-products-page .products-table-row:hover {
-            background: rgba(255, 255, 255, 0.035) !important;
+            background: rgba(15, 23, 42, 0.035) !important;
         }
 
         .admin-products-page .products-table-row input[type="checkbox"] {
@@ -257,6 +263,121 @@
 
         .admin-products-page .products-note {
             color: #888 !important;
+        }
+
+        .admin-products-page .products-table-shell th {
+            color: #6b7280 !important;
+        }
+
+        .admin-products-page .products-table-shell td,
+        .admin-products-page .products-table-shell .text-white,
+        .admin-products-page .products-table-shell .products-platform-line {
+            color: #111827 !important;
+        }
+
+        .admin-products-page .products-table-shell .products-copy-sm,
+        .admin-products-page .products-table-shell .products-copy-xs,
+        .admin-products-page .products-table-shell .products-note {
+            color: #6b7280 !important;
+        }
+
+        .admin-products-page .products-table-shell .products-pill {
+            background: #f3f4f6 !important;
+            border-color: #e5e7eb !important;
+            color: #374151 !important;
+        }
+
+        .admin-products-page .products-table-shell .products-action-btn {
+            background: #fff !important;
+            color: #111827 !important;
+            border-color: #d1d5db !important;
+        }
+
+        .admin-products-page .products-table-shell .products-action-btn:hover,
+        .admin-products-page .products-table-shell .products-action-btn:focus-visible {
+            background: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell {
+            background: #1f2937 !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-shell {
+            background: #1f2937 !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-filter-box {
+            background: rgba(17, 24, 39, 0.78) !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page label,
+        html[data-theme="dark"] .admin-products-page input,
+        html[data-theme="dark"] .admin-products-page select {
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-input,
+        html[data-theme="dark"] .admin-products-page .products-select {
+            background: #1f2937 !important;
+            color: #f9fafb !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-select-wrap::after {
+            border-right-color: rgba(249, 250, 251, 0.7);
+            border-bottom-color: rgba(249, 250, 251, 0.7);
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-action-btn {
+            background: #111827 !important;
+            color: #f9fafb !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-head {
+            background: rgba(17, 24, 39, 0.78) !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-row {
+            background: #1f2937 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-row:hover {
+            background: rgba(255, 255, 255, 0.03) !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell th,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-copy-sm,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-copy-xs,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-note {
+            color: #9ca3af !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell td,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .text-white,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-platform-line {
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-pill {
+            background: #374151 !important;
+            border-color: #4b5563 !important;
+            color: #e5e7eb !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn {
+            background: #111827 !important;
+            color: #f9fafb !important;
+            border-color: #374151 !important;
+        }
+
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn:hover,
+        html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn:focus-visible {
+            background: #1f2937 !important;
         }
 
         .admin-products-page .products-platform-list {
