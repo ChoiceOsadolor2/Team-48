@@ -167,6 +167,39 @@ async function loadWishlist(force = false) {
   return wishlistLoadPromise;
 }
 
+async function ensureWishlistAuthenticated(force = false) {
+  if (wishlistAuthenticated && !force) {
+    return true;
+  }
+
+  await loadWishlist(force);
+
+  if (wishlistAuthenticated) {
+    return true;
+  }
+
+  try {
+    const response = await fetch('/user-status', {
+      headers: {
+        Accept: 'application/json',
+      },
+      credentials: 'include',
+    });
+
+    if (!response.ok) {
+      return false;
+    }
+
+    const data = await response.json().catch(() => null);
+    wishlistAuthenticated = Boolean(data?.logged_in);
+
+    return wishlistAuthenticated;
+  } catch (error) {
+    console.error('Error checking wishlist auth state:', error);
+    return false;
+  }
+}
+
 function setProductLoadingState(isLoading) {
   const loadingState = document.getElementById('product_loading_state');
   const extraPanels = document.getElementById('product_extra_panels');
@@ -894,9 +927,9 @@ async function ensureCsrfToken() {
 }
 
 window.ToggleWishlist = async function (productId, button = null) {
-  await loadWishlist();
+  const isAuthenticated = await ensureWishlistAuthenticated();
 
-  if (!wishlistAuthenticated) {
+  if (!isAuthenticated) {
     if (typeof window.showSiteToast === 'function') {
       window.showSiteToast('error', 'Please sign in to use your wishlist.');
     }
