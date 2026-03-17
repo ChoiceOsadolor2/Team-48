@@ -88,6 +88,14 @@ class RevenueController extends Controller
             (float) $monthlyRevenue->max('refunds')
         );
 
+        $activeOrderCount = max(1, $allActiveOrders->count());
+        $topSalesMonths = $monthlyRevenue
+            ->sortByDesc('net')
+            ->take(3)
+            ->values();
+
+        $topSalesMonthMax = max(1, (float) $topSalesMonths->max('net'));
+
         return view('admin.revenue.index', [
             'grossRevenue' => $grossRevenue,
             'approvedRefundValue' => $approvedRefundValue,
@@ -95,9 +103,12 @@ class RevenueController extends Controller
             'averageOrderValue' => $averageOrderValue,
             'completedOrderCount' => $completedOrderCount,
             'processingOrderCount' => $processingOrderCount,
+            'activeOrderCount' => $activeOrderCount,
             'approvedRefundCount' => $approvedRefunds->count(),
             'monthlyRevenue' => $monthlyRevenue,
             'graphMax' => $graphMax,
+            'topSalesMonths' => $topSalesMonths,
+            'topSalesMonthMax' => $topSalesMonthMax,
         ]);
     }
 }

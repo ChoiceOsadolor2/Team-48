@@ -75,52 +75,128 @@
         </div>
 
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-[1.7fr,1fr]">
-            <section class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
-                <div class="flex items-start justify-between gap-4">
-                    <div>
-                        <h2 class="text-xl font-bold text-gray-900 dark:text-white">Revenue trend</h2>
-                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Last 6 months of gross revenue, refunds, and net revenue.</p>
+            <div class="space-y-6">
+                <section class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                    <div class="flex items-start justify-between gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white">Revenue trend</h2>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Last 6 months of gross revenue, refunds, and net revenue.</p>
+                        </div>
+                        <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
+                            Accurate to {{ now()->format('d M Y') }}
+                        </span>
                     </div>
-                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700 dark:bg-gray-700 dark:text-gray-200">
-                        Accurate to {{ now()->format('d M Y') }}
-                    </span>
-                </div>
 
-                <div class="mt-6">
-                    <div class="flex h-[280px] items-end gap-4">
-                        @foreach ($monthlyRevenue as $month)
-                            @php
-                                $grossHeight = max(8, ($month['gross'] / $graphMax) * 210);
-                                $refundHeight = max(4, ($month['refunds'] / $graphMax) * 210);
-                                $netHeight = max(8, (max($month['net'], 0) / $graphMax) * 210);
-                            @endphp
-                            <div class="flex flex-1 flex-col items-center gap-3">
-                                <div class="flex h-[220px] w-full items-end justify-center gap-2">
-                                    <div class="w-full max-w-[28px] rounded-t-2xl bg-emerald-500/85" style="height: {{ $grossHeight }}px;" title="Gross {{ number_format($month['gross'], 2) }} GBP"></div>
-                                    <div class="w-full max-w-[28px] rounded-t-2xl bg-rose-400/80" style="height: {{ $refundHeight }}px;" title="Refunds {{ number_format($month['refunds'], 2) }} GBP"></div>
-                                    <div class="w-full max-w-[28px] rounded-t-2xl bg-sky-500/85" style="height: {{ $netHeight }}px;" title="Net {{ number_format($month['net'], 2) }} GBP"></div>
+                    <div class="mt-6">
+                        <div class="flex h-[280px] items-end gap-4">
+                            @foreach ($monthlyRevenue as $month)
+                                @php
+                                    $grossHeight = max(8, ($month['gross'] / $graphMax) * 210);
+                                    $refundHeight = max(4, ($month['refunds'] / $graphMax) * 210);
+                                    $netHeight = max(8, (max($month['net'], 0) / $graphMax) * 210);
+                                @endphp
+                                <div class="flex flex-1 flex-col items-center gap-3">
+                                    <div class="flex h-[220px] w-full items-end justify-center gap-2">
+                                        <div class="w-full max-w-[28px] rounded-t-2xl bg-emerald-500/85" style="height: {{ $grossHeight }}px;" title="Gross {{ number_format($month['gross'], 2) }} GBP"></div>
+                                        <div class="w-full max-w-[28px] rounded-t-2xl bg-rose-400/80" style="height: {{ $refundHeight }}px;" title="Refunds {{ number_format($month['refunds'], 2) }} GBP"></div>
+                                        <div class="w-full max-w-[28px] rounded-t-2xl bg-sky-500/85" style="height: {{ $netHeight }}px;" title="Net {{ number_format($month['net'], 2) }} GBP"></div>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $month['short_label'] }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $month['orders'] }} order{{ $month['orders'] === 1 ? '' : 's' }}</p>
+                                    </div>
                                 </div>
-                                <div class="text-center">
-                                    <p class="text-sm font-semibold text-gray-900 dark:text-white">{{ $month['short_label'] }}</p>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ $month['orders'] }} order{{ $month['orders'] === 1 ? '' : 's' }}</p>
+                            @endforeach
+                        </div>
+
+                        <div class="mt-5 flex flex-wrap gap-4 text-xs font-semibold text-gray-600 dark:text-gray-300">
+                            <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-emerald-500"></span>Gross</span>
+                            <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-rose-400"></span>Refunds</span>
+                            <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-sky-500"></span>Net</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div class="grid grid-cols-1 gap-4 xl:grid-cols-2">
+                    @php
+                        $currentMonth = $monthlyRevenue->last();
+                        $previousMonth = $monthlyRevenue->slice(-2, 1)->first();
+                        $previousNet = (float) ($previousMonth['net'] ?? 0);
+                        $currentNet = (float) ($currentMonth['net'] ?? 0);
+                        $momentumDelta = $currentNet - $previousNet;
+                        $momentumDirection = $momentumDelta > 0 ? 'Up' : ($momentumDelta < 0 ? 'Down' : 'Flat');
+                        $momentumClasses = $momentumDelta > 0
+                            ? 'text-emerald-600 dark:text-emerald-300'
+                            : ($momentumDelta < 0 ? 'text-rose-600 dark:text-rose-300' : 'text-gray-600 dark:text-gray-300');
+                        $momentumBarClass = $momentumDelta > 0
+                            ? 'bg-emerald-500'
+                            : ($momentumDelta < 0 ? 'bg-rose-500' : 'bg-gray-400');
+                        $momentumBase = max(1, abs($previousNet), abs($currentNet));
+                        $momentumWidth = max(12, (abs($momentumDelta) / $momentumBase) * 100);
+                    @endphp
+
+                    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <h3 class="text-base font-semibold text-gray-900 dark:text-white">Monthly momentum</h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Compare the latest net revenue with the previous month.</p>
+
+                        <div class="mt-5 space-y-4">
+                            <div>
+                                <div class="flex items-center justify-between gap-3 text-sm">
+                                    <span class="font-semibold text-gray-900 dark:text-white">{{ $currentMonth['label'] }}</span>
+                                    <span class="text-gray-500 dark:text-gray-400">{{ number_format($currentNet, 2) }} GBP</span>
                                 </div>
                             </div>
-                        @endforeach
+
+                            <div>
+                                <div class="flex items-center justify-between gap-3 text-sm">
+                                    <span class="font-semibold text-gray-900 dark:text-white">{{ $previousMonth['label'] ?? 'Previous month' }}</span>
+                                    <span class="text-gray-500 dark:text-gray-400">{{ number_format($previousNet, 2) }} GBP</span>
+                                </div>
+                            </div>
+
+                            <div class="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 dark:border-gray-700 dark:bg-gray-900/50">
+                                <div class="flex items-center justify-between gap-3">
+                                    <span class="text-sm font-semibold text-gray-900 dark:text-white">Trend</span>
+                                    <span class="text-sm font-semibold {{ $momentumClasses }}">
+                                        {{ $momentumDirection }} {{ number_format(abs($momentumDelta), 2) }} GBP
+                                    </span>
+                                </div>
+                                <div class="mt-3 h-3 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                    <div class="h-full rounded-full {{ $momentumBarClass }}" style="width: {{ $momentumWidth }}%"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
-                    <div class="mt-5 flex flex-wrap gap-4 text-xs font-semibold text-gray-600 dark:text-gray-300">
-                        <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-emerald-500"></span>Gross</span>
-                        <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-rose-400"></span>Refunds</span>
-                        <span class="inline-flex items-center gap-2"><span class="h-3 w-3 rounded-full bg-sky-500"></span>Net</span>
+                    <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+                        <h3 class="text-base font-semibold text-gray-900 dark:text-white">Top sales months</h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Highest net-revenue months from the current reporting window.</p>
+
+                        <div class="mt-4 space-y-4">
+                            @foreach ($topSalesMonths as $month)
+                                @php
+                                    $topMonthWidth = max(12, ($month['net'] / $topSalesMonthMax) * 100);
+                                @endphp
+                                <div>
+                                    <div class="flex items-center justify-between gap-3 text-sm">
+                                        <span class="font-semibold text-gray-900 dark:text-white">{{ $month['label'] }}</span>
+                                        <span class="text-gray-500 dark:text-gray-400">{{ number_format($month['net'], 2) }} GBP</span>
+                                    </div>
+                                    <div class="mt-2 h-3 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
+                                        <div class="h-full rounded-full bg-sky-500" style="width: {{ $topMonthWidth }}%"></div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
 
-            <section class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800">
+            <section class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm dark:border-gray-700 dark:bg-gray-800 xl:self-start">
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Monthly breakdown</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Direct figures behind the graph.</p>
 
-                <div class="mt-5 space-y-3">
+                <div class="mt-5 space-y-3 xl:max-h-[640px] xl:overflow-y-auto xl:pr-2">
                     @foreach ($monthlyRevenue as $month)
                         <div class="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 dark:border-gray-700 dark:bg-gray-900/50">
                             <div class="flex items-center justify-between gap-3">
