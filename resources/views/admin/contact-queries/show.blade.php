@@ -85,7 +85,7 @@
         }
     </style>
 
-    <div class="admin-contact-query-show-page py-8 max-w-6xl mx-auto px-4 space-y-6">
+    <div class="admin-contact-query-show-page py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div class="query-card flex flex-col gap-4 rounded-3xl border p-6 shadow-sm lg:flex-row lg:items-start lg:justify-between">
             <div>
                 <p class="query-muted text-sm uppercase tracking-[0.18em]">Contact Query</p>

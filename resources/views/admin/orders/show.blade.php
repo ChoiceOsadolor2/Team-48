@@ -62,7 +62,7 @@
     </style>
 
     <div class="admin-order-show-page py-10">
-        <div class="max-w-[1180px] mx-auto px-4 space-y-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <section class="order-card rounded-3xl border p-7 shadow-sm">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                     <div>

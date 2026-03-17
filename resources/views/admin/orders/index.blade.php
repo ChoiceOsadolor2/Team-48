@@ -94,7 +94,8 @@
             }
         }
     </style>
-    <div class="admin-orders-page py-8 max-w-[1180px] mx-auto px-4 space-y-6">
+    <div class="admin-orders-page py-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div class="orders-page-intro">
             <div>
                 <h1 class="flex items-center gap-3 text-[1.7rem] font-bold text-gray-900 dark:text-white">
@@ -262,6 +263,7 @@
             <div class="border-t border-gray-200 px-6 py-5 dark:border-gray-700">
                 {{ $orders->links() }}
             </div>
+        </div>
         </div>
     </div>
 </x-app-layout>

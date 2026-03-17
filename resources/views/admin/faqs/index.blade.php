@@ -204,7 +204,7 @@
     </x-slot>
 
     <div class="admin-faqs-page py-12">
-        <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
             <div class="page-intro flex items-start justify-between gap-4">
                 <div>
                     <h1 class="page-intro-title flex items-center gap-3">
