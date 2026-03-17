@@ -275,8 +275,10 @@ class ProductController extends Controller
             })->values();
         }
 
+        $paginatedProducts = $this->paginateCollection($products, $request, 15);
+
         return view('admin.products.low-stock-center', [
-            'products' => $products,
+            'products' => $paginatedProducts,
             'search' => $search,
             'severity' => $severity,
             'criticalCount' => $products->filter(fn (Product $product) => $product->inventoryWorstStockValue() <= 2)->count(),

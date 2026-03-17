@@ -1,44 +1,117 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between gap-4">
-            <div>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">Low-Stock Notification Centre</h2>
-                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Prioritise restocking based on urgency and current inventory risk.</p>
-            </div>
-        </div>
-    </x-slot>
+    <style>
+        .admin-low-stock-page .low-card,
+        .admin-low-stock-page .low-shell,
+        .admin-low-stock-page .low-filter-shell {
+            background: #ffffff;
+            border-color: #e5e7eb;
+        }
 
-    <div class="py-12">
+        .admin-low-stock-page .low-soft,
+        .admin-low-stock-page .low-table-head {
+            background: #f9fafb;
+        }
+
+        .admin-low-stock-page .low-text {
+            color: #111827 !important;
+        }
+
+        .admin-low-stock-page .low-muted {
+            color: #6b7280 !important;
+        }
+
+        .admin-low-stock-page .low-control {
+            min-height: 56px;
+            border-radius: 1rem;
+            border: 1px solid #d1d5db;
+            background: #f9fafb;
+            color: #111827;
+            font-size: 1rem;
+        }
+
+        .admin-low-stock-page .low-control::placeholder {
+            color: #6b7280;
+        }
+
+        .admin-low-stock-page .low-row:hover {
+            background: rgba(15, 23, 42, 0.035);
+        }
+
+        html[data-theme="dark"] .admin-low-stock-page .low-card,
+        html[data-theme="dark"] .admin-low-stock-page .low-shell,
+        html[data-theme="dark"] .admin-low-stock-page .low-filter-shell {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        html[data-theme="dark"] .admin-low-stock-page .low-soft,
+        html[data-theme="dark"] .admin-low-stock-page .low-table-head {
+            background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-low-stock-page .low-text {
+            color: #f9fafb !important;
+        }
+
+        html[data-theme="dark"] .admin-low-stock-page .low-muted {
+            color: #9ca3af !important;
+        }
+
+        html[data-theme="dark"] .admin-low-stock-page .low-control {
+            border-color: #4b5563;
+            background: rgba(17, 24, 39, 0.78);
+            color: #f9fafb;
+        }
+
+        html[data-theme="dark"] .admin-low-stock-page .low-control::placeholder {
+            color: #9ca3af;
+        }
+
+        html[data-theme="dark"] .admin-low-stock-page .low-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+    </style>
+
+    <div class="admin-low-stock-page py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
-                <div class="rounded-3xl border border-rose-100 bg-white p-6 shadow-sm">
-                    <p class="text-sm font-medium text-rose-700">Critical</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ $criticalCount }}</p>
-                    <p class="mt-2 text-sm text-gray-500">Products with 0-2 units left.</p>
-                </div>
-                <div class="rounded-3xl border border-amber-100 bg-white p-6 shadow-sm">
-                    <p class="text-sm font-medium text-amber-700">Warning</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ $warningCount }}</p>
-                    <p class="mt-2 text-sm text-gray-500">Products with 3-5 units left.</p>
-                </div>
-                <div class="rounded-3xl border border-sky-100 bg-white p-6 shadow-sm">
-                    <p class="text-sm font-medium text-sky-700">Watch list</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ $watchCount }}</p>
-                    <p class="mt-2 text-sm text-gray-500">Products with 6-10 units left.</p>
+            <div class="low-shell rounded-3xl border p-5 shadow-sm">
+                <div class="md:flex md:items-start md:justify-between">
+                    <div>
+                        <h1 class="low-text text-2xl font-semibold">Low-Stock Notification Centre</h1>
+                        <p class="low-muted mt-1 text-base">Prioritise restocking based on urgency and current inventory risk.</p>
+                    </div>
                 </div>
             </div>
 
-            <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
-                <form method="GET" action="{{ route('admin.products.low-stock-center') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <div class="low-card rounded-3xl border p-6 shadow-sm">
+                    <p class="text-sm font-medium text-rose-700">Critical</p>
+                    <p class="low-text mt-2 text-3xl font-bold">{{ $criticalCount }}</p>
+                    <p class="low-muted mt-2 text-sm">Products with 0-2 units left.</p>
+                </div>
+                <div class="low-card rounded-3xl border p-6 shadow-sm">
+                    <p class="text-sm font-medium text-amber-700">Warning</p>
+                    <p class="low-text mt-2 text-3xl font-bold">{{ $warningCount }}</p>
+                    <p class="low-muted mt-2 text-sm">Products with 3-5 units left.</p>
+                </div>
+                <div class="low-card rounded-3xl border p-6 shadow-sm">
+                    <p class="text-sm font-medium text-sky-700">Watch list</p>
+                    <p class="low-text mt-2 text-3xl font-bold">{{ $watchCount }}</p>
+                    <p class="low-muted mt-2 text-sm">Products with 6-10 units left.</p>
+                </div>
+            </div>
+
+            <div class="low-shell rounded-3xl border p-5 shadow-sm">
+                <form method="GET" action="{{ route('admin.products.low-stock-center') }}" class="low-filter-shell rounded-2xl border p-4">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr,240px,auto] md:items-end">
                         <div>
-                            <label class="mb-1 block text-sm font-semibold text-gray-700">Search products</label>
-                            <input type="text" name="q" value="{{ $search }}" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm" placeholder="Search low-stock products..." />
+                            <label class="low-text mb-1 block text-sm font-semibold">Search products</label>
+                            <input type="text" name="q" value="{{ $search }}" class="low-control w-full px-4 py-3" placeholder="Search low-stock products..." />
                         </div>
 
                         <div>
-                            <label class="mb-1 block text-sm font-semibold text-gray-700">Severity</label>
-                            <select name="severity" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm">
+                            <label class="low-text mb-1 block text-sm font-semibold">Severity</label>
+                            <select name="severity" class="low-control w-full px-4 py-3">
                                 <option value="">All low-stock products</option>
                                 <option value="critical" @selected($severity === 'critical')>Critical</option>
                                 <option value="warning" @selected($severity === 'warning')>Warning</option>
@@ -47,33 +120,33 @@
                         </div>
 
                         <div class="flex gap-2">
-                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
-                            <a href="{{ route('admin.products.low-stock-center') }}" class="rounded-xl bg-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-300">Clear</a>
+                            <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
+                            <a href="{{ route('admin.products.low-stock-center') }}" class="low-soft low-text rounded-xl px-4 py-3 text-sm font-semibold transition hover:bg-gray-200">Clear</a>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+            <div class="low-shell overflow-hidden rounded-3xl border shadow-sm">
                 <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
                     <div>
-                        <h3 class="text-lg font-semibold text-gray-900">Restock queue</h3>
-                        <p class="text-sm text-gray-500">The products most likely to need replenishment next.</p>
+                        <h3 class="low-text text-lg font-semibold">Restock queue</h3>
+                        <p class="low-muted text-sm">The products most likely to need replenishment next.</p>
                     </div>
-                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                    <span class="low-soft low-text rounded-full px-3 py-1 text-xs font-semibold">
                         Showing {{ $products->firstItem() ?? 0 }}-{{ $products->lastItem() ?? 0 }} of {{ $products->total() }}
                     </span>
                 </div>
 
                 @if ($products->isEmpty())
-                    <div class="px-5 py-10 text-center text-sm text-gray-500">
+                    <div class="low-muted px-5 py-10 text-center text-sm">
                         No products matched the current low-stock filters.
                     </div>
                 @else
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
-                            <thead class="bg-gray-50 text-left">
-                                <tr class="text-xs uppercase tracking-[0.18em] text-gray-500">
+                            <thead class="low-table-head text-left">
+                                <tr class="low-muted text-xs uppercase tracking-[0.18em]">
                                     <th class="px-5 py-4 font-semibold">Product</th>
                                     <th class="px-5 py-4 font-semibold">Category</th>
                                     <th class="px-5 py-4 font-semibold">Stock</th>
@@ -89,21 +162,21 @@
                                             ? 'bg-rose-100 text-rose-800'
                                             : ($priority === 'Warning' ? 'bg-amber-100 text-amber-800' : 'bg-sky-100 text-sky-800');
                                     @endphp
-                                    <tr class="transition hover:bg-gray-50/80">
+                                    <tr class="low-row transition">
                                         <td class="px-5 py-4">
-                                            <div class="font-semibold text-gray-900">{{ $product->name }}</div>
+                                            <div class="low-text font-semibold">{{ $product->name }}</div>
                                             @if ($product->platformStocks->isNotEmpty())
                                                 <div class="mt-2 flex flex-wrap gap-2">
                                                     @foreach ($product->platformStocks as $platformStock)
-                                                        <span class="rounded-full border border-gray-200 px-2.5 py-1 text-[11px] font-medium text-gray-600">
+                                                        <span class="low-soft low-muted rounded-full border border-gray-200 px-2.5 py-1 text-[11px] font-medium">
                                                             {{ $platformStock->platform }}: {{ $platformStock->stock }}
                                                         </span>
                                                     @endforeach
                                                 </div>
                                             @endif
                                         </td>
-                                        <td class="px-5 py-4 text-gray-600">{{ $product->category->name ?? '-' }}</td>
-                                        <td class="px-5 py-4 font-semibold text-gray-900">{{ $product->inventorySummaryText() }}</td>
+                                        <td class="low-muted px-5 py-4">{{ $product->category->name ?? '-' }}</td>
+                                        <td class="low-text px-5 py-4 font-semibold">{{ $product->inventorySummaryText() }}</td>
                                         <td class="px-5 py-4">
                                             <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $priorityClasses }}">
                                                 {{ $priority }}
