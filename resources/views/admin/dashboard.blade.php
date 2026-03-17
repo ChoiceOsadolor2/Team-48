@@ -264,6 +264,24 @@
                 </div>
             @endif
 
+<div class="mb-10 flex items-center justify-between rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 p-9 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01]">
+    <div class="max-w-2xl">
+        <h3 class="mb-3 text-[2rem] font-extrabold tracking-tight drop-shadow-md">
+            Welcome back, {{ auth()->user()->name }}!
+        </h3>
+        <p class="text-lg leading-relaxed text-indigo-100 opacity-90">
+            Welcome to the admin dashboard. Manage inventory, orders, refunds, and support from one control centre.
+        </p>
+    </div>
+                <div class="hidden md:block">
+                    <div class="rounded-full bg-white/20 p-5 backdrop-blur-sm">
+                        <svg class="h-20 w-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
             <div class="mb-8 flex flex-wrap justify-center gap-4">
                 <a href="{{ route('admin.users.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-cyan-300">Users</p>
