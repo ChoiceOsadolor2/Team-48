@@ -254,6 +254,98 @@
             line-height: 1.2 !important;
         }
 
+        .admin-dashboard-page .attention-strip {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            border: 1px solid #444;
+            border-radius: 24px;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 18px 22px;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22);
+        }
+
+        .admin-dashboard-page .attention-strip-copy {
+            max-width: 420px;
+        }
+
+        .admin-dashboard-page .attention-strip-title {
+            font-size: 18px !important;
+            line-height: 1.2 !important;
+            color: #fff;
+        }
+
+        .admin-dashboard-page .attention-strip-subtitle {
+            margin-top: 6px;
+            font-size: 14px !important;
+            line-height: 1.4 !important;
+            color: #8f8f95 !important;
+        }
+
+        .admin-dashboard-page .attention-strip-links {
+            display: flex;
+            flex: 1;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .admin-dashboard-page .attention-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            min-height: 58px;
+            padding: 12px 16px;
+            border: 1px solid #444;
+            border-radius: 18px;
+            background: #151518;
+            color: #fff !important;
+            text-decoration: none;
+            transition: all 0.22s ease;
+        }
+
+        .admin-dashboard-page .attention-pill:hover,
+        .admin-dashboard-page .attention-pill:focus-visible {
+            transform: translateY(-2px);
+            border-color: #6860ff;
+            background: #1b1b20;
+            outline: none;
+        }
+
+        .admin-dashboard-page .attention-pill-count {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 40px;
+            height: 40px;
+            padding: 0 10px;
+            border-radius: 999px;
+            background: #26263a;
+            font-size: 16px !important;
+            line-height: 1 !important;
+            color: #fff;
+        }
+
+        .admin-dashboard-page .attention-pill-label {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .admin-dashboard-page .attention-pill-label strong {
+            font-size: 14px !important;
+            line-height: 1.2 !important;
+            color: #fff;
+        }
+
+        .admin-dashboard-page .attention-pill-label span {
+            font-size: 12px !important;
+            line-height: 1.3 !important;
+            color: #8f8f95 !important;
+        }
+
     </style>
 
     <div class="admin-dashboard-page pt-24 pb-12 min-h-screen">
@@ -264,22 +356,54 @@
                 </div>
             @endif
 
-<div class="mb-10 flex items-center justify-between rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 p-9 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01]">
-    <div class="max-w-2xl">
-        <h3 class="mb-3 text-[2rem] font-extrabold tracking-tight drop-shadow-md">
+            <div class="mb-8 flex items-center justify-between rounded-3xl bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 p-7 text-white shadow-2xl transition-all duration-300 hover:scale-[1.01]">
+    <div class="max-w-xl">
+        <h3 class="mb-2 text-[1.75rem] font-extrabold tracking-tight drop-shadow-md">
             Welcome back, {{ auth()->user()->name }}!
         </h3>
-        <p class="text-lg leading-relaxed text-indigo-100 opacity-90">
+        <p class="text-base leading-relaxed text-indigo-100 opacity-90">
             Welcome to the admin dashboard. Manage inventory, orders, refunds, and support from one control centre.
         </p>
     </div>
                 <div class="hidden md:block">
-                    <div class="rounded-full bg-white/20 p-5 backdrop-blur-sm">
-                        <svg class="h-20 w-20 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="rounded-full bg-white/20 p-4 backdrop-blur-sm">
+                        <svg class="h-16 w-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
                     </div>
                 </div>
+            </div>
+
+            <div class="mb-8">
+                <section class="attention-strip">
+                    <div class="attention-strip-copy">
+                        <h3 class="attention-strip-title">Needs attention</h3>
+                        <p class="attention-strip-subtitle">Keep an eye on the urgent queues that need action first.</p>
+                    </div>
+                    <div class="attention-strip-links">
+                        <a href="{{ route('admin.products.low-stock-center') }}" class="attention-pill">
+                            <span class="attention-pill-count">{{ $lowStockProductCount }}</span>
+                            <span class="attention-pill-label">
+                                <strong>Needs restock</strong>
+                                <span>Low stock products</span>
+                            </span>
+                        </a>
+                        <a href="{{ route('admin.return-requests.index') }}" class="attention-pill">
+                            <span class="attention-pill-count">{{ $pendingReturnRequestCount + $pendingRefundCount }}</span>
+                            <span class="attention-pill-label">
+                                <strong>Pending review</strong>
+                                <span>Returns and refunds</span>
+                            </span>
+                        </a>
+                        <a href="{{ route('admin.contact-queries.index') }}" class="attention-pill">
+                            <span class="attention-pill-count">{{ $contactQueryCount }}</span>
+                            <span class="attention-pill-label">
+                                <strong>Open queries</strong>
+                                <span>Customer support inbox</span>
+                            </span>
+                        </a>
+                    </div>
+                </section>
             </div>
 
             <div class="mb-8 flex flex-wrap justify-center gap-4">
