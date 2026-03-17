@@ -420,6 +420,13 @@ nav,
 
 }
 
+#icons svg {
+  width: 35px;
+  min-width: 35px;
+  height: 35px;
+  transition: transform 0.3s ease;
+}
+
 header * {
   color: inherit;
   fill: currentColor;
