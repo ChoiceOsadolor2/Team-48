@@ -121,7 +121,7 @@
 
         .admin-products-page .products-field-shell:hover::after,
         .admin-products-page .products-field-shell:focus-within::after {
-            opacity: 1;
+            opacity: 0;
         }
 
         .admin-products-page .products-field-shell:hover .products-input,
@@ -183,15 +183,15 @@
 
         .admin-products-page .products-action-btn:hover,
         .admin-products-page .products-action-btn:focus-visible {
-            background: #243244 !important;
-            border-color: transparent !important;
-            transform: translateY(-1px);
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+            transform: none;
             outline: none;
         }
 
         .admin-products-page .products-action-btn:hover::after,
         .admin-products-page .products-action-btn:focus-visible::after {
-            opacity: 1;
+            opacity: 0;
         }
 
         .admin-products-page .products-tab {
@@ -225,7 +225,7 @@
         .admin-products-page .products-tab:hover,
         .admin-products-page .products-tab.is-active {
             background: #1d1d1d !important;
-            border-color: transparent !important;
+            border-color: #444 !important;
             color: #ffffff !important;
         }
 
@@ -236,7 +236,7 @@
 
         .admin-products-page .products-tab:hover::after,
         .admin-products-page .products-tab.is-active::after {
-            opacity: 1;
+            opacity: 0;
         }
 
         .admin-products-page .products-table-shell {
@@ -264,7 +264,7 @@
         }
 
         .admin-products-page .products-table-row:hover {
-            background: #243244 !important;
+            background: #1d1d1d !important;
         }
 
         .admin-products-page .products-table-row input[type="checkbox"] {
@@ -305,7 +305,7 @@
 
         .admin-products-page .products-table-shell .products-action-btn:hover,
         .admin-products-page .products-table-shell .products-action-btn:focus-visible {
-            background: #243244 !important;
+            background: #1d1d1d !important;
         }
 
         html[data-theme="dark"] .admin-products-page .products-table-shell {
@@ -357,7 +357,7 @@
         }
 
         html[data-theme="dark"] .admin-products-page .products-table-row:hover {
-            background: #243244 !important;
+            background: #1d1d1d !important;
         }
 
         html[data-theme="dark"] .admin-products-page .products-table-shell th,
@@ -387,7 +387,7 @@
 
         html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn:hover,
         html[data-theme="dark"] .admin-products-page .products-table-shell .products-action-btn:focus-visible {
-            background: #243244 !important;
+            background: #1d1d1d !important;
         }
 
         @media (min-width: 768px) {
@@ -422,21 +422,61 @@
             white-space: nowrap;
         }
 
-        .admin-products-page .products-stock-summary {
+        .admin-products-page .products-stock-panel {
             display: grid;
-            grid-template-columns: 140px auto;
+            gap: 12px;
+            min-width: 320px;
+        }
+
+        .admin-products-page .products-stock-topline {
+            display: flex;
             align-items: center;
-            column-gap: 16px;
-            margin-bottom: 12px;
+            justify-content: space-between;
+            gap: 12px;
         }
 
-        .admin-products-page .products-stock-summary .products-status-chip {
-            justify-self: start;
+        .admin-products-page .products-stock-summary {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0;
         }
 
-        .admin-products-page .products-stock-summary-secondary {
-            margin-top: -4px;
-            margin-bottom: 10px;
+        .admin-products-page .products-stock-overview {
+            color: #9ca3af !important;
+            font-size: 0.92rem !important;
+            line-height: 1.35 !important;
+            text-align: right;
+        }
+
+        .admin-products-page .products-stock-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .admin-products-page .products-stock-metric {
+            border: 1px solid #3a3a3d;
+            border-radius: 16px;
+            background: #232323;
+            padding: 10px 12px;
+        }
+
+        .admin-products-page .products-stock-metric-label {
+            display: block;
+            color: #9ca3af !important;
+            font-size: 0.78rem !important;
+            line-height: 1.2 !important;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .admin-products-page .products-stock-metric-value {
+            display: block;
+            margin-top: 6px;
+            color: #f9fafb !important;
+            font-size: 1rem !important;
+            line-height: 1.2 !important;
         }
 
         .admin-products-page .products-stock-cell {
@@ -489,6 +529,13 @@
             padding-right: 0 !important;
             padding-top: 0 !important;
             padding-bottom: 0 !important;
+        }
+
+        .admin-products-page .products-meta-line {
+            margin-top: 8px;
+            color: #9ca3af !important;
+            font-size: 0.92rem !important;
+            line-height: 1.35 !important;
         }
     </style>
 
@@ -642,15 +689,29 @@
                             </thead>
                             <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($products as $product)
+                                    @php
+                                        $trackedPlatformCount = $product->platformStocks->count();
+                                    @endphp
                                     <tr class="products-table-row transition">
                                         <td class="px-5 py-5">
                                             <input type="checkbox" name="selected[]" value="{{ $product->id }}" form="bulk-products-form" data-check-item="products" class="h-4 w-4 rounded border-[#444] bg-black">
                                         </td>
                                         <td class="px-5 py-5">
                                             <div class="text-white">{{ $product->name }}</div>
+                                            <div class="products-meta-line">
+                                                @if ($product->hasPlatformSpecificStock())
+                                                    {{ $trackedPlatformCount }} platform{{ $trackedPlatformCount === 1 ? '' : 's' }} tracked
+                                                @else
+                                                    Standard stock item
+                                                @endif
+                                            </div>
                                         </td>
-                                        <td class="px-5 py-5 text-white">{{ $product->category->name ?? '-' }}</td>
-                                        <td class="px-5 py-5 text-white">{{ number_format($product->price, 2) }} GBP</td>
+                                        <td class="px-5 py-5 text-white">
+                                            <span class="products-pill rounded-full border px-3 py-2">{{ $product->category->name ?? '-' }}</span>
+                                        </td>
+                                        <td class="px-5 py-5 text-white">
+                                            <div>{{ number_format($product->price, 2) }} GBP</div>
+                                        </td>
                                         <td class="products-stock-cell px-5 py-5">
                                             @php
                                                 $stockTextClasses = $product->inventoryStatusKey() === 'out_of_stock'
@@ -662,46 +723,81 @@
                                                 $inCount = $product->hasPlatformSpecificStock()
                                                     ? $product->platformStocks->filter(fn ($platformStock) => (int) $platformStock->stock > 0)->count()
                                                     : max((int) $product->stock, 0);
-                                                $trackedPlatformCount = $product->platformStocks->count();
+                                                $healthyCount = $product->hasPlatformSpecificStock()
+                                                    ? $product->platformStocks->filter(fn ($platformStock) => (int) $platformStock->stock > 5)->count()
+                                                    : ((int) $product->stock > 5 ? 1 : 0);
+                                                $totalUnits = $product->hasPlatformSpecificStock()
+                                                    ? $product->platformStocks->sum(fn ($platformStock) => (int) $platformStock->stock)
+                                                    : (int) $product->stock;
+                                                $singlePlatformStock = $product->hasPlatformSpecificStock() && $trackedPlatformCount === 1
+                                                    ? $product->platformStocks->first()
+                                                    : null;
                                             @endphp
-                                            <div class="products-stock-summary">
-                                                <span class="products-status-chip rounded-full px-3 py-2 {{ $stockTextClasses }}">{{ $stockLabel }}</span>
-                                                <span class="products-copy-sm">
-                                                    @if ($product->hasPlatformSpecificStock() && $product->inventoryStatusKey() === 'out_of_stock')
-                                                        {{ $outCount }} platform{{ $outCount === 1 ? '' : 's' }} out
-                                                    @else
-                                                        {{ $product->inventorySummaryText() }}
-                                                    @endif
-                                                </span>
-                                            </div>
-                                            @if ($product->hasPlatformSpecificStock() && $product->inventoryStatusKey() === 'out_of_stock' && $lowCount > 0)
-                                                <div class="products-stock-summary products-stock-summary-secondary">
-                                                    <span class="products-status-chip rounded-full px-3 py-2 text-amber-300">Needs restock</span>
-                                                    <span class="products-copy-sm">{{ $lowCount }} platform{{ $lowCount === 1 ? '' : 's' }} below target</span>
+                                            <div class="products-stock-panel">
+                                                <div class="products-stock-topline">
+                                                    <div class="products-stock-summary">
+                                                        <span class="products-status-chip rounded-full px-3 py-2 {{ $stockTextClasses }}">{{ $stockLabel }}</span>
+                                                    </div>
+                                                    <div class="products-stock-overview">
+                                                        @if ($product->hasPlatformSpecificStock())
+                                                            {{ $trackedPlatformCount }} platform{{ $trackedPlatformCount === 1 ? '' : 's' }}
+                                                        @else
+                                                            Standard stock
+                                                        @endif
+                                                    </div>
                                                 </div>
-                                            @endif
-                                            @if ($product->hasPlatformSpecificStock() && $inCount > 0)
-                                                <div class="products-stock-summary products-stock-summary-secondary">
-                                                    <span class="products-status-chip rounded-full px-3 py-2 text-emerald-300">Healthy stock</span>
-                                                    <span class="products-copy-sm">{{ $inCount }} platform{{ $inCount === 1 ? '' : 's' }} ready to sell</span>
-                                                </div>
-                                            @endif
-                                            <details class="products-stock-toggle">
-                                                <summary>Show platform stock</summary>
-                                                <div class="products-platform-list">
-                                                    @if ($product->platformStocks->isNotEmpty())
-                                                        @foreach ($product->platformStocks as $platformStock)
+                                                @if ($singlePlatformStock)
+                                                    <div class="products-stock-metrics">
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">{{ $singlePlatformStock->platform }} units</span>
+                                                            <span class="products-stock-metric-value">{{ (int) $singlePlatformStock->stock }}</span>
+                                                        </div>
+                                                    </div>
+                                                @elseif ($product->hasPlatformSpecificStock())
+                                                    <div class="products-stock-metrics">
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Units</span>
+                                                            <span class="products-stock-metric-value">{{ $totalUnits }}</span>
+                                                        </div>
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Healthy</span>
+                                                            <span class="products-stock-metric-value">{{ $healthyCount }}</span>
+                                                        </div>
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Low</span>
+                                                            <span class="products-stock-metric-value">{{ $lowCount }}</span>
+                                                        </div>
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Empty</span>
+                                                            <span class="products-stock-metric-value">{{ $outCount }}</span>
+                                                        </div>
+                                                    </div>
+                                                @else
+                                                    <div class="products-stock-metrics">
+                                                        <div class="products-stock-metric">
+                                                            <span class="products-stock-metric-label">Units in stock</span>
+                                                            <span class="products-stock-metric-value">{{ $totalUnits }}</span>
+                                                        </div>
+                                                    </div>
+                                                @endif
+
+                                                <details class="products-stock-toggle">
+                                                    <summary>Show platform stock</summary>
+                                                    <div class="products-platform-list">
+                                                        @if ($product->platformStocks->isNotEmpty())
+                                                            @foreach ($product->platformStocks as $platformStock)
+                                                                <span class="products-platform-line">
+                                                                    {{ $platformStock->platform }}: {{ $platformStock->stock }}
+                                                                </span>
+                                                            @endforeach
+                                                        @else
                                                             <span class="products-platform-line">
-                                                                {{ $platformStock->platform }}: {{ $platformStock->stock }}
+                                                                Standard stock: {{ (int) $product->stock }}
                                                             </span>
-                                                        @endforeach
-                                                    @else
-                                                        <span class="products-platform-line">
-                                                            Standard stock: {{ (int) $product->stock }}
-                                                        </span>
-                                                    @endif
-                                                </div>
-                                            </details>
+                                                        @endif
+                                                    </div>
+                                                </details>
+                                            </div>
                                         </td>
                                         <td class="px-5 py-5">
                                             <div class="flex justify-end gap-2">
