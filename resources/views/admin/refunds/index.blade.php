@@ -143,7 +143,7 @@
         </div>
 
         <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4 dark:border-gray-700">
+            <div class="flex items-center justify-between border-b border-[#3a3a3d] px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900 dark:text-white">Refund queue</h3>
                     </div>
@@ -165,7 +165,7 @@
                             <th class="px-5 py-4 font-semibold text-right">Decision</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    <tbody class="divide-y divide-[#3a3a3d]">
                         @forelse ($refundRequests as $refundRequest)
                             @php
                                 $statusClasses = match($refundRequest->status) {
@@ -246,7 +246,7 @@
                 </table>
             </div>
 
-            <div class="border-t border-gray-200 px-5 py-4 dark:border-gray-700">
+            <div class="border-t border-[#3a3a3d] px-5 py-4">
                 {{ $refundRequests->links() }}
             </div>
         </div>

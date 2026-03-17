@@ -24,13 +24,13 @@
         }
 
         .admin-users-page .users-shell {
-            background: #fff !important;
-            border-color: #e5e7eb !important;
+            background: #1d1d1d !important;
+            border-color: #444 !important;
         }
 
         .admin-users-page .users-filter-box {
-            background: #f9fafb !important;
-            border-color: #e5e7eb !important;
+            background: #1d1d1d !important;
+            border-color: #444 !important;
         }
 
         .admin-users-page .users-title {
@@ -60,21 +60,21 @@
         .admin-users-page .users-copy,
         .admin-users-page .users-copy-sm,
         .admin-users-page .users-copy-xs {
-            color: #888 !important;
+            color: #9ca3af !important;
         }
 
         .admin-users-page label,
         .admin-users-page input {
-            color: #111827 !important;
+            color: #f9fafb !important;
             font-weight: 400 !important;
         }
 
         .admin-users-page .users-input {
             min-height: 56px;
-            border: 1px solid #d1d5db !important;
+            border: 1px solid #444 !important;
             border-radius: 18px !important;
-            background: #fff !important;
-            color: #111827 !important;
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
             box-shadow: none !important;
             position: relative;
             z-index: 1;
@@ -101,15 +101,15 @@
             top: 50%;
             width: 10px;
             height: 10px;
-            border-right: 2px solid rgba(17, 24, 39, 0.7);
-            border-bottom: 2px solid rgba(17, 24, 39, 0.7);
+            border-right: 2px solid rgba(249, 250, 251, 0.7);
+            border-bottom: 2px solid rgba(249, 250, 251, 0.7);
             transform: translateY(-65%) rotate(45deg);
             pointer-events: none;
             z-index: 2;
         }
 
         .admin-users-page .users-input::placeholder {
-            color: #888 !important;
+            color: #9ca3af !important;
         }
 
         .admin-users-page .users-field-shell {
@@ -150,10 +150,10 @@
             min-height: 56px;
             min-width: 90px;
             padding: 0 22px;
-            border: 1px solid #d1d5db !important;
+            border: 1px solid #444 !important;
             border-radius: 18px !important;
-            background: #fff !important;
-            color: #111827 !important;
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
             font-size: 20px !important;
             overflow: visible;
             transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
@@ -181,7 +181,7 @@
 
         .admin-users-page .users-action-btn:hover,
         .admin-users-page .users-action-btn:focus-visible {
-            background: #f9fafb !important;
+            background: #2a2a2a !important;
             border-color: transparent !important;
             outline: none;
             transform: translateY(-1px);
@@ -194,8 +194,8 @@
 
         .admin-users-page .users-table-shell {
             overflow: hidden;
-            background: #fff !important;
-            border-color: #e5e7eb !important;
+            background: #1d1d1d !important;
+            border-color: #444 !important;
         }
 
         .admin-users-page .users-filter-grid {
@@ -207,69 +207,69 @@
         }
 
         .admin-users-page .users-table-head {
-            background: #f9fafb !important;
+            background: #1d1d1d !important;
         }
 
         .admin-users-page .users-table-row {
             transition: background 0.2s ease;
-            background: #fff !important;
+            background: #1d1d1d !important;
         }
 
         .admin-users-page .users-table-row:hover {
-            background: rgba(15, 23, 42, 0.035) !important;
+            background: #242424 !important;
         }
 
         .admin-users-page .users-table-shell th {
-            color: #6b7280 !important;
+            color: #9ca3af !important;
         }
 
         .admin-users-page .users-table-shell td,
         .admin-users-page .users-table-shell .text-white {
-            color: #111827 !important;
+            color: #f9fafb !important;
         }
 
         .admin-users-page .users-table-shell .users-copy,
         .admin-users-page .users-table-shell .users-copy-sm,
         .admin-users-page .users-table-shell .users-copy-xs {
-            color: #6b7280 !important;
+            color: #9ca3af !important;
         }
 
         .admin-users-page .users-table-shell .users-pill {
-            background: #f3f4f6 !important;
-            border-color: #e5e7eb !important;
-            color: #374151 !important;
+            background: #2a2a2a !important;
+            border-color: #444 !important;
+            color: #f9fafb !important;
         }
 
         .admin-users-page .users-table-shell .users-role-chip {
-            background: #f3f4f6 !important;
-            border-color: #e5e7eb !important;
-            color: #374151 !important;
+            background: #2a2a2a !important;
+            border-color: #444 !important;
+            color: #f9fafb !important;
         }
 
         .admin-users-page .users-table-shell .users-action-btn {
-            background: #fff !important;
-            color: #111827 !important;
-            border-color: #d1d5db !important;
+            background: #1d1d1d !important;
+            color: #f9fafb !important;
+            border-color: #444 !important;
         }
 
         .admin-users-page .users-table-shell .users-action-btn:hover,
         .admin-users-page .users-table-shell .users-action-btn:focus-visible {
-            background: #f9fafb !important;
+            background: #2a2a2a !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-table-shell {
-            background: #1f2937 !important;
-            border-color: #374151 !important;
+            background: #1d1d1d !important;
+            border-color: #444 !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-shell {
-            background: #1f2937 !important;
-            border-color: #374151 !important;
+            background: #1d1d1d !important;
+            border-color: #444 !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-filter-box {
-            background: rgba(17, 24, 39, 0.78) !important;
-            border-color: #374151 !important;
+            background: #1d1d1d !important;
+            border-color: #444 !important;
         }
 
         html[data-theme="dark"] .admin-users-page label,
@@ -278,9 +278,9 @@
         }
 
         html[data-theme="dark"] .admin-users-page .users-input {
-            background: #1f2937 !important;
+            background: #1d1d1d !important;
             color: #f9fafb !important;
-            border-color: #374151 !important;
+            border-color: #444 !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-select-wrap::after {
@@ -289,15 +289,15 @@
         }
 
         html[data-theme="dark"] .admin-users-page .users-table-head {
-            background: rgba(17, 24, 39, 0.78) !important;
+            background: #1d1d1d !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-table-row {
-            background: #1f2937 !important;
+            background: #1d1d1d !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-table-row:hover {
-            background: rgba(255, 255, 255, 0.03) !important;
+            background: #242424 !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-table-shell th,
@@ -314,20 +314,20 @@
 
         html[data-theme="dark"] .admin-users-page .users-table-shell .users-pill,
         html[data-theme="dark"] .admin-users-page .users-table-shell .users-role-chip {
-            background: #374151 !important;
-            border-color: #4b5563 !important;
-            color: #e5e7eb !important;
+            background: #2a2a2a !important;
+            border-color: #444 !important;
+            color: #f9fafb !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-table-shell .users-action-btn {
-            background: #111827 !important;
+            background: #1d1d1d !important;
             color: #f9fafb !important;
-            border-color: #374151 !important;
+            border-color: #444 !important;
         }
 
         html[data-theme="dark"] .admin-users-page .users-table-shell .users-action-btn:hover,
         html[data-theme="dark"] .admin-users-page .users-table-shell .users-action-btn:focus-visible {
-            background: #1f2937 !important;
+            background: #2a2a2a !important;
         }
 
         @media (min-width: 768px) {

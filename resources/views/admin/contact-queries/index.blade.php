@@ -294,7 +294,7 @@
             </div>
 
             <div class="queries-table-shell overflow-hidden rounded-3xl border shadow-sm">
-                <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+                <div class="flex items-center justify-between border-b border-[#3a3a3d] px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold">Support inbox</h3>
                         <p class="queries-muted mt-1 text-sm">Review customer messages, update status, and keep support follow-up organised.</p>
@@ -316,7 +316,7 @@
                     <form id="bulk-queries-form" method="POST" action="{{ route('admin.contact-queries.bulk') }}">
                         @csrf
                     </form>
-                    <div class="queries-bulk-bar border-b px-5 py-4">
+                    <div class="queries-bulk-bar border-b border-[#3a3a3d] px-5 py-4">
                         <div class="queries-bulk-bar flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <div class="flex items-center gap-3">
                                     <label class="flex items-center gap-2 text-sm font-semibold text-gray-700">
@@ -352,7 +352,7 @@
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200/80">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($contactQueries as $contactQuery)
                                     <tr class="queries-row">
                                         <td class="px-5 py-4 align-top">
@@ -404,7 +404,7 @@
                 @endif
 
                 @if ($contactQueries instanceof \Illuminate\Contracts\Pagination\Paginator && $contactQueries->hasPages())
-                    <div class="border-t border-gray-200 px-5 py-4">
+                    <div class="border-t border-[#3a3a3d] px-5 py-4">
                         {{ $contactQueries->links() }}
                     </div>
                 @endif

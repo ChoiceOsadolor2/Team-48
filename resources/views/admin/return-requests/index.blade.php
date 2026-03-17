@@ -145,7 +145,7 @@
             </div>
 
             <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
-                <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+                <div class="flex items-center justify-between border-b border-[#3a3a3d] px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Request queue</h3>
                     </div>
@@ -176,7 +176,7 @@
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($returnRequests as $returnRequest)
                                     @php
                                         $statusClasses = match ($returnRequest->status) {
@@ -215,7 +215,7 @@
                 @endif
 
                 @if ($returnRequests->hasPages())
-                    <div class="border-t border-gray-200 px-5 py-4">
+                    <div class="border-t border-[#3a3a3d] px-5 py-4">
                         {{ $returnRequests->links() }}
                     </div>
                 @endif

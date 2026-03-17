@@ -169,7 +169,7 @@
             </section>
 
             <section class="order-table-shell overflow-hidden rounded-3xl border shadow-sm">
-                <div class="flex items-center justify-between border-b border-gray-200 px-6 py-5">
+                <div class="flex items-center justify-between border-b border-[#3a3a3d] px-6 py-5">
                     <div>
                         <h2 class="order-text text-[1.2rem] font-semibold">Items in this order</h2>
                         <p class="order-muted text-[0.95rem]">A full line-by-line breakdown of what was purchased.</p>
@@ -188,7 +188,7 @@
                                 <th class="px-5 py-4 font-semibold text-right">Line total</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100">
+                        <tbody class="divide-y divide-[#3a3a3d]">
                             @foreach($order->items as $it)
                                 <tr class="order-row transition">
                                     <td class="px-5 py-4">

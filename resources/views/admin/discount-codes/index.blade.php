@@ -1,5 +1,45 @@
 <x-app-layout>
     <style>
+        .admin-discount-codes-page .discount-shell,
+        .admin-discount-codes-page .discount-filter-shell,
+        .admin-discount-codes-page .discount-table-shell {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        .admin-discount-codes-page .discount-filter-form,
+        .admin-discount-codes-page .discount-table-head {
+            background: #1d1d1d !important;
+            border-color: #444 !important;
+        }
+
+        .admin-discount-codes-page .discount-pill,
+        .admin-discount-codes-page .discount-type-pill,
+        .admin-discount-codes-page .discount-count-pill {
+            background: #2a2a2a !important;
+            border: 1px solid #444 !important;
+            color: #f9fafb !important;
+        }
+
+        .admin-discount-codes-page .discount-table-shell td,
+        .admin-discount-codes-page .discount-table-shell th,
+        .admin-discount-codes-page .discount-table-shell .discount-copy,
+        .admin-discount-codes-page .discount-table-shell .discount-copy-muted {
+            color: #f9fafb !important;
+        }
+
+        .admin-discount-codes-page .discount-copy-muted {
+            color: #9ca3af !important;
+        }
+
+        .admin-discount-codes-page .discount-row {
+            background: #1d1d1d !important;
+        }
+
+        .admin-discount-codes-page .discount-row:hover {
+            background: #242424 !important;
+        }
+
         .admin-discount-codes-page .page-intro-title {
             font-size: 30px !important;
             line-height: 1.1 !important;
@@ -48,7 +88,7 @@
                 </div>
             </div>
 
-            <div class="flex items-center justify-between gap-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+            <div class="discount-shell flex items-center justify-between gap-4 rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <div>
                     <h3 class="text-xl font-semibold text-gray-900">Discount code management</h3>
                     <p class="mt-1 text-sm text-gray-500">Manage live offers, code availability, and campaign windows from one place.</p>
@@ -58,8 +98,8 @@
                 </a>
             </div>
 
-            <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
-                <form method="GET" action="{{ route('admin.discount-codes.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
+            <div class="discount-filter-shell rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
+                <form method="GET" action="{{ route('admin.discount-codes.index') }}" class="discount-filter-form rounded-2xl border border-gray-200 bg-gray-50 p-4">
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr,240px,auto] md:items-end">
                         <div>
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Search codes</label>
@@ -89,13 +129,13 @@
                 </form>
             </div>
 
-            <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
-                <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+            <div class="discount-table-shell overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
+                <div class="flex items-center justify-between border-b border-[#3a3a3d] px-5 py-4">
                     <div>
                         <h3 class="text-lg font-semibold text-gray-900">Promo code library</h3>
                         <p class="text-sm text-gray-500">Track availability, windows, and usage in one place.</p>
                     </div>
-                    <span class="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                    <span class="discount-count-pill rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
                         Showing {{ $discountCodes->firstItem() ?? 0 }}-{{ $discountCodes->lastItem() ?? 0 }} of {{ $discountCodes->total() }}
                     </span>
                 </div>
@@ -112,7 +152,7 @@
                 @else
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
-                            <thead class="bg-gray-50 text-left">
+                            <thead class="discount-table-head bg-gray-50 text-left">
                                 <tr class="text-xs uppercase tracking-[0.18em] text-gray-500">
                                     <th class="px-5 py-4 font-semibold">Code</th>
                                     <th class="px-5 py-4 font-semibold">Offer</th>
@@ -123,29 +163,29 @@
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($discountCodes as $discountCode)
                                     @php
                                         $label = $discountCode->availabilityLabel();
                                         $statusClasses = match($label) {
                                             'Active' => 'bg-emerald-100 text-emerald-800',
-                                            'Inactive' => 'bg-gray-100 text-gray-700',
+                                            'Inactive' => 'bg-slate-700 text-slate-100',
                                             'Expired' => 'bg-rose-100 text-rose-800',
                                             'Scheduled' => 'bg-sky-100 text-sky-800',
                                             default => 'bg-amber-100 text-amber-800',
                                         };
                                     @endphp
-                                    <tr class="transition hover:bg-gray-50/80">
+                                    <tr class="discount-row transition hover:bg-gray-50/80">
                                         <td class="px-5 py-4">
-                                            <span class="inline-flex rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
+                                            <span class="discount-pill inline-flex rounded-full bg-cyan-50 px-3 py-1 text-xs font-semibold text-cyan-700">
                                                 {{ $discountCode->code }}
                                             </span>
                                         </td>
-                                        <td class="px-5 py-4 text-gray-700">
+                                        <td class="px-5 py-4 discount-copy text-gray-700">
                                             {{ $discountCode->type === 'percentage' ? rtrim(rtrim(number_format($discountCode->value, 2), '0'), '.') . '%' : '£' . number_format($discountCode->value, 2) }}
                                         </td>
                                         <td class="px-5 py-4">
-                                            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                                            <span class="discount-type-pill inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
                                                 {{ $discountCode->type === 'percentage' ? 'Percentage off' : 'Fixed amount off' }}
                                             </span>
                                         </td>
@@ -154,12 +194,12 @@
                                                 {{ $label }}
                                             </span>
                                         </td>
-                                        <td class="px-5 py-4 text-gray-600">
+                                        <td class="px-5 py-4 discount-copy-muted text-gray-600">
                                             {{ $discountCode->used_count }} / {{ $discountCode->usage_limit ?? '∞' }}
                                         </td>
-                                        <td class="px-5 py-4 text-gray-600">
+                                        <td class="px-5 py-4 discount-copy-muted text-gray-600">
                                             <div>{{ $discountCode->starts_at?->format('d M Y') ?? 'Starts immediately' }}</div>
-                                            <div class="mt-1 text-xs text-gray-500">{{ $discountCode->ends_at?->format('d M Y') ?? 'No end date' }}</div>
+                                            <div class="discount-copy-muted mt-1 text-xs text-gray-500">{{ $discountCode->ends_at?->format('d M Y') ?? 'No end date' }}</div>
                                         </td>
                                         <td class="px-5 py-4">
                                             <div class="flex justify-end gap-2">
@@ -179,7 +219,7 @@
                 @endif
 
                 @if ($discountCodes->hasPages())
-                    <div class="border-t border-gray-200 px-5 py-4">
+                    <div class="border-t border-[#3a3a3d] px-5 py-4">
                         {{ $discountCodes->links() }}
                     </div>
                 @endif

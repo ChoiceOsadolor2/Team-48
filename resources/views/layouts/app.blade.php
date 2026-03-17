@@ -561,6 +561,81 @@
                     font-family: 'MiniPixel', sans-serif !important;
                 }
 
+                body.admin-page main.admin-content h1,
+                body.admin-page main.admin-content h2,
+                body.admin-page main.admin-content h3,
+                body.admin-page main.admin-content .page-intro-title {
+                    font-size: 30px !important;
+                    line-height: 1.1 !important;
+                }
+
+                body.admin-page main.admin-content p,
+                body.admin-page main.admin-content label,
+                body.admin-page main.admin-content input,
+                body.admin-page main.admin-content select,
+                body.admin-page main.admin-content textarea,
+                body.admin-page main.admin-content th,
+                body.admin-page main.admin-content td,
+                body.admin-page main.admin-content button,
+                body.admin-page main.admin-content a {
+                    font-size: 20px !important;
+                    line-height: 1.4 !important;
+                }
+
+                body.admin-page main.admin-content input,
+                body.admin-page main.admin-content select,
+                body.admin-page main.admin-content textarea {
+                    background: #1d1d1d !important;
+                    border-color: #444 !important;
+                    color: #f9fafb !important;
+                }
+
+                body.admin-page main.admin-content input::placeholder,
+                body.admin-page main.admin-content textarea::placeholder {
+                    color: #9ca3af !important;
+                }
+
+                body.admin-page main.admin-content .rounded-3xl.border,
+                body.admin-page main.admin-content .rounded-2xl.border,
+                body.admin-page main.admin-content .rounded-xl.border,
+                body.admin-page main.admin-content [class*="table-shell"],
+                body.admin-page main.admin-content [class*="filter-shell"],
+                body.admin-page main.admin-content [class*="table-head"],
+                body.admin-page main.admin-content [class*="bulk-bar"],
+                body.admin-page main.admin-content [class*="filter-form"],
+                body.admin-page main.admin-content [class*="field-shell"],
+                body.admin-page main.admin-content [class*="panel"],
+                body.admin-page main.admin-content [class*="card"] {
+                    background: #1d1d1d !important;
+                    border-color: #444 !important;
+                    color: #f9fafb !important;
+                }
+
+                body.admin-page main.admin-content table,
+                body.admin-page main.admin-content thead,
+                body.admin-page main.admin-content tbody,
+                body.admin-page main.admin-content tr {
+                    background: transparent !important;
+                    color: inherit !important;
+                }
+
+                body.admin-page main.admin-content th,
+                body.admin-page main.admin-content td,
+                body.admin-page main.admin-content .text-gray-900,
+                body.admin-page main.admin-content .text-gray-800,
+                body.admin-page main.admin-content .text-gray-700,
+                body.admin-page main.admin-content .text-gray-600,
+                body.admin-page main.admin-content .text-gray-500,
+                body.admin-page main.admin-content .text-slate-700,
+                body.admin-page main.admin-content .text-slate-600,
+                body.admin-page main.admin-content .faqs-muted,
+                body.admin-page main.admin-content .queries-muted,
+                body.admin-page main.admin-content .users-copy,
+                body.admin-page main.admin-content .users-copy-sm,
+                body.admin-page main.admin-content .users-copy-xs {
+                    color: #f9fafb !important;
+                }
+
                 body.admin-page .admin-back-link {
                     position: relative;
                     display: inline-flex;
@@ -633,10 +708,10 @@
                 body.admin-page .admin-btn--primary,
                 body.admin-page button.admin-btn--primary,
                 body.admin-page a.admin-btn--primary {
-                    background: #67e8f9;
-                    border-color: #22d3ee;
-                    color: #fff !important;
-                    box-shadow: 0 10px 24px rgba(103, 232, 249, 0.28);
+                    background: #6ee7f5;
+                    border-color: #6ee7f5;
+                    color: #0f172a !important;
+                    box-shadow: none;
                 }
 
                 body.admin-page .admin-btn--primary:hover,
@@ -645,8 +720,8 @@
                 body.admin-page button.admin-btn--primary:focus-visible,
                 body.admin-page a.admin-btn--primary:hover,
                 body.admin-page a.admin-btn--primary:focus-visible {
-                    background: #22d3ee;
-                    border-color: #06b6d4;
+                    background: #54d8e9;
+                    border-color: #54d8e9;
                 }
 
                 body.admin-page .admin-btn--secondary {

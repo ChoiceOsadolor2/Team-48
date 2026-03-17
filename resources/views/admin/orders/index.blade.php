@@ -166,7 +166,7 @@
         </div>
 
         <div class="overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800">
-            <div class="flex items-center justify-between border-b border-gray-200 px-6 py-5 dark:border-gray-700">
+            <div class="flex items-center justify-between border-b border-[#3a3a3d] px-6 py-5">
                 <div>
                     <h3 class="text-[1.2rem] font-semibold text-gray-900 dark:text-white">Order queue</h3>
                     <p class="text-[0.95rem] text-gray-500 dark:text-gray-400">A cleaner table for fulfilment and customer review.</p>
@@ -193,7 +193,7 @@
                             <th class="px-5 py-4 font-semibold text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-200/80 dark:divide-gray-700/80">
+                    <tbody class="divide-y divide-[#3a3a3d]">
                         @forelse ($orders as $order)
                             <tr class="orders-row">
                                 <td class="px-5 py-5">
@@ -265,7 +265,7 @@
                 </table>
             </div>
 
-            <div class="border-t border-gray-200 px-6 py-5 dark:border-gray-700">
+            <div class="border-t border-[#3a3a3d] px-6 py-5">
                 {{ $orders->links() }}
             </div>
         </div>

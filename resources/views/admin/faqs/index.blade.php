@@ -114,6 +114,18 @@
             border-color: #e5e7eb;
         }
 
+        .admin-faqs-page .faqs-count-pill {
+            background: #2a2a2a !important;
+            border: 1px solid #444 !important;
+            color: #f9fafb !important;
+        }
+
+        .admin-faqs-page .faqs-category-pill {
+            background: #2a2a2a !important;
+            border: 1px solid #444 !important;
+            color: #f9fafb !important;
+        }
+
         .admin-faqs-page .faqs-row {
             transition: background 0.2s ease;
         }
@@ -251,7 +263,7 @@
             </div>
 
             <div class="faqs-table-shell overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
-                <div class="flex items-center justify-between border-b border-gray-200 px-6 py-5">
+                <div class="flex items-center justify-between border-b border-[#3a3a3d] px-6 py-5">
                     <div>
                         <h3 class="faqs-library-title flex items-center gap-3 text-[1.2rem] font-semibold text-gray-900">
                             <svg class="h-6 w-6 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -262,7 +274,7 @@
                         </h3>
                         <p class="faqs-muted mt-1 text-[0.95rem] text-gray-500">Keep chatbot answers accurate, current, and easy for customers to discover.</p>
                     </div>
-                    <span class="rounded-full bg-gray-100 px-3.5 py-1.5 text-[0.82rem] font-semibold text-gray-700">
+                    <span class="faqs-count-pill rounded-full px-3.5 py-1.5 text-[0.82rem] font-semibold">
                         @if ($faqs instanceof \Illuminate\Contracts\Pagination\Paginator)
                             Showing {{ $faqs->firstItem() ?? 0 }}-{{ $faqs->lastItem() ?? 0 }} of {{ $faqs->total() }}
                         @else
@@ -283,7 +295,7 @@
                 @else
                     <form method="POST" action="{{ route('admin.faqs.bulk') }}">
                         @csrf
-                        <div class="faqs-bulk-bar border-b px-6 py-5">
+                        <div class="faqs-bulk-bar border-b border-[#3a3a3d] px-6 py-5">
                             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                 <div class="flex items-center gap-3">
                                     <label class="flex items-center gap-2 text-[0.95rem] font-semibold text-gray-700">
@@ -316,7 +328,7 @@
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-200/80">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($faqs as $faq)
                                     <tr class="faqs-row">
                                         <td class="px-5 py-4">
@@ -328,7 +340,7 @@
                                             </span>
                                         </td>
                                         <td class="px-5 py-4">
-                                            <span class="inline-flex rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-700">
+                                            <span class="faqs-category-pill inline-flex rounded-full px-3 py-1 text-xs font-semibold">
                                                 {{ \App\Models\Faq::CATEGORIES[$faq->category] ?? ucfirst(str_replace('_', ' ', $faq->category)) }}
                                             </span>
                                         </td>
@@ -355,7 +367,7 @@
                 @endif
 
                 @if ($faqs instanceof \Illuminate\Contracts\Pagination\Paginator && $faqs->hasPages())
-                    <div class="border-t border-gray-200 px-6 py-5">
+                    <div class="border-t border-[#3a3a3d] px-6 py-5">
                         {{ $faqs->links() }}
                     </div>
                 @endif

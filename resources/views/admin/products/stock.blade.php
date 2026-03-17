@@ -41,7 +41,7 @@
 
             <div class="overflow-hidden rounded-3xl bg-white shadow-sm ring-1 ring-gray-100">
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200 text-sm">
+                    <table class="min-w-full divide-y divide-[#3a3a3d] text-sm">
                         <thead class="bg-slate-50">
                             <tr>
                                 <th class="px-6 py-4 text-left font-semibold text-slate-700">Product</th>
@@ -51,7 +51,7 @@
                                 <th class="px-6 py-4 text-left font-semibold text-slate-700">Action</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-100 bg-white">
+                        <tbody class="divide-y divide-[#3a3a3d] bg-white">
                             @forelse ($products as $product)
                                 @php
                                     $statusKey = $product->inventoryStatusKey();

@@ -7,20 +7,23 @@
 
     <style>
         .admin-contact-query-show-page .query-card {
-            background: #ffffff;
-            border-color: #e5e7eb;
+            background: #1d1d1d;
+            border-color: #3e3e3e;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
         }
 
         .admin-contact-query-show-page .query-soft {
-            background: #f9fafb;
+            background: linear-gradient(180deg, #2a2a2a 0%, #242424 100%);
+            border: 1px solid #383838;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
         }
 
         .admin-contact-query-show-page .query-text {
-            color: #111827 !important;
+            color: #f9fafb !important;
         }
 
         .admin-contact-query-show-page .query-muted {
-            color: #6b7280 !important;
+            color: #9ca3af !important;
         }
 
         .admin-contact-query-show-page .query-toggle-wrap {
@@ -30,12 +33,12 @@
             min-height: 56px;
             padding: 0 16px;
             border-radius: 18px;
-            border: 1px solid #d1d5db;
-            background: #f9fafb;
+            border: 1px solid #383838;
+            background: linear-gradient(180deg, #2a2a2a 0%, #242424 100%);
         }
 
         .admin-contact-query-show-page .query-toggle-label {
-            color: #111827;
+            color: #f9fafb;
             font-size: 0.95rem;
             font-weight: 600;
         }
@@ -58,13 +61,9 @@
             cursor: pointer;
         }
 
-        html[data-theme="dark"] .admin-contact-query-show-page .query-card {
-            background: #1f2937;
-            border-color: #374151;
-        }
-
         html[data-theme="dark"] .admin-contact-query-show-page .query-soft {
-            background: rgba(17, 24, 39, 0.78);
+            background: linear-gradient(180deg, #2a2a2a 0%, #242424 100%);
+            border-color: #383838;
         }
 
         html[data-theme="dark"] .admin-contact-query-show-page .query-text {
@@ -76,8 +75,8 @@
         }
 
         html[data-theme="dark"] .admin-contact-query-show-page .query-toggle-wrap {
-            border-color: #374151;
-            background: rgba(17, 24, 39, 0.78);
+            border-color: #383838;
+            background: linear-gradient(180deg, #2a2a2a 0%, #242424 100%);
         }
 
         html[data-theme="dark"] .admin-contact-query-show-page .query-toggle-label {

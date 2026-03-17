@@ -44,6 +44,10 @@
             background: #f9fafb;
         }
 
+        .admin-audit-page .audit-activity-head {
+            background: #1d1d1d !important;
+        }
+
         .admin-audit-page .audit-text {
             color: #111827 !important;
         }
@@ -87,6 +91,10 @@
         html[data-theme="dark"] .admin-audit-page .audit-soft,
         html[data-theme="dark"] .admin-audit-page .audit-table-head {
             background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-audit-page .audit-activity-head {
+            background: #1d1d1d !important;
         }
 
         html[data-theme="dark"] .admin-audit-page .audit-text {
@@ -156,7 +164,7 @@
             </section>
 
             <section class="audit-table-shell rounded-3xl border shadow-sm overflow-hidden">
-                <div class="audit-soft flex items-center justify-between border-b border-gray-200 px-5 py-4">
+                <div class="audit-soft audit-activity-head flex items-center justify-between border-b border-[#3a3a3d] px-5 py-4">
                     <div>
                         <h3 class="audit-text text-lg font-semibold">Recent audit activity</h3>
                         <p class="audit-muted mt-1 text-sm">Review who changed what and when across the store.</p>
@@ -190,7 +198,7 @@
                                     <th class="px-5 py-4 font-semibold">Summary</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($auditLogs as $log)
                                     <tr class="audit-row transition">
                                         <td class="audit-muted px-5 py-4">{{ $log->created_at->format('d M Y H:i') }}</td>

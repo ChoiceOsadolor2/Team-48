@@ -135,7 +135,7 @@
             </div>
 
             <div class="low-shell overflow-hidden rounded-3xl border shadow-sm">
-                <div class="flex items-center justify-between border-b border-gray-200 px-5 py-4">
+                <div class="flex items-center justify-between border-b border-[#3a3a3d] px-5 py-4">
                     <div>
                         <h3 class="low-text text-lg font-semibold">Restock queue</h3>
                         <p class="low-muted text-sm">The products most likely to need replenishment next.</p>
@@ -165,7 +165,7 @@
                                     <th class="px-5 py-4 font-semibold text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($products as $product)
                                     @php
                                         $priority = $product->inventoryWorstStockValue() <= 2 ? 'Restock now' : ($product->inventoryWorstStockValue() <= 5 ? 'Restock soon' : 'Monitor closely');
@@ -208,7 +208,7 @@
                 @endif
 
                 @if ($products->hasPages())
-                    <div class="border-t border-gray-200 px-5 py-4">
+                    <div class="border-t border-[#3a3a3d] px-5 py-4">
                         {{ $products->links() }}
                     </div>
                 @endif
