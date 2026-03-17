@@ -1,9 +1,38 @@
 <x-app-layout>
+    <style>
+        .admin-faqs-page .faqs-filter-grid {
+            align-items: end;
+        }
+
+        .admin-faqs-page .faqs-filter-actions {
+            justify-content: flex-start;
+        }
+
+        .admin-faqs-page .faqs-table-head {
+            background: #f8fafc;
+        }
+
+        .admin-faqs-page .faqs-row {
+            transition: background 0.2s ease;
+        }
+
+        .admin-faqs-page .faqs-row:hover {
+            background: rgba(15, 23, 42, 0.035);
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .faqs-table-head {
+            background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-faqs-page .faqs-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+    </style>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">Chatbot FAQs</h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="admin-faqs-page py-12">
         <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             <div class="flex items-center justify-between gap-4 rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
                 <div>
@@ -17,7 +46,7 @@
 
             <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm">
                 <form method="GET" action="{{ route('admin.faqs.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-5">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-[1fr,220px,auto] md:items-end">
+                    <div class="faqs-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[1fr,220px,auto] md:items-end">
                         <div class="flex-1">
                             <label class="mb-1.5 block text-[0.95rem] font-semibold text-gray-700">Search FAQs</label>
                             <input
@@ -37,7 +66,7 @@
                                 @endforeach
                             </select>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="faqs-filter-actions flex gap-2">
                             <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-3 text-[0.95rem] font-semibold text-white transition hover:bg-indigo-500">Apply</button>
                             <a href="{{ route('admin.faqs.index') }}" class="rounded-xl bg-gray-200 px-4 py-3 text-[0.95rem] font-semibold text-gray-800 transition hover:bg-gray-300">Clear</a>
                         </div>
@@ -90,7 +119,7 @@
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-[0.95rem]">
-                            <thead class="bg-gray-50 text-left">
+                            <thead class="faqs-table-head text-left">
                                 <tr class="text-[0.82rem] uppercase tracking-[0.18em] text-gray-500">
                                     <th class="px-5 py-4 font-semibold"><span class="sr-only">Select</span></th>
                                     <th class="px-5 py-4 font-semibold">Keyword</th>
@@ -99,9 +128,9 @@
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-gray-200/80">
                                 @foreach ($faqs as $faq)
-                                    <tr class="transition hover:bg-gray-50/80">
+                                    <tr class="faqs-row">
                                         <td class="px-5 py-4">
                                             <input type="checkbox" name="selected[]" value="{{ $faq->id }}" data-check-item="faqs" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
                                         </td>

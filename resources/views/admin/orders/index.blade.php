@@ -1,5 +1,34 @@
 <x-app-layout>
-    <div class="py-8 max-w-[1180px] mx-auto px-4 space-y-6">
+    <style>
+        .admin-orders-page .orders-filter-grid {
+            align-items: end;
+        }
+
+        .admin-orders-page .orders-filter-actions {
+            justify-content: flex-start;
+        }
+
+        .admin-orders-page .orders-table-head {
+            background: #f8fafc;
+        }
+
+        .admin-orders-page .orders-row {
+            transition: background 0.2s ease;
+        }
+
+        .admin-orders-page .orders-row:hover {
+            background: rgba(15, 23, 42, 0.035);
+        }
+
+        html[data-theme="dark"] .admin-orders-page .orders-table-head {
+            background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-orders-page .orders-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+    </style>
+    <div class="admin-orders-page py-8 max-w-[1180px] mx-auto px-4 space-y-6">
         <div class="flex items-center justify-between">
             <div>
                 <h1 class="text-[1.7rem] font-bold text-gray-900 dark:text-white">All Orders</h1>
@@ -9,7 +38,7 @@
 
         <div class="rounded-3xl border border-gray-200 bg-white p-6 shadow-sm dark:border-gray-700 dark:bg-gray-800">
             <form method="GET" action="{{ route('admin.orders.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-5 dark:border-gray-700 dark:bg-gray-900/70">
-                <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <div class="orders-filter-grid grid grid-cols-1 gap-4 md:grid-cols-4">
                     <div>
                         <label class="mb-1.5 block text-[0.95rem] font-semibold text-gray-700 dark:text-gray-200">Search</label>
                         <input
@@ -52,7 +81,7 @@
                     </div>
                 </div>
 
-                <div class="mt-4 flex gap-2">
+                <div class="orders-filter-actions mt-4 flex gap-2">
                     <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-3 text-[0.95rem] font-semibold text-white transition hover:bg-indigo-500">Apply</button>
                     <a href="{{ route('admin.orders.index') }}" class="rounded-xl bg-gray-200 px-4 py-3 text-[0.95rem] font-semibold text-gray-800 transition hover:bg-gray-300 dark:bg-gray-700 dark:text-gray-100 dark:hover:bg-gray-600">Clear</a>
                 </div>
@@ -76,7 +105,7 @@
 
             <div class="overflow-x-auto">
                 <table class="min-w-full text-[0.95rem]">
-                    <thead class="bg-gray-50 text-left dark:bg-gray-900/70">
+                    <thead class="orders-table-head text-left dark:bg-gray-900/70">
                         <tr class="text-[0.82rem] uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400">
                             <th class="px-5 py-4 font-semibold">Order</th>
                             <th class="px-5 py-4 font-semibold">Customer</th>
@@ -87,17 +116,17 @@
                             <th class="px-5 py-4 font-semibold text-right">Action</th>
                         </tr>
                     </thead>
-                    <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+                    <tbody class="divide-y divide-gray-200/80 dark:divide-gray-700/80">
                         @forelse ($orders as $order)
-                            <tr class="transition hover:bg-gray-50/80 dark:hover:bg-gray-900/40">
-                                <td class="px-5 py-4">
+                            <tr class="orders-row">
+                                <td class="px-5 py-5">
                                     <div class="font-semibold text-gray-900 dark:text-white">#{{ $order->id }}</div>
                                 </td>
-                                <td class="px-5 py-4">
+                                <td class="px-5 py-5">
                                     <div class="font-semibold text-gray-900 dark:text-white">{{ $order->user?->name ?? 'Unknown' }}</div>
                                     <div class="mt-1 text-[0.82rem] text-gray-500 dark:text-gray-400">{{ $order->user?->email ?? '-' }}</div>
                                 </td>
-                                <td class="px-5 py-4">
+                                <td class="px-5 py-5">
                                     <ul class="space-y-1 text-gray-600 dark:text-gray-300">
                                         @foreach ($order->items as $it)
                                             <li>{{ $it->product?->name ?? 'Deleted product' }} <span class="text-[0.82rem] text-gray-500">(x{{ $it->quantity }})</span></li>
@@ -135,8 +164,8 @@
                                         </button>
                                     </form>
                                 </td>
-                                <td class="px-5 py-4 text-gray-500 dark:text-gray-400">{{ $order->created_at->format('d M Y H:i') }}</td>
-                                <td class="px-5 py-4">
+                                <td class="px-5 py-5 text-gray-500 dark:text-gray-400">{{ $order->created_at->format('d M Y H:i') }}</td>
+                                <td class="px-5 py-5">
                                     <div class="flex justify-end">
                                         <a class="rounded-lg border border-cyan-200 px-3.5 py-2 text-[0.82rem] font-semibold text-cyan-700 transition hover:bg-cyan-50 dark:border-cyan-800 dark:text-cyan-300 dark:hover:bg-cyan-900/20"
                                            href="{{ route('admin.orders.show', $order) }}">

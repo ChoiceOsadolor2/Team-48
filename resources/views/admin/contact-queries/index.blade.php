@@ -1,4 +1,33 @@
 <x-app-layout>
+    <style>
+        .admin-contact-queries-page .queries-filter-grid {
+            align-items: end;
+        }
+
+        .admin-contact-queries-page .queries-filter-actions {
+            justify-content: flex-start;
+        }
+
+        .admin-contact-queries-page .queries-table-head {
+            background: #f8fafc;
+        }
+
+        .admin-contact-queries-page .queries-row {
+            transition: background 0.2s ease;
+        }
+
+        .admin-contact-queries-page .queries-row:hover {
+            background: rgba(15, 23, 42, 0.035);
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .queries-table-head {
+            background: rgba(17, 24, 39, 0.78);
+        }
+
+        html[data-theme="dark"] .admin-contact-queries-page .queries-row:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+    </style>
     <x-slot name="header">
         <div class="flex items-center justify-between">
             <div>
@@ -8,11 +37,11 @@
         </div>
     </x-slot>
 
-    <div class="py-12">
+    <div class="admin-contact-queries-page py-12">
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.contact-queries.index') }}" class="rounded-2xl border border-gray-200 bg-gray-50 p-4">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div class="queries-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.35fr)_minmax(220px,0.85fr)_auto]">
                         <div>
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Search</label>
                             <input
@@ -33,7 +62,7 @@
                             </select>
                         </div>
 
-                        <div class="flex items-end gap-2">
+                        <div class="queries-filter-actions flex items-end gap-2">
                             <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">Apply</button>
                             <a href="{{ route('admin.contact-queries.index') }}" class="rounded-xl bg-gray-200 px-4 py-2.5 text-sm font-semibold text-gray-800 transition hover:bg-gray-300">Clear</a>
                         </div>
@@ -85,7 +114,7 @@
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
-                            <thead class="bg-gray-50 text-left">
+                            <thead class="queries-table-head text-left">
                                 <tr class="text-xs uppercase tracking-[0.18em] text-gray-500">
                                     <th class="px-5 py-4 font-semibold"><span class="sr-only">Select</span></th>
                                     <th class="px-5 py-4 font-semibold">From</th>
@@ -96,9 +125,9 @@
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-gray-100">
+                            <tbody class="divide-y divide-gray-200/80">
                                 @foreach ($contactQueries as $contactQuery)
-                                    <tr class="transition hover:bg-gray-50/80">
+                                    <tr class="queries-row">
                                         <td class="px-5 py-4 align-top">
                                             <input type="checkbox" name="selected[]" value="{{ $contactQuery->id }}" form="bulk-queries-form" data-check-item="queries" class="h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500">
                                         </td>

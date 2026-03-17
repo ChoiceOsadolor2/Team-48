@@ -189,13 +189,33 @@
         .admin-users-page .users-table-shell {
             overflow: hidden;
         }
+
+        .admin-users-page .users-filter-grid {
+            align-items: end;
+        }
+
+        .admin-users-page .users-filter-actions {
+            justify-content: flex-start;
+        }
+
+        .admin-users-page .users-table-head {
+            background: #18181a !important;
+        }
+
+        .admin-users-page .users-table-row {
+            transition: background 0.2s ease;
+        }
+
+        .admin-users-page .users-table-row:hover {
+            background: rgba(255, 255, 255, 0.035) !important;
+        }
     </style>
 
     <div class="admin-users-page py-3">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="users-shell rounded-3xl border p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.users.index') }}" class="users-filter-box rounded-2xl border p-4">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div class="users-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(220px,0.8fr)_auto]">
                         <div>
                             <label class="mb-2 block">Search</label>
                             <div class="users-field-shell">
@@ -226,7 +246,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-end gap-3">
+                        <div class="users-filter-actions flex items-end gap-3">
                             <button type="submit" class="users-action-btn">Apply</button>
                             <a href="{{ route('admin.users.index') }}" class="users-action-btn">Clear</a>
                         </div>
@@ -260,20 +280,20 @@
                                     <th class="px-5 py-4 font-semibold text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-[#444]">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($users as $user)
                                     <tr class="users-table-row transition">
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-5">
                                             <div class="text-white">{{ $user->name }}</div>
                                             <div class="users-copy-xs mt-1">#{{ $user->id }} • {{ $user->email }}</div>
                                         </td>
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-5">
                                             <span class="users-role-chip inline-flex items-center rounded-full border px-3 py-2 text-white">
                                                 {{ ucfirst($user->role) }}
                                             </span>
                                         </td>
-                                        <td class="px-5 py-4 text-white">{{ $user->created_at->format('d M Y') }}</td>
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-5 text-white">{{ $user->created_at->format('d M Y') }}</td>
+                                        <td class="px-5 py-5">
                                             <div class="flex justify-end gap-2">
                                                 <a href="{{ route('admin.users.edit', $user) }}" class="users-action-btn">Edit</a>
                                                 <form action="{{ route('admin.users.destroy', $user) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this user? This action cannot be undone.');">

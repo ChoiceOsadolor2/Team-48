@@ -231,8 +231,24 @@
             overflow: hidden;
         }
 
+        .admin-products-page .products-filter-grid {
+            align-items: end;
+        }
+
+        .admin-products-page .products-filter-actions {
+            justify-content: flex-start;
+        }
+
+        .admin-products-page .products-table-head {
+            background: #18181a !important;
+        }
+
+        .admin-products-page .products-table-row {
+            transition: background 0.2s ease;
+        }
+
         .admin-products-page .products-table-row:hover {
-            background: transparent !important;
+            background: rgba(255, 255, 255, 0.035) !important;
         }
 
         .admin-products-page .products-table-row input[type="checkbox"] {
@@ -299,7 +315,7 @@
                 @endphp
 
                 <form method="GET" action="{{ route('admin.products.index') }}" class="products-filter-box rounded-2xl border p-4">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
+                    <div class="products-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(220px,0.8fr)_auto]">
                         <div>
                             <label class="mb-2 block">Search</label>
                             <div class="products-field-shell">
@@ -331,7 +347,7 @@
                             </div>
                         </div>
 
-                        <div class="flex items-end gap-3">
+                        <div class="products-filter-actions flex items-end gap-3">
                             @if ($currentCategory)
                                 <input type="hidden" name="category" value="{{ $currentCategory }}">
                             @endif
@@ -420,18 +436,18 @@
                                     <th class="px-5 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody class="divide-y divide-[#444]">
+                            <tbody class="divide-y divide-[#3a3a3d]">
                                 @foreach ($products as $product)
                                     <tr class="products-table-row transition">
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-5">
                                             <input type="checkbox" name="selected[]" value="{{ $product->id }}" form="bulk-products-form" data-check-item="products" class="h-4 w-4 rounded border-[#444] bg-black">
                                         </td>
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-5">
                                             <div class="text-white">{{ $product->name }}</div>
                                         </td>
-                                        <td class="px-5 py-4 text-white">{{ $product->category->name ?? '-' }}</td>
-                                        <td class="px-5 py-4 text-white">{{ number_format($product->price, 2) }} GBP</td>
-                                        <td class="products-stock-cell px-5 py-4">
+                                        <td class="px-5 py-5 text-white">{{ $product->category->name ?? '-' }}</td>
+                                        <td class="px-5 py-5 text-white">{{ number_format($product->price, 2) }} GBP</td>
+                                        <td class="products-stock-cell px-5 py-5">
                                             @php
                                                 $stockTextClasses = $product->inventoryStatusKey() === 'out_of_stock'
                                                     ? 'text-rose-300'
@@ -475,7 +491,7 @@
                                                 </div>
                                             @endif
                                         </td>
-                                        <td class="px-5 py-4">
+                                        <td class="px-5 py-5">
                                             <div class="flex justify-end gap-2">
                                                 <a href="{{ route('admin.products.edit', $product) }}" class="products-action-btn">
                                                     Edit
