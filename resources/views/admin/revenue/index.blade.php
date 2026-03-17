@@ -31,6 +31,42 @@
                 margin-bottom: 24px;
             }
         }
+
+        .admin-revenue-page .revenue-scroll-panel {
+            scrollbar-width: thin;
+            scrollbar-color: rgba(6, 182, 212, 0.85) rgba(148, 163, 184, 0.16);
+        }
+
+        .admin-revenue-page .revenue-scroll-panel::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .admin-revenue-page .revenue-scroll-panel::-webkit-scrollbar-track {
+            background: rgba(148, 163, 184, 0.14);
+            border-radius: 999px;
+        }
+
+        .admin-revenue-page .revenue-scroll-panel::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, rgba(34, 211, 238, 0.95) 0%, rgba(14, 165, 233, 0.9) 100%);
+            border-radius: 999px;
+            border: 2px solid rgba(255, 255, 255, 0.75);
+        }
+
+        .admin-revenue-page .revenue-scroll-panel::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, rgba(103, 232, 249, 0.95) 0%, rgba(56, 189, 248, 0.95) 100%);
+        }
+
+        html[data-theme="dark"] .admin-revenue-page .revenue-scroll-panel {
+            scrollbar-color: rgba(34, 211, 238, 0.85) rgba(17, 24, 39, 0.65);
+        }
+
+        html[data-theme="dark"] .admin-revenue-page .revenue-scroll-panel::-webkit-scrollbar-track {
+            background: rgba(17, 24, 39, 0.82);
+        }
+
+        html[data-theme="dark"] .admin-revenue-page .revenue-scroll-panel::-webkit-scrollbar-thumb {
+            border-color: rgba(17, 24, 39, 0.78);
+        }
     </style>
     <div class="admin-revenue-page py-8 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div class="page-intro">
@@ -196,7 +232,7 @@
                 <h2 class="text-xl font-bold text-gray-900 dark:text-white">Monthly breakdown</h2>
                 <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Direct figures behind the graph.</p>
 
-                <div class="mt-5 space-y-3 xl:max-h-[640px] xl:overflow-y-auto xl:pr-2">
+                <div class="revenue-scroll-panel mt-5 space-y-3 xl:max-h-[640px] xl:overflow-y-auto xl:pr-2">
                     @foreach ($monthlyRevenue as $month)
                         <div class="rounded-2xl border border-gray-200 bg-gray-50 px-4 py-4 dark:border-gray-700 dark:bg-gray-900/50">
                             <div class="flex items-center justify-between gap-3">
