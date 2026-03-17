@@ -36,7 +36,13 @@
         <div class="mx-auto max-w-7xl space-y-6 sm:px-6 lg:px-8">
             <div class="page-intro">
                 <div>
-                    <h1 class="page-intro-title">Admin audit log</h1>
+                    <h1 class="page-intro-title flex items-center gap-3">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M12 3l7 4v5c0 5-3.5 8.5-7 9-3.5-.5-7-4-7-9V7l7-4z"></path>
+                            <path d="M9 12l2 2 4-4"></path>
+                        </svg>
+                        <span>Admin audit log</span>
+                    </h1>
                     <p class="page-intro-copy">Track important admin actions across products, orders, FAQs, discounts, and support workflows.</p>
                 </div>
             </div>

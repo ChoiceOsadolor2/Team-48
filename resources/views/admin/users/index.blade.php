@@ -40,6 +40,10 @@
             color: #fff !important;
         }
 
+        .admin-users-page .users-page-intro {
+            margin-bottom: 8px;
+        }
+
         .admin-users-page .users-copy,
         .admin-users-page .users-copy-sm,
         .admin-users-page .users-copy-xs,
@@ -325,10 +329,36 @@
         html[data-theme="dark"] .admin-users-page .users-table-shell .users-action-btn:focus-visible {
             background: #1f2937 !important;
         }
+
+        @media (min-width: 768px) {
+            .admin-users-page .users-page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
     </style>
 
-    <div class="admin-users-page py-3">
+    <div class="admin-users-page py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="users-page-intro">
+                <div>
+                    <h1 class="flex items-center gap-3 text-[1.7rem] font-bold text-gray-900 dark:text-white">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>Users</span>
+                    </h1>
+                    <p class="mt-1.5 text-[0.98rem] text-gray-500 dark:text-gray-400">Search accounts, review roles, and manage customer access more efficiently.</p>
+                </div>
+            </div>
+
             <div class="users-shell rounded-3xl border p-5 shadow-sm">
                 <form method="GET" action="{{ route('admin.users.index') }}" class="users-filter-box rounded-2xl border p-4">
                     <div class="users-filter-grid grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.4fr)_minmax(220px,0.8fr)_auto]">

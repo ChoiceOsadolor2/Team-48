@@ -43,6 +43,10 @@
             color: #fff !important;
         }
 
+        .admin-products-page .products-page-intro {
+            margin-bottom: 8px;
+        }
+
         .admin-products-page .products-copy,
         .admin-products-page .products-copy-sm,
         .admin-products-page .products-copy-xs,
@@ -380,6 +384,17 @@
             background: #1f2937 !important;
         }
 
+        @media (min-width: 768px) {
+            .admin-products-page .products-page-intro {
+                min-height: 58px;
+                display: flex;
+                align-items: center;
+                margin-top: -90px;
+                margin-left: 210px;
+                margin-bottom: 24px;
+            }
+        }
+
         .admin-products-page .products-platform-list {
             display: flex;
             flex-direction: column;
@@ -428,8 +443,23 @@
         }
     </style>
 
-    <div class="admin-products-page py-3">
+    <div class="admin-products-page py-8">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
+            <div class="products-page-intro">
+                <div>
+                    <h1 class="flex items-center gap-3 text-[1.7rem] font-bold text-gray-900 dark:text-white">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 7h-9"></path>
+                            <path d="M14 17H5"></path>
+                            <circle cx="17" cy="17" r="3"></circle>
+                            <circle cx="7" cy="7" r="3"></circle>
+                        </svg>
+                        <span>Products</span>
+                    </h1>
+                    <p class="mt-1.5 text-[0.98rem] text-gray-500 dark:text-gray-400">Manage catalogue items, pricing, and platform stock from one place.</p>
+                </div>
+            </div>
+
             <div class="products-shell rounded-3xl border p-5 shadow-sm">
                 @php
                     $currentCategory = $categoryKey ?? request('category');

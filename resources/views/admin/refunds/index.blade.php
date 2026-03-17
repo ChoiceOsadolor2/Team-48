@@ -94,7 +94,17 @@
 
         <div class="page-intro">
             <div>
-                <h1 class="page-intro-title">Refund Requests</h1>
+                <h1 class="page-intro-title flex items-center gap-3">
+                    <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M3 7h18"></path>
+                        <path d="M7 3v4"></path>
+                        <path d="M17 3v4"></path>
+                        <rect x="3" y="5" width="18" height="16" rx="2"></rect>
+                        <path d="M8 13h8"></path>
+                        <path d="M8 17h5"></path>
+                    </svg>
+                    <span>Refund Requests</span>
+                </h1>
                 <p class="page-intro-copy">Handle refund decisions clearly and keep after-sales support moving.</p>
             </div>
         </div>

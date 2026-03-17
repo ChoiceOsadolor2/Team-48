@@ -207,7 +207,12 @@
         <div class="max-w-[1180px] mx-auto px-4 sm:px-6 lg:px-8 space-y-4">
             <div class="page-intro flex items-start justify-between gap-4">
                 <div>
-                    <h1 class="page-intro-title">Chatbot FAQs</h1>
+                    <h1 class="page-intro-title flex items-center gap-3">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5H7l-4 3v-6.5A8.5 8.5 0 1 1 21 11.5z"></path>
+                        </svg>
+                        <span>Chatbot FAQs</span>
+                    </h1>
                     <p class="page-intro-copy">Keep chatbot answers current and easy to manage from one admin section.</p>
                 </div>
                 <a href="{{ route('admin.faqs.create') }}" class="rounded-xl bg-cyan-600 px-4 py-3 text-[0.95rem] font-semibold text-white shadow-sm transition hover:bg-cyan-500">
@@ -248,7 +253,13 @@
             <div class="faqs-table-shell overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm">
                 <div class="flex items-center justify-between border-b border-gray-200 px-6 py-5">
                     <div>
-                        <h3 class="faqs-library-title text-[1.2rem] font-semibold text-gray-900">FAQ library</h3>
+                        <h3 class="faqs-library-title flex items-center gap-3 text-[1.2rem] font-semibold text-gray-900">
+                            <svg class="h-6 w-6 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                            </svg>
+                            <span>FAQ library</span>
+                        </h3>
                     </div>
                     <span class="rounded-full bg-gray-100 px-3.5 py-1.5 text-[0.82rem] font-semibold text-gray-700">
                         @if ($faqs instanceof \Illuminate\Contracts\Pagination\Paginator)

@@ -173,7 +173,12 @@
         <div class="max-w-6xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="page-intro">
                 <div>
-                    <h1 class="page-intro-title">Contact Queries</h1>
+                    <h1 class="page-intro-title flex items-center gap-3">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        <span>Contact Queries</span>
+                    </h1>
                     <p class="page-intro-copy">View the support inbox, filter customer messages, and resolve requests faster.</p>
                 </div>
             </div>

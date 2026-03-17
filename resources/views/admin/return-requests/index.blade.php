@@ -97,7 +97,15 @@
     <div class="admin-return-requests-page py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="page-intro">
-                <h1 class="page-intro-title">Returns & Refunds</h1>
+                <h1 class="page-intro-title flex items-center gap-3">
+                    <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 8v8a2 2 0 0 1-2 2H8"></path>
+                        <path d="M3 16V8a2 2 0 0 1 2-2h11"></path>
+                        <path d="m7 12-4 4 4 4"></path>
+                        <path d="m17 4 4 4-4 4"></path>
+                    </svg>
+                    <span>Returns & Refunds</span>
+                </h1>
                 <p class="page-intro-copy">Track after-sales requests, review their status, and respond more efficiently.</p>
             </div>
             <div class="rounded-3xl border border-gray-200 bg-white p-5 shadow-sm">

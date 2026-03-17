@@ -37,7 +37,13 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">
             <div class="page-intro">
                 <div>
-                    <h1 class="page-intro-title">Discount Codes</h1>
+                    <h1 class="page-intro-title flex items-center gap-3">
+                        <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20.59 13.41 11 3H4v7l9.59 9.59a2 2 0 0 0 2.82 0l4.18-4.18a2 2 0 0 0 0-2.82Z"></path>
+                            <path d="M7 7h.01"></path>
+                        </svg>
+                        <span>Discount Codes</span>
+                    </h1>
                     <p class="page-intro-copy">Create and manage promo codes from one admin hub.</p>
                 </div>
             </div>

@@ -77,7 +77,14 @@
             <div class="low-shell rounded-3xl border p-5 shadow-sm">
                 <div class="md:flex md:items-start md:justify-between">
                     <div>
-                        <h1 class="low-text text-2xl font-semibold">Low-Stock Notification Centre</h1>
+                        <h1 class="low-text flex items-center gap-3 text-2xl font-semibold">
+                            <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                                <path d="M12 9v4"></path>
+                                <path d="M12 17h.01"></path>
+                            </svg>
+                            <span>Low-Stock Notification Centre</span>
+                        </h1>
                         <p class="low-muted mt-1 text-base">Prioritise restocking based on urgency and current inventory risk.</p>
                     </div>
                 </div>

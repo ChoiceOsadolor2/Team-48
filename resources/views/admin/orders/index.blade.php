@@ -97,7 +97,17 @@
     <div class="admin-orders-page py-8 max-w-[1180px] mx-auto px-4 space-y-6">
         <div class="orders-page-intro">
             <div>
-                <h1 class="text-[1.7rem] font-bold text-gray-900 dark:text-white">All Orders</h1>
+                <h1 class="flex items-center gap-3 text-[1.7rem] font-bold text-gray-900 dark:text-white">
+                    <svg class="h-7 w-7 text-cyan-600 dark:text-cyan-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M8 6h13"></path>
+                        <path d="M8 12h13"></path>
+                        <path d="M8 18h13"></path>
+                        <path d="M3 6h.01"></path>
+                        <path d="M3 12h.01"></path>
+                        <path d="M3 18h.01"></path>
+                    </svg>
+                    <span>All Orders</span>
+                </h1>
                 <p class="mt-1.5 text-[0.98rem] text-gray-500 dark:text-gray-400">Track fulfilment, review customers, and filter recent orders faster.</p>
             </div>
         </div>
