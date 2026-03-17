@@ -92,17 +92,17 @@
 
             <div class="grid grid-cols-1 gap-4 md:grid-cols-3">
                 <div class="low-card rounded-3xl border p-6 shadow-sm">
-                    <p class="text-sm font-medium text-rose-700">Critical</p>
+                    <p class="text-sm font-medium text-rose-700">Restock now</p>
                     <p class="low-text mt-2 text-3xl font-bold">{{ $criticalCount }}</p>
                     <p class="low-muted mt-2 text-sm">Products with 0-2 units left.</p>
                 </div>
                 <div class="low-card rounded-3xl border p-6 shadow-sm">
-                    <p class="text-sm font-medium text-amber-700">Warning</p>
+                    <p class="text-sm font-medium text-amber-700">Restock soon</p>
                     <p class="low-text mt-2 text-3xl font-bold">{{ $warningCount }}</p>
                     <p class="low-muted mt-2 text-sm">Products with 3-5 units left.</p>
                 </div>
                 <div class="low-card rounded-3xl border p-6 shadow-sm">
-                    <p class="text-sm font-medium text-sky-700">Watch list</p>
+                    <p class="text-sm font-medium text-sky-700">Monitor closely</p>
                     <p class="low-text mt-2 text-3xl font-bold">{{ $watchCount }}</p>
                     <p class="low-muted mt-2 text-sm">Products with 6-10 units left.</p>
                 </div>
@@ -120,9 +120,9 @@
                             <label class="low-text mb-1 block text-sm font-semibold">Severity</label>
                             <select name="severity" class="low-control w-full px-4 py-3">
                                 <option value="">All low-stock products</option>
-                                <option value="critical" @selected($severity === 'critical')>Critical</option>
-                                <option value="warning" @selected($severity === 'warning')>Warning</option>
-                                <option value="watch" @selected($severity === 'watch')>Watch list</option>
+                                <option value="critical" @selected($severity === 'critical')>Restock now</option>
+                                <option value="warning" @selected($severity === 'warning')>Restock soon</option>
+                                <option value="watch" @selected($severity === 'watch')>Monitor closely</option>
                             </select>
                         </div>
 
@@ -164,10 +164,10 @@
                             <tbody class="divide-y divide-gray-100">
                                 @foreach ($products as $product)
                                     @php
-                                        $priority = $product->inventoryWorstStockValue() <= 2 ? 'Critical' : ($product->inventoryWorstStockValue() <= 5 ? 'Warning' : 'Watch');
-                                        $priorityClasses = $priority === 'Critical'
+                                        $priority = $product->inventoryWorstStockValue() <= 2 ? 'Restock now' : ($product->inventoryWorstStockValue() <= 5 ? 'Restock soon' : 'Monitor closely');
+                                        $priorityClasses = $priority === 'Restock now'
                                             ? 'bg-rose-100 text-rose-800'
-                                            : ($priority === 'Warning' ? 'bg-amber-100 text-amber-800' : 'bg-sky-100 text-sky-800');
+                                            : ($priority === 'Restock soon' ? 'bg-amber-100 text-amber-800' : 'bg-sky-100 text-sky-800');
                                     @endphp
                                     <tr class="low-row transition">
                                         <td class="px-5 py-4">

@@ -128,7 +128,7 @@
                         <label class="mb-1 block text-sm font-semibold text-gray-700 dark:text-gray-200">Status</label>
                         <select name="status" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
                             <option value="">All requests</option>
-                            <option value="pending" {{ ($status ?? request('status')) === 'pending' ? 'selected' : '' }}>Pending</option>
+                            <option value="pending" {{ ($status ?? request('status')) === 'pending' ? 'selected' : '' }}>Pending review</option>
                             <option value="approved" {{ ($status ?? request('status')) === 'approved' ? 'selected' : '' }}>Approved</option>
                             <option value="denied" {{ ($status ?? request('status')) === 'denied' ? 'selected' : '' }}>Denied</option>
                         </select>

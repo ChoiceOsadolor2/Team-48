@@ -129,8 +129,8 @@ class Product extends Model
     {
         return match ($this->inventoryStatusKey()) {
             'out_of_stock' => 'Out of stock',
-            'low_stock' => 'Low stock',
-            default => 'In stock',
+            'low_stock' => 'Needs restock',
+            default => 'Healthy stock',
         };
     }
 

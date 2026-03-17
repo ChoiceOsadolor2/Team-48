@@ -54,7 +54,7 @@
                         <div class="rounded-2xl bg-gray-50 p-4">
                             <p class="text-xs uppercase tracking-[0.16em] text-gray-400">Reviewed by</p>
                             <p class="mt-2 font-semibold text-gray-900">{{ $returnRequest->reviewedBy?->name ?? 'Not reviewed yet' }}</p>
-                            <p class="mt-1 text-sm text-gray-500">{{ $returnRequest->reviewed_at ? $returnRequest->reviewed_at->diffForHumans() : 'Pending review' }}</p>
+                            <p class="mt-1 text-sm text-gray-500">{{ $returnRequest->reviewed_at ? $returnRequest->reviewed_at->diffForHumans() : 'Awaiting review' }}</p>
                         </div>
                     </div>
                 </div>
@@ -79,7 +79,7 @@
                         <div>
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Status</label>
                             <select name="status" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm">
-                                <option value="pending" @selected($returnRequest->status === 'pending')>Pending</option>
+                                <option value="pending" @selected($returnRequest->status === 'pending')>Pending review</option>
                                 <option value="approved" @selected($returnRequest->status === 'approved')>Approved</option>
                                 <option value="declined" @selected($returnRequest->status === 'declined')>Declined</option>
                             </select>

@@ -131,7 +131,7 @@
                         <label class="mb-1.5 block text-[0.95rem] font-semibold text-gray-700 dark:text-gray-200">Status</label>
                         <select name="status" class="w-full rounded-xl border border-gray-300 px-4 py-3 text-[0.95rem] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
                             <option value="" {{ request('status') === '' ? 'selected' : '' }}>All</option>
-                            <option value="processing" {{ request('status') === 'processing' ? 'selected' : '' }}>Processing</option>
+                            <option value="processing" {{ request('status') === 'processing' ? 'selected' : '' }}>In fulfilment</option>
                             <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                             <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
                         </select>
@@ -232,7 +232,7 @@
                                         <input type="hidden" name="from" value="{{ request('from') }}">
                                         <input type="hidden" name="to" value="{{ request('to') }}">
                                         <select name="status" class="rounded-lg border border-gray-300 px-3.5 py-2 text-[0.9rem] dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100">
-                                            <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>Processing</option>
+                                            <option value="processing" {{ $order->status === 'processing' ? 'selected' : '' }}>In fulfilment</option>
                                             <option value="completed" {{ $order->status === 'completed' || $order->status === 'delivered' ? 'selected' : '' }}>Completed</option>
                                             <option value="cancelled" {{ $order->status === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                                         </select>

@@ -496,8 +496,8 @@
                                 <div class="products-select-wrap">
                                     <select name="stock" class="products-select w-full px-4 py-3">
                                         <option value="">All stock levels</option>
-                                        <option value="in_stock" {{ ($stockFilter ?? request('stock')) === 'in_stock' ? 'selected' : '' }}>In stock</option>
-                                        <option value="low_stock" {{ ($stockFilter ?? request('stock')) === 'low_stock' ? 'selected' : '' }}>Low stock</option>
+                                        <option value="in_stock" {{ ($stockFilter ?? request('stock')) === 'in_stock' ? 'selected' : '' }}>Healthy stock</option>
+                                        <option value="low_stock" {{ ($stockFilter ?? request('stock')) === 'low_stock' ? 'selected' : '' }}>Needs restock</option>
                                         <option value="out_of_stock" {{ ($stockFilter ?? request('stock')) === 'out_of_stock' ? 'selected' : '' }}>Out of stock</option>
                                     </select>
                                 </div>
@@ -628,14 +628,14 @@
                                             </div>
                                             @if ($product->hasPlatformSpecificStock() && $product->inventoryStatusKey() === 'out_of_stock' && $lowCount > 0)
                                                 <div class="products-stock-summary products-stock-summary-secondary">
-                                                    <span class="products-status-chip rounded-full px-3 py-2 text-amber-300">Low stock</span>
-                                                    <span class="products-copy-sm">{{ $lowCount }} platform{{ $lowCount === 1 ? '' : 's' }} low</span>
+                                                    <span class="products-status-chip rounded-full px-3 py-2 text-amber-300">Needs restock</span>
+                                                    <span class="products-copy-sm">{{ $lowCount }} platform{{ $lowCount === 1 ? '' : 's' }} below target</span>
                                                 </div>
                                             @endif
                                             @if ($product->hasPlatformSpecificStock() && $inCount > 0)
                                                 <div class="products-stock-summary products-stock-summary-secondary">
-                                                    <span class="products-status-chip rounded-full px-3 py-2 text-emerald-300">In stock</span>
-                                                    <span class="products-copy-sm">{{ $inCount }} platform{{ $inCount === 1 ? '' : 's' }} in stock</span>
+                                                    <span class="products-status-chip rounded-full px-3 py-2 text-emerald-300">Healthy stock</span>
+                                                    <span class="products-copy-sm">{{ $inCount }} platform{{ $inCount === 1 ? '' : 's' }} ready to sell</span>
                                                 </div>
                                             @endif
                                             @if ($product->platformStocks->isNotEmpty())

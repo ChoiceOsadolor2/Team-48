@@ -76,7 +76,7 @@
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Status</label>
                             <select name="status" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm">
                                 <option value="">All codes</option>
-                                <option value="active" @selected($status === 'active')>Active</option>
+                                <option value="active" @selected($status === 'active')>Live</option>
                                 <option value="inactive" @selected($status === 'inactive')>Inactive</option>
                             </select>
                         </div>

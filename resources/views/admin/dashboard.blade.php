@@ -408,7 +408,7 @@
                             <span class="attention-pill-count">{{ $lowStockProductCount }}</span>
                             <span class="attention-pill-label">
                                 <strong>Needs restock</strong>
-                                <span>Low stock products</span>
+                                <span>Needs restock</span>
                             </span>
                         </a>
                         <a href="{{ route('admin.return-requests.index') }}" class="attention-pill">
@@ -453,7 +453,7 @@
                 <a href="{{ route('admin.refunds.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-orange-300">Refunds</p>
                     <p class="mt-2 text-3xl font-bold">{{ number_format($refundRequestCount) }}</p>
-                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} pending decisions in the queue.</p>
+                    <p class="dashboard-stat-copy mt-2 text-sm text-gray-300">{{ $pendingRefundCount }} requests awaiting review.</p>
                 </a>
                 <a href="{{ route('admin.contact-queries.index') }}" class="dashboard-stat-card block w-full sm:w-[calc(50%-0.5rem)] lg:w-[360px] min-h-[145px] rounded-3xl border border-[#444] bg-black p-4 text-white shadow-xl transition-transform duration-200 hover:-translate-y-1 hover:border-[#444]">
                     <p class="text-sm uppercase tracking-[0.2em] text-sky-300">Contact queries</p>
@@ -485,13 +485,13 @@
                             <p class="mt-1.5 text-2xl font-bold">{{ $outOfStockProducts }}</p>
                         </div>
                         <div class="rounded-2xl border border-[#444] bg-[#1d1d1f] p-3.5 text-yellow-300">
-                            <p class="text-sm font-semibold">Low stock</p>
+                            <p class="text-sm font-semibold">Needs restock</p>
                             <p class="mt-1.5 text-2xl font-bold">{{ $lowStockProductCount }}</p>
                         </div>
                     </div>
                     <div class="mt-5">
                         <div class="mb-3 flex items-center justify-between">
-                            <p class="text-sm font-semibold text-white">Low stock alerts</p>
+                            <p class="text-sm font-semibold text-white">Restock alerts</p>
                             <span class="text-xs" style="color: #888 !important;">5 units or fewer</span>
                         </div>
                         @if ($lowStockProducts->isEmpty())
@@ -672,7 +672,7 @@
                                     <div class="flex items-center justify-between gap-3">
                                         <p class="font-semibold text-white">{{ $query->name }}</p>
                                         <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $query->resolved_at ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-200' : 'bg-amber-100 text-amber-800 dark:bg-amber-900/40 dark:text-amber-200' }}">
-                                            {{ $query->resolved_at ? 'Resolved' : 'Open' }}
+                                            {{ $query->resolved_at ? 'Resolved' : 'Unresolved' }}
                                         </span>
                                     </div>
                                     <p class="mt-1 text-sm text-[#888]">{{ \Illuminate\Support\Str::limit($query->subject, 34) }}</p>

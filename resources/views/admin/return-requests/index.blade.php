@@ -120,7 +120,7 @@
                             <label class="mb-1 block text-sm font-semibold text-gray-700">Status</label>
                             <select name="status" class="w-full rounded-xl border border-gray-300 px-3 py-2.5 text-sm">
                                 <option value="">All statuses</option>
-                                <option value="pending" @selected($status === 'pending')>Pending</option>
+                                <option value="pending" @selected($status === 'pending')>Pending review</option>
                                 <option value="approved" @selected($status === 'approved')>Approved</option>
                                 <option value="declined" @selected($status === 'declined')>Declined</option>
                             </select>
