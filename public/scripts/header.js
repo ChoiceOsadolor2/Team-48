@@ -223,50 +223,10 @@ fetch(headerFile)
         });
     }
 
-    fetch('/user-status', {
-      headers: { 'Accept': 'application/json' }
-    })
-      .then(res => res.text())
-      .then(text => {
-        try {
-          JSON.parse(text);
-        } catch (e) {
-          console.error('Non-JSON /user-status response:', text);
-        }
-      })
-      .catch(err => {
-        console.error('User status error:', err);
-      });
-
     initChatbot();
     initScrollTop();
   });
 
-// ; (async function () {
-//   try {
-//     const res = await fetch('/user-status', {
-//       headers: { 'Accept': 'application/json' }
-//     });
-
-//     if (!res.ok) return;
-
-//     const data = await res.json();
-
-//     const remember = localStorage.getItem('rememberLogin') === '1';
-//     const temp = sessionStorage.getItem('tempLoggedIn') === '1';
-
-//     if (data.logged_in && !remember && !temp) {
-//       await fetch('/logout-json', {
-//         method: 'GET',
-//         headers: { 'Accept': 'application/json' }
-//       });
-
-//       // window.location.reload();
-//     }
-//   } catch (err) {
-//     console.error('Logout check error:', err);
-//   }
-// })();
 
 /* =========================================
    SCROLL TO TOP LOGIC
@@ -428,3 +388,24 @@ window.toggleInlineSearch = function () {
     headerEl.classList.toggle('search-active');
   }
 };
+
+
+document.addEventListener("click", function(e){
+    if (e.target.matches("#logoutBtn")){
+        
+    fetch('/logout-json',{
+      method: 'POST',
+      headers: {'Accept': 'application/json',
+        'X-CSRF-TOKEN':document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+      },
+      credentials: 'include'
+    })
+    .then(res =>res.json())
+    .then(data =>{
+      if (data.success){
+            window.location.href = '/pages/login.html';
+    }
+  })
+  .catch(err => console.error('Logout error:', err));
+    }
+});
