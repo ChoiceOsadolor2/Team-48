@@ -324,7 +324,6 @@ function initChatbot() {
   // Toggle Window
   const openChat = () => {
     chatWindow.classList.remove('hidden');
-    chatInput.focus();
   };
 
   const closeChat = () => {
