@@ -105,7 +105,7 @@ fetch(headerFile)
                     <img src="${imgUrl}" alt="${product.name}" class="vx-search-dropdown-img" onerror="this.src='../assets/MainLogo.png'">
                     <div class="vx-search-dropdown-info">
                       <span class="vx-search-dropdown-title">${product.name}</span>
-                      <span class="vx-search-dropdown-price">£${Number(product.price).toFixed(2)}</span>
+                      <span class="vx-search-dropdown-price">${Number(product.price).toFixed(2)} GBP</span>
                     </div>
                   `;
                   li.addEventListener('click', () => {

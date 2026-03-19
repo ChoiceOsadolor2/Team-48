@@ -157,6 +157,48 @@
                         <p id="shipping-option-error" class="checkout-field-error" @if($errors->has('shipping_option')) style="display:block;" @endif>{{ $errors->first('shipping_option') }}</p>
                     </div>
 
+                    <div class="form-section checkout-discount-form-section">
+                        <h2>Discount Code</h2>
+                        <form action="{{ route('checkout.discount.apply') }}" method="POST" class="checkout-discount-form">
+                            @csrf
+                            <div class="checkout-discount-input-row">
+                                <div class="checkout-field-wrap">
+                                    <input
+                                        type="text"
+                                        name="discount_code"
+                                        value="{{ old('discount_code', $appliedDiscount['code'] ?? '') }}"
+                                        placeholder="Enter discount code"
+                                        autocomplete="off"
+                                    >
+                                </div>
+                                <button type="submit" class="checkout-discount-btn">Apply</button>
+                            </div>
+                        </form>
+
+                        @if ($appliedDiscount)
+                            <div class="checkout-discount-applied">
+                                <div>
+                                    <p class="checkout-discount-badge">Applied: {{ $appliedDiscount['code'] }}</p>
+                                    <p class="checkout-discount-meta">{{ $appliedDiscount['label'] }}</p>
+                                </div>
+
+                                <form action="{{ route('checkout.discount.remove') }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="checkout-discount-remove">Remove</button>
+                                </form>
+                            </div>
+                        @endif
+
+                        @if (session('discount_error'))
+                            <p class="checkout-discount-message is-error">{{ session('discount_error') }}</p>
+                        @endif
+
+                        @if (session('discount_success'))
+                            <p class="checkout-discount-message is-success">{{ session('discount_success') }}</p>
+                        @endif
+                    </div>
+
                     <div class="form-section checkout-payment-section">
                         <h2>Payment Details</h2>
                         <div class="payment-methods">
@@ -230,52 +272,6 @@
                         @endforeach
                     </div>
 
-                    <div class="checkout-discount-panel">
-                        <div class="checkout-discount-copy">
-                            <h3>Discount Code</h3>
-                            <p>Add a promo code to update your order total before payment.</p>
-                        </div>
-
-                        <form action="{{ route('checkout.discount.apply') }}" method="POST" class="checkout-discount-form">
-                            @csrf
-                            <div class="checkout-discount-input-row">
-                                <div class="checkout-field-wrap">
-                                    <input
-                                        type="text"
-                                        name="discount_code"
-                                        value="{{ old('discount_code', $appliedDiscount['code'] ?? '') }}"
-                                        placeholder="Enter discount code"
-                                        autocomplete="off"
-                                    >
-                                </div>
-                                <button type="submit" class="checkout-discount-btn">Apply</button>
-                            </div>
-                        </form>
-
-                        @if ($appliedDiscount)
-                            <div class="checkout-discount-applied">
-                                <div>
-                                    <p class="checkout-discount-badge">Applied: {{ $appliedDiscount['code'] }}</p>
-                                    <p class="checkout-discount-meta">{{ $appliedDiscount['label'] }}</p>
-                                </div>
-
-                                <form action="{{ route('checkout.discount.remove') }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="checkout-discount-remove">Remove</button>
-                                </form>
-                            </div>
-                        @endif
-
-                        @if (session('discount_error'))
-                            <p class="checkout-discount-message is-error">{{ session('discount_error') }}</p>
-                        @endif
-
-                        @if (session('discount_success'))
-                            <p class="checkout-discount-message is-success">{{ session('discount_success') }}</p>
-                        @endif
-                    </div>
-
                     <div class="summary-totals mt-6" data-subtotal="{{ number_format($total, 2, '.', '') }}" data-discount="{{ number_format($appliedDiscount['amount'] ?? 0, 2, '.', '') }}">
                         <div class="summary-row">
                             <span>Subtotal</span>
@@ -298,6 +294,7 @@
                             <span id="checkout_total_value">{{ number_format($total + $shippingCost, 2) }} GBP</span>
                         </div>
                     </div>
+
                 </div>
             </aside>
         </div>
