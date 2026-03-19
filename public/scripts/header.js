@@ -1,9 +1,16 @@
-const headerFile = '../pages/header.html';
+const headerFile = '/pages/header.html';
 
 fetch(headerFile)
-  .then(response => response.text())
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`Failed to load header: ${response.status}`);
+    }
+
+    return response.text();
+  })
   .then(html => {
     const headerEl = document.querySelector('header');
+    if (!headerEl) return;
     headerEl.innerHTML = html;
 
     // Extract chatbot from header to prevent CSS flex/filter containing-block traps
@@ -13,13 +20,20 @@ fetch(headerFile)
     const scrollTopBtn = document.getElementById('vx-scroll-top');
     if (scrollTopBtn) document.body.appendChild(scrollTopBtn);
 
-    const footerFile = '../pages/footer.html';
+    const footerFile = '/pages/footer.html';
     fetch(footerFile)
-      .then(response => response.text())
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Failed to load footer: ${response.status}`);
+        }
+
+        return response.text();
+      })
       .then(html => {
         const footerEl = document.querySelector('footer');
         if (footerEl) footerEl.innerHTML = html;
-      });
+      })
+      .catch(error => console.error(error));
 
     (function bindVeltrixSearch() {
       const form =
@@ -240,7 +254,8 @@ fetch(headerFile)
 
     initChatbot();
     initScrollTop();
-  });
+  })
+  .catch(error => console.error(error));
 
 ; (async function () {
   try {
