@@ -242,31 +242,31 @@ fetch(headerFile)
     initScrollTop();
   });
 
-; (async function () {
-  try {
-    const res = await fetch('/user-status', {
-      headers: { 'Accept': 'application/json' }
-    });
+// ; (async function () {
+//   try {
+//     const res = await fetch('/user-status', {
+//       headers: { 'Accept': 'application/json' }
+//     });
 
-    if (!res.ok) return;
+//     if (!res.ok) return;
 
-    const data = await res.json();
+//     const data = await res.json();
 
-    const remember = localStorage.getItem('rememberLogin') === '1';
-    const temp = sessionStorage.getItem('tempLoggedIn') === '1';
+//     const remember = localStorage.getItem('rememberLogin') === '1';
+//     const temp = sessionStorage.getItem('tempLoggedIn') === '1';
 
-    if (data.logged_in && !remember && !temp) {
-      await fetch('/logout-json', {
-        method: 'GET',
-        headers: { 'Accept': 'application/json' }
-      });
+//     if (data.logged_in && !remember && !temp) {
+//       await fetch('/logout-json', {
+//         method: 'GET',
+//         headers: { 'Accept': 'application/json' }
+//       });
 
-      // window.location.reload();
-    }
-  } catch (err) {
-    console.error('Logout check error:', err);
-  }
-})();
+//       // window.location.reload();
+//     }
+//   } catch (err) {
+//     console.error('Logout check error:', err);
+//   }
+// })();
 
 /* =========================================
    SCROLL TO TOP LOGIC
