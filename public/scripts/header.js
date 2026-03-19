@@ -261,7 +261,7 @@ fetch(headerFile)
         headers: { 'Accept': 'application/json' }
       });
 
-      window.location.reload();
+      // window.location.reload();
     }
   } catch (err) {
     console.error('Logout check error:', err);
