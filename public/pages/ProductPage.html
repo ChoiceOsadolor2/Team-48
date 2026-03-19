@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="preload" href="../fonts/mini-pixel-7.ttf" as="font" type="font/ttf" crossorigin>
-    <link rel="stylesheet" href="../styles/ProductPage.css?v=4">
+    <link rel="stylesheet" href="../styles/ProductPage.css?v=5">
     <link rel="stylesheet" href="../styles/style.css">
     <link rel="stylesheet" href="../styles/footer.css">
     <script src="https://kit.fontawesome.com/1165876da6.js" crossorigin="anonymous"></script>
@@ -87,16 +87,35 @@
       <h2 class="product-reviews-title">Reviews</h2>
       <p class="product-reviews-subtext">Verified buyers can rate the product and leave written feedback after delivery.</p>
     </div>
-    <div class="product-reviews-actions">
-      <label class="product-review-sort" for="product_reviews_sort">
-        <span>Sort reviews</span>
-        <select id="product_reviews_sort" aria-label="Sort product reviews">
-          <option value="recent">Most recent</option>
-          <option value="highest">Highest rated</option>
-        </select>
-      </label>
-      <button class="product-review-button" id="product_write_review" type="button">Leave a Review</button>
-    </div>
+                    <div class="product-reviews-actions">
+                        <div class="product-review-sort">
+                            <span>Sort reviews</span>
+                            <div class="product-review-sort-field" id="product_review_sort_shell">
+                                <select id="product_reviews_sort" aria-label="Sort product reviews">
+                                    <option value="recent">Most recent</option>
+                                    <option value="highest">Highest rated</option>
+                                    <option value="lowest">Lowest rated</option>
+                                </select>
+                                <button
+                                    class="product-review-sort-trigger"
+                                    id="product_review_sort_trigger"
+                                    type="button"
+                                    aria-haspopup="listbox"
+                                    aria-expanded="false"
+                                    aria-controls="product_review_sort_menu"
+                                >
+                                    <span id="product_review_sort_label">Most recent</span>
+                                    <span class="product-review-sort-chevron" aria-hidden="true"></span>
+                                </button>
+                                <div class="product-review-sort-menu" id="product_review_sort_menu" role="listbox" hidden>
+                                    <button class="product-review-sort-option" type="button" role="option" data-value="recent">Most recent</button>
+                                    <button class="product-review-sort-option" type="button" role="option" data-value="highest">Highest rated</button>
+                                    <button class="product-review-sort-option" type="button" role="option" data-value="lowest">Lowest rated</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button class="product-review-button" id="product_write_review" type="button">Leave a Review</button>
+                    </div>
   </div>
 
   <p class="product-review-note" id="product_write_review_hint">Sign in and open Order History to review a completed purchase.</p>
@@ -137,6 +156,6 @@
 <script src="../scripts/header.js?v=2"></script>
 <script src="../scripts/footer.js"></script>
 <script src="../scripts/animations.js" defer></script>
-<script src="../scripts/products.js?v=13"></script>
+<script src="../scripts/products.js?v=14"></script>
 </body>
 </html>

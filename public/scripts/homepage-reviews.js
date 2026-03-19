@@ -69,6 +69,7 @@
         card.dataset.reviewSource = String(review.id ?? index);
         card.innerHTML = `
           <div class="review-stars">${escapeHtml(renderStars(review.rating))}</div>
+          <span class="review-badge">Verified Customer</span>
           <p class="review-text">"${escapeHtml(review.message || '')}"</p>
           <p class="review-author">${escapeHtml(review.user_name || 'Veltrix customer')}</p>
         `;

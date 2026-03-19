@@ -19,6 +19,11 @@ const productReviewsSection = document.getElementById('product_reviews_section')
 const productReviewsList = document.getElementById('product_reviews_list');
 const productReviewsEmpty = document.getElementById('product_reviews_empty');
 const productReviewsSort = document.getElementById('product_reviews_sort');
+const productReviewSortShell = document.getElementById('product_review_sort_shell');
+const productReviewSortTrigger = document.getElementById('product_review_sort_trigger');
+const productReviewSortLabel = document.getElementById('product_review_sort_label');
+const productReviewSortMenu = document.getElementById('product_review_sort_menu');
+const productReviewSortOptions = Array.from(document.querySelectorAll('.product-review-sort-option'));
 const productWriteReviewButton = document.getElementById('product_write_review');
 const productWriteReviewHint = document.getElementById('product_write_review_hint');
 const minPriceInput = document.getElementById('filter_min_price');
@@ -424,6 +429,14 @@ function sortProductReviews(reviews = [], sortValue = '') {
     });
   }
 
+  if (activeSort === 'lowest') {
+    return list.sort((a, b) => {
+      const ratingDiff = Number(a?.rating || 0) - Number(b?.rating || 0);
+      if (ratingDiff !== 0) return ratingDiff;
+      return new Date(b?.created_at || 0).getTime() - new Date(a?.created_at || 0).getTime();
+    });
+  }
+
   return list.sort((a, b) => new Date(b?.created_at || 0).getTime() - new Date(a?.created_at || 0).getTime());
 }
 
@@ -615,7 +628,78 @@ async function loadProductReviews(productId) {
 if (productReviewsSort && productReviewsSort.dataset.bound !== '1') {
   productReviewsSort.dataset.bound = '1';
   productReviewsSort.addEventListener('change', () => {
+    syncProductReviewSortUi();
     renderProductReviews(productReviewCache);
+  });
+}
+
+function syncProductReviewSortUi() {
+  if (!productReviewsSort || !productReviewSortLabel || !productReviewSortOptions.length) return;
+
+  const activeValue = String(productReviewsSort.value || 'recent');
+  const activeOption = productReviewSortOptions.find((option) => option.dataset.value === activeValue)
+    || productReviewSortOptions[0];
+
+  if (activeOption) {
+    productReviewSortLabel.textContent = activeOption.textContent.trim();
+  }
+
+  productReviewSortOptions.forEach((option) => {
+    const isSelected = option.dataset.value === activeValue;
+    option.classList.toggle('is-selected', isSelected);
+    option.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+  });
+}
+
+function closeProductReviewSortMenu() {
+  if (!productReviewSortShell || !productReviewSortMenu || !productReviewSortTrigger) return;
+
+  productReviewSortShell.classList.remove('is-open');
+  productReviewSortMenu.hidden = true;
+  productReviewSortTrigger.setAttribute('aria-expanded', 'false');
+}
+
+function openProductReviewSortMenu() {
+  if (!productReviewSortShell || !productReviewSortMenu || !productReviewSortTrigger) return;
+
+  productReviewSortShell.classList.add('is-open');
+  productReviewSortMenu.hidden = false;
+  productReviewSortTrigger.setAttribute('aria-expanded', 'true');
+}
+
+if (productReviewSortShell && productReviewsSort && productReviewSortTrigger && productReviewSortMenu) {
+  syncProductReviewSortUi();
+
+  productReviewSortTrigger.addEventListener('click', () => {
+    if (productReviewSortMenu.hidden) {
+      openProductReviewSortMenu();
+    } else {
+      closeProductReviewSortMenu();
+    }
+  });
+
+  productReviewSortOptions.forEach((option) => {
+    option.addEventListener('click', () => {
+      const nextValue = String(option.dataset.value || 'recent');
+      if (productReviewsSort.value !== nextValue) {
+        productReviewsSort.value = nextValue;
+        productReviewsSort.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+      syncProductReviewSortUi();
+      closeProductReviewSortMenu();
+    });
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!productReviewSortShell.contains(event.target)) {
+      closeProductReviewSortMenu();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+      closeProductReviewSortMenu();
+    }
   });
 }
 
@@ -1955,4 +2039,3 @@ window.RemoveFromCart = async function (productId) {
     showBasketError('Could not remove item from cart.', { toast: true, type: 'error' });
   }
 };
-
