@@ -301,6 +301,27 @@
     </div>
   </div>
 
+  <div id="emailCodeOverlay" class="captcha-overlay" aria-hidden="true">
+    <div class="captcha-modal" role="dialog" aria-modal="true" aria-labelledby="emailCodeTitle">
+      <h2 id="emailCodeTitle" class="captcha-title">Email Verification</h2>
+      <p class="captcha-copy">Enter the 6-digit code sent to your email to finish registering.</p>
+      <div id="emailCodeTarget" class="captcha-code" style="letter-spacing: 0; font-size: 20px;"></div>
+
+      <div class="captcha-input-wrap">
+        <input id="emailCodeInput" class="captcha-input" type="text" placeholder="Enter code" autocomplete="off"
+          autocapitalize="characters" spellcheck="false" inputmode="numeric" maxlength="6">
+      </div>
+
+      <p id="emailCodeError" class="captcha-error"></p>
+
+      <div class="captcha-actions">
+        <button id="emailCodeCancel" type="button" class="captcha-btn">Cancel</button>
+        <button id="emailCodeResend" type="button" class="captcha-btn">Resend</button>
+        <button id="emailCodeConfirm" type="button" class="captcha-btn">Verify</button>
+      </div>
+    </div>
+  </div>
+
   <div id="footer"></div>
 
   <script src="../scripts/header.js?v=2"></script>
@@ -361,6 +382,13 @@
     const captchaCancel = document.getElementById("captchaCancel");
     const captchaRefresh = document.getElementById("captchaRefresh");
     const captchaConfirm = document.getElementById("captchaConfirm");
+    const emailCodeOverlay = document.getElementById("emailCodeOverlay");
+    const emailCodeTarget = document.getElementById("emailCodeTarget");
+    const emailCodeInput = document.getElementById("emailCodeInput");
+    const emailCodeError = document.getElementById("emailCodeError");
+    const emailCodeCancel = document.getElementById("emailCodeCancel");
+    const emailCodeResend = document.getElementById("emailCodeResend");
+    const emailCodeConfirm = document.getElementById("emailCodeConfirm");
 
     const emailError = document.getElementById("registerEmailError");
     const usernameError = document.getElementById("registerUsernameError");
@@ -412,7 +440,35 @@
       showCaptchaError("");
     }
 
-    async function submitRegistration(payload) {
+    function showEmailCodeError(message) {
+      emailCodeError.textContent = message || "";
+      emailCodeError.style.display = message ? "block" : "none";
+    }
+
+    function openEmailCodeModal(payload, emailAddress) {
+      pendingRegistration = payload;
+      emailCodeTarget.textContent = emailAddress;
+      emailCodeInput.value = "";
+      showEmailCodeError("");
+      emailCodeOverlay.classList.add("open");
+      emailCodeOverlay.style.display = "flex";
+      emailCodeOverlay.setAttribute("aria-hidden", "false");
+      document.body.classList.add("captcha-open");
+      document.body.style.overflow = "hidden";
+      requestAnimationFrame(() => emailCodeInput.focus());
+    }
+
+    function closeEmailCodeModal(clearPending = false) {
+      emailCodeOverlay.classList.remove("open");
+      emailCodeOverlay.style.display = "none";
+      emailCodeOverlay.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("captcha-open");
+      document.body.style.overflow = "";
+      showEmailCodeError("");
+      if (clearPending) pendingRegistration = null;
+    }
+
+    async function sendVerificationCode(payload) {
       const getCsrfToken = () => {
         const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
         if (metaToken) return metaToken;
@@ -451,7 +507,7 @@
 
       const csrfToken = await ensureCsrfToken();
 
-      const res = await fetch('/register-json', {
+      const res = await fetch('/register-json/request-code', {
         method: "POST",
         headers: {
           "Accept": "application/json",
@@ -471,22 +527,71 @@
       try {
         data = JSON.parse(rawText);
       } catch (parseError) {
-        console.error("Non-JSON response from register-json:", rawText);
+        console.error("Non-JSON response from register-json/request-code:", rawText);
       }
 
       if (res.ok && data.success) {
-        window.location.href = "/pages/index.html";
-        return;
+        return data;
       }
 
       if (res.status === 422 && data.errors) {
+        const message =
+          data.errors.email?.[0] ||
+          data.errors.name?.[0] ||
+          data.errors.password?.[0] ||
+          data.message ||
+          "Registration failed. Please check your details and try again.";
+
         if (data.errors.email?.[0]) showFieldError(emailError, data.errors.email[0]);
         if (data.errors.name?.[0]) showFieldError(usernameError, data.errors.name[0]);
         if (data.errors.password?.[0]) showFieldError(passwordError, data.errors.password[0]);
-        return;
+
+        return { success: false, message };
       }
 
-      showFieldError(emailError, data.message || "Registration failed. Please check your details and try again.");
+      return {
+        success: false,
+        message: data.message || "Unable to send verification code. Please try again."
+      };
+    }
+
+    async function completeRegistration(code) {
+      const getCsrfToken = () => {
+        const metaToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+        if (metaToken) return metaToken;
+
+        const cookieMatch = document.cookie.match(/(?:^|;\s*)XSRF-TOKEN=([^;]+)/);
+        return cookieMatch ? decodeURIComponent(cookieMatch[1]) : "";
+      };
+
+      const csrfToken = getCsrfToken();
+
+      const res = await fetch('/register-json/verify-code', {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          ...(csrfToken ? { "X-CSRF-TOKEN": csrfToken } : {})
+        },
+        credentials: "include",
+        body: JSON.stringify({ code })
+      });
+
+      const rawText = await res.text();
+      let data = {};
+      try {
+        data = JSON.parse(rawText);
+      } catch (parseError) {
+        console.error("Non-JSON response from register-json/verify-code:", rawText);
+      }
+
+      if (res.ok && data.success) {
+        window.location.href = data.redirect || "/pages/index.html";
+        return true;
+      }
+
+      showEmailCodeError(data.message || "Verification failed. Please try again.");
+      return false;
     }
 
     function showFieldError(el, message) {
@@ -526,14 +631,18 @@
         return;
       }
 
-      const payload = pendingRegistration;
-      closeCaptcha();
-
       try {
-        await submitRegistration(payload);
+        const payload = pendingRegistration;
+        const response = await sendVerificationCode(payload);
+        if (!response?.success) {
+          showCaptchaError(response?.message || "Unable to send verification code.");
+          return;
+        }
+        closeCaptcha();
+        openEmailCodeModal(payload, response.email || payload.email);
       } catch (error) {
         console.error(error);
-        showFieldError(emailError, "Unable to contact server. Please try again.");
+        showCaptchaError("Unable to send verification code.");
       }
     });
 
@@ -548,6 +657,51 @@
     captchaOverlay.addEventListener("click", (e) => {
       if (e.target === captchaOverlay) {
         closeCaptcha();
+      }
+    });
+
+    emailCodeCancel.addEventListener("click", () => closeEmailCodeModal(true));
+    emailCodeResend.addEventListener("click", async () => {
+      if (!pendingRegistration) return;
+
+      try {
+        const response = await sendVerificationCode(pendingRegistration);
+        if (response?.success) {
+          emailCodeTarget.textContent = response.email || pendingRegistration.email;
+          emailCodeInput.value = "";
+          showEmailCodeError("");
+        } else {
+          showEmailCodeError(response?.message || "Unable to resend code.");
+        }
+      } catch (error) {
+        console.error(error);
+        showEmailCodeError("Unable to resend code.");
+      }
+    });
+    emailCodeConfirm.addEventListener("click", async () => {
+      const code = emailCodeInput.value.trim();
+
+      if (code.length !== 6) {
+        showEmailCodeError("Enter the 6-digit code.");
+        emailCodeInput.focus();
+        return;
+      }
+
+      const complete = await completeRegistration(code);
+      if (complete) {
+        closeEmailCodeModal(true);
+      }
+    });
+    emailCodeInput.addEventListener("input", () => showEmailCodeError(""));
+    emailCodeInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        emailCodeConfirm.click();
+      }
+    });
+    emailCodeOverlay.addEventListener("click", (e) => {
+      if (e.target === emailCodeOverlay) {
+        closeEmailCodeModal(true);
       }
     });
 

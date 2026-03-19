@@ -1346,7 +1346,7 @@
         ></div>
 
         @if ($isProfilePage)
-            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/header.js?v=3"></script>
             <script src="/scripts/footer.js"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
@@ -1367,7 +1367,7 @@
                 })();
             </script>
         @elseif ($isOrdersPage)
-            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/header.js?v=3"></script>
             @if ($isOrderHistoryPage || $isInvoicePage || $isOrderReturnPage)
                 <script src="/scripts/footer.js"></script>
             @endif
@@ -1380,7 +1380,7 @@
                 })();
             </script>
         @elseif ($isWishlistPage)
-            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/header.js?v=3"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>
@@ -1390,7 +1390,7 @@
                 })();
             </script>
         @elseif ($isWishlistPage)
-            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/header.js?v=3"></script>
             <script src="/scripts/footer.js"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
@@ -1401,7 +1401,7 @@
                 })();
             </script>
         @elseif ($isCheckoutPage)
-            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/header.js?v=3"></script>
             <script src="/scripts/footer.js"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
@@ -1412,7 +1412,7 @@
                 })();
             </script>
         @elseif ($isAdminPage)
-            <script src="/scripts/header.js?v=2"></script>
+            <script src="/scripts/header.js?v=3"></script>
             <script src="/scripts/products.js?v=9"></script>
             <script src="/scripts/animations.js" defer></script>
             <script>

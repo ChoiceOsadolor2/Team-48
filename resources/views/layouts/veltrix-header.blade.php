@@ -102,19 +102,20 @@
     <button id="vx-chatbot-toggle" aria-label="Open Chat">
         <i class="fa-solid fa-message"></i>
     </button>
-    <div id="vx-chatbot-window" class="hidden">
-        <div class="vx-chat-header">
-            <span>Veltrix AI Assistant</span>
-            <div class="vx-chat-header-actions">
-                <button id="vx-chatbot-reset" type="button">New chat</button>
-                <button id="vx-chatbot-close">&#10006;</button>
+        <div id="vx-chatbot-window" class="hidden">
+            <div class="vx-chat-header">
+                <span>Veltrix AI Assistant</span>
+                <div class="vx-chat-header-actions">
+                    <button id="vx-chatbot-close">&#10006;</button>
+                </div>
             </div>
-        </div>
         <div id="vx-chat-messages">
             <div class="vx-message ai-message">Hello. How can I assist you today?</div>
         </div>
         <form id="vx-chat-form">
-            <input type="text" id="vx-chat-input" placeholder="Ask a question..." autocomplete="off" required>
+            <div class="vx-chat-input-wrap">
+                <input type="text" id="vx-chat-input" placeholder="Ask a question..." autocomplete="off" required>
+            </div>
             <button type="submit" id="vx-chat-submit"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
     </div>

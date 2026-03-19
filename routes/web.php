@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Admin\OrderController as AdminOrderController;
 use App\Http\Controllers\Admin\RefundRequestController as AdminRefundRequestController;
 use App\Http\Controllers\Admin\RevenueController as AdminRevenueController;
@@ -34,6 +35,7 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\ServiceReviewController;
 use App\Http\Controllers\WishlistController;
 use Illuminate\Validation\Rules\Password as PasswordRule;
+use App\Support\InputSanitizer;
 
 
 
@@ -444,23 +446,97 @@ Route::post('/login-json', function (Request $request) {
 
 
 
-Route::post('/register-json', function (Request $request) {
+Route::post('/register-json/request-code', function (Request $request) {
     $data = $request->validate([
         'name'     => ['required', 'string', 'max:255'],
         'email'    => ['required', 'email', 'max:255', 'unique:users,email'],
         'password' => ['required', 'string', PasswordRule::defaults()],
     ]);
 
-    $user = User::create([
-        'name'     => $data['name'],
-        'email'    => $data['email'],
-        'password' => Hash::make($data['password']),
+    $name = InputSanitizer::singleLine($data['name']);
+    $email = InputSanitizer::email($data['email']);
+    $code = (string) random_int(100000, 999999);
+
+    $request->session()->put('pending_registration', [
+        'name' => $name,
+        'email' => $email,
+        'password' => $data['password'],
+        'code' => $code,
+        'expires_at' => now()->addMinutes(10)->timestamp,
     ]);
+
+    Mail::raw(
+        "Your Veltrix verification code is {$code}.\n\nThis code expires in 10 minutes.",
+        function ($message) use ($email) {
+            $message->to($email)->subject('Your Veltrix verification code');
+        }
+    );
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Verification code sent.',
+        'email' => $email,
+    ]);
+});
+
+Route::post('/register-json/verify-code', function (Request $request) {
+    $data = $request->validate([
+        'code' => ['required', 'string', 'size:6'],
+    ]);
+
+    $pending = $request->session()->get('pending_registration');
+
+    if (!$pending) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Your registration session expired. Please start again.',
+        ], 422);
+    }
+
+    if (($pending['expires_at'] ?? 0) < now()->timestamp) {
+        $request->session()->forget('pending_registration');
+
+        return response()->json([
+            'success' => false,
+            'message' => 'That verification code expired. Please request a new one.',
+        ], 422);
+    }
+
+    if (!hash_equals((string) ($pending['code'] ?? ''), trim((string) $data['code']))) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Incorrect verification code.',
+        ], 422);
+    }
+
+    if (User::where('email', $pending['email'])->exists()) {
+        $request->session()->forget('pending_registration');
+
+        return response()->json([
+            'success' => false,
+            'message' => 'That email address is already registered.',
+        ], 422);
+    }
+
+    $user = User::create([
+        'name'     => $pending['name'],
+        'email'    => $pending['email'],
+        'password' => Hash::make($pending['password']),
+        'email_verified_at' => now(),
+    ]);
+
+    $request->session()->forget('pending_registration');
+
+    event(new \Illuminate\Auth\Events\Registered($user));
 
     Auth::login($user);
     $request->session()->regenerate();
 
-    return response()->json(['success' => true]);
+    return response()->json([
+        'success' => true,
+        'redirect' => '/pages/index.html',
+        'message' => 'Email verified.',
+    ]);
 });
 
 Route::get('/login', function (Request $request) {

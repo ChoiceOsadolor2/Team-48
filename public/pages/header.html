@@ -89,16 +89,17 @@
                 <div class="vx-chat-header">
                     <span>Veltrix AI Assistant</span>
                     <div class="vx-chat-header-actions">
-                        <button id="vx-chatbot-reset" type="button">New chat</button>
-                    <button id="vx-chatbot-close">✖</button>
-                </div>
+                        <button id="vx-chatbot-close">✖</button>
                     </div>
+                </div>
                 <div id="vx-chat-messages">
                     <!-- Messages will be appended here -->
                     <div class="vx-message ai-message">Hello. How can I assist you today?</div>
                 </div>
                 <form id="vx-chat-form">
-                    <input type="text" id="vx-chat-input" placeholder="Ask a question..." autocomplete="off" required>
+                    <div class="vx-chat-input-wrap">
+                        <input type="text" id="vx-chat-input" placeholder="Ask a question..." autocomplete="off" required>
+                    </div>
                     <button type="submit" id="vx-chat-submit" aria-label="Send message">
                         <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
                             <path fill="currentColor" d="M3 20l18-8L3 4v6l10 2-10 2z" />
