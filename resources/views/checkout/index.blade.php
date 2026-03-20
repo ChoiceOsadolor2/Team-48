@@ -6,6 +6,14 @@
             <h1 class="checkout-page-title">Checkout</h1>
         </div>
         <div class="checkout-container">
+            <form id="checkout-discount-apply-form" action="{{ route('checkout.discount.apply') }}" method="POST" style="display:none;">
+                @csrf
+            </form>
+            <form id="checkout-discount-remove-form" action="{{ route('checkout.discount.remove') }}" method="POST" style="display:none;">
+                @csrf
+                @method('DELETE')
+            </form>
+
             <section class="checkout-form-section">
                 <form id="checkout-form" class="checkout-form" action="{{ route('checkout.place') }}" method="POST" novalidate>
                     @csrf
@@ -159,8 +167,7 @@
 
                     <div class="form-section checkout-discount-form-section">
                         <h2>Discount Code</h2>
-                        <form action="{{ route('checkout.discount.apply') }}" method="POST" class="checkout-discount-form">
-                            @csrf
+                        <div class="checkout-discount-form">
                             <div class="checkout-discount-input-row">
                                 <div class="checkout-field-wrap">
                                     <input
@@ -169,11 +176,12 @@
                                         value="{{ old('discount_code', $appliedDiscount['code'] ?? '') }}"
                                         placeholder="Enter discount code"
                                         autocomplete="off"
+                                        form="checkout-discount-apply-form"
                                     >
                                 </div>
-                                <button type="submit" class="checkout-discount-btn">Apply</button>
+                                <button type="submit" class="checkout-discount-btn" form="checkout-discount-apply-form">Apply</button>
                             </div>
-                        </form>
+                        </div>
 
                         @if ($appliedDiscount)
                             <div class="checkout-discount-applied">
@@ -182,11 +190,7 @@
                                     <p class="checkout-discount-meta">{{ $appliedDiscount['label'] }}</p>
                                 </div>
 
-                                <form action="{{ route('checkout.discount.remove') }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="checkout-discount-remove">Remove</button>
-                                </form>
+                                <button type="submit" class="checkout-discount-remove" form="checkout-discount-remove-form">Remove</button>
                             </div>
                         @endif
 
