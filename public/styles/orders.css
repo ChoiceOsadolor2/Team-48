@@ -580,6 +580,21 @@ body {
     gap: 15px;
 }
 
+.order-item + .order-item {
+    position: relative;
+    padding-top: 28px;
+}
+
+.order-item + .order-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    border-top: 1px solid;
+    animation: veltrixGlow 2s infinite alternate;
+}
+
 @media (min-width: 600px) {
     .order-item {
         flex-direction: row;
