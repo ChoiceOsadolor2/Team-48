@@ -44,5 +44,36 @@ Currently hosted on: https://cs2team48.cs2410-web01pvm.aston.ac.uk/
 
 **About us Section**: Provides information about the e-commerce web application, and its purpose
 
+---
 
+## Tools & Technologies
+
+**Frontend**:
+
+- **HTML**: Used as the structure of the webpage
+- **CSS**: Used for the layout and styling of the pages
+- **JavaScript**: For dynamic behaviour
+
+**Backend**:
+
+- **PHP**: A server-side language that is used to process data and handle logic
+- **Laravel (Blade)**: The PHP framework that is used to build the website, used for dynamic page rendering
+
+---
+
+## Project Management
+
+This project is managed using the Agile approach (Iterative), to allow for flexibility, responsiveness and for our team to adapt to changing requirements.
+We created the foundation of each page, then developed and improved the features along the timeline.
+
+**Task Management**:
+
+- Our group used Trello to organise our workload, and to stay on task.
+- Roles were divided between team members, such as frontend and backend.
+- Held regular meetings in person and online to communicate progress and discuss future plans.
+
+**Version Control**:
+
+- Github & Git were used to manage, track, and update the code. Team members consistently committed changes with clear comments.
+- Team members completed their roles and merged these changes to the main branch on github.
 
