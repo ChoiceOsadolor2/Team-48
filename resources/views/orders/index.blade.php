@@ -52,25 +52,13 @@
                                             @endif
                                         </span>
                                     </div>
-                                    @if(strtolower($order->status) === 'processing' || in_array(strtolower((string) $order->status), ['completed', 'delivered']))
+                                    @if(strtolower($order->status) === 'processing')
                                         <div class="order-status-actions">
                                             @if(strtolower($order->status) === 'processing')
                                                 <form method="POST" action="{{ route('orders.cancel', $order->id) }}">
                                                     @csrf
                                                     <button type="submit" class="btn-ghost w-full">Cancel Order</button>
                                                 </form>
-                                            @endif
-
-                                            @if(in_array(strtolower((string) $order->status), ['completed', 'delivered']))
-                                                @foreach($order->items as $item)
-                                                    @if($item->refundRequest)
-                                                        <span class="btn-ghost btn-ghost-disabled block w-full" aria-disabled="true">
-                                                            {{ $item->refundRequest->status === 'approved' ? 'Refund Approved' : ($item->refundRequest->status === 'denied' ? 'Refund Denied' : 'Refund Request Sent') }}
-                                                        </span>
-                                                    @else
-                                                        <a href="{{ route('orders.return.form', $item->id) }}" class="btn-ghost block w-full">Request Refund</a>
-                                                    @endif
-                                                @endforeach
                                             @endif
                                         </div>
                                     @endif
@@ -119,7 +107,16 @@
                                                 <p class="item-qty"><span class="item-label">Quantity:</span> {{ $item->quantity }}</p>
                                             </div>
                                             <div class="item-actions">
-                                                <a href="{{ $item->product ? url('/pages/ProductPage.html?id=' . $item->product->id) : url('/pages/ShopAll.html') }}" class="btn-ghost block w-full">Buy Again</a>
+                                                @if(in_array(strtolower((string) $order->status), ['completed', 'delivered']))
+                                                    @if($item->refundRequest)
+                                                        <span class="btn-ghost btn-ghost-disabled block w-full" aria-disabled="true">
+                                                            {{ $item->refundRequest->status === 'approved' ? 'Refund Approved' : ($item->refundRequest->status === 'denied' ? 'Refund Denied' : 'Refund Request Sent') }}
+                                                        </span>
+                                                    @else
+                                                        <a href="{{ route('orders.return.form', $item->id) }}" class="btn-ghost block w-full">Request Refund</a>
+                                                    @endif
+                                                @endif
+                                                <a href="{{ $item->product ? url('/pages/ProductPage.html?id=' . $item->product->id) : url('/pages/ShopAll.html') }}" class="btn-ghost block w-full {{ in_array(strtolower((string) $order->status), ['completed', 'delivered']) ? 'mt-2' : '' }}">Buy Again</a>
                                                 @if(in_array(strtolower((string) $order->status), ['completed', 'delivered']))
                                                     @if($item->review)
                                                         <span class="btn-ghost btn-ghost-disabled block w-full mt-2" aria-disabled="true">Product Review Added</span>
