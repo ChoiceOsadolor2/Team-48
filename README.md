@@ -77,3 +77,36 @@ We created the foundation of each page, then developed and improved the features
 - Github & Git were used to manage, track, and update the code. Team members consistently committed changes with clear comments.
 - Team members completed their roles and merged these changes to the main branch on github.
 
+---
+
+## How to run the project
+
+### The Live Demo:
+
+The link to access the deployed version of the website:
+
+https://cs2team48.cs2410-web01pvm.aston.ac.uk/
+
+### To run the project locally:
+
+These are the steps in which you can run the website through Laravel:
+
+1. Clone the repository
+2. Run `composer install`
+3. run `npm install`
+4. Create a `.env` file that's based on `.env.example`
+5. Run `php artisan key:generate`
+6. Create database file:
+    - `touch database/database.sqlite`
+7. Run `php artisan migrate`
+
+Then you run these commands on two terminals:
+
+**Terminal 1**:
+
+- `php artisan serve`
+
+**Terminal 2**:
+
+- `npm run dev`
+- Then open this url: [http://127.0.0.1:8000](http://127.0.0.1:8000/)
