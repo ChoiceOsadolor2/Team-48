@@ -87,26 +87,29 @@ The link to access the deployed version of the website:
 
 https://cs2team48.cs2410-web01pvm.aston.ac.uk/
 
-### To run the project locally:
+### Virtualmin deployment:
 
-These are the steps in which you can run the website through Laravel:
+This project can be deployed through Virtualmin, and a MySQL database:
+1. Upload Project Files
+- Download project as ZIP file from GitHub
+- Log in to Virtualmin using login details
+- Go to the website's directory (e.g. `public_html`)
+- Upload & get project files
 
-1. Clone the repository
-2. Run `composer install`
-3. run `npm install`
-4. Create a `.env` file that's based on `.env.example`
-5. Run `php artisan key:generate`
-6. Create database file:
-    - `touch database/database.sqlite`
-7. Run `php artisan migrate`
+2. Configure environment:
+- Ensure `.env` file set up correctly
+- Update database credentials in the env` file (DB_DATABASE, DB_USERNAME, DB_PASSWORD)
 
-Then you run these commands on two terminals:
+3. Set up  database:
+- Open phpMyAdmin from Virtualmin
+- Create new database
+- Import  provided SQL file into the database
 
-**Terminal 1**:
+4. Run the laravel setup:
+- Ensure Composer dependencies are installed
+- Run database migrations if required
+- Access the website via the domain provided by Virtualmin
 
-- `php artisan serve`
 
-**Terminal 2**:
 
-- `npm run dev`
-- Then open this url: [http://127.0.0.1:8000](http://127.0.0.1:8000/)
+
