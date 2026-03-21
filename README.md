@@ -20,3 +20,29 @@ Currently hosted on: https://cs2team48.cs2410-web01pvm.aston.ac.uk/
 | Varsha | varsha-essarani | 240341194 | Frontend development |
 
 ---
+
+## Main Features
+
+**Homepage:** Displays the main content of the website.
+
+- Contains navigation to different sections of the website
+
+**Products:** Shows various gaming-related products (e.g video-games, consoles & PCS, accessories, hardware)
+
+- Products show images, details, price and reviews
+
+**Search Functionality**:
+
+- Enables user to search for a product
+- Displays the chosen product and its price
+
+**Login & Registraion**: A section of the website where the user can register an account, and login with that account
+
+**Basket (Cart)**: Product added to cart, including its name, platform, price and quantity
+
+**Reviews Section**: A section of the website where it states the reviews of the products, inlcuding a comment and star rating
+
+**About us Section**: Provides information about the e-commerce web application, and its purpose
+
+
+
