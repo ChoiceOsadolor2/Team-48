@@ -169,6 +169,28 @@
     padding: 3px 7px 1px;
 }
 
+.footer-bottom-bar {
+    background: linear-gradient(
+        90deg, /*this is the gradient direction from left to right */
+        /*270deg if want right to left */
+        rgb(141, 9, 92), rgb(196, 19, 190), rgb(164, 12, 229), rgb(5, 10, 102), rgb(14, 33, 237), rgb(37, 109, 196), rgb(8, 144, 162)
+    );
+    background-size: 1500% 1400%; /*big gradient */
+    /* can change the speed of the rainbow based on its seconds */
+    animation: footer-bottom-bar-rainbow 17s linear infinite;
+    text-align: center;
+    padding: 10px 0;
+    margin-top: 50px;
+}
+
+/*animation for the footer itself */
+@keyframes footer-bottom-bar-rainbow {
+    0%{background-position: 0% 50%;} /*start from left */
+    50% {background-position:100% 50%; } /*right */
+    100%{background-position: 0% 50%; } /* back to start */
+
+}
+
 html.home[data-theme="light"] .site-footer {
     color: #1a1511;
     background: #ffffff;
