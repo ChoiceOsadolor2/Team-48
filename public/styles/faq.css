@@ -1,0 +1,50 @@
+.faq-page-inside {
+    width: 90%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding-top: 40px;
+    padding-bottom: 80px;
+}
+
+/**Main title section */
+.faq-page-title {
+    color: rgb(211, 142, 5);
+    font-size: 70px;
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.faq-card {
+    background: rgba(0, 0, 0, 0.65);
+    border-radius: 16px;
+    padding: 30px;
+}
+
+.faq-section {
+    margin-bottom: 25px;
+}
+
+.faq-item:last-child {
+    margin-bottom: 0;
+}
+
+/**h3 styling*/
+.faq-section h3 {
+    color: rgb(173, 140, 18);
+    margin-bottom: 10px;
+    font-size: 30px;
+    font-weight: 400;
+    
+}
+
+.faq-section p {
+    color: #d9d9d9;
+    line-height: 1.6;
+    font-size: 25px;
+    margin: 0;
+}
+
+.faq-section {
+    padding: 15px 0;
+    border-bottom: 1px solid #ddd;
+}

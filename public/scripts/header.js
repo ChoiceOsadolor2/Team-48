@@ -279,6 +279,7 @@ function initChatbot() {
   const chatForm = document.getElementById('vx-chat-form');
   const chatInput = document.getElementById('vx-chat-input');
   const chatMessages = document.getElementById('vx-chat-messages');
+  const resetBtn = document.getElementById('vx-chatbot-reset');
 
   if (!toggleBtn || !chatWindow) return;
 
@@ -300,6 +301,16 @@ function initChatbot() {
   });
 
   closeBtn.addEventListener('click', closeChat);
+
+   if (resetBtn) {
+  resetBtn.addEventListener('click', () => {
+    chatMessages.innerHTML = '';
+    appendMessage('ai', 'Hello. How can I assist you today?');
+    chatInput.value = '';
+    chatInput.focus();
+  });
+}
+
 
   // Handle Form Submission
   chatForm.addEventListener('submit', async (e) => {
@@ -329,10 +340,12 @@ function initChatbot() {
 
       // Update the typing indicator with the real response
       if (data.status === 'success') {
-        typingIndicator.textContent = data.reply;
-      } else {
-        typingIndicator.textContent = "Error: Couldn't reach the server right now.";
-      }
+  typingIndicator.textContent = data.reply;
+  renderSuggestions(typingIndicator, data.suggestions || []);
+} else {
+  typingIndicator.textContent = "Error: Couldn't reach the server right now.";
+}
+
 
     } catch (error) {
       console.error("Chatbot Error:", error);
@@ -353,6 +366,46 @@ function initChatbot() {
 
     return msgDiv;
   }
+function renderSuggestions(messageEl, suggestions) {
+  const existing = messageEl.querySelector('.vx-chat-suggestions');
+  if (existing) existing.remove();
+
+  if (!Array.isArray(suggestions) || suggestions.length === 0) {
+    return;
+  }
+
+  const suggestionsEl = document.createElement('div');
+  suggestionsEl.className = 'vx-chat-suggestions';
+
+  suggestions.forEach((suggestion) => {
+    const label = typeof suggestion === 'string' ? suggestion : suggestion.label;
+    const url = typeof suggestion === 'object' ? suggestion.url : null;
+
+    if (!label) return;
+
+    const chip = document.createElement(url ? 'a' : 'button');
+    chip.className = 'vx-chat-suggestion';
+    chip.textContent = label;
+
+    if (url) {
+      chip.href = url;
+    } else {
+      chip.type = 'button';
+      chip.addEventListener('click', () => {
+        chatInput.value = label;
+        chatForm.requestSubmit();
+      });
+    }
+
+    suggestionsEl.appendChild(chip);
+  });
+
+  if (suggestionsEl.childElementCount > 0) {
+    messageEl.appendChild(suggestionsEl);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+}
+
 }
 
 
